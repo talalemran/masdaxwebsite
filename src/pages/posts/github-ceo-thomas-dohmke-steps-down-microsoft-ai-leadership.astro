@@ -1,0 +1,194 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "github-ceo-thomas-dohmke-steps-down-microsoft-ai-leadership",
+    title: "الرئيس التنفيذي لـ GitHub يستقيل: مايكروسوفت تعيد هيكلة القيادة حول AI",
+    metaTitle: "توماس دومكه يستقيل من رئاسة GitHub بنهاية 2025",
+    description:
+        "توماس دومكه الرئيس التنفيذي لـ GitHub يستقيل بنهاية 2025 بعد 4 سنوات — مايكروسوفت تنقل GitHub تحت Core AI division مع قيادة مزدوجة من آشا شارما وجوليا ليوسون، تعميق إدماج المنصة في استراتيجية AI الأوسع.",
+    keywords: [
+        "GitHub",
+        "Thomas Dohmke",
+        "توماس دومكه",
+        "Microsoft",
+        "CEO",
+        "Copilot",
+        "AI",
+        "قيادة",
+        "استقالة",
+        "تطوير برمجيات",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "30 أغسطس 2026",
+    pubDate: new Date("2026-08-30"),
+    tags: ["GitHub", "Microsoft", "CEO", "Copilot", "استقالة"],
+    thumbnail: "/images/github-ceo-thomas-dohmke-steps-down-microsoft-ai-leadership.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أعلن <strong>توماس دومكه</strong>، الرئيس التنفيذي لـ
+            
+                <a href="https://github.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>GitHub</strong>
+            </a>
+            ، عن استقالته في <strong>11 أغسطس 2025</strong>. سيترك منصبه بنهاية السنة بعد
+            <strong>أربع سنوات من قيادة منصة التطوير</strong>. المفاجأة الأكبر:
+            <strong>مايكروسوفت لن تعيّن رئيساً تنفيذياً جديداً</strong> — بدلاً من ذلك، ستتولى
+            <strong>قيادة مزدوجة من آشا شارما وجوليا ليوسون</strong> المسؤولية.
+        </p>
+
+        <h2>رحلة استثنائية مع GitHub</h2>
+
+        <p>
+            قال دومكه على LinkedIn: <strong>"بعد ما يقرب من أربع سنوات كـ CEO، أترك GitHub
+            لأصبح مؤسس شركة ناشئة مرة أخرى"</strong>. انضم إلى GitHub في
+            <strong>2021 كنائب رئيس للبرامج الاستراتيجية</strong> قبل ترقيته إلى
+            <strong>الرئيس التنفيذي في نوفمبر من نفس السنة</strong>.
+        </p>
+
+        <p>
+            في رسالة وداع داخلية، وصف دومكه عمله كـ
+            <strong>"رحلة من العمر"</strong>: <strong>"من بناء أدوات للمطورين المحمولين، إلى
+            إدارة استحواذ GitHub جنباً إلى جنب مع Nat Friedman، إلى أن أصبح رئيساً
+            تنفيذياً لـ GitHub وقيادتنا إلى عصر Copilot و AI"</strong>.
+        </p>
+
+        <h2>GitHub تحت قيادة مايكروسوفت الجديدة</h2>
+
+        <p>
+            وفقاً لـ
+            
+                <a href="https://www.axios.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Axios
+            </a>
+            ، لن يتم تعيين رئيس تنفيذي جديد. بدلاً من ذلك:
+        </p>
+
+        <ul>
+            <li>
+                <strong>آشا شارما:</strong> نائب رئيس منصة AI في مايكروسوفت
+            </li>
+            <li>
+                <strong>جوليا ليوسون:</strong> رئيسة Developer Division
+            </li>
+        </ul>
+
+        <p>
+            ستتقاسم القيادة المسؤوليات. هذا يعكس
+            <strong>استراتيجية مايكروسوفت الأوسع لدمج GitHub في Core AI division</strong>.
+        </p>
+
+        <h2>GitHub: الآن جزء من استراتيجية AI الشاملة</h2>
+
+        <p>
+            النقل إلى Core AI division يشير إلى
+            <strong>تعميق دور GitHub في إستراتيجية ذكاء اصطناعي مايكروسوفت الشاملة</strong>.
+            GitHub تعمل كـ <strong>مصدر للمطورين إلى نظام Windows و Azure من مايكروسوفت</strong>.
+            في الوقت نفسه، <strong>Copilot — مساعد البرمجة المدعوم بـ AI</strong> — يتوافق مع
+            
+                <a href="https://www.microsoft.com/ai"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                هدف مايكروسوفت الأوسع لتوسيع مساعدات AI
+            </a>
+            عبر مجالات متعددة.
+        </p>
+
+        <h2>الأرقام الملهمة تحت قيادة دومكه</h2>
+
+        <p>
+            دومكه يترك GitHub في وضع قوي جداً:
+        </p>
+
+        <ul>
+            <li>
+                <strong>أكثر من مليار</strong> مستودع و fork
+            </li>
+            <li>
+                <strong>150 مليون + مطور</strong> نشطين
+            </li>
+            <li>
+                <strong>Copilot بـ 20 مليون مستخدم</strong> وينمو باستمرار
+            </li>
+            <li>
+                GitHub تتصدر <strong>"أكثر الأسواق ازدهاراً في الذكاء الاصطناعي"</strong> وفقاً لدومكه
+            </li>
+        </ul>
+
+        <h2>منافسة شرسة في سوق Copilot</h2>
+
+        <p>
+            GitHub Copilot لا تعمل بدون منافسة. يوجد بدائل معروفة:
+        </p>
+
+        <ul>
+            <li>
+                
+                    <a href="https://cursor.sh/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>Cursor</strong>
+                </a>
+            </li>
+            <li>
+                <strong>Google Codebase AI</strong> في Visual Studio Code
+            </li>
+            <li>
+                <strong>خدمات برمجة AI من خيارات أخرى</strong>
+            </li>
+        </ul>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            توماس دومكه ترك GitHub في مكان قوي جداً — مع ملايين المستخدمين و
+            
+                <a href="https://github.blog/news-insights/product-news/copilot-in-github-blog/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Copilot كملف قتالي في صراع AI العالمي
+            </a>
+            . الآن، مايكروسوفت ستتولى القيادة بشكل مباشر، مما يعكس
+            <strong>أهمية GitHub المتنامية لأغراض AI الشاملة للشركة</strong>.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.techrepublic.com/es/article/news-github-ceo-dohmke-steps-down/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                TechRepublic
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

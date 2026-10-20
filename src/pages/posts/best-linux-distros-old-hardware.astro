@@ -1,0 +1,438 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-linux-distros-old-hardware",
+    title: "أفضل توزيعات لينكس للأجهزة القديمة والضعيفة: دليل شامل",
+    metaTitle: "أفضل توزيعات لينكس الخفيفة لإحياء الأجهزة القديمة 2026",
+    description:
+        "دليل شامل لأفضل توزيعات لينكس الخفيفة لإحياء الأجهزة القديمة والضعيفة، من Linux Mint Xfce وLubuntu إلى antiX وPuppy Linux، مع مقارنة حسب مستوى ضعف الجهاز والرابط الرسمي لكل توزيعة.",
+    keywords: [
+        "توزيعات لينكس للأجهزة القديمة",
+        "لينكس للحاسوب الضعيف",
+        "antiX",
+        "Puppy Linux",
+        "Lubuntu",
+        "MX Linux",
+        "Bodhi Linux",
+        "Q4OS",
+        "Linux Mint Xfce",
+        "إحياء حاسوب قديم",
+    ],
+    category: ["لينكس", "مقالات"],
+    author: "طلال عمران",
+    date: "10 سبتمبر 2026",
+    pubDate: new Date("2026-09-10"),
+    tags: [
+        "أجهزة قديمة",
+        "antiX",
+        "Puppy Linux",
+        "Lubuntu",
+        "MX Linux",
+    ],
+    thumbnail: "/images/best-linux-distros-old-hardware.webp",
+};
+
+const tocItems = [
+    { id: "why-old-hardware-matters", label: "لماذا لا يكفي فقط \"اختيار توزيعة خفيفة\"؟" },
+    { id: "hardware-tiers", label: "حدد فئة جهازك أولاً قبل أي اختيار" },
+    { id: "linux-mint-xfce", label: "1. Linux Mint Xfce" },
+    { id: "lubuntu", label: "2. Lubuntu" },
+    { id: "mx-linux", label: "3. MX Linux" },
+    { id: "antix", label: "4. antiX" },
+    { id: "puppy-linux", label: "5. Puppy Linux" },
+    { id: "bodhi-linux", label: "6. Bodhi Linux" },
+    { id: "q4os", label: "7. Q4OS" },
+    { id: "tiny-core", label: "8. Tiny Core Linux" },
+    { id: "32bit-note", label: "ملاحظة مهمة حول الأجهزة 32 بت" },
+    { id: "comparison-table", label: "جدول مقارنة شامل" },
+    { id: "how-to-choose", label: "كيف تختار فعليًا؟" },
+    { id: "practical-tips", label: "نصائح عملية بعد التثبيت" },
+    { id: "external-resources", label: "الروابط الرسمية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            جهاز قديم في الخزانة ليس بالضرورة جهازًا ميتًا. حاسوب عمره
+            عشر سنوات، بذاكرة رام لا تتجاوز 2 أو 4 غيغابايت، يمكنه فعليًا
+            أن يعمل بسلاسة مرة أخرى، شرط اختيار توزيعة لينكس مصممة خصيصًا
+            لهذا النوع من العتاد، لا مجرد تثبيت أي توزيعة حديثة وانتظار
+            معجزة.
+        </p>
+
+        <p>
+            هذا الدليل يستعرض أفضل التوزيعات لإحياء الأجهزة القديمة، مرتبة
+            حسب درجة ضعف الجهاز، مع نصائح عملية لاختيار الأنسب لحالتك
+            تحديدًا.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="why-old-hardware-matters">
+            لماذا لا يكفي فقط "اختيار توزيعة خفيفة"؟
+        </h2>
+
+        <p>
+            <img
+                src="/images/old-laptop-linux.webp"
+                alt="لابتوب قديم يعمل بتوزيعة لينكس خفيفة"
+                width="1200"
+                height="700"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            "متطلبات النظام الدنيا" المكتوبة على موقع أي توزيعة تعني عادة
+            "قد يُقلع النظام"، لا "سيعمل بسلاسة فعلية". جهاز بذاكرة 512
+            ميغابايت رام قد يُقلع توزيعة تطلب رسميًا 1 غيغابايت، لكن تصفح
+            متصفح ويب حديث بعدة تبويبات سيكون تجربة محبطة تمامًا مهما
+            كانت التوزيعة خفيفة.
+        </p>
+
+        <p>
+            القاعدة الذهبية: طابق التوزيعة مع الفئة الفعلية لجهازك، لا مع
+            "أخف توزيعة موجودة" بشكل عشوائي.
+        </p>
+
+        <h2 id="hardware-tiers">حدد فئة جهازك أولاً قبل أي اختيار</h2>
+
+        <ul>
+            <li>
+                <strong>أقل من 1 غيغابايت رام، أو معالج قديم جدًا لا يدعم
+                SSE2</strong>: تحتاج توزيعات متخصصة جدًا في الخفة مثل antiX
+                أو Puppy Linux أو Tiny Core
+            </li>
+            <li>
+                <strong>بين 1 و2 غيغابايت رام</strong>: خيارات مثل Bodhi
+                أو Q4OS أو نسخة antiX الأحدث تعمل بشكل جيد
+            </li>
+            <li>
+                <strong>بين 2 و4 غيغابايت رام</strong>: هنا تنفتح خيارات
+                أوسع وأكثر اكتمالًا: Lubuntu، MX Linux، Linux Mint Xfce
+            </li>
+        </ul>
+
+        <p>
+            تحقق أيضًا من معمارية المعالج (32 أو 64 بت) عبر أمر
+            <code>lscpu</code> إن كان لديك لينكس مثبتًا مسبقًا، لأن هذا
+            يحدد التوزيعات المتاحة أصلاً لك — سنعود لهذه النقطة بالتفصيل
+            لاحقًا في المقال.
+        </p>
+
+        <h2 id="linux-mint-xfce">1. Linux Mint Xfce</h2>
+
+        <p>
+            النسخة الأخف من Linux Mint الشهيرة، تعتمد بيئة Xfce بدلاً من
+            Cinnamon الأثقل نسبيًا. تُعتبر التوصية الأكثر أمانًا لمن يريد
+            إحياء جهاز أول مرة دون الدخول في تعقيدات توزيعات متخصصة جدًا.
+        </p>
+
+        <ul>
+            <li>واجهة مألوفة جدًا، خصوصًا للقادمين من ويندوز</li>
+            <li>مبنية على أساس Ubuntu LTS، بتوافق عتاد واسع ومستودعات ضخمة</li>
+            <li>توازن ممتاز بين الخفة واكتمال التجربة (متصفح، مكتب، وسائط جاهزة)</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أجهزة بذاكرة 2 غيغابايت فأكثر، ومن يريد أقل احتكاك ممكن مع التعقيد التقني.</p>
+
+        <h2 id="lubuntu">2. Lubuntu</h2>
+
+        <p>
+            النكهة الرسمية الخفيفة من أوبونتو، تعتمد بيئة LXQt. توصية
+            قوية للمبتدئين تحديدًا، بفضل نفس قاعدة أوبونتو الواسعة
+            التوافق مع العتاد، لكن بأثر أخف بكثير على الموارد.
+        </p>
+
+        <ul>
+            <li>دعم عتاد ممتاز بفضل قاعدة أوبونتو نفسها</li>
+            <li>بيئة LXQt نظيفة وسريعة، دون تضحية كبيرة في المظهر</li>
+            <li>تحديث ملاحظة مهمة: إصدار Lubuntu 26.04 الحالي متاح فقط بمعمارية 64 بت</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أجهزة 64 بت بذاكرة 2 غيغابايت فأكثر، ومن يريد تجربة موجهة وسهلة.</p>
+
+        <h2 id="mx-linux">3. MX Linux</h2>
+
+        <p>
+            توزيعة "متوسطة الوزن" (Midweight) وليست الأخف إطلاقًا، لكنها
+            توازن استثنائي بين الأداء والاكتمال. تأتي بأدوات إدارة نظام
+            خاصة بها (MX Tools) تسهّل الإعداد دون الحاجة لسطر الأوامر.
+        </p>
+
+        <ul>
+            <li>استقرار عالٍ جدًا بفضل بنائها على قاعدة Debian الصلبة</li>
+            <li>إصدار Fluxbox المتوفر رسميًا أخف بكثير من إصدار Xfce القياسي</li>
+            <li>أدوات MX Tools تجعلها مناسبة حتى لمن ليس لديه خبرة تقنية عميقة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أجهزة بذاكرة 2-4 غيغابايت، ومن يريد أدوات إدارة رسومية جاهزة بلا تعقيد.</p>
+
+        <h2 id="antix">4. antiX</h2>
+
+        <p>
+            توزيعة مبنية على Debian، لكنها بلا نظام systemd إطلاقًا، ما
+            يجعلها من أخف الخيارات الوظيفية الكاملة المتاحة. مصممة خصيصًا
+            للأجهزة الضعيفة جدًا، وتعمل بذاكرة تصل حتى 256 ميغابايت في
+            إصداراتها الأخف.
+        </p>
+
+        <ul>
+            <li>من أفضل الخيارات لمعالجات قديمة جدًا لا تدعم حتى تعليمات SSE2</li>
+            <li>لا تتطلب تثبيتًا على القرص الصلب إطلاقًا، يمكن تشغيلها بالكامل من USB</li>
+            <li>عدة نكهات بأوزان مختلفة (Full، Base، Core) حسب درجة ضعف جهازك بالضبط</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: الأجهزة الأضعف عمليًا في هذه القائمة، وأجهزة 32 بت قديمة جدًا.</p>
+
+        <h2 id="puppy-linux">5. Puppy Linux</h2>
+
+        <p>
+            أسسها Barry Kauler عام 2003، وتتبع فلسفة مختلفة جذريًا: تحميل
+            النظام بالكامل في الذاكرة (RAM) أثناء التشغيل، ما يمنحها سرعة
+            استثنائية حتى من قرص USB بطيء نسبيًا.
+        </p>
+
+        <ul>
+            <li>حجم صغير جدًا (أقل من 500 ميغابايت غالبًا) مع نظام كامل وظيفيًا</li>
+            <li>تعمل بسلاسة بذاكرة رام منخفضة جدًا تصل لـ 512 ميغابايت أو أقل</li>
+            <li>عدة إصدارات مبنية على قواعد مختلفة (Ubuntu، Debian) حسب حاجتك لتوافق حزم أوسع</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: الاستخدام من USB مباشرة دون تثبيت، والأجهزة شديدة الضعف في الذاكرة.</p>
+
+        <h2 id="bodhi-linux">6. Bodhi Linux</h2>
+
+        <p>
+            تعتمد بيئة Moksha الخاصة بها (نسخة معدّلة من Enlightenment)،
+            وتتميز بجمع نادر بين المظهر الأنيق والخفة الفعلية. فلسفتها:
+            نظام أساسي بسيط جدًا، تضيف إليه فقط ما تحتاجه أنت لا ما يفرضه
+            المطورون.
+        </p>
+
+        <ul>
+            <li>مظهر بصري أنيق نادرًا ما تجده في توزيعات خفيفة أخرى</li>
+            <li>تخصيص عميق عبر بيئة Moksha دون استهلاك موارد كبير</li>
+            <li>تطبيقات مثبتة مسبقًا قليلة جدًا عمدًا، أنت من يضيف ما تحتاجه فقط</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: من يريد مظهرًا جذابًا على جهاز ضعيف، دون التضحية بالأداء.</p>
+
+        <h2 id="q4os">7. Q4OS</h2>
+
+        <p>
+            توزيعة تشيكية مبنية على Debian، تعتمد بيئة Trinity (استمرارية
+            لـ KDE 3 القديمة) أو Plasma الخفيفة، وتشتهر بسرعة إقلاع
+            استثنائية وواجهة أقرب لويندوز XP/7 الكلاسيكية.
+        </p>
+
+        <ul>
+            <li>سرعة إقلاع من الأسرع بين كل التوزيعات المختبرة في هذا المجال</li>
+            <li>واجهة مألوفة جدًا لمستخدمي ويندوز القدامى تحديدًا</li>
+            <li>أداة "Desktop Profiler" تتيح التبديل بين واجهة بسيطة جدًا وأخرى كاملة الميزات بسهولة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مستخدمي ويندوز القدامى الذين يريدون واجهة مألوفة بأقصى سرعة ممكنة.</p>
+
+        <h2 id="tiny-core">8. Tiny Core Linux</h2>
+
+        <p>
+            كما يوحي اسمها، من أصغر توزيعات لينكس الوظيفية الموجودة
+            إطلاقًا، بحجم لا يتجاوز عشرات الميغابايتات فقط للنسخة
+            الأساسية. ليست توزيعة "جاهزة للاستخدام اليومي" بالمعنى
+            التقليدي، بل نظام أساسي شديد التقشف تبني عليه بنفسك بالضبط ما
+            تحتاجه.
+        </p>
+
+        <ul>
+            <li>الأصغر حجمًا بين كل الخيارات في هذه القائمة</li>
+            <li>مناسبة جدًا كمشروع تعليمي لفهم لينكس من الداخل</li>
+            <li>تتطلب معرفة تقنية أعلى من بقية التوزيعات المذكورة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أجهزة شديدة الضعف جدًا، أو من يريد بناء نظامه المخصص من الصفر.</p>
+
+        <h2 id="32bit-note">ملاحظة مهمة حول الأجهزة 32 بت</h2>
+
+        <p>
+            نقطة تقنية باتت حرجة فعليًا: إصدار Debian 13 "Trixie" أوقف
+            دعم صور التثبيت المستقلة لمعمارية i386 (32 بت)، ما أثر على عدد
+            من التوزيعات المشتقة منه. إن كان جهازك يدعم 32 بت فقط، خياراتك
+            الأكثر أمانًا حاليًا هي antiX، وبعض إصدارات Puppy Linux، وMX
+            Linux (سلسلة MX-23)، وBodhi Linux إصدار Legacy تحديدًا،
+            وQ4OS بإصدار Aquarius القديم.
+        </p>
+
+        <h2 id="comparison-table">جدول مقارنة شامل</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">التوزيعة</th>
+                        <th class="px-4 py-2 font-semibold">أقل رام مقترحة</th>
+                        <th class="px-4 py-2 font-semibold">بيئة سطح المكتب</th>
+                        <th class="px-4 py-2 font-semibold">الأنسب لـ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">Linux Mint Xfce</td>
+                        <td class="px-4 py-2">2 غيغابايت</td>
+                        <td class="px-4 py-2">Xfce</td>
+                        <td class="px-4 py-2">تجربة أولى سهلة وموثوقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Lubuntu</td>
+                        <td class="px-4 py-2">2 غيغابايت</td>
+                        <td class="px-4 py-2">LXQt</td>
+                        <td class="px-4 py-2">مبتدئين، توافق عتاد واسع</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">MX Linux</td>
+                        <td class="px-4 py-2">1-2 غيغابايت</td>
+                        <td class="px-4 py-2">Xfce / Fluxbox</td>
+                        <td class="px-4 py-2">استقرار وأدوات جاهزة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">antiX</td>
+                        <td class="px-4 py-2">256-512 ميغابايت</td>
+                        <td class="px-4 py-2">IceWM / Fluxbox</td>
+                        <td class="px-4 py-2">أضعف الأجهزة وأقدمها</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Puppy Linux</td>
+                        <td class="px-4 py-2">512 ميغابايت</td>
+                        <td class="px-4 py-2">JWM</td>
+                        <td class="px-4 py-2">تشغيل من USB بلا تثبيت</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Bodhi Linux</td>
+                        <td class="px-4 py-2">1 غيغابايت</td>
+                        <td class="px-4 py-2">Moksha</td>
+                        <td class="px-4 py-2">مظهر أنيق مع خفة حقيقية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Q4OS</td>
+                        <td class="px-4 py-2">1 غيغابايت</td>
+                        <td class="px-4 py-2">Trinity / Plasma خفيف</td>
+                        <td class="px-4 py-2">محبي واجهة ويندوز القديمة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Tiny Core Linux</td>
+                        <td class="px-4 py-2">أقل من 256 ميغابايت</td>
+                        <td class="px-4 py-2">FLTK/FLWM بسيط</td>
+                        <td class="px-4 py-2">مشاريع تقنية متخصصة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-choose">كيف تختار فعليًا؟</h2>
+
+        <ul>
+            <li><strong>أول تجربة لينكس على الإطلاق:</strong> Linux Mint Xfce أو Lubuntu</li>
+            <li><strong>جهاز بذاكرة أقل من 1 غيغابايت:</strong> antiX أو Puppy Linux</li>
+            <li><strong>تريد مظهرًا جميلًا رغم ضعف الجهاز:</strong> Bodhi Linux</li>
+            <li><strong>قادم من ويندوز القديم وتريد واجهة مألوفة:</strong> Q4OS</li>
+            <li><strong>تريد أدوات إدارة جاهزة دون تعقيد:</strong> MX Linux</li>
+            <li><strong>تريد مجرد تجربة أو استخدام مؤقت من USB:</strong> Puppy Linux</li>
+        </ul>
+
+        <h2 id="practical-tips">نصائح عملية بعد التثبيت</h2>
+
+        <ul>
+            <li>جرّب دائمًا نسختين أو ثلاثًا عبر USB حي قبل التثبيت النهائي، لمقارنة السلاسة الفعلية على جهازك بالذات</li>
+            <li>استخدم متصفحات أخف مثل Falkon أو Midori بدلاً من كروم أو فايرفوكس الكاملين إن كانت الذاكرة محدودة جدًا</li>
+            <li>عطّل التأثيرات البصرية غير الضرورية من إعدادات البيئة فور التثبيت</li>
+            <li>ثبّت قرص SSD بدلاً من القرص الصلب التقليدي إن أمكن ماديًا؛ هذا التحسين وحده أحيانًا أهم من اختيار التوزيعة نفسها</li>
+            <li>حدّث النظام مباشرة بعد التثبيت للحصول على آخر إصلاحات الأداء والأمان</li>
+        </ul>
+
+        <h2 id="external-resources">الروابط الرسمية</h2>
+
+        <ul>
+            <li><strong>Linux Mint:</strong> <a href="https://linuxmint.com/" target="_blank" rel="noopener noreferrer">linuxmint.com</a></li>
+            <li><strong>Lubuntu:</strong> <a href="https://lubuntu.me/" target="_blank" rel="noopener noreferrer">lubuntu.me</a></li>
+            <li><strong>MX Linux:</strong> <a href="https://mxlinux.org/" target="_blank" rel="noopener noreferrer">mxlinux.org</a></li>
+            <li><strong>antiX:</strong> <a href="https://antixlinux.com/" target="_blank" rel="noopener noreferrer">antixlinux.com</a></li>
+            <li><strong>Puppy Linux:</strong> <a href="https://puppylinux.com/" target="_blank" rel="noopener noreferrer">puppylinux.com</a></li>
+            <li><strong>Bodhi Linux:</strong> <a href="https://www.bodhilinux.com/" target="_blank" rel="noopener noreferrer">bodhilinux.com</a></li>
+            <li><strong>Q4OS:</strong> <a href="https://q4os.org/" target="_blank" rel="noopener noreferrer">q4os.org</a></li>
+            <li><strong>Tiny Core Linux:</strong> <a href="http://tinycorelinux.net/" target="_blank" rel="noopener noreferrer">tinycorelinux.net</a></li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل تستحق العملية فعلاً، أم أن شراء جهاز جديد أفضل؟</strong><br />
+            لمهام بسيطة (تصفح، مستندات، وسائط)، إحياء جهاز قديم بلينكس
+            خيار عملي جدًا ومجاني، وغالبًا يمنحك تجربة أسرع من ويندوز أو
+            ماك الحديث على نفس العتاد بالضبط.
+        </p>
+
+        <p>
+            <strong>هل سأستطيع تصفح الإنترنت بسلاسة كاملة على هذه التوزيعات؟</strong><br />
+            المواقع البسيطة نعم، لكن مواقع الفيديو الثقيلة والتطبيقات
+            الحديثة كثيرة التبويبات ستبقى تحديًا مهما كانت التوزيعة خفيفة،
+            لأن القيد الحقيقي هنا هو المتصفح والويب الحديث نفسه لا نظام
+            التشغيل.
+        </p>
+
+        <p>
+            <strong>هل يمكنني تثبيت هذه التوزيعات دون حذف ويندوز؟</strong><br />
+            نعم، عبر التثبيت المزدوج (Dual Boot) في أغلبها، أو حتى تشغيلها
+            بالكامل من USB دون أي تثبيت كما هو الحال مع Puppy Linux.
+        </p>
+
+        <p>
+            <strong>كيف أعرف إن كان معالجي 32 أو 64 بت؟</strong><br />
+            على أي نظام لينكس موجود مسبقًا، استخدم أمر <code>lscpu</code>
+            في الطرفية، أو تحقق من موقع الشركة المصنّعة للمعالج مباشرة عبر
+            رقم الموديل المطبوع على الجهاز.
+        </p>
+    </PostLayout>
+</BaseLayout>

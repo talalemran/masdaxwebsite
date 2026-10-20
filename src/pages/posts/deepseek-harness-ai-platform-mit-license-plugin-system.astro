@@ -1,0 +1,239 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "deepseek-harness-ai-platform-mit-license-plugin-system",
+    title: "DeepSeek Harness: منصة ذكاء اصطناعي مفتوحة برخصة MIT",
+    metaTitle: "DeepSeek Harness: منصة AI بـ MIT للمطورين",
+    description:
+        "DeepSeek أطلقت منصة ذكاء اصطناعي جديدة مبنية على نواة Cordis برخصة MIT — نظام plugin مرن، وضعا تشغيل مختلفان، تتبع شامل للعمليات، وواجهات متعددة لسطح المكتب والويب والطرفية.",
+    keywords: [
+        "DeepSeek Harness",
+        "منصة ذكاء اصطناعي",
+        "MIT license",
+        "مفتوح المصدر",
+        "Cordis kernel",
+        "plugin system",
+        "AI development",
+        "ذكاء اصطناعي",
+        "تطوير",
+        "مجتمع المطورين",
+    ],
+    category: "ذكاء اصطناعي",
+    author: "طلال عمران",
+    date: "20 أغسطس 2026",
+    pubDate: new Date("2026-08-20"),
+    tags: ["DeepSeek", "ذكاء اصطناعي", "مفتوح المصدر", "منصة", "Harness"],
+    thumbnail: "/images/deepseek-harness-ai-platform-mit-license-plugin-system.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أعلنت <strong>DeepSeek</strong> عن إطلاق <strong>منصة ذكاء اصطناعي جديدة</strong>
+            مبنية على <strong>نواة Cordis</strong> ومرفقة بـ <strong>إطار عمل التوافق الزماني المكاني</strong>
+            وبنية معمارية <strong>قائمة على البرامج الإضافية والمكونات النمطية</strong>.
+            صُدرت تحت <strong>رخصة MIT</strong>، وهذا المشروع مفتوح المصدر يركز على
+            <strong>المرونة والقابلية للتتبع</strong>، مما يتيح للمطورين تكييفه مع تطبيقات متنوعة من
+            <strong>الأبحاث الأكاديمية إلى الإنتاج على نطاق واسع</strong>.
+        </p>
+
+        <h2>فلسفة المصدر المفتوح في الذكاء الاصطناعي</h2>
+
+        <p>
+            خيار <strong>DeepSeek</strong> بتبني المصدر المفتوح متعمد لتشجيع
+            <strong>التعاون والابتكار</strong> ضمن مجتمع المطورين العالمي. بانتهاجها
+            
+                <a href="https://opensource.org/licenses/MIT"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                رخصة MIT
+            </a>
+            ، توفر للمطورين <strong>الحرية في استخدام وتعديل وتوزيع البرامج</strong>
+            دون قيود صارمة. هذا النهج加速ع الاعتماد والتبني وجعلها
+            <strong>واحدة من أشهر المستودعات في التاريخ الحديث</strong>. للمطورين، طبيعة
+            DeepSeek مفتوحة المصدر توفر عدة مزايا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الوصول للكود المصدري الكامل:</strong> يسمح بفهم أعمق للمعمارية والوظائف
+            </li>
+            <li>
+                <strong>المساهمة في التحسينات:</strong> القدرة على المساهمة في إصلاح الأخطاء أو
+                إضافة ميزات جديدة
+            </li>
+            <li>
+                <strong>الحرية في الإنشاء:</strong> إمكانية إنشاء امتدادات مخصصة لحالات الاستخدام
+                المحددة
+            </li>
+        </ul>
+
+        <h2>المميزات الأساسية لـ DeepSeek Harness</h2>
+
+        <p>
+            في قلب <strong>DeepSeek</strong> تقع <strong>نواة Cordis</strong> — أساس قوي وقابل
+            للتوسع يتكامل بسلاسة مع <strong>إطار عمل التوافق الزماني المكاني</strong>. هذا الإطار
+            يسهّل <strong>التفاعل السلس مع نماذج ذكاء اصطناعي خارجية وأدوات أخرى</strong>، مما يجعل
+            DeepSeek حلاً متعدد الاستخدامات:
+        </p>
+
+        <ul>
+            <li>
+                <strong>النمطية:</strong> معمارية قائمة على البرامج الإضافية تتيح للمطورين توسيع أو
+                تعديل الوظائف دون تغيير النظام الأساسي
+            </li>
+            <li>
+                <strong>المرونة:</strong> تدعم حالات استخدام متنوعة من الأبحاث الأكاديمية إلى
+                التطوير على نطاق واسع
+            </li>
+            <li>
+                <strong>التوافق:</strong> تندمج بسهولة مع منصات مختلفة وأدوات ذكاء اصطناعي متنوعة
+            </li>
+        </ul>
+
+        <h2>نظام البرامج الإضافية المتقدم وأنماط التشغيل</h2>
+
+        <p>
+            واحدة من أبرز ميزات <strong>DeepSeek</strong> هي
+            <strong>نظام البرامج الإضافية المتطور</strong>. كل مكون،
+            سواء كان نموذج ذكاء اصطناعي أو أداة أو وكيل، يُعامَل كـ <strong>برنامج إضافي</strong>،
+            مما يبسّط التخصيص وإدارة الوظائف. يقدم DeepSeek أيضاً
+            <strong>نمطي تشغيل مختلفان</strong> لمستويات خبرة متفاوتة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الوضع المعياري:</strong> مصمم لمهام الهندسة الروتينية، يوفر واجهة مبسطة لنشر
+                وإدارة نماذج الذكاء الاصطناعي بكفاءة
+            </li>
+            <li>
+                <strong>وضع الإنشاء:</strong> مصمم للمستخدمين المتقدمين، يدعم تطوير البرامج الإضافية
+                والفحص النظام والتحكم الأعمق
+            </li>
+        </ul>
+
+        <h2>تعزيز القابلية للتتبع في تطوير الذكاء الاصطناعي</h2>
+
+        <p>
+            القابلية للتتبع هي حجر الزاوية في تصميم <strong>DeepSeek</strong>، تعالج
+            <strong>الحاجة المتزايدة للشفافية والمسؤولية</strong> في أنظمة الذكاء الاصطناعي.
+            تستخدم المنصة <strong>آلية تسجيل إضافة فقط</strong> لتسجيل كل
+            <strong>نوافذ النظام ومسارات التفكير واستدعاءات الأدوات</strong>. هذا النظام الشامل للتسجيل يوفر:
+        </p>
+
+        <ul>
+            <li>سجل تفصيلي للتفاعلات والقرارات التي يتخذها النظام</li>
+            <li>رؤى قيمة للتصحيح والتدقيق وتحسين نماذج ذكاء اصطناعي</li>
+            <li>شفافية محسّنة تضمن عدم إغفال أي جانب من جوانب عملية التطوير</li>
+        </ul>
+
+        <h2>واجهات قابلة للتخصيص لسير عمل متنوع</h2>
+
+        <p>
+            يتكيف <strong>DeepSeek</strong> مع مجموعة متنوعة من سير العمل بتقديم
+            <strong>واجهات مستخدم متعددة</strong>، كل منها مصممة لتناسب
+            <strong>التفضيلات والبيئات المختلفة</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>تطبيق سطح مكتب:</strong> توفر
+                
+                    <a href="https://github.com/deepseek-ai/harness"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    تجربة رسومية صديقة للمستخدم
+                </a>
+            </li>
+            <li>
+                <strong>واجهة طرفية:</strong> للذين يفضلون التفاعل عبر سطر الأوامر
+            </li>
+            <li>
+                <strong>واجهة ويب:</strong> للعمل البعيد أو الجماعي
+            </li>
+        </ul>
+
+        <h2>مجتمع مزدهر ونظام بيئي نابض بالحياة</h2>
+
+        <p>
+            نجاح <strong>DeepSeek</strong> يعززه
+            <strong>مجتمع نشط ومتنام من المطورين</strong>. تطبيق سطح المكتب وحده حصل على
+            <strong>أكثر من 11,000 نجمة على GitHub</strong>،
+            مما يعكس شهرته الواسعة. مساهمات المجتمع توسعت قدرات المنصة، مع برامج إضافية تتيح
+            <strong>التكامل السلس مع نماذج ذكاء اصطناعي خارجية</strong> مثل:
+        </p>
+
+        <ul>
+            <li>
+                
+                    <a href="https://www.anthropic.com/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    Anthropic
+                </a>
+            </li>
+            <li>
+                
+                    <a href="https://openai.com/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    OpenAI
+                </a>
+            </li>
+            <li>
+                
+                    <a href="https://aws.amazon.com/bedrock/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    Bedrock
+                </a>
+            </li>
+        </ul>
+
+        <h2>المستقبل أمام DeepSeek</h2>
+
+        <p>
+            <strong>DeepSeek</strong> في مرحلة بيتا حالياً، وليست بدون تحديات صغيرة،
+            لكن إمكانياتها <strong>غير محدودة</strong>. مع نضج الأداة، من المتوقع أن تكسب
+            <strong>ميزات إضافية وثبات محسّن وتبني أوسع عبر الصناعات</strong>.
+        </p>
+
+        <p>
+            مع معمارتها المبتكرة ومجموعة الميزات القوية ودعم المجتمع النشط،
+            <strong>DeepSeek</strong> جاهزة لأن تصبح <strong>حجر الزاوية في تطوير الذكاء الاصطناعي</strong>.
+            سواء كنت باحثاً أو مطوراً أو مهندساً، توفر هذه المنصة
+            <strong>أساساً قوياً لبناء جيل جديد من حلول الذكاء الاصطناعي</strong>.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a href="https://www.geeky-gadgets.com/deepseek-harness-overview/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Geeky Gadgets
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

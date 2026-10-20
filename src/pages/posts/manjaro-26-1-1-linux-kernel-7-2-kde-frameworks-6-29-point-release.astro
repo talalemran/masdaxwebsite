@@ -1,0 +1,211 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "manjaro-26-1-1-linux-kernel-7-2-kde-frameworks-6-29-point-release",
+    title: "مانجارو 26.1.1: نواة لينكس 7.2 وإطارات KDE 6.29 والعديد من التحسينات",
+    metaTitle: "مانجارو 26.1.1 مع لينكس 7.2 و KDE Frameworks",
+    description:
+        "مانجارو 26.1.1 إصدار نقطة أول للسلسلة — نواة لينكس 7.2 جديدة رسمياً، KDE Frameworks 6.29، Mesa 26.1.7، Firefox 154، VirtualBox 7.2.16، مع تحذير لمستخدمي NVIDIA Pascal.",
+    keywords: [
+        "Manjaro 26.1.1",
+        "مانجارو",
+        "Linux 7.2",
+        "KDE Frameworks 6.29",
+        "Mesa 26.1.7",
+        "Arch Linux",
+        "لينكس",
+        "توزيعة لينكس",
+        "تحديث",
+        "Rolling Release",
+    ],
+    category: ["لينكس", "بيئة سطح المكتب"],
+    author: "طلال عمران",
+    date: "24 أغسطس 2026",
+    pubDate: new Date("2026-08-24"),
+    tags: ["Manjaro", "لينكس", "Linux 7.2", "KDE", "نقطة تحديث"],
+    thumbnail: "/images/manjaro-26-1-1-linux-kernel-7-2-kde-frameworks-6-29-point-release.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت <strong>مانجارو</strong> تحديثاً جديداً مستقراً،
+            <strong>الإصدار النقطي الأول في سلسلة 26.1 "Bian-May"</strong>. التحديث يشمل
+            <strong>مجموعة نوى جديدة وترقيات حزم عديدة</strong>، بما في ذلك
+            
+                <a href="https://linuxiac.com/kde-frameworks-6-29-adds-zip64-writing-expands-heif-support/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>KDE Frameworks 6.29</strong>
+            </a>
+            ، Mesa 26.1.7،
+            
+                <a href="https://linuxiac.com/qemu-11-1-adds-risc-v-big-endian-support-arm-nested-virtualization/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>QEMU 11.1</strong>
+            </a>
+            ،
+            
+                <a href="https://linuxiac.com/firefox-154-adds-websocket-local-network-protection-and-new-ai-controls/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Firefox 154</strong>
+            </a>
+            ، Thunderbird 153.0.2، و
+            
+                <a href="https://linuxiac.com/virtualbox-7-2-16-adds-linux-fred-support-improves-wayland-clipboard/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>VirtualBox 7.2.16</strong>
+            </a>
+            .
+        </p>
+
+        <h2>إضافة لينكس 7.2 الرسمية</h2>
+
+        <p>
+            التغيير الأبرز هو إضافة
+            
+                <a href="https://linuxiac.com/linux-kernel-7-2-released-with-btrfs-scheduler-and-networking-improvements/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>نواة لينكس 7.2</strong>
+            </a>
+            إلى قائمة النوى المدعومة رسمياً من مانجارو. لينكس 7.1.9 يبقى متاحاً بجانب عدة
+            <strong>فروع طويلة الأجل</strong>، بما فيها لينكس 6.18.45، 6.12.104، 6.6.152،
+            و 6.1.183. <strong>متغيرات Real-time</strong> من النوى 6.1 و 6.6 و 6.12
+            محفوظة أيضاً.
+        </p>
+
+        <p>
+            حسب مطوري مانجارو، <strong>تحديثات النواة ستحل على الأغلب
+            انحدارات AMDGPU</strong> التي أثرت على بعض المستخدمين في الإصدارات السابقة.
+        </p>
+
+        <h2>نهاية الدعم للنوى القديمة</h2>
+
+        <p>
+            التوزيعة تذكر المستخدمين بأن نوى لينكس 6.16 و 6.17 و 6.19 و 7.0
+            <strong>وصلت نهاية حياتها</strong> وتوصي بالانتقال إلى
+            
+                <a href="https://linuxiac.com/linux-kernel-7-1-released-with-rewritten-ntfs-support/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>لينكس 7.1</strong>
+            </a>
+            أو نواة LTS مدعومة بدلاً منها.
+        </p>
+
+        <h2>تحسينات سطح المكتب: KDE و GNOME</h2>
+
+        <p>
+            على جانب سطح المكتب، <strong>مستخدمو KDE يحصلون على KDE Frameworks 6.29.0</strong>.
+            مستخدمو Plasma الذين يعتمدون على SDDM يمكنهم الآن
+            <strong>الترقية إلى مدير تسجيل الدخول الأحدث</strong> إذا كانت نسخة
+            `plasma-login-manager` 6.5.90-1 أو أحدث مثبتة. التغيير اختياري ويتطلب
+            <strong>تعطيل SDDM وتفعيل خدمة plasmalogin يدويًا</strong>.
+        </p>
+
+        <p>
+            إصدار GNOME في مانجارو يحصل على <strong>تحسين بصري لمستخدمي موضوع Papirus</strong>. إضافة
+            GNOME Shell جديدة تُسمى <strong>Papirus Folder Colorizer</strong> تعديل
+            <strong>ألوان المجلدات تلقائياً لتطابق لون التأكيد</strong> المختار في
+            إعدادات GNOME عند استخدام موضوع Papirus Dark أو Papirus Light.
+        </p>
+
+        <h2>التحديثات الأخرى والتحذيرات</h2>
+
+        <p>التحديثات الإضافية تشمل:</p>
+
+        <ul>
+            <li>
+                <strong>مكدس الرسوميات:</strong> تحديث إلى Mesa 26.1.7 للأداء الأفضل والإصلاحات
+            </li>
+            <li>
+                <strong>المحاكاة الافتراضية:</strong> ترقية QEMU 11.1.0 و VirtualBox 7.2.16
+            </li>
+            <li>
+                <strong>تطبيقات Mozilla:</strong> Firefox محدثة إلى الإصدار 154 و Thunderbird إلى
+                153.0.2
+            </li>
+        </ul>
+
+        <h2>تحذير لمستخدمي NVIDIA</h2>
+
+        <p>
+            تغيير مهم يجب ملاحظته: <strong>مانجارو انتقلت إلى سلسلة NVIDIA 590</strong>. هذا يعني
+            
+                <a href="https://linuxiac.com/nvidia-releases-linux-driver-590-48-with-wayland-and-vulkan-fixes/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                أن <strong>بطاقات NVIDIA القديمة بقائمة Pascal</strong>
+            </a>
+            (GeForce GTX 10-series) وأقدم لم تعد مدعومة من قبل برنامج التشغيل الحالي.
+            <strong>الأنظمة التي تستخدم Pascal و Maxwell وأقدم</strong> تحتاج
+            <strong>للتبديل إلى حزم برنامج التشغيل المتوارث 580xx</strong> للاحتفاظ بدعم الرسوميات.
+        </p>
+
+        <h2>انتقال Python 3.14</h2>
+
+        <p>
+            التحديث يتبع <strong>انتقال مانجارو الأخير إلى
+            
+                <a href="https://linuxiac.com/python-3-14-released-with-free-threaded-mode/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Python 3.14
+            </a>
+            </strong>
+            . نتيجة لذلك، المستخدمون الذين لديهم حزم AUR
+            <strong>تثبت ملفات في مجلد site-packages الخاص بـ Python</strong> أو
+            <strong>ترتبط مع libpython3.13.so قد يحتاجون لإعادة بناء تلك الحزم</strong>.
+            مانجارو توصي بفحص الحزم المثبتة محلياً المتأثرة وإعادة بنائها بعد ترقية النظام.
+        </p>
+
+        <h2>نموذج الإصدار المتدحرج</h2>
+
+        <p>
+            كما هو معتاد مع نموذج
+            <strong>الإصدار المتدحرج (Rolling Release) الخاص بمانجارو</strong>، المستخدمون
+            الحاليون يمكنهم الحصول على كل التحديثات عبر
+            <strong>إجراء الترقية الاعتيادي للنظام</strong>. التوزيعة حالياً تدعم نوى لينكس
+            6.1 و 6.6 و 6.12 و 6.18 و 7.1 والسلسلة المضافة حديثاً 7.2.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://linuxiac.com/manjaro-26-1-1-lands-with-linux-kernel-7-2-kde-frameworks-6-29/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Linuxiac
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

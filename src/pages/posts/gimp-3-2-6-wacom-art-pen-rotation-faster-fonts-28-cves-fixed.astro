@@ -1,0 +1,367 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "gimp-3-2-6-wacom-art-pen-rotation-faster-fonts-28-cves-fixed",
+    title: "جيمب 3.2.6: دعم قلم Wacom وتحسينات الخطوط وإصلاح 28 ثغرة أمنية",
+    metaTitle: "جيمب 3.2.6 بدعم Wacom Rotation وأداء نصوص محسّن",
+    description:
+        "جيمب 3.2.6 صدرت في 10 سبتمبر 2026 — تحديث صيانة بـ دعم جديد لديناميات دوران قلم Wacom Art Pen، تحسينات أداء تحميل الخطوط، قص طبقات المجموعات، تحسينات KDE Breeze، إصلاح 28 ثغرة أمنية، و تحضيرات GTK4 الأولى.",
+    keywords: [
+        "GIMP 3.2.6",
+        "محرر صور",
+        "Wacom Art Pen",
+        "Rotation Dynamics",
+        "تحسينات UX",
+        "CVE fixes",
+        "مفتوح المصدر",
+        "تحرير صور",
+        "KDE",
+        "Layer groups",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "11 سبتمبر 2026",
+    pubDate: new Date("2026-09-11"),
+    tags: ["GIMP", "محرر صور", "Wacom", "أمان", "تحسينات"],
+    thumbnail: "/images/gimp-3-2-6-wacom-art-pen-rotation-faster-fonts-28-cves-fixed.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلق مشروع 
+                <a href="https://www.gimp.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>جيمب</strong>
+            </a>
+            رسمياً في 10 سبتمبر 2026 <strong>الإصدار 3.2.6</strong> —
+            <strong>ثاني تحديث صيانة في سلسلة جيمب 3.2</strong> بعد
+            <strong>ما يقرب من خمسة أشهر من الإصدار 3.2.4</strong>. التحديث يجلب
+            <strong>ميزات جديدة وتحسينات واسعة وإصلاحات أمنية</strong>
+            <strong>لمحرر الصور المجاني والمفتوح المصدر الأكثر شهرة</strong>.
+        </p>
+
+        <h2>دعم ديناميات دوران قلم Wacom الجديدة</h2>
+
+        <p>
+            أهم ميزة جديدة هي <strong>دعم ديناميات الدوران الجديدة</strong>:
+            
+                <a href="https://www.wacom.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>قلم Wacom Art Pen الأصلي والأقلام الأحدث Art Pen 2</strong>
+            </a>
+            .
+        </p>
+
+        <p>
+            <strong>هذه الميزة توجه جيمب إلى كيفية دوران الفرشاة في يدك أثناء الرسم</strong>. الفنانون
+            يمكنهم الآن:
+        </p>
+
+        <ul>
+            <li>
+                <strong>ضبط قيمة الدوران:</strong> <strong>في محرر الديناميات للفرش المخصصة</strong>
+            </li>
+            <li>
+                <strong>دعم أداة MyPaint Brush:</strong>
+                
+                    <a href="https://github.com/mypaint/mypaint"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>تمرير الدوران تلقائياً أثناء الرسم</strong>
+                </a>
+            </li>
+            <li>
+                <strong>فنانو الرسوميات الرقمية:</strong> يمكنهم الآن <strong>محاكاة سلوك الريشة الحقيقية
+                بشكل أفضل</strong>
+            </li>
+        </ul>
+
+        <h2>تحسينات أداء تحميل الخطوط</h2>
+
+        <p>
+            <strong>مشكلة طويلة الأمد تم حلها: جيمب كان بطيئاً عند تحميل مكتبات خط كبيرة</strong>.
+            <strong>جيمب 3.2.6 يحسّن بشكل كبير في</strong>:
+        </p>
+
+        <ul>
+            <li><strong>وقت بدء التطبيق:</strong> أسرع بكثير</li>
+            <li>
+                <strong>أداة النصوص:</strong>
+                <strong>كتابة ونوع أسرع عند اختيار الخطوط</strong>
+            </li>
+            <li>
+                <strong>إغلاق قوائم الخطوط:</strong> أسرع بشكل ملحوظ مع مكتبات كبيرة
+            </li>
+        </ul>
+
+        <p>
+            <strong>فريق جيمب لاحظ أن بعض التأخير لا يزال موجوداً</strong> — لكن
+            <strong>حل شامل يتطلب نقل جيمب إلى GTK4</strong> — وهو ما بدأ التحضير الأولي له.
+        </p>
+
+        <h2>قص طبقات المجموعات</h2>
+
+        <p>
+            <strong>ميزة محررة مفيدة جديدة: الآن يمكن قص مجموعة طبقات بالكامل</strong>.
+        </p>
+
+        <p>
+            <strong>الطريقة:</strong>
+        </p>
+
+        <ul>
+            <li><strong>إنشاء تحديد:</strong> بالشكل المعتاد</li>
+            <li><strong>استخدام Cut:</strong> على مجموعة الطبقات</li>
+            <li>
+                <strong>جيمب تطبق العملية بشكل متكرر:</strong>
+                
+                    <a href="https://github.com/GNOME/gimp/pull/11111"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>على جميع طبقات الطفل في المجموعة</strong>
+                </a>
+            </li>
+        </ul>
+
+        <p>
+            <strong>الشرط: جميع الطبقات يجب أن تكون قابلة للكتابة</strong>، والطبقات غير النقطية
+            يجب تحويلها إلى نقط أولاً.
+        </p>
+
+        <h2>تحسينات أداة Color Picker</h2>
+
+        <p>
+            
+                <a href="https://docs.gimp.org/en/gimp-tools-color.html"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>أداة Color Picker الآن تشمل الفلاتر المطبقة على الطبقات الفردية</strong>
+            </a>
+            <strong>عند تفعيل Sample Merged</strong>. سابقاً كانت تتجاهل الفلاتر —
+            <strong>الآن تأخذها في الاعتبار</strong>.
+        </p>
+
+        <h2>تحسينات KDE و Breeze Theme</h2>
+
+        <p>
+            <strong>مستخدمو KDE يحصلون على أكبر كسب واجهة مستخدم</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>ديكورات نوافذ جانب الخادم:</strong>
+                
+                    <a href="https://kde.org/plasma/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>بدلاً من رسم جانب العميل</strong>
+                </a>
+            </li>
+            <li>
+                <strong>إصلاح تسرب Breeze Theme:</strong>
+                <strong>كانت تسبب مشاكل رسومية في الواجهة</strong>
+            </li>
+            <li><strong>تخطيط أفضل عموماً:</strong> للحوارات والنوافذ</li>
+        </ul>
+
+        <h2>إصلاح 28 ثغرة أمنية</h2>
+
+        <p>
+            <strong>جيمب 3.2.6 يصحح 28 ثغرة CVE</strong> —
+            
+                <a href="https://www.gimp.org/news/2026/09/10/gimp-3-2-6-released/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                ><strong>معظمها في صيغ الملفات المستوردة</strong>
+            </a>
+            :
+        </p>
+
+        <ul>
+            <li>
+                <strong>CVE-2026-18301 إلى CVE-2026-18309:</strong> مشاكل في معالجة ملفات مختلفة
+            </li>
+            <li><strong>CVE-2026-62438 و CVE-2026-62439:</strong> مشاكل صيغة</li>
+            <li>
+                <strong>ZDI-CAN-29400:</strong>
+                
+                    <a href="https://www.zerodayinitiative.com/"
+                    target="_blank"
+                    rel="noopener noreferrier nofollow"
+                >
+                    <strong>اكتشاف من Zero Day Initiative</strong>
+                </a>
+            </li>
+            <li>
+                <strong>CVE-2026-59087 إلى CVE-2026-59091:</strong> و
+                <strong>CVE-2026-66757 وآخرون</strong>
+            </li>
+        </ul>
+
+        <h2>تحسينات SDK لمطوري البرامج الإضافية</h2>
+
+        <p>
+            
+                <a href="https://developer.gimp.org/"
+                target="_blank"
+                rel="noopener noreferrier nofollow"
+            >
+                <strong>جيمب SDK الآن يدعم AppImage</strong>
+            </a>
+            . مطورو البرامج الإضافية يمكنهم الآن:
+        </p>
+
+        <ul>
+            <li>
+                <strong>بناء ضد الحزم الرسمية:</strong>
+                
+                    <a href="https://appimage.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>بدون الاعتماد على Flatpak أو Snap</strong>
+                </a>
+            </li>
+            <li><strong>دعم أفضل للأنظمة الأخرى:</strong> بخلاف Linux</li>
+        </ul>
+
+        <h2>تحضيرات GTK4 الأولى</h2>
+
+        <p>
+            <strong>جيمب بدأت تحضيرات للنقل إلى GTK4</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>استبدال API المُعطّلة:</strong>
+                
+                    <a href="https://www.gtk.org/"
+                    target="_blank"
+                    rel="noopener noreferrier nofollow"
+                >
+                    <strong>شيء بشيء تجنباً للمشاكل لاحقاً</strong>
+                </a>
+            </li>
+            <li>
+                <strong>اختبار التوافقية:</strong> مع GTK4 جاري الإجراء بالفعل
+            </li>
+        </ul>
+
+        <p>
+            <strong>الانتقال الكامل إلى GTK4 سيأتي لاحقاً</strong> — جيمب تركز حالياً على
+            <strong>الإصدار 3.4 من سلسلة التطوير النشطة</strong>.
+        </p>
+
+        <h2>حزمة macOS جديدة</h2>
+
+        <p>
+            <strong>مستخدمو macOS يحصلون على حزمة جديدة</strong> تُنشأ
+            
+                <a href="https://www.apple.com/macos/"
+                target="_blank"
+                rel="noopener noreferrier nofollow"
+            >
+                <strong>في نفس الوقت مع حزم Linux و Windows</strong>
+            </a>
+            — تحسن في عملية الإطلاق والتطوير.
+        </p>
+
+        <h2>الحصول على جيمب 3.2.6</h2>
+
+        <p>
+            
+                <a href="https://www.gimp.org/downloads/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>جيمب 3.2.6 متاحة الآن للتحميل</strong>
+            </a>
+            من:
+        </p>
+
+        <ul>
+            <li>
+                <strong>AppImage:</strong> للـ x86_64 و ARM64 على Linux
+            </li>
+            <li>
+                <strong>Flatpak:</strong>
+                
+                    <a href="https://flathub.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>عبر Flathub</strong>
+                </a>
+            </li>
+            <li>
+                <strong>Snap:</strong>
+                
+                    <a href="https://snapcraft.io/"
+                    target="_blank"
+                    rel="noopener noreferrier nofollow"
+                >
+                    <strong>عبر Snap Store</strong>
+                </a>
+            </li>
+            <li>
+                <strong>Windows و macOS:</strong> حزم ثنائية من الموقع الرسمي
+            </li>
+        </ul>
+
+        <h2>ما التالي؟</h2>
+
+        <p>
+            <strong>فريق جيمب انتقل إلى التركيز على سلسلة GIMP 3.4</strong> —
+            <strong>النسخ الليلية متاحة كـ GIMP 3.3.2</strong>.
+        </p>
+
+        <p>
+            <strong>أكبر إثارة:</strong>
+            
+                <a href="https://github.com/GNOME/gimp/wiki/XCF2"
+                target="_blank"
+                rel="noopener noreferrier nofollow"
+            >
+                <strong>صيغة ملفات مشروع XCF جديدة (مضغوطة بصيغة XML)</strong>
+            </a>
+            لاستبدال XCF الثنائية القديمة منذ 1997. <strong>XCF الأصلية ستبقى مدعومة للقراءة</strong>
+            فقط.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://9to5linux.com/gimp-3-2-6-released-with-ux-improvements-new-rotation-stylus-dynamics-input"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                9to5Linux
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

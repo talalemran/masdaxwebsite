@@ -1,0 +1,447 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "python-3-15-lazy-imports-frozendict-tachyon-profiler",
+    title: "بايثون 3.15: الواردات الكسولة و القواموس المُجمّدة و أداة تحليل الأداء",
+    metaTitle: "بايثون 3.15: ثورة الأداء مع واردات ذكية و JIT أسرع",
+    description:
+        "Python 3.15 أُطلقت في أكتوبر 2026 بـ ميزات مهمة: Lazy Imports لـ تسريع البدء، frozendict كـ immutable dictionary، Tachyon profiler، و تحسينات JIT بـ 7-8% أداء أسرع على x86-64.",
+    keywords: [
+        "Python 3.15",
+        "Lazy Imports",
+        "frozendict",
+        "Tachyon",
+        "JIT Compiler",
+        "Profiler",
+        "Python Performance",
+        "برمجة",
+        "Python",
+        "Performance",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "13 أكتوبر 2026",
+    pubDate: new Date("2026-10-13"),
+    tags: ["Python", "Performance", "Lazy Imports", "JIT", "Programming"],
+    thumbnail: "/images/python-3-15-lazy-imports-frozendict-tachyon-profiler.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            أطلقت Python في 12 أكتوبر 2026 النسخة 3.15 
+            بـ مجموعة من التحسينات التقنية المهمة. 
+            الإصدار يركز على الأداء و سهولة الاستخدام.
+
+            أهم التحديثات:
+        </p>
+
+        <ul>
+            <li>
+                Lazy Imports: تأخير تحميل modules حتى الاستخدام الفعلي
+            </li>
+            <li>
+                frozendict: نوع جديد immutable dictionary
+            </li>
+            <li>
+                sentinel() built-in: نوع sentinel محسّن
+            </li>
+            <li>
+                Tachyon: profiler جديد بـ zero overhead
+            </li>
+            <li>
+                JIT Compiler: تحسينات 7-8% على الأداء
+            </li>
+            <li>
+                Incremental GC: توقف مؤقت (استهلك ذاكرة كثيرة)
+            </li>
+        </ul>
+
+        <p>
+            هذا الإصدار موجه نحو تحسين startup time و runtime performance 
+            خاصة للتطبيقات الكبيرة.
+        </p>
+
+        <h2>السياق: مشكلة البدء البطيء في Python</h2>
+
+        <h3>مشكلة قديمة: Import Overhead</h3>
+
+        <p>
+            Python معروفة أنها بطيئة في البدء. 
+            السبب: عملية import module معقدة جداً:
+        </p>
+
+        <ul>
+            <li>
+                البحث عن ملف الـ module على الـ filesystem
+            </li>
+            <li>
+                قراءة الملف من الـ disk
+            </li>
+            <li>
+                تجميع الكود إلى bytecode
+            </li>
+            <li>
+                تنفيذ جميع الكود في الـ top-level (الذي قد يأخذ وقت طويل)
+            </li>
+        </ul>
+
+        <p>
+            <img
+                src="/images/articles/python-3-15-lazy-imports-frozendict-tachyon-profiler/01.webp"
+                alt="Python code"
+                width="1200"
+                height="900"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            التطبيقات بـ dependency trees عميقة جداً 
+            قد تأخذ ثوانٍ للبدء — حتى إذا كانت معظم الـ code المحمّل لا تُستخدم أبداً.
+
+            مثال: تطبيق سطر أوامر بـ 100 module imported، 
+            لكن هذا الـ run يستخدم فقط 10 منها. 
+            الـ 90 الأخرى تُحمّل بدلاً من فائدة.
+        </p>
+
+        <h3>الحل اليدوي القديم</h3>
+
+        <p>
+            Developers كانوا يستخدمون workarounds:
+        </p>
+
+        <ul>
+            <li>
+                نقل imports داخل functions (قبيح جداً)
+            </li>
+            <li>
+                استخدام importlib.import_module() (معقد)
+            </li>
+            <li>
+                التضحية بـ organization الكود
+            </li>
+        </ul>
+
+        <p>
+            Python 3.15 توفر حل رسمي و clean.
+        </p>
+
+        <h2>الميزات الرئيسية</h2>
+
+        <h3>1. Lazy Imports</h3>
+
+        <p>
+            الميزة الأهم في هذا الإصدار.
+
+            الفكرة: marking module import كـ lazy:
+        </p>
+
+        <p>
+            from __future__ import annotations
+            from typing import TYPE_CHECKING
+        </p>
+
+        <p>
+            # الاستخدام الجديد في Python 3.15:
+            # يمكن تحديد import كـ lazy بـ طريقة صريحة
+        </p>
+
+        <p>
+            ما الذي يحدث:
+        </p>
+
+        <ul>
+            <li>
+                Python creates خفيفة proxy object بدلاً من تحميل الـ module فوراً
+            </li>
+            <li>
+                الـ actual module loading يحدث transparently عند أول استخدام
+            </li>
+            <li>
+                يحافظ على فوائد تصريح imports في الأعلى
+            </li>
+            <li>
+                تحسن البدء (startup time) بـ شكل ملحوظ
+            </li>
+        </ul>
+
+        <p>
+            الفائدة: أسرع startup + organized code + no workarounds.
+        </p>
+
+        <h3>2. frozendict — Immutable Dictionary</h3>
+
+        <p>
+            نوع جديد: frozendict (frozen dictionary)
+
+            الخصائص:
+        </p>
+
+        <ul>
+            <li>
+                immutable — لا يمكن إضافة، حذف، أو تغيير عناصر
+            </li>
+            <li>
+                يمكن استخدامها كـ dictionary key (عكس regular dict)
+            </li>
+            <li>
+                thread-safe reading — multiple threads يمكنهم قراءة concurrently بدون race conditions
+            </li>
+            <li>
+                حماية من التعديل العرضي أو الخبيث
+            </li>
+        </ul>
+
+        <p>
+            الحالات الاستخدام:
+        </p>
+
+        <ul>
+            <li>
+                App settings ثابتة
+            </li>
+            <li>
+                API endpoints configuration
+            </li>
+            <li>
+                Default values في functions
+            </li>
+            <li>
+                Thread-safe shared configuration
+            </li>
+        </ul>
+
+        <p>
+            مثال:
+            config = frozendict(&#123;'api_key': 'secret', 'timeout': 30&#125;)
+            # config['api_key'] = 'new_key' # TypeError!
+        </p>
+
+        <h3>3. sentinel() Built-in Type</h3>
+
+        <p>
+            نوع جديد: sentinel values
+
+            الخلفية: Programmers كانوا يستخدمون None كـ sentinel:
+            def get_value(key, default=None):
+                return config.get(key, default)
+
+            المشكلة: إذا كان None هو valid value، لا يمكنك التفريق بينه و بين "not found".
+
+            الحل: sentinel() type
+        </p>
+
+        <ul>
+            <li>
+                Preserve identity عند copying
+            </li>
+            <li>
+                Support في type expressions (مع | operator)
+            </li>
+            <li>
+                Pickleable إذا كانت importable
+            </li>
+            <li>
+                Type-checkable properly
+            </li>
+        </ul>
+
+        <p>
+            مثال:
+            MISSING = sentinel('MISSING')
+            
+            def get_value(key, default=MISSING):
+                val = config.get(key)
+                if val is MISSING:
+                    return default
+                return val
+        </p>
+
+        <h3>4. Tachyon — Statistical Sampling Profiler</h3>
+
+        <p>
+            profiler جديد مبني في Python core.
+
+            المميزات:
+        </p>
+
+        <ul>
+            <li>
+                Low-overhead: virtually zero overhead
+            </li>
+            <li>
+                Sampling rate: up to 1,000,000 Hz
+            </li>
+            <li>
+                لا يحتاج code modification أو process restart
+            </li>
+            <li>
+                أسرع sampling profiler للـ Python
+            </li>
+        </ul>
+
+        <p>
+            الفرق من deterministic profilers (مثل cProfile):
+        </p>
+
+        <ul>
+            <li>
+                cProfile: instruments كل function call (overhead)
+            </li>
+            <li>
+                Tachyon: يأخذ periodic stack traces (بدون overhead)
+            </li>
+        </ul>
+
+        <p>
+            الفائدة: يمكن profiling production systems بدون قلق من overhead.
+        </p>
+
+        <h3>5. JIT Compiler Improvements</h3>
+
+        <p>
+            Experimental JIT compiler حسّنت:
+        </p>
+
+        <ul>
+            <li>
+                x86-64 Linux: 7-8% geometric mean speedup
+            </li>
+            <li>
+                AArch64 macOS: 11-12% speedup (مع tail-calling interpreter)
+            </li>
+            <li>
+                Compilation أسرع و أفضل
+            </li>
+        </ul>
+
+        <h3>6. Incremental GC Suspended</h3>
+
+        <p>
+            الـ experimental incremental garbage collector من Python 3.14 
+            تم تعليقه مؤقتاً.
+
+            السبب: استهلك ذاكرة كثيرة جداً.
+
+            الحالي: عودة إلى classic generational GC حتى يتم حل المشكلة.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            Python 3.15 توضح أن Python مركزة على الأداء.
+
+            في الماضي، Python كانت معروفة بـ البطء. 
+            الآن، مع lazy imports و JIT improvements، 
+            الفجوة بين Python و compiled languages تصغر.
+
+            الميزات الجديدة موجهة نحو production use:
+        </p>
+
+        <ul>
+            <li>
+                Lazy imports → سريع للـ CLIs و microservices
+            </li>
+            <li>
+                frozendict → آمن للـ shared configuration
+            </li>
+            <li>
+                Tachyon → profiling بدون عائق للـ production
+            </li>
+            <li>
+                JIT improvements → runtime أسرع
+            </li>
+        </ul>
+
+        <p>
+            ملاحظة: إيقاف incremental GC يعكس حذر Python. 
+            بدلاً من pushing feature broken، أرجعوها. 
+            علامة من maturity.
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: هل يجب أن أُحدّث إلى Python 3.15 الآن؟</h3>
+        <p>
+            ج: إذا كنت تريد lazy imports و Tachyon profiler، نعم. إذا كان كودك يعمل تماماً في 3.14، انتظر شهر أو اثنين للـ stability.
+        </p>
+
+        <h3>س: هل lazy imports تعمل مع جميع الـ modules؟</h3>
+        <p>
+            ج: معظمها، لكن بعض modules التي تفعل الكثير في top-level قد تحتاج اختبار.
+        </p>
+
+        <h3>س: هل frozendict أسرع من dict?</h3>
+        <p>
+            ج: نعم قليلاً لأنها immutable. لكن الفائدة الأساسية هي الحماية و thread-safety.
+        </p>
+
+        <h3>س: هل Tachyon يعمل على Windows و macOS و Linux؟</h3>
+        <p>
+            ج: نعم، Tachyon cross-platform.
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            Python 3.15 تمثل خطوة مهمة نحو جعل Python 
+            language أسرع و أكثر مناسبة للـ production systems.
+
+            Lazy imports هي الميزة الأكثر تأثيراً — 
+            حل رسمي لمشكلة قديمة جداً.
+
+            frozendict و sentinel() توفران types جديدة مفيدة. 
+            Tachyon profiler يسد gap مهم. 
+            JIT improvements تستمر.
+
+            للـ developers:
+            Python 3.15 يستحق التحديث، خاصة إذا كان عندك:
+        </p>
+
+        <ul>
+            <li>
+                CLI applications أو microservices (lazy imports help)
+            </li>
+            <li>
+                Performance-critical code (JIT improvements)
+            </li>
+            <li>
+                Shared configuration (frozendict)
+            </li>
+            <li>
+                Production profiling (Tachyon)
+            </li>
+        </ul>
+
+        <p>
+            Python تستمر في التطور. 
+            مع كل إصدار، تصبح أسرع و أقوى و أكثر مرونة.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a href="https://www.i-programmer.info/news/216-python/19189-python-315-adds-lazy-imports.html" target="_blank" rel="noopener noreferrer nofollow">
+                I Programmer: Python 3.15 Adds Lazy Imports
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

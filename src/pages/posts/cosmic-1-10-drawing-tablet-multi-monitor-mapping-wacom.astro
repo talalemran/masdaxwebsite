@@ -1,0 +1,480 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "cosmic-1-10-drawing-tablet-multi-monitor-mapping-wacom",
+    title: "COSMIC 1.10: دعم جديد لـ تخطيط أقلام الرسم على شاشات محددة في إعدادات متعددة",
+    metaTitle: "COSMIC 1.10: Wacom tablet mapping لـ multi-monitor setups",
+    description:
+        "COSMIC 1.10 أضافت دعماً شاملاً لـ تخطيط أقلام الرسم (Wacom) على شاشات محددة في إعدادات متعددة. الميزة الجديدة مهمة جداً للمصممين و الفنانين الذين يستخدمون multi-monitor setups مع drawing tablets.",
+    keywords: [
+        "COSMIC 1.10",
+        "Drawing Tablets",
+        "Wacom",
+        "Multi-Monitor",
+        "Tablet Mapping",
+        "Pop!_OS",
+        "Desktop Environment",
+        "تصميم",
+        "أقلام الرسم",
+        "Rust",
+    ],
+    category: "بيئة سطح المكتب",
+    author: "طلال عمران",
+    date: "08 أكتوبر 2026",
+    pubDate: new Date("2026-10-08"),
+    tags: ["COSMIC", "Drawing Tablets", "Desktop Environment", "Multi-Monitor"],
+    thumbnail: "/images/cosmic-1-10-drawing-tablet-multi-monitor-mapping-wacom.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            أطلقت System76 في أكتوبر 2026 
+            النسخة 1.10 من COSMIC desktop environment، 
+            البيئة المكتبية الحديثة المكتوبة بـ Rust لـ توزيعة Pop!_OS. 
+            هذا التحديث يجلب ميزة مهمة جداً للمصممين و الفنانين:
+            دعم شامل لـ تخطيط أقلام الرسم (Drawing Tablets) مثل Wacom 
+            على شاشات محددة في إعدادات متعددة (Multi-Monitor Setups).
+
+            الميزة الجديدة تحل مشكلة حقيقية: 
+            في ماضي، إذا كان لديك Wacom tablet و شاشات متعددة، 
+            كانت الـ tablet تُخطّط دائماً إلى جميع الشاشات مرة واحدة 
+            أو كانت تحتاج إلى workarounds معقدة. 
+            الآن، COSMIC 1.10 تسمح بـ mapping الـ tablet إلى شاشة محددة بـ سهولة. 
+            هذا التحديث يعكس نضج COSMIC كـ desktop environment 
+            و التزام System76 بـ المستخدمين المتقدمين و المحترفين.
+        </p>
+
+        <h2>السياق: المصممون و Multi-Monitor Setups</h2>
+
+        <p>
+            <img
+                src="/images/articles/cosmic-1-10-drawing-tablet-multi-monitor-mapping-wacom/01.webp"
+                alt="COSMIC 1.10"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+
+        <h3>الحاجة الحقيقية للمصممين</h3>
+
+        <p>
+            المصممون و الفنانون الرقميون يستخدمون أقلام الرسم مثل Wacom 
+            لقسمين من العمل:
+        </p>
+
+        <ul>
+            <li>
+                الرسم و التحرير على drawing tablet screen (Cintiq أو similar)
+            </li>
+            <li>
+                الـ general input و navigation (مثل mouse عادي)
+            </li>
+        </ul>
+
+        <p>
+            في setup متعدد الشاشات، المصمم قد يريد:
+        </p>
+
+        <ul>
+            <li>
+                Wacom Cintiq (drawing tablet مع شاشة) موصولة بـ شاشة واحدة
+            </li>
+            <li>
+                شاشة ثانية للـ reference images أو tools panels
+            </li>
+            <li>
+                شاشة ثالثة لـ file browser أو communication tools
+            </li>
+        </ul>
+
+        <p>
+            المشكلة في الماضي: 
+            operating system عادي كان يرى الـ Wacom tablet كـ input device واحد 
+            تُتحكم على جميع الشاشات في آن واحد. 
+            إذا رسمت على الـ Wacom، المؤشر قد يظهر على شاشة ثانية 
+            بدلاً من الشاشة المتصلة بـ الـ tablet نفسها. 
+            هذا disaster للـ creative work.
+        </p>
+
+        <h3>الحل اليدوي (قبل COSMIC 1.10)</h3>
+
+        <p>
+            في الماضي، المستخدمون كانوا يستخدمون command-line tools 
+            مثل xsetwacom على X11:
+        </p>
+
+        <p>
+            xsetwacom set "device-name" MapToOutput HDMI-1
+        </p>
+
+        <p>
+            أو على Wayland (أكثر تعقيداً):
+            يجب استخدام configuration files معقدة جداً أو scripts.
+
+            هذا ليس user-friendly. 
+            المصممون يريدون GUI بسيطة، ليس terminal commands.
+        </p>
+
+        <h2>الميزة الجديدة في COSMIC 1.10</h2>
+
+        <h3>Wacom Tablet Settings Panel</h3>
+
+        <p>
+            COSMIC 1.10 أضافت settings panel مخصص للـ Wacom tablets 
+            و drawing devices أخرى. 
+            في Settings > Devices > Tablet، يمكنك الآن:
+        </p>
+
+        <ul>
+            <li>
+                اختيار الـ drawing tablet من قائمة الأجهزة المتصلة
+            </li>
+            <li>
+                اختيار الشاشة (من droplist) التي تريد mapping الـ tablet إليها
+            </li>
+            <li>
+                تعديل pressure sensitivity و button assignments
+            </li>
+            <li>
+                تفعيل/تعطيل الـ tablet quickly
+            </li>
+        </ul>
+
+        <p>
+            واجهة المستخدم بسيطة جداً:
+            شاشة واحدة، droplist واحد لـ اختيار monitor target.
+        </p>
+
+        <h3>دعم Multi-Tablet</h3>
+
+        <p>
+            إذا كان لديك أكثر من drawing tablet واحدة (scenario نادر لكن possible)، 
+            COSMIC 1.10 تدعم ذلك. 
+            كل tablet يمكنها أن تُخطّط إلى شاشة مختلفة.
+
+            مثال:
+        </p>
+
+        <ul>
+            <li>
+                Wacom Cintiq 1 → Monitor 1 (Main drawing display)
+            </li>
+            <li>
+                Wacom Intuos → Monitor 2 (Secondary input for navigation)
+            </li>
+        </ul>
+
+        <p>
+            هذا يعطي flexibility عالية جداً للإعدادات المحترفة.
+        </p>
+
+        <h3>Pressure & Button Configuration</h3>
+
+        <p>
+            COSMIC 1.10 أيضاً محسّنة:
+        </p>
+
+        <ul>
+            <li>
+                Pressure curve adjustment (ليس مجرد levels)
+            </li>
+            <li>
+                Per-application button mappings
+            </li>
+            <li>
+                Eraser pressure settings منفصل
+            </li>
+            <li>
+                Touch ring assignments (على tablets مع touch rings)
+            </li>
+        </ul>
+
+        <p>
+            على سبيل المثال: 
+            في Krita (برنامج رسم)، 
+            قد تريد button واحد لـ Undo. 
+            في Blender (3D modeling)، نفس الـ button قد تريده لـ Rotate view. 
+            COSMIC تسمح بـ per-app configuration.
+        </p>
+
+        <h2>التفاصيل التقنية</h2>
+
+        <h3>Architecture: libinput و Wayland Protocols</h3>
+
+        <p>
+            COSMIC مبنية على Wayland (ليس X11). 
+            Wayland architecture مختلفة:
+        </p>
+
+        <ul>
+            <li>
+                libinput (kernel driver level): يقرأ device input
+            </li>
+            <li>
+                Wayland protocol extensions: تسمح لـ clients بـ querying display info
+            </li>
+            <li>
+                COSMIC compositor: مسؤول عن mapping input إلى displays
+            </li>
+        </ul>
+
+        <p>
+            الـ tablet mapping logic:
+        </p>
+
+        <ul>
+            <li>
+                User اختار monitor target في settings
+            </li>
+            <li>
+                COSMIC compositor stores هذا في configuration
+            </li>
+            <li>
+                عندما tablet events تصل، compositor maps إلى الـ correct display
+            </li>
+            <li>
+                Applications ترى الـ input كـ lو coming من الـ correct monitor
+            </li>
+        </ul>
+
+        <p>
+            هذا مختلف عن X11، 
+            حيث كان window manager يحتاج إلى handle this manually.
+        </p>
+
+        <h3>Compatibility مع Tablets المختلفة</h3>
+
+        <p>
+            COSMIC 1.10 تدعم:
+        </p>
+
+        <ul>
+            <li>
+                Wacom (كل أنواعها: Cintiq، Intuos، Pro)
+            </li>
+            <li>
+                Huion tablets
+            </li>
+            <li>
+                XP-Pen devices
+            </li>
+            <li>
+                أي device يدعم libinput protocol
+            </li>
+        </ul>
+
+        <p>
+            System76 اختبرت مع devices من الشركات الرئيسية. 
+            معظم tablets الحديثة تعمل out-of-the-box.
+        </p>
+
+        <h2>حالات الاستخدام العملية</h2>
+
+        <h3>Setup 1: Artist مع Wacom Cintiq و Reference Monitor</h3>
+
+        <p>
+            Configuration:
+        </p>
+
+        <ul>
+            <li>
+                Monitor 1: Wacom Cintiq 16 (drawing display)
+            </li>
+            <li>
+                Monitor 2: 4K Reference display (reference images، color palettes)
+            </li>
+        </ul>
+
+        <p>
+            COSMIC 1.10 setup:
+        </p>
+
+        <ul>
+            <li>
+                في Settings > Devices > Tablet
+            </li>
+            <li>
+                اختر Wacom Cintiq → Map to "HDMI-1" (الشاشة المتصلة بـ الـ tablet)
+            </li>
+            <li>
+                الآن عندما تستخدم stylus على الـ Cintiq، الـ input يذهب لـ الـ correct screen
+            </li>
+            <li>
+                Reference monitor تبقى للعرض الوحيد
+            </li>
+        </ul>
+
+        <h3>Setup 2: 3D Designer مع Wacom و Multi-Monitor Blender</h3>
+
+        <p>
+            Configuration:
+        </p>
+
+        <ul>
+            <li>
+                Monitor 1: Wacom Intuos Pro (pen display، connected USB-C)
+            </li>
+            <li>
+                Monitor 2: Main 2K display (Blender viewport)
+            </li>
+            <li>
+                Monitor 3: Tools panel monitor
+            </li>
+        </ul>
+
+        <p>
+            في Blender:
+        </p>
+
+        <ul>
+            <li>
+                Wacom mapped إلى Monitor 1
+            </li>
+            <li>
+                Main Blender window على Monitor 2
+            </li>
+            <li>
+                نقر stylus على Monitor 1 = input يذهب إلى viewport على Monitor 2
+            </li>
+        </ul>
+
+        <p>
+            هذا يعطي workflow سلس جداً.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            COSMIC 1.10 drawing tablet support يعكس نقطة مهمة جداً: 
+            Desktop environments الحديثة يجب أن تدعم use cases متقدمة، 
+            ليس فقط المستخدم العادي.
+
+            الإيجابيات:
+        </p>
+
+        <ul>
+            <li>
+                Feature request من المجتمع وُجدت (drawing tablets مع multi-monitor)
+            </li>
+            <li>
+                Implementation بسيطة و intuitive (GUI بدلاً من command-line)
+            </li>
+            <li>
+                Support واسع لـ multiple tablet types و brands
+            </li>
+            <li>
+                Wayland architecture يجعل هذا أسهل من X11
+            </li>
+            <li>
+                Advanced settings (pressure curves، per-app config) للمحترفين
+            </li>
+        </ul>
+
+        <p>
+            التحديات:
+        </p>
+
+        <ul>
+            <li>
+                بعض tablets القديمة جداً قد لا تدعم
+            </li>
+            <li>
+                Per-app button mapping قد تحتاج إلى tweaking من users
+            </li>
+            <li>
+                Documentation و tutorials قد تحتاج لـ التحسين
+            </li>
+        </ul>
+
+        <p>
+            الـ bigger picture: 
+            COSMIC تصبح desktop environment serious للمحترفين. 
+            لم تعد فقط "أداة للمستخدم العادي"؛ 
+            الآن توجد اهتمام لـ power users و designers.
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: هل هذا يعمل مع Wacom الذي اشتريته قبل 10 سنوات؟</h3>
+        <p>
+            ج: غالباً. طالما الـ kernel libinput driver يعرّف الـ device، يجب أن يعمل. بعض devices القديمة جداً قد تحتاج workarounds.
+        </p>
+
+        <h3>س: هل يمكني أن أُغيّر mapping بسرعة دون الدخول إلى Settings؟</h3>
+        <p>
+            ج: في COSMIC 1.10، يجب الدخول إلى Settings. في future versions، قد تكون Quick Settings option متاحة.
+        </p>
+
+        <h3>س: إذا اشتريت tablet جديدة من Huion، هل تعمل مع COSMIC 1.10؟</h3>
+        <p>
+            ج: نعم، طالما Huion توفّر drivers libinput-compatible. معظم الـ modern tablets توفرها.
+        </p>
+
+        <h3>س: هل هذا الدعم محدود لـ COSMIC فقط أو يعمل مع desktop environments أخرى؟</h3>
+        <p>
+            ج: GNOME و KDE يملكان support similar، لكن COSMIC 1.10 implementation جديد و optimized لـ Wayland بشكل أفضل.
+        </p>
+
+        <h3>س: إذا استخدمت Wacom على X11 (ليس Wayland)، هل يعمل؟</h3>
+        <p>
+            ج: COSMIC مبنية على Wayland. إذا اضطررت للـ X11 compatibility layer، قد تفقد بعض features.
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            COSMIC 1.10 tablet mapping feature 
+            تمثل step مهم جداً في تطور desktop environment. 
+            ليست sexy feature مثل new animations أو themes، 
+            لكنها feature practical جداً لـ المستخدمين الذين يحتاجونها.
+
+            للمصممين و الفنانين على Linux:
+            هذا يعني COSMIC أصبحت viable choice 
+            حتى لو كنت تملك expensive drawing tablet setup. 
+            لم تعد تحتاج إلى العودة إلى macOS أو Windows 
+            فقط لأن desktop environment لم تدعم drawing tablet properly.
+
+            System76 تستمع إلى المجتمع و تبني features التي يطلبونها. 
+            هذا هو sign من mature و professional desktop environment. 
+            COSMIC لا تزال young (مكتوبة بـ Rust من الصفر)، 
+            لكن اتجاهها واضح: أداة professional للمستخدمين المتقدمين.
+
+            الأسابيع و الأشهر القادمة ستظهر 
+            كم feedback سيأتي من professional community. 
+            إذا كان الدعم قوي، قد نرى features أخرى advanced 
+            في COSMIC 1.11، 1.12، و بعدها.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://9to5linux.com/cosmic-1-10-adds-support-for-mapping-drawing-tablets-to-specific-displays"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                9to5Linux: COSMIC 1.10 Adds Support for Mapping Drawing Tablets to Specific Displays
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

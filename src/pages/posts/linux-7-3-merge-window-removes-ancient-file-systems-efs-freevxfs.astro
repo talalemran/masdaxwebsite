@@ -1,0 +1,146 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "linux-7-3-merge-window-removes-ancient-file-systems-efs-freevxfs",
+    title: "لينكس 7.3 يودع الماضي: حذف نظاما ملفات قديمة SGI و Veritas",
+    metaTitle: "لينكس 7.3 يزيل EFS و FreeVxFS نهائياً",
+    description:
+        "نافذة دمج لينكس 7.3 تبدأ برفع حوالي 3,724 سطراً من الأكواد — نظامات ملفات قديمة SGI EFS و Veritas FreeVxFS تُحذف بعد لا تحديث لقرابة 15 سنة، وكانت تُستخدم فقط لاختبار الأخطاء.",
+    keywords: [
+        "Linux 7.3",
+        "EFS",
+        "FreeVxFS",
+        "SGI",
+        "Veritas",
+        "نظام ملفات",
+        "Linux kernel",
+        "نواة لينكس",
+        "merge window",
+        "file system",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "18 أغسطس 2026",
+    pubDate: new Date("2026-08-18"),
+    tags: ["Linux 7.3", "نظام ملفات", "لينكس", "EFS", "FreeVxFS"],
+    thumbnail: "/images/linux-7-3-merge-window-removes-ancient-file-systems-efs-freevxfs.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            للتو انتهينا من الإصدار النهائي لـ
+            
+                <a href="https://www.kernel.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>لينكس 7.2</strong>
+            </a>
+            ، مما يعني أن المطورين بدأوا ينقلون انتباههم إلى ميزات جديدة وإزالة ميزات قديمة
+            لنسخة <strong>لينكس 7.3</strong> القادمة. نحن فقط في اليوم الثاني من نافذة
+            الدمج لكن بالفعل تم <strong>حذف نظاما ملفات قديمة من النواة</strong>: نظام
+            <strong>SGI IRIX Extent File System (EFS)</strong> و درايفر
+            <strong>Veritas VxFS المتوافق freevxfs</strong>.
+        </p>
+
+        <h2>تفاصيل الحذف</h2>
+
+        <p>
+            كلا التغييرين تم تقديمهما من قبل مدير صيانة Christian Brauner والمساهم
+            Christoph Hellwig. حوالي <strong>3,724 سطراً من الأكواد عبر 33 ملف</strong>
+            تم إزالتها كنتيجة لهذا الحذف. تفصيل مثير مشاركة في طلبات السحب كان أن
+            <strong>freevxfs كان يحتوي على مساهم أو مستخدم واحد فقط في آخر 15 سنة</strong>
+            وكان يُستخدم كهدف <strong>لأدوات التدقيق التلقائية</strong>.
+        </p>
+
+        <h2>ماذا يعني هذا للمستخدمين؟</h2>
+
+        <p>
+            عندما يصبح <strong>لينكس 7.3 متاحاً</strong> وبدء المستخدمين استخدامه، لن
+            تتمكن النسخة من <strong>تثبيت أقراص EFS الخام أو نظام الملفات Veritas القديم
+            بشكل أصلي</strong>. هذا يعني أن المستخدمين الذين لديهم أجهزة قديمة جداً
+            تستخدم هذه الأنظمة سيحتاجون إلى البحث عن بدائل لقراءة ملفاتهم.
+        </p>
+
+        <h2>لماذا تم الحذف الآن؟</h2>
+
+        <p>
+            تمثل هذه الإزالة جزء من جهد مستمر من مجتمع لينكس لتنظيف قاعدة الأكواس
+            وإزالة الدعم للأجهزة والتقنيات القديمة جداً. من الواضح أن:
+        </p>
+
+        <ul>
+            <li>
+                <strong>عدم الاستخدام:</strong> لا يوجد طلب حقيقي على هذه النظم في عالم
+                الحوسبة الحديثة
+            </li>
+            <li>
+                <strong>عبء الصيانة:</strong> الاحتفاظ بهذا الكود يزيد من تعقيد النواة
+                دون منفعة حقيقية
+            </li>
+            <li>
+                <strong>مورد لاختبار الأخطاء:</strong> كانت تُستخدم في الغالب كأهداف
+                لأدوات <strong>fuzzing</strong> التلقائية
+            </li>
+        </ul>
+
+        <h2>السياق الأوسع</h2>
+
+        <p>
+            هذا ليس الحدث الأول من نوعه. لينكس كان يزيل دعماً قديماً على مدار السنوات
+            — من إزالة دعم معالجات i486 في
+            
+                <a href="https://www.kernel.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                لينكس 7.1
+            </a>
+            إلى إزالة نظام الـ "laptop mode" الذي لم يعد ضروري مع انتشار محركات
+            <strong>SSD</strong> الحديثة.
+        </p>
+
+        <h2>الخطوات التالية</h2>
+
+        <p>
+            نافذة دمج <strong>لينكس 7.3</strong> فقط بدأت للتو. هناك
+            
+                <a href="https://www.kernel.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                40 طلب سحب
+            </a>
+            في الانتظار بالفعل. يتوقع أن نرى المزيد من الإزالات والإضافات والتحسينات
+            خلال دورة التطوير هذه.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.neowin.net/news/linux-73-merge-window-kicks-off-by-throwing-out-two-ancient-file-systems/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Neowin
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

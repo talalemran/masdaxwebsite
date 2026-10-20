@@ -1,0 +1,131 @@
+---
+import MetaTags from "@/components/seo/MetaTags.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import "@/styles/global.css";
+
+export interface Props {
+  title: string;
+  metaTitle?: string;
+  description: string;
+  keywords?: string[];
+  canonical?: string;
+  ogImage?: string;
+  ogType?: string;
+  noIndex?: boolean;
+  preloadImage?: string;
+}
+
+const {
+  title,
+  metaTitle,
+  description,
+  keywords = [],
+  canonical,
+  ogImage,
+  ogType,
+  noIndex = false,
+  preloadImage,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://cloud.umami.is" crossorigin />
+    <link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/cairo-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/tajawal-400-arabic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/tajawal-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/fonts/fonts.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/fonts/fonts.css" /></noscript>
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/fontawesome/css/all.min.css" /></noscript>
+    <link rel="alternate" type="application/rss+xml" title="مصدر إكس" href="/rss.xml" />
+    <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
+    <link rel="me" href="https://mastodon.social/@masdarx" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "مصدر إكس",
+        "alternateName": "MasdarX",
+        "url": "https://www.masdarx.com",
+        "logo": "https://www.masdarx.com/images/masdarx.webp",
+        "description": "منصة عربية متخصصة في أخبار البرمجيات مفتوحة المصدر والتقنيات الحديثة",
+        "inLanguage": "ar",
+        "sameAs": [
+          "https://t.me/masdarx",
+          "https://mastodon.social/@masdarx"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "email": "contact@masdarx.com"
+        }
+      }
+    </script>
+    <script is:inline>
+      (function () {
+        var theme = localStorage.getItem("theme");
+        if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="69a36a5f-9ab7-4623-948e-243261cd98a3"></script>
+    <MetaTags
+      title={title}
+      metaTitle={metaTitle}
+      {description}
+      {keywords}
+      {canonical}
+      {ogImage}
+      {ogType}
+      {noIndex}
+    />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
+    <meta name="google-adsense-account" content="ca-pub-1941765735229703">
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen flex flex-col overflow-x-hidden">
+    <Header />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <button
+      id="back-to-top"
+      class="fixed bottom-6 right-6 z-50 w-10 h-10 bg-navy text-white rounded-full shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-gray-700 cursor-pointer"
+      aria-label="العودة للأعلى"
+      type="button"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      </svg>
+    </button>
+
+    <script>
+      (function () {
+        var btn = document.getElementById("back-to-top");
+        if (!btn) return;
+
+        window.addEventListener("scroll", function () {
+          if (window.scrollY > 400) {
+            btn.classList.remove("opacity-0", "invisible");
+            btn.classList.add("opacity-100", "visible");
+          } else {
+            btn.classList.add("opacity-0", "invisible");
+            btn.classList.remove("opacity-100", "visible");
+          }
+        });
+
+        btn.addEventListener("click", function () {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      })();
+    </script>
+  </body>
+</html>

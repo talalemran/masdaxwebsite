@@ -1,0 +1,193 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "apache-netbeans-31-java-lambda-breakpoints-maven-gradle-improvements",
+    title: "NetBeans 31: نقاط توقف Lambda والإكمال التلقائي وتحسينات Maven و Gradle",
+    metaTitle: "NetBeans 31: نقاط توقف Lambda وتحسينات Maven وGradle",
+    description:
+        "Apache NetBeans أطلق النسخة 31 من محرر Java المفتوح المصدر — دعم نقاط توقف في Lambda expressions، إكمال تلقائي محسّن، تحديث Maven 3.9.16 و Gradle 9.6.1، وإصلاحات موسّعة لـ PHP و GlassFish و Enterprise Java.",
+    keywords: [
+        "Apache NetBeans 31",
+        "Java IDE",
+        "Lambda breakpoints",
+        "Maven 3.9.16",
+        "Gradle 9.6.1",
+        "Java development",
+        "Code completion",
+        "مفتوح المصدر",
+        "محرر Java",
+        "برمجة",
+    ],
+    category: ["برمجة", "برامج"],
+    author: "طلال عمران",
+    date: "10 أغسطس 2026",
+    pubDate: new Date("2026-08-10"),
+    tags: ["NetBeans", "Java", "IDE", "Maven", "Gradle"],
+    thumbnail:
+        "/images/apache-netbeans-31-java-lambda-breakpoints-maven-gradle-improvements.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلق <strong>فريق Apache NetBeans</strong> اليوم <strong
+                >NetBeans 31</strong
+            > — أحدث إصدار من محرر الكود المفتوح المصدر والعابر للمنصات — مع <strong
+                >تحسينات جوهرية في تطوير Java وتكامل Maven و Gradle وأدوات PHP و
+                JavaFX والميزات الموسعة</strong
+            >.
+        </p>
+
+        <h2>أبرز الميزات: نقاط توقف Lambda</h2>
+
+        <p>
+            واحدة من أكثر الميزات فائدة للمطورين: <strong
+                >دعم نقاط التوقف في تعابير Lambda</strong
+            >. هذا يجعل من الأسهل بكثير تصحيح الأخطاء في الأكواد التي تعتمد بشكل
+            كبير على Lambda expressions. الآن لا حاجة للاعتماد على طرق تصحيح غير
+            مباشرة — النقاط مباشرة على Lambda.
+        </p>
+
+        <h2>إكمال تلقائي محسّن</h2>
+
+        <p>تحسينات كبيرة على الإكمال التلقائي:</p>
+
+        <ul>
+            <li>
+                <strong>دعم import module:</strong> الآن يدعم `import module` أثناء
+                عملية الإكمال
+            </li>
+            <li>
+                <strong>معالجة أسماء الوحدات:</strong> تحسين في كيفية التعامل مع أسماء
+                الوحدات في تطبيق NetBeans لـ Language Server Protocol
+            </li>
+            <li>
+                <strong>إدراج المعاملات التلقائي:</strong> يمكن تكوين الإكمال بحيث
+                اختيار دالة لا يُدرج معاملاتها تلقائياً
+            </li>
+        </ul>
+
+        <h2>تحسينات محرر Java</h2>
+
+        <p>محرر Java حصل على عدة تحسينات تنسيقية:</p>
+
+        <ul>
+            <li>
+                <strong
+                    >التعامل الأفضل مع السجلات الفارغة والـ Lambda المتداخلة</strong>
+            </li>
+            <li><strong>خيارات بديلة لتموضع الأقواس مع السجلات</strong></li>
+            <li><strong>إعدادات لالتفاف الحالات في تعابير switch</strong></li>
+            <li><strong>تحديث Tomcat المدمج من 9.0.113 إلى 9.0.120</strong></li>
+        </ul>
+
+        <h2>تحسينات بناء المشروع: Maven و Gradle</h2>
+
+        <h3>Maven 3.9.16</h3>
+
+        <ul>
+            <li>NetBeans 31 يأتي مع Maven 3.9.16</li>
+            <li>تحديث <strong>exec-maven-plugin من 3.5.1 إلى 3.6.3</strong></li>
+            <li>
+                <strong>إضافة تفضيل عام</strong> يسمح بتحديد ملف `settings.xml` مخصص
+                للمستخدم لمشاريع Maven
+            </li>
+            <li>
+                <strong>إصلاح لوحة Maven compile</strong> لاحترام JDK الافتراضي
+            </li>
+            <li><strong>دعم الأشكال المختصرة `-T` و `--threads=`</strong></li>
+        </ul>
+
+        <h3>Gradle 9.6.1</h3>
+
+        <ul>
+            <li><strong>ترقية Gradle Tooling إلى 9.6.1</strong></li>
+            <li>
+                <strong
+                    >مسح المشروع يأخذ في الاعتبار إعدادات الجذر العام</strong>
+            </li>
+        </ul>
+
+        <h2>تحسينات PHP</h2>
+
+        <p>NetBeans 31 يعمّق دعمه لـ PHP:</p>
+
+        <ul>
+            <li>
+                <strong>إضافة PHP property hooks:</strong> دعم جديد للخصائص المتقدمة
+            </li>
+            <li><strong>دعم متغيرات variadic في PHPDoc</strong></li>
+            <li>
+                <strong
+                    >إصلاحات في الأنواع المُولّدة والبنائيات المُعاد تعريفها</strong>
+            </li>
+        </ul>
+
+        <h2>تحسينات Enterprise Java</h2>
+
+        <ul>
+            <li><strong>إصلاحات لـ CDI والـ Expression Language</strong></li>
+            <li><strong>تحسينات الأداء</strong></li>
+            <li>
+                <strong>تكامل GlassFish محسّن:</strong> يعرض نطاق JDKs المدعومة عند
+                عدم توفر JDK متوافق
+            </li>
+            <li>
+                <strong>اكتشاف محسّن لـ GlassFish 8.x installations</strong>
+            </li>
+        </ul>
+
+        <h2>إصلاحات النظام</h2>
+
+        <ul>
+            <li>
+                <strong>على أنظمة Unix/Linux:</strong> إصلاح لـ NetBeans launcher
+                في الحالات حيث وسائط shell تحتوي على علامات اقتباس أو أحرف مشابهة
+            </li>
+            <li>
+                <strong>على macOS:</strong> محقق المنصة الآن يحترم متغير `JAVA_HOME`
+            </li>
+        </ul>
+
+        <h2>مكونات محدثة</h2>
+
+        <ul>
+            <li><strong>JNA 5.19.1</strong></li>
+            <li><strong>FlatLaf 3.7.2</strong></li>
+            <li><strong>ASM 9.10</strong></li>
+        </ul>
+
+        <p>
+            NetBeans 31 تحديث متوازن — ليس ثورة واجهة، بل تحسينات عملية مركزة
+            على تسهيل حياة مطوري Java والعمل مع الأدوات الحديثة. محرر Java الحر
+            والمفتوح يستمر في النضج والتطور.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://linuxiac.com/apache-netbeans-31-ide-adds-java-lambda-breakpoints-improves-code-completion/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Linuxiac
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

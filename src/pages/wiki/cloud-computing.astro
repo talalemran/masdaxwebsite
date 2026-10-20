@@ -1,0 +1,352 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "definition", label: "تعريف الحوسبة السحابية" },
+  { id: "history", label: "تاريخ الحوسبة السحابية" },
+  { id: "how-it-works", label: "كيف تعمل الحوسبة السحابية؟" },
+  { id: "service-models", label: "نماذج الخدمات السحابية" },
+  { id: "deployment-models", label: "نماذج النشر السحابي" },
+  { id: "providers", label: "مزودو الخدمات السحابية الرئيسيون" },
+  { id: "benefits", label: "فوائد الحوسبة السحابية" },
+  { id: "challenges", label: "تحديات الحوسبة السحابية" },
+  { id: "use-cases", label: "استخدامات الحوسبة السحابية" },
+  { id: "security", label: "أمن الحوسبة السحابية" },
+  { id: "cost", label: "التكاليف والفوائد المالية" },
+  { id: "future", label: "مستقبل الحوسبة السحابية" },
+  { id: "getting-started", label: "كيف تبدأ مع الحوسبة السحابية؟" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "الحوسبة السحابية: دليل شامل",
+  description: "دليل عربي شامل عن الحوسبة السحابية: التعريف، نماذج الخدمات، المزودون الرئيسيون، الفوائد والتحديات، وأمثلة عملية.",
+  tags: ["الحوسبة السحابية", "Cloud Computing", "AWS", "Azure", "Google Cloud", "SaaS", "IaaS", "PaaS"],
+  category: ["تقنية معلومات", "موسوعة"],
+  thumbnail: "/images/cloud-computing.webp",
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/cloud-computing/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+  <section id="definition" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تعريف الحوسبة السحابية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>الحوسبة السحابية (Cloud Computing)</strong> هي نموذج لتوفير موارد الحوسبة —
+      بما في ذلك الخوادم وتخزين البيانات وقواعد البيانات والشبكات والبرمجيات والتحليلات —
+      عبر الإنترنت ("السحابة") بناءً على الطلب، وعادةً عن طريق الدفع مقابل ما تستخدمه فقط.
+      بدلاً من امتلاك مراكز بيانات وخوادم مكلفة على الموقع، يمكنك الوصول إلى خدمات الحوسبة
+      من مزود خدمة سحابية مثل
+      <a href="https://aws.amazon.com/" target="_blank" rel="noopener noreferrer">Amazon Web Services</a>،
+      <a href="https://azure.microsoft.com/" target="_blank" rel="noopener noreferrer">Microsoft Azure</a>، أو
+      <a href="https://cloud.google.com/" target="_blank" rel="noopener noreferrer">Google Cloud Platform</a>.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      ببساطة، بدلاً من تشغيل برامج على جهازك المحلي أو إدارة خادم في مكتبك، تتم معالجة
+      تلك العمليات على خوادم بعيدة تديرها شركات متخصصة، ويمكنك الوصول إليها عبر متصفح
+      الويب أو تطبيق خاص. هذا المفهوم غير طريقة عمل الشركات والأفراد بشكل جذري خلال
+      العقد الأخير.
+    </p>
+  </section>
+
+  <section id="history" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تاريخ الحوسبة السحابية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      رغم أن مصطلح "الحوسبة السحابية" أصبح شائعًا في السنوات الأخيرة، إلا أن الجذور
+      التاريخية لهذا المفهوم تعود إلى عقود من الزمن. فالسحابة في جوهرها هي تطور
+      طبيعي لعدة اتجاهات تقنية وتجارية تراكمت عبر الزمن.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الستينيات:</strong> ظهر مفهوم <strong>الحوسبة الزمنية (Time-Sharing)</strong> في مراكز البيانات الجامعية، حيث تتم مشاركة موارد الخادم بين عدة مستخدمين في نفس الوقت عبر أطرافيات. هذه الفكرة كانت الأساس النظري للحوسبة السحابية الحديثة.</li>
+      <li><strong>السبعينيات:</strong> طورت شركات مثل IBM مفهوم <strong>جميع الخدمات (Utility Computing)</strong>، حيث يدفع المستخدمون مقابل استخدام الموارد الحاسوبية مثل الكهرباء والماء. كما ظهر نظام تقسيم الوقت Time-Sharing System بشكل أوسع في الأوساط الأكاديمية والتجارية.</li>
+      <li><strong>الثمانينيات:</strong> شهدت ظهور <strong>شبكات الحوسبة (Grid Computing)</strong> التي وحدت موارد حواسيب متعددة لحل مشكلة واحدة، بالإضافة إلى تطوير تقنيات <strong>المحاكاة الافتراضية (Virtualization)</strong> التي أرست الأساس لفكرة الخوادم الافتراضية المستخدمة اليوم.</li>
+      <li><strong>التسعينيات:</strong> مع انتشار الإنترنت، بدأت شركات مثل <strong>Salesforce</strong> (في عام 1999) بتقديم تطبيقات عبر الويب كخدمة، وهو ما أصبح يُعرف لاحقًا بنموذج SaaS. كما ظهرت مراكز البيانات الضخمة التي غيّرت طريقة إدارة الموارد الحاسوبية.</li>
+      <li><strong>2002:</strong> أطلقت Amazon خدمات AWS كبنية تحتية داخلية، ثم فتحتها للعملاء الخارجيين في عام 2006، مما يُعتبر بداية الحوسبة السحابية الحديثة كما نعرفها اليوم.</li>
+      <li><strong>2006-2010:</strong> ظهرت خدمات رئيسية مثل Amazon EC2 وS3، وأعادت Microsoft وGoogle هيكلة استراتيجياتها لتقدم خدمات سحابية. أصبحت السحابة خيارًا استراتيجيًا للمؤسسات الكبرى حول العالم.</li>
+      <li><strong>2010-2020:</strong> شهدت الحوسبة السحابية انتشارًا واسعًا مع ظهور أطر عمل مفتوحة المصدر مثل <strong>Kubernetes</strong> و<strong>Docker</strong>، وتطوير خدمات متخصصة مثل التعلم الآلي وتحليل البيانات الضخمة والإنترنت الأشياء.</li>
+      <li><strong>الآن:</strong> تجاوزت الحوسبة السحابية مجرد التخزين والتشغيل لتقدم خدمات الذكاء الاصطناعي، والحوسبة الكمية، والحوسبة الحافة، وأصبحت البنية التحتية الأساسية للعديد من الشركات والحكومات حول العالم.</li>
+    </ul>
+  </section>
+
+  <section id="how-it-works" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف تعمل الحوسبة السحابية؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تعمل الحوسبة السحابية من خلال شبكة عالمية من الخوادم البعيدة الموزعة في مراكز بيانات موزعة جغرافيًا في مناطق مختلفة من العالم. هذه الخوادم تعمل معًا لتقديم موارد حوسبية مشتركة يمكن للمستخدمين الوصول إليها عبر الإنترنت.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      عندما تستخدم تطبيقًا سحابيًا مثل Google Docs أو Dropbox، فإن البيانات لا تتم معالجتها على جهازك المحلي. بدلاً من ذلك، تُرسل عبر الإنترنت إلى خادم سحابي يقوم بمعالجتها وتخزينها، ثم تُعرض النتائج على جهازك عبر متصفح الويب.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">تتكون البنية التحتية السحابية من عدة طبقات رئيسية:</p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>طبقة البنية التحتية (Infrastructure Layer):</strong> تشمل الخوادم الفيزيائية، وتجهيزات الشبكات، ومراكز البيانات. هذه الطبقة هي الأساس الذي تقوم عليه كل الخدمات السحابية.</li>
+      <li><strong>طبقة المنصة (Platform Layer):</strong> توفر بيئات تطوير ونشر البرمجيات، مثل خوادم قواعد البيانات وبيئات تطوير البرمجيات الجاهزة التي تسرّع من عملية بناء التطبيقات.</li>
+      <li><strong>طبقة البرمجيات (Software Layer):</strong> تقدم تطبيقات جاهزة يمكن للمستخدمين استخدامها مباشرة عبر الويب أو التطبيقات المخصصة.</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من المبادئ الأساسية للحوسبة السحابية هي <strong>المرونة في التوسع (Elasticity)</strong> — أي قدرة النظام على التوسع أو الانكماش تلقائيًا بناءً على الطلب. عندما يزداد عدد المستخدمين، يزداد عدد الخوادم العاملة بشكل تلقائي، وعند انخفاض الطلب، تُفرج الموارد الزائدة لتقليل التكلفة.
+    </p>
+  </section>
+
+  <section id="service-models" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">نماذج الخدمات السحابية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تنقسم الخدمات السحابية إلى ثلاثة نماذج رئيسية، كل منها يقدم مستوى مختلف من التحكم والمسؤولية للمستخدم. فهم هذه النماذج أمر أساسي لاختيار الحل السحابي المناسب لاحتياجاتك.
+    </p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">البنية التحتية كخدمة (IaaS - Infrastructure as a Service)</h3>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يوفر نموذج IaaS البنية التحتية الأساسية كخدمة عبر الإنترنت. يشمل ذلك الخوادم الافتراضية، وتخزين البيانات، والشبكات. أنت تدير نظام التشغيل والبرامج على هذه الخوادم، بينما يتولى مزود الخدمة إدارة البنية التحتية الفيزيائية وصيانة مراكز البيانات.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4"><strong>أمثلة:</strong> Amazon EC2 وGoogle Compute Engine وMicrosoft Azure Virtual Machines</p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4"><strong>مناسب لـ:</strong> الشركات التي تريد تحكم كامل في بنيتها التحتية دون استثمار في أجهزة فيزيائية.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المنصة كخدمة (PaaS - Platform as a Service)</h3>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يوفر نموذج PaaS بيئة متكاملة لتطوير ونشر وإدارة التطبيقات دون التعامل مع البنية التحتية الأساسية. يمكنك التركيز على كتابة الكود وتطوير تطبيقاتك بينما يتولى المزود إدارة الأنظمة التشغيلية والتحديثات والأمان.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4"><strong>أمثلة:</strong> Google App Engine وHeroku وMicrosoft Azure App Service وAWS Elastic Beanstalk</p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4"><strong>مناسب لـ:</strong> المطورين والشركات التي تريد تسريع عملية تطوير التطبيقات دون إضافة تعقيد البنية التحتية.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">البرمجيات كخدمة (SaaS - Software as a Service)</h3>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يوفر نموذج SaaS برمجيات جاهزة عبر الويب يمكن استخدامها مباشرة دون تثبيت أو صيانة. جميع البنية التحتية والمنصة والبرنامج نفسها تديرها الشركة المزودة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4"><strong>أمثلة:</strong> Google Workspace وMicrosoft 365 وSlack وSalesforce وZoom</p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4"><strong>مناسب لـ:</strong> المستخدمين النهائيين والشركات التي تحتاج تطبيقات جاهزة بدون تعقيدات التثبيت والصيانة.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مقارنة سريعة بين النماذج</h3>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-navy-100 dark:border-zinc-700">
+        <thead>
+          <tr class="bg-navy-50 dark:bg-zinc-800/50">
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">الميزة</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">IaaS</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">PaaS</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">SaaS</th>
+          </tr>
+        </thead>
+        <tbody class="font-body text-navy-600 dark:text-zinc-300">
+          <tr><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">التحكم في النظام</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">كامل</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">متوسط</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">محدود</td></tr>
+          <tr><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">المسؤولية عن التحديثات</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">المستخدم</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مشتركة</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">المزود</td></tr>
+          <tr><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">التكلفة الأولية</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">متوسطة</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">منخفضة</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">منخفضة جدًا</td></tr>
+          <tr><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مرونة التخصيص</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">عالية جدًا</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">عالية</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">محدودة</td></tr>
+          <tr><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">المهارات المطلوبة</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">تقنية متقدمة</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">برمجة وتطوير</td><td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">استخدام عادي</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="deployment-models" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">نماذج النشر السحابي</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">بالإضافة إلى نماذج الخدمات، تختلف السحابة في طريقة نشرها وإدارتها. هناك أربعة نماذج رئيسية للنشر السحابي:</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">السحابة العامة (Public Cloud)</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">هي السحابة التي تديرها شركات مثل AWS أو Azure أو Google Cloud وتوفر مواردها عبر الإنترنت للعامة. جميع الموارد مشتركة بين عدة عملاء، لكن البيانات معزولة ومؤمّنة. هذا النموذج هو الأقل تكلفة والأكثر مرونة في التوسع.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">السحابة الخاصة (Private Cloud)</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">هي سحابة مخصصة لمنظمة واحدة فقط، سواء كانت مُدارة داخل مراكز بيانات المنظمة أو من قبل مزود خدمة خارجي. توفر تحكمًا أعلى وأمانًا إضافيًا، لكنها أكثر تكلفة.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">السحابة الهجينة (Hybrid Cloud)</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">تجمع بين السحابة العامة والخاصة، تتيح للشركات نقل البيانات والتطبيقات بين الاثنين حسب الحاجة. هذا النموذج يوفر مرونة كبيرة في إدارة الموارد مع الحفاظ على مستوى أمان مرتفع للبيانات الحساسة.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">السحابة متعددة المواقع (Multi-Cloud)</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">تستخدم عدة مزودين للخدمات السحابية في نفس الوقت، مثل الجمع بين AWS وAzure وGoogle Cloud. هذا النموذج يقلل من الاعتماد على مزود واحد ويحسن المرونة والاستمرارية.</p>
+  </section>
+
+  <section id="providers" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">مزودو الخدمات السحابية الرئيسيون</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">تسيطر ثلاث شركات كبرى على سوق الحوسبة السحابية العالمية، لكن هناك مزودين آخرين يقدمون خدمات تنافسية في مناطق أو قطاعات معينة.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">Amazon Web Services (AWS)</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">هي الأكبر في السوق بحصة تزيد عن 30%. تقدم أكثر من 200 خدمة سحابية تشمل الحوسبة والتخزين وقواعد البيانات والتعلم الآلي والتحليلات وأمن المعلومات. تأسست في عام 2006 وأصبحت المرجع الأول للحوسبة السحابية. من أشهر خدماتها: EC2 للحوسبة الافتراضية، S3 للتخزين، Lambda للحوسبة بدون خادم، وRDS لإدارة قواعد البيانات. (<a href="https://aws.amazon.com/" target="_blank" rel="noopener noreferrer nofollow">aws.amazon.com</a>)</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">Microsoft Azure</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">هي ثاني أكبر منصة سحابية في العالم، وتتميز بتوافقها الوثيق مع منتجات Microsoft مثل Windows Server وSQL Server وActive Directory. تقدم خدمات متنوعة تشمل الحوسبة وقواعد البيانات والذكاء الاصطناعي وتحليل البيانات. كما توفر خدمات سحابية هجينة متكاملة تسمح للمؤسسات بنشر تطبيقاتها على السحابة أو في مراكز بياناتها الخاصة. (<a href="https://azure.microsoft.com/" target="_blank" rel="noopener noreferrer nofollow">azure.microsoft.com</a>)</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">Google Cloud Platform (GCP)</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">هي ثالث أكبر منصة سحابية، وتتميز بقوتها في التعلم الآلي والبيانات الضخمة والتحليلات. تقدم خدمات مثل BigQuery لتحليل البيانات الضخمة، وVertex AI للتعلم الآلي، وKubernetes لإدارة الحاويات. كما تستفيد من خبرة Google في إدارة أكبر شبكة سحابية في العالم. (<a href="https://cloud.google.com/" target="_blank" rel="noopener noreferrer nofollow">cloud.google.com</a>)</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مزودون آخرون</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>Alibaba Cloud:</strong> أكبر مزود سحابي في آسيا، يقدم خدمات متنوعة تشمل الحوسبة وقواعد البيانات والذكاء الاصطناعي.</li>
+      <li><strong>DigitalOcean:</strong> تتميز ببساطتها ومناسبتها للمطورين المستقلين والمشاريع الصغيرة، بأسعار تنافسية وواجهة سهلة الاستخدام.</li>
+      <li><strong>Linode:</strong> تقدم خوادم افتراضية عالية الأداء بأسعار واضحة ومباشرة، مناسبة للمطورين والمشاريع الصغيرة والمتوسطة.</li>
+      <li><strong>Hetzner:</strong> مزود أوروبي يقدم خدمات سحابية بأسعار تنافسية جدًا مع مراكز بيانات في أوروبا.</li>
+    </ul>
+  </section>
+
+  <section id="benefits" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">فوائد الحوسبة السحابية</h2>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>تقليل التكاليف:</strong> بدلاً من الاستثمار في أجهزة ومراكز بيانات مكلفة، تدفع فقط مقابل ما تستخدمه. كما أن المزود يتولى تكاليف الصيانة والتحديثات والمتابعة.</li>
+      <li><strong>المرونة والتوسع:</strong> يمكنك زيادة الموارد بشكل فوري عند الحاجة مثل موسم الذروة، وتقليصها عند انخفاض الطلب لتقليل التكلفة.</li>
+      <li><strong>الأداء والسرعة:</strong> مراكز البيانات السحابية تستخدم أحدث التقنيات وتوفر أداءً عاليًا مع أوقات تشغيل قصيرة تتجاوز 99.9%.</li>
+      <li><strong>العمل عن بُعد:</strong> تتيح للفرق العمل من أي مكان في العالم بفضل الوصول عبر الإنترنت إلى البيانات والتطبيقات المشتركة.</li>
+      <li><strong>الاسترداد من الكوارث:</strong> توفر الحوسبة السحابية حلول نسخ احتياطي واستعادة البيانات في حالات الكوارث بشكل أفضل من الحلول التقليدية.</li>
+      <li><strong>الابتكار السريع:</strong> توفر المنصات السحابية أدوات وخدمات جاهزة تسرّع من عملية تطوير المنتجات وتجربتها في السوق.</li>
+      <li><strong>التحديثات التلقائية:</strong> يتولى المزود تحديث البرمجيات والأنظمة بشكل دوري، لذا لا تتعرض لمشاكل التوافق أو الثغرات الأمنية.</li>
+      <li><strong>التوطين والاستمرارية:</strong> مراكز البيانات السحابية موزعة جغرافيًا وتحتوي على نسخ احتياطي متعدد، مما يضمن استمرارية الخدمة حتى في حالات الكوارث.</li>
+    </ul>
+  </section>
+
+  <section id="challenges" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تحديات الحوسبة السحابية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">رغم الفوائد العديدة، تواجه الحوسبة السحابية بعض التحديات التي يجب مراعاتها قبل اتخاذ قرار التحول:</p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الاعتماد على اتصال الإنترنت:</strong> تتطلب الحوسبة السحابية اتصالًا مستقرًا وسريعًا بالإنترنت. في حالات انقطاع الإنترنت، قد لا تتمكن من الوصول إلى بياناتك أو تطبيقاتك.</li>
+      <li><strong>الأمان والخصوصية:</strong> رغم التدابير الأمنية المشددة، تبقى مخاوف تتعلق بالخصوصية وحماية البيانات، خاصة عند التعامل مع بيانات حساسة أو مرتبطة بقوانين محلية صارمة.</li>
+      <li><strong>الإغلاق الناشئ (Vendor Lock-in):</strong> الانتقال بين مزودين مختلفين قد يكون صعبًا ومكلفًا بسبب الاختلافات في التقنيات والواجهات والتنسيقات.</li>
+      <li><strong>التكاليف غير المتوقعة:</strong> قد تتفاقم تكاليف السحابة إذا لم يتم مراقبة واستخدام الموارد بحكمة، خاصة في استخدامات التطوير والاختبار.</li>
+      <li><strong>التحكم المحدود:</strong> في نماذج SaaS وPaaS، يكون التحكم في النظام محدودًا مقارنة بالحلول المحلية.</li>
+      <li><strong>الامتثال والتنظيم:</strong> قد تواجه بعض القطاعات تحديات في الامتثال للقوانين واللوائح المحلية المتعلقة بحماية البيانات ونقلها عبر الحدود.</li>
+    </ul>
+  </section>
+
+  <section id="use-cases" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">استخدامات الحوسبة السحابية</h2>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>التجارة الإلكترونية:</strong> تعتمد المتاجر الإلكترونية على الحوسبة السحابية لمعالجة الطلبات وتخزين بيانات العملاء وتشغيل التطبيقات بكفاءة عالية أثناء مواسم الذروة.</li>
+      <li><strong>تطوير البرمجيات:</strong> توفر المنصات السحابية بيئات تطوير متكاملة وخدمات CI/CD التي تسرّع من دورة تطوير البرمجيات ونشرها.</li>
+      <li><strong>البيانات الضخمة والتحليلات:</strong> تتيح الحوسبة السحابية معالجة وتحليل كميات ضخمة من البيانات باستخدام أدوات مثل Apache Spark وGoogle BigQuery وAWS Redshift.</li>
+      <li><strong>الذكاء الاصطناعي والتعلم الآلي:</strong> توفر منصات مثل AWS SageMaker وGoogle Vertex AI وAzure ML أدوات جاهزة لتدريب ونشر نماذج الذكاء الاصطناعي بكفاءة عالية.</li>
+      <li><strong>الاسترداد من الكوارث:</strong> توفر الحلول السحابية نسخًا احتياطيًا تلقائيًا واستعادة بيانات سريعة في حالات الكوارث.</li>
+      <li><strong>التخزين والمشاركة:</strong> خدمات مثل Google Drive وDropbox وOneDrive توفر تخزينًا سحابيًا آمنًا ومشاركة ملفات سلسة بين الأجهزة المختلفة.</li>
+      <li><strong>الألعاب عبر الإنترنت:</strong> تعتمد الألعاب السحابية مثل Google Stadia وXbox Cloud Gaming على الحوسبة السحابية لتقديم تجارب ألعاب عالية الأداء عبر الإنترنت.</li>
+      <li><strong>الإنترنت الأشياء (IoT):</strong> تدير منصات السحابة ملايين أجهزة إنترنت الأشياء وتحلل البيانات المجمعة بشكل فوري لاتخاذ قرارات سريعة.</li>
+    </ul>
+  </section>
+
+  <section id="security" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أمن الحوسبة السحابية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">الأمن في الحوسبة السحابية هو مسؤولية مشتركة بين مزود الخدمة والعميل. فهم مبادئ المسؤولية المشتركة أمر أساسي لضمان أمان البيانات والتطبيقات السحابية.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مسؤولية مزود الخدمة</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>أمان البنية التحتية الفيزيائية (مراكز البيانات، الخوادم، الشبكات)</li>
+      <li>تأمين أنظمة التشغيل والبرامج الوسيطة</li>
+      <li>تطبيق التحديثات الأمنية والرقابة على الثغرات</li>
+      <li>حماية الشبكات ومنع الاختراقات</li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مسؤولية العميل</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>حماية البيانات والمحتوى والتطبيقات</li>
+      <li>إدارة الصلاحيات والوصول (IAM)</li>
+      <li>تكوين الأمان للتطبيق والبنية التحتية</li>
+      <li>إدارة التشفير وحماية كلمات المرور</li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">أفضل الممارسات الأمنية</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>التشفير:</strong> شفّط جميع البيانات أثناء النقل أثناء التخزين باستخدام تشفير AES-256 وTLS 1.2 أو أعلى.</li>
+      <li><strong>المصادقة متعددة العوامل (MFA):</strong> فعّل المصادقة متعددة العوامل لجميع الحسابات الإدارية لمنع الوصول غير المصرح به.</li>
+      <li><strong>إدارة الصلاحيات (IAM):</strong> امنح الصلاحيات الأدنى الضرورية لكل مستخدم أو خدمة، واستخدم الأدوار بدلاً من الصلاحيات المباشرة.</li>
+      <li><strong>مراقبة السجلات:</strong> راقب سجلات الوصول والأحداث لاكتشاف الأنشطة المشبوهة والحد من المخاطر.</li>
+      <li><strong>التحديثات المنتظمة:</strong> حافظ على تحديث جميع الأنظمة والبرامج لسد الثغرات المعروفة.</li>
+    </ul>
+  </section>
+
+  <section id="cost" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">التكاليف والفوائد المالية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">من أهم مزايا الحوسبة السحابية هي نموذج الدفع مقابل الاستخدام (Pay-as-you-go). بدلاً من دفع مبلغ كبير مسبقًا لشراء أجهزة، تدفع فقط مقابل الموارد التي تستخدمها فعليًا.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">عوامل التكلفة الرئيسية</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الحوسبة (Compute):</strong> تكلفة تشغيل الخوادم الافتراضية والحاويات والخدمات بدون خادم.</li>
+      <li><strong>التخزين (Storage):</strong> تكلفة تخزين البيانات على الأقراص الصلبة والأقراص الليزرية التقليدية.</li>
+      <li><strong>نقل البيانات (Data Transfer):</strong> تكلفة نقل البيانات من السحابة إلى الإنترنت أو بين المناطق المختلفة.</li>
+      <li><strong>قواعد البيانات:</strong> تكلفة تشغيل خدمات قواعد البيانات المُدارة.</li>
+      <li><strong>الخدمات الإضافية:</strong> تكلفة الخدمات المتخصصة مثل التعلم الآلي وتحليل البيانات الضخمة.</li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">نصائح لتقليل التكاليف</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>استخدم <strong>الخوادم المخصصة (Spot Instances)</strong> للعمليات غير المستمرة لتوفير حتى 90% من التكلفة.</li>
+      <li>استخدم <strong>خطط التخزين طويلة الأجل</strong> لتقليل تكلفة التخزين الشهرية.</li>
+      <li>راقب واستخدم أدوات <strong>تحليل التكلفة</strong> المتوفرة في كل منصة لتحديد areas of waste and optimization opportunities.</li>
+      <li>وظّف <strong>التوسع التلقائي (Auto Scaling)</strong> لتقليل الموارد غير المستخدمة في أوقات الذروة.</li>
+    </ul>
+  </section>
+
+  <section id="future" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">مستقبل الحوسبة السحابية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">تبنى الحوسبة السحابية مستقبلًا مشرقًا مليئًا بالتطورات والابتكارات التي ستغير طريقة تعاملنا مع التكنولوجيا والبيانات والتطبيقات. فيما يلي أبرز الاتجاهات التي نتوقع أن تطغى على المشهد السحابي في السنوات القادمة:</p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الحوسبة بدون خادم (Serverless Computing):</strong> يزداد هذا النموذج بسرعة حيث يركز المطورون على كتابة الكود فقط بينما يتولى المزود إدارة الخوادم والتوسع التلقائي. خدمات مثل AWS Lambda وAzure Functions تقدم هذا النموذج.</li>
+      <li><strong>الحوسبة الحافة (Edge Computing):</strong> تنقل المعالجة والتحليل إلى حافة الشبكة بالقرب من مصدر البيانات، مما يقلل من التأخير ويعزز الأداء للتطبيقات الحساسة للوقت مثل إنترنت الأشياء والتحليلات اللحظية.</li>
+      <li><strong>الحوسبة الكمية السحابية (Quantum Cloud Computing):</strong> بدأت شركات مثل IBM وGoogle وAmazon في تقديم خدمات حوسبة كمية عبر السحابة، مما يفتح إمكانيات جديدة لحل مشاكل معقدة في العلوم والهندسة والطب.</li>
+      <li><strong>الذكاء الاصطناعي المدمج في السحابة:</strong> تزداد الخدمات السحابية المدفوعة بالذكاء الاصطناعي لتحسين أداء التطبيقات وتحليل البيانات بشكل أوتوماتيكي وتقديم رؤى أفضل للشركات.</li>
+      <li><strong>السحابة المتعددة (Multi-Cloud) والموزعة:</strong> تزداد الشركات على اعتماد مزيج من مزودين مختلفين لتحسين المرونة وتقليل المخاطر وتحسين التكلفة والأداء.</li>
+      <li><strong>الاستدامة البيئية:</strong> تزداد مراكز البيانات السحابية على تبني مصادر الطاقة المتجددة وتحسين كفاءة الطاقة لتقليل الأثر البيئي للحوسبة السحابية.</li>
+    </ul>
+  </section>
+
+  <section id="getting-started" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف تبدأ مع الحوسبة السحابية؟</h2>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 1: حدد احتياجاتك</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">قبل اختيار مزود الخدمة، حدد ما تحتاجه بالضبط: هل تحتاج خادمًا افتراضيًا بسيطًا؟ قاعدة بيانات مُدارة؟ بيئة تطوير؟ أم تطبيق SaaS جاهز؟ فهم احتياجاتك سيساعدك على الاختيار الصحيح وتقليل التكاليف.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 2: اختر المزود المناسب</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">إذا كنت مبتدئًا، ابدأ بـ <strong>DigitalOcean</strong> أو <strong>Linode</strong> بسبب بساطتهما وأسعارهما الواضحة. للمؤسسات الكبيرة، consider AWS أو Azure أو Google Cloud حسب احتياجاتك التقنية والميزانية المتاحة.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 3: استخدم المستوى المجاني</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">تقدم معظم المزودين <strong>مستوى مجاني (Free Tier)</strong> يتيح لك تجربة خدماتهم مجانًا لمدة محدودة أو بحد أقصى محدد من الموارد. استخدم هذا للتعلم والتجربة قبل الدفع.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 4: تعلّم الأساسيات</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">تعرّف على المفاهيم الأساسية مثل الشبكات الافتراضية (VPC)، ومجموعات الأمان (Security Groups)، وخيارات التخزين (Storage Classes)، وإدارة الهوية والوصول (IAM). هذه الأساسيات ستساعدك على بناء بنية تحتية سحابية آمنة وفعّالة.</p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 5: ابدأ بمشروع صغير</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">لا تحاول نقل كل شيء إلى السحابة دفعة واحدة. ابدأ بمشروع صغير مثل استضافة موقع ويب بسيط أو تطبيق مخصص، واكتسب الخبرة تدريجيًا قبل التوسع.</p>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+
+    <ul class="space-y-3">
+      <li><a href="/wiki/linux-wiki/">دليل لينكس الشامل</a></li>
+      <li><a href="/wiki/what-is-open-source/">ما هي المصادر المفتوحة؟</a></li>
+      <li><a href="https://aws.amazon.com/what-is-cloud-computing/" target="_blank" rel="noopener noreferrer">AWS: What is Cloud Computing? (باللغة الإنجليزية)</a></li>
+      <li><a href="https://cloud.google.com/docs/overview" target="_blank" rel="noopener noreferrer">Google Cloud: Cloud Computing Overview (باللغة الإنجليزية)</a></li>
+      <li><a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/overview" target="_blank" rel="noopener noreferrer">Microsoft Azure: Cloud Adoption Framework (باللغة الإنجليزية)</a></li>
+    </ul>
+  </section>
+</WikiLayout>
+</BaseLayout>

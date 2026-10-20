@@ -1,0 +1,1029 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "install-nginx-debian-initial-configuration",
+    title: "تثبيت خادم Nginx على Debian وضبط الإعدادات الأولية: دليل خطوة بخطوة",
+    metaTitle: "تثبيت خادم Nginx على Debian وضبط الإعدادات الأولية",
+    description:
+        "دليل عملي لتثبيت خادم Nginx على Debian وضبط إعداداته الأولية: التثبيت من مستودع Debian أو nginx.org، هيكل الملفات، الجدار الناري، أول موقع، التحسينات والأمان، شهادة HTTPS مع Certbot، واستكشاف الأخطاء الشائعة.",
+    keywords: [
+        "تثبيت Nginx على Debian",
+        "إعداد Nginx",
+        "Nginx Debian 13",
+        "server block",
+        "Certbot Nginx",
+        "Let's Encrypt",
+        "reverse proxy Nginx",
+        "UFW Nginx",
+        "nginx -t",
+        "خادم ويب لينكس",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "17 أكتوبر 2026",
+    pubDate: new Date("2026-10-17"),
+    tags: ["Nginx", "Debian", "خادم ويب", "HTTPS", "إدارة الخوادم"],
+    thumbnail: "/images/install-nginx-debian-initial-configuration.webp",
+};
+
+const tocItems = [
+    { id: "what-you-will-build", label: "ما الذي سنبنيه في هذا الدليل؟" },
+    { id: "prerequisites", label: "المتطلبات قبل أن تبدأ" },
+    { id: "install-from-debian", label: "الخطوة 1: تثبيت Nginx من مستودع Debian" },
+    { id: "debian-vs-nginx-org", label: "مستودع Debian أم nginx.org؟ كيف تقرر" },
+    { id: "file-layout", label: "فهم هيكل ملفات Nginx على Debian" },
+    { id: "service-management", label: "الخطوة 2: إدارة الخدمة بأوامر systemd" },
+    { id: "firewall", label: "الخطوة 3: فتح المنافذ في الجدار الناري" },
+    { id: "first-site", label: "الخطوة 4: إنشاء أول موقع (Server Block)" },
+    { id: "basic-tuning", label: "الخطوة 5: الإعدادات الأولية العامة" },
+    { id: "security-basics", label: "الخطوة 6: أساسيات الأمان" },
+    { id: "static-caching", label: "الخطوة 7: التخزين المؤقت للملفات الثابتة" },
+    { id: "reverse-proxy", label: "الخطوة 8: Nginx كوكيل عكسي لتطبيقك" },
+    { id: "https-certbot", label: "الخطوة 9: تفعيل HTTPS مع Let's Encrypt" },
+    { id: "logs-troubleshooting", label: "السجلات واستكشاف الأخطاء" },
+    { id: "maintenance", label: "الصيانة والتحديثات الأمنية" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "commands-table", label: "جدول مرجعي للأوامر" },
+    { id: "external-resources", label: "المصادر والتوثيق الرسمي" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            Nginx من أكثر خوادم الويب انتشارًا في العالم، ويُستخدم لتقديم
+            المواقع الثابتة، وكوكيل عكسي أمام تطبيقات Node.js وPython
+            وغيرها، ولتوزيع الحمل بين الخوادم. وهو مفتوح المصدر، خفيف على
+            الموارد، وقابل للضبط بملفات نصية واضحة يمكن مراجعتها ونسخها
+            احتياطيًا.
+        </p>
+
+        <p>
+            يرشدك هذا الدليل خطوة بخطوة من خادم Debian نظيف إلى موقع يعمل
+            بعنوانه الخاص وشهادة HTTPS، مع الإعدادات الأولية التي تجنّبك
+            مشاكل شائعة: الجدار الناري، هيكل الملفات، الأمان الأساسي،
+            واستكشاف الأخطاء. الأوامر مختبرة على Debian 13 (Trixie)، وتنطبق
+            على الإصدارات الأقدم مع اختلاف رقم إصدار Nginx.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="what-you-will-build">ما الذي سنبنيه في هذا الدليل؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/install-nginx-debian-initial-configuration/01.webp"
+                alt="مخطط يوضح خادم Nginx على Debian يستقبل طلبات المتصفح ويقدم موقعًا"
+                width="1192"
+                height="726"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            في نهاية الدليل سيكون لديك:
+        </p>
+
+        <ul>
+            <li>خادم Nginx مثبّت ويعمل تلقائيًا عند كل إقلاع</li>
+            <li>جدار ناري يسمح بحركة الويب وSSH فقط</li>
+            <li>موقع أول مضبوط في ملف مستقل (Server Block) بدل تعديل الإعداد الافتراضي</li>
+            <li>إعدادات أمان وأداء أولية معقولة</li>
+            <li>شهادة HTTPS من Let's Encrypt تتجدد تلقائيًا</li>
+            <li>نموذج جاهز لوضع Nginx أمام تطبيق خلفي</li>
+        </ul>
+
+        <p>
+            الفكرة العامة التي ستتكرر: <strong>عدّل ملفًا، ثم اختبر
+            بأمر <code>nginx -t</code>، ثم أعد تحميل الإعداد</strong>. لا
+            تعدّل إعدادًا وتعيد تشغيل الخادم دون اختبار، فخطأ إملائي واحد
+            قد يوقف كل مواقعك.
+        </p>
+
+        <h2 id="prerequisites">المتطلبات قبل أن تبدأ</h2>
+
+        <ul>
+            <li>
+                <strong>خادم Debian</strong>: جهاز افتراضي (VPS) أو خادم
+                مادي بنظام Debian 13، بذاكرة 1 غيغابايت تكفي لموقع صغير
+            </li>
+            <li>
+                <strong>مستخدم عادي بصلاحية sudo</strong>: لا تعمل بحساب
+                root مباشرة، فهذا يضاعف أثر أي خطأ
+            </li>
+            <li>
+                <strong>اسم نطاق (اختياري لكنه لازم للـ HTTPS)</strong>:
+                مع سجل A يشير إلى عنوان IP الخادم، وسجل AAAA إن كان لديك
+                عنوان IPv6
+            </li>
+            <li>
+                <strong>وصول SSH</strong> مفتوح ومجرَّب قبل تفعيل أي جدار
+                ناري، حتى لا تغلق على نفسك الباب
+            </li>
+        </ul>
+
+        <p>
+            في الأمثلة سنستخدم النطاق <code>example.com</code> كمثال،
+            استبدله بنطاقك أينما ظهر.
+        </p>
+
+        <h2 id="install-from-debian">
+            الخطوة 1: تثبيت Nginx من مستودع Debian
+        </h2>
+
+        <p>
+            أبسط طريقة وأنسبها لأغلب الاستخدامات هي الحزمة الموجودة في
+            مستودعات Debian نفسها: تُحدَّث أمنيًا عبر فريق Debian، وتتكامل
+            مع النظام، وتأتي بهيكل ملفات منظم سنشرحه بعد قليل.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Refresh package lists and apply pending updates first
+sudo apt update
+sudo apt upgrade -y
+
+# Install Nginx
+sudo apt install nginx
+
+# Check the installed version
+nginx -v
+
+# Confirm the service is running and enabled at boot
+systemctl status nginx --no-pager
+systemctl is-enabled nginx`}</code></pre>
+
+        <p>
+            على Debian تبدأ الخدمة وتُفعَّل تلقائيًا بعد التثبيت. إصدار
+            Nginx في Debian 13 هو من سلسلة 1.26 بحسب أدلة منشورة، ويتغير
+            الرقم الدقيق مع التحديثات الأمنية، وكذلك مع إصدار Debian نفسه.
+            اختبر الخادم محليًا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Ask the local server for its headers
+curl -I http://127.0.0.1
+
+# Illustrative output (version number will differ):
+# HTTP/1.1 200 OK
+# Server: nginx/1.26.3
+
+# Find your server's IP address to test from another machine
+hostname -I`}</code></pre>
+
+        <p>
+            إن ظهر <code>200 OK</code> فالخادم يعمل. ولتجربته من متصفحك،
+            افتح <code>http://عنوان-الخادم</code>، وإن لم تظهر الصفحة
+            الافتراضية فالسبب غالبًا جدار ناري من مزود الخدمة السحابي
+            (Security Group)، وسنعالج الجدار الداخلي بعد قليل.
+        </p>
+
+        <h2 id="debian-vs-nginx-org">
+            مستودع Debian أم nginx.org؟ كيف تقرر
+        </h2>
+
+        <p>
+            لـ Nginx مصدران رسميان للحزم على Debian. الأول مستودع Debian
+            كما فعلنا. والثاني المستودع الرسمي لفريق Nginx على nginx.org،
+            ويوفّر فرعين: <strong>Stable</strong> للإصدارات الأكثر ثباتًا،
+            و<strong>Mainline</strong> لأحدث الميزات. وبحسب فحص منشور في
+            مايو 2026 كان الفرع المستقر عند 1.30.x والرئيسي عند 1.31.0،
+            وهي أرقام تتغير باستمرار فراجع الصفحة الرسمية.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">مستودع Debian</th>
+                        <th class="px-4 py-2 font-semibold">nginx.org (Stable / Mainline)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">الإصدار</td>
+                        <td class="px-4 py-2">أقدم نسبيًا، مثبّت طوال عمر إصدار Debian</td>
+                        <td class="px-4 py-2">أحدث، مع ميزات جديدة أسرع في Mainline</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التحديثات الأمنية</td>
+                        <td class="px-4 py-2">يتولاها فريق Debian بترقيع الإصدار نفسه</td>
+                        <td class="px-4 py-2">من فريق Nginx مباشرة بإصدارات جديدة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">هيكل الملفات</td>
+                        <td class="px-4 py-2">sites-available وsites-enabled</td>
+                        <td class="px-4 py-2">مجلد conf.d فقط، بلا sites-available</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مستخدم التشغيل</td>
+                        <td class="px-4 py-2">www-data</td>
+                        <td class="px-4 py-2">nginx</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">يناسب</td>
+                        <td class="px-4 py-2">أغلب المواقع والاستخدامات العامة</td>
+                        <td class="px-4 py-2">من يحتاج ميزة محددة موجودة في إصدار أحدث</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            إن احتجت المستودع الرسمي، فهذه هي الخطوات المنشورة في
+            التوثيق الرسمي (للفرع المستقر). لاحظ أن حزمة nginx.org تتعارض
+            مع حزم Nginx الخاصة بـ Debian، فاختر أحد المصدرين ولا تخلط
+            بينهما:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Prerequisites
+sudo apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring
+
+# Import the official signing key
+curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \\
+    | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+
+# Verify the key: compare the fingerprint with the one published on nginx.org
+gpg --dry-run --quiet --no-keyring --import --import-options import-show \\
+    /usr/share/keyrings/nginx-archive-keyring.gpg
+
+# Add the STABLE repository (use /packages/mainline/debian for mainline)
+echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \\
+https://nginx.org/packages/debian $(lsb_release -cs) nginx" \\
+    | sudo tee /etc/apt/sources.list.d/nginx.list
+
+# Prefer nginx.org packages over the distribution's
+echo -e "Package: *\\nPin: origin nginx.org\\nPin: release o=nginx\\nPin-Priority: 900\\n" \\
+    | sudo tee /etc/apt/preferences.d/99nginx
+
+sudo apt update
+sudo apt install nginx`}</code></pre>
+
+        <p>
+            باقي الدليل مبني على حزمة Debian وهيكلها
+            (<code>sites-available</code> و<code>www-data</code>). إن اخترت
+            nginx.org فضع ملفات مواقعك في <code>/etc/nginx/conf.d/</code>
+            بامتداد <code>.conf</code> بدل الخطوتين اللتين تخصان
+            <code>sites-enabled</code>.
+        </p>
+
+        <h2 id="file-layout">فهم هيكل ملفات Nginx على Debian</h2>
+
+        <p>
+            قبل أن تعدّل أي شيء، اعرف أين تقع الملفات. هذا يوفر عليك وقتًا
+            طويلًا حين تبحث عن إعداد لا يعمل:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المسار</th>
+                        <th class="px-4 py-2 font-semibold">الوظيفة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><code>/etc/nginx/nginx.conf</code></td>
+                        <td class="px-4 py-2">الملف الرئيسي: العمليات والأحداث وكتلة http، ويستدعي بقية الملفات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>/etc/nginx/conf.d/</code></td>
+                        <td class="px-4 py-2">ملفات إعداد عامة بامتداد .conf تُحمَّل كلها تلقائيًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>/etc/nginx/sites-available/</code></td>
+                        <td class="px-4 py-2">ملفات المواقع المتاحة، سواء فعّلتها أم لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>/etc/nginx/sites-enabled/</code></td>
+                        <td class="px-4 py-2">روابط رمزية للمواقع المفعّلة فقط، وهي ما يقرؤه Nginx</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>/etc/nginx/snippets/</code></td>
+                        <td class="px-4 py-2">مقاطع إعداد قابلة لإعادة الاستخدام عبر include</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>/var/www/html/</code></td>
+                        <td class="px-4 py-2">الجذر الافتراضي للصفحة الأولى</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>/var/log/nginx/</code></td>
+                        <td class="px-4 py-2">سجلات الوصول (access.log) والأخطاء (error.log)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            الفكرة وراء <code>sites-available</code> و<code>sites-enabled</code>
+            بسيطة: تكتب الموقع مرة واحدة في الأول، وتفعّله بإنشاء رابط
+            رمزي في الثاني، وتعطّله بحذف الرابط دون حذف الملف الأصلي. وكل
+            ما يقرؤه Nginx فعليًا هو ما في <code>sites-enabled</code>.
+        </p>
+
+        <h2 id="service-management">
+            الخطوة 2: إدارة الخدمة بأوامر systemd
+        </h2>
+
+        <p>
+            Nginx يعمل كخدمة systemd، وستستخدم هذه الأوامر كثيرًا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Test the configuration for syntax errors (always do this first)
+sudo nginx -t
+
+# Apply a changed configuration WITHOUT dropping connections
+sudo systemctl reload nginx
+
+# Full stop/start (drops connections; needed after some changes)
+sudo systemctl restart nginx
+
+# Start/stop and boot behaviour
+sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl enable nginx
+sudo systemctl disable nginx
+
+# Print the full effective configuration (all includes merged)
+sudo nginx -T`}</code></pre>
+
+        <p>
+            الفرق بين <code>reload</code> و<code>restart</code> مهم: الأول
+            يقرأ الإعداد الجديد ويبدل العمال تدريجيًا دون قطع الاتصالات
+            الجارية، والثاني يوقف الخدمة ثم يبدؤها. استخدم
+            <code>reload</code> دائمًا في الإنتاج ما لم تكن هناك حاجة
+            فعلية لإعادة التشغيل. والأمر <code>nginx -T</code> مفيد جدًا
+            حين تريد رؤية الإعداد النهائي بعد دمج كل الملفات المضمّنة.
+        </p>
+
+        <h2 id="firewall">الخطوة 3: فتح المنافذ في الجدار الناري</h2>
+
+        <p>
+            Debian لا يفعّل جدارًا ناريًا افتراضيًا، فكل المنافذ المفتوحة
+            على الخدمات تكون مكشوفة. سنستخدم UFW لأنه بسيط. <strong>قاعدة
+            واحدة لا تتجاوزها: اسمح بـ SSH قبل أن تفعّل الجدار</strong>،
+            وإلا ستفقد الوصول للخادم.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo apt install ufw
+
+# 1) Allow SSH FIRST (change 22 if you use a custom SSH port)
+sudo ufw allow 22/tcp
+
+# 2) Allow web traffic
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# 3) Enable and inspect
+sudo ufw enable
+sudo ufw status verbose`}</code></pre>
+
+        <p>
+            بعد تفعيله افتح اتصال SSH ثانيًا من جهازك للتأكد أنه ما زال
+            يعمل، قبل أن تغلق الاتصال الأول. وإن كان مزود الخادم يوفر جدارًا
+            خارجيًا (Security Group أو Firewall في لوحة التحكم)، فتأكد أنه
+            يسمح بالمنافذ 22 و80 و443 أيضًا، فكلا الجدارين يجب أن يسمحا.
+        </p>
+
+        <h2 id="first-site">الخطوة 4: إنشاء أول موقع (Server Block)</h2>
+
+        <p>
+            لا تعدّل ملف الموقع الافتراضي <code>default</code>. أنشئ ملفًا
+            مستقلًا لكل موقع، فيسهل عليك نسخه وتعطيله واستنساخه لاحقًا.
+            ابدأ بمجلد الموقع ومحتواه التجريبي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Create the web root for the site
+sudo mkdir -p /var/www/example.com/html
+
+# Give your user ownership; others (incl. www-data) can read and enter
+sudo chown -R $USER:$USER /var/www/example.com
+sudo chmod -R 755 /var/www/example.com
+
+# A plain-text test page
+echo "Nginx is working on example.com" > /var/www/example.com/html/index.html`}</code></pre>
+
+        <p>
+            ثم ملف الإعداد نفسه. أنشئه بمحررك المفضل:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo nano /etc/nginx/sites-available/example.com
+
+# --- file contents ---
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name example.com www.example.com;
+
+    root /var/www/example.com/html;
+    index index.html;
+
+    access_log /var/log/nginx/example.com.access.log;
+    error_log  /var/log/nginx/example.com.error.log;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}`}</code></pre>
+
+        <p>
+            شرح الأسطر المهمة:
+        </p>
+
+        <ul>
+            <li>
+                <code>listen 80</code> و<code>listen [::]:80</code>:
+                الاستماع على المنفذ 80 لعناوين IPv4 وIPv6
+            </li>
+            <li>
+                <code>server_name</code>: الأسماء التي يجيب عنها هذا
+                الموقع. يطابق Nginx اسم المضيف في الطلب مع هذه القائمة
+                ليختار الكتلة المناسبة
+            </li>
+            <li>
+                <code>root</code>: المجلد الذي تُقدَّم منه الملفات
+            </li>
+            <li>
+                <code>try_files $uri $uri/ =404</code>: جرّب الملف المطلوب،
+                ثم المجلد، وإلا أعد خطأ 404 نظيفًا
+            </li>
+            <li>
+                سجلات مستقلة لكل موقع تسهّل عليك تتبع مشكلاته بعيدًا عن
+                ضجيج المواقع الأخرى
+            </li>
+        </ul>
+
+        <p>
+            الآن فعّل الموقع، وعطّل الموقع الافتراضي، واختبر:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Enable the site with a symlink
+sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+
+# Disable the default site (removes only the symlink, not the original file)
+sudo rm /etc/nginx/sites-enabled/default
+
+# Test, then reload
+sudo nginx -t
+sudo systemctl reload nginx
+
+# Test without waiting for DNS: send the Host header manually
+curl -H "Host: example.com" http://127.0.0.1/`}</code></pre>
+
+        <p>
+            الأمر الأخير يرسل الطلب إلى الخادم المحلي مع ترويسة
+            <code>Host</code> تحمل اسم موقعك، فترى صفحتك التجريبية حتى لو
+            لم يصل سجل DNS بعد.
+        </p>
+
+        <h2 id="basic-tuning">الخطوة 5: الإعدادات الأولية العامة</h2>
+
+        <p>
+            الإعداد الافتراضي في Debian معقول، لكن هناك بعض القيم التي
+            يحسن ضبطها من البداية. بدل تعديل <code>nginx.conf</code> نفسه،
+            ضعها في ملف مستقل داخل <code>conf.d</code>، فتبقى تعديلاتك
+            منفصلة عن ملف الحزمة ولا تضيع عند تحديثه:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# First, check which of these are already set in the main file
+grep -nE "gzip|server_tokens|client_max_body_size" /etc/nginx/nginx.conf
+
+sudo nano /etc/nginx/conf.d/00-basic-tuning.conf
+
+# --- file contents ---
+# Hide the Nginx version from headers and error pages
+server_tokens off;
+
+# Maximum request body (uploads); the default is only 1m
+client_max_body_size 10m;
+
+# Compression for text-based content (gzip itself is usually "on" already)
+gzip_vary on;
+gzip_comp_level 5;
+gzip_min_length 256;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;`}</code></pre>
+
+        <p>
+            لماذا فحصنا الملف الرئيسي أولًا؟ لأن Nginx يرفض الإعداد حين
+            تتكرر الأوامر ذات القيمة الواحدة في السياق نفسه، فيظهر خطأ
+            "directive is duplicate". إن ظهر لك هذا الخطأ عند اختبار
+            <code>nginx -t</code>، فاحذف السطر المكرر من أحد الملفين. وفي
+            الإعداد الافتراضي على Debian يكون <code>gzip on</code> مفعّلًا
+            عادة وبعض خيارات الضغط مُعلَّقة، لكن لا تفترض ذلك، تحقق بنفسك.
+        </p>
+
+        <ul>
+            <li>
+                <code>server_tokens off</code>: يخفي رقم الإصدار، فلا
+                يعرف من يفحص خادمك أي إصدار تشغّل. وهذا لا يعالج ثغرة، لكنه
+                يقلل المعلومات المكشوفة
+            </li>
+            <li>
+                <code>client_max_body_size</code>: الحد الافتراضي 1 ميغابايت
+                يرفض رفع أي صورة كبيرة بخطأ 413. اضبطه بحسب حاجة موقعك لا
+                بأكبر رقم ممكن
+            </li>
+            <li>
+                ضغط gzip يقلل حجم النصوص المرسلة، فتحمَّل الصفحات أسرع.
+                لا حاجة لضغط الصور والفيديو لأنها مضغوطة أصلًا
+            </li>
+        </ul>
+
+        <p>
+            واترك <code>worker_processes auto</code> كما هو، فهو يضبط عدد
+            العمال بعدد أنوية المعالج تلقائيًا، وهو الخيار المناسب في
+            الغالب.
+        </p>
+
+        <h2 id="security-basics">الخطوة 6: أساسيات الأمان</h2>
+
+        <p>
+            لا يغني هذا القسم عن مراجعة أمنية كاملة، لكنه يغطي ثلاث
+            أمور بسيطة تستحق التفعيل من البداية.
+        </p>
+
+        <h3>أولًا: كتلة التقاط للطلبات المجهولة</h3>
+
+        <p>
+            حين يصل طلب باسم مضيف لا يطابق أي موقع لديك (مثل زيارة
+            مباشرة بعنوان IP أو نطاق غريب موجَّه لخادمك)، يقدّم Nginx
+            الموقع الأول افتراضيًا. الأفضل أن تقطع هذه الطلبات:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# /etc/nginx/sites-available/00-catchall
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    # 444 is Nginx-specific: close the connection without a response
+    return 444;
+}
+
+# Enable it (the original "default" site must already be removed,
+# otherwise two default_server blocks will conflict)
+sudo ln -s /etc/nginx/sites-available/00-catchall /etc/nginx/sites-enabled/`}</code></pre>
+
+        <h3>ثانيًا: ترويسات الأمان في مقطع مشترك</h3>
+
+        <p>
+            ضع الترويسات الأساسية في مقطع قابل لإعادة الاستخدام:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo nano /etc/nginx/snippets/security-headers.conf
+
+# --- file contents ---
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+# Then, inside your server block:
+include snippets/security-headers.conf;`}</code></pre>
+
+        <p>
+            ولماذا مقطع منفصل بدل كتابتها في كل مكان؟ بسبب سلوك في Nginx
+            يفاجئ كثيرين: توجيهات <code>add_header</code> تُورَّث من
+            المستوى الأعلى فقط إذا لم يكن في المستوى الحالي أي
+            <code>add_header</code>. فإذا أضفت ترويسة داخل
+            <code>location</code> معين، تختفي ترويسات كتلة
+            <code>server</code> عن ذلك الموضع. الحل أن تضمّن المقطع
+            المشترك في كل موضع يضيف ترويساته الخاصة. وعن رأس
+            Content-Security-Policy: لا تنسخه من الإنترنت كما هو، فهو
+            يحتاج ضبطًا حسب موارد موقعك وإلا كسر صفحاتك.
+        </p>
+
+        <h3>ثالثًا: منع الوصول للملفات المخفية</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Inside the server block: block dotfiles (.git, .env, .htaccess ...)
+# but keep /.well-known/ reachable for Let's Encrypt validation
+location ~ /\\.(?!well-known) {
+    deny all;
+}`}</code></pre>
+
+        <p>
+            هذه القاعدة تمنع الوصول لملفات مثل <code>.git</code> و<code>.env</code>
+            إن وُضعت بالخطأ داخل مجلد الموقع، وتستثني
+            <code>.well-known</code> الذي يحتاجه التحقق من الشهادة.
+        </p>
+
+        <h2 id="static-caching">
+            الخطوة 7: التخزين المؤقت للملفات الثابتة
+        </h2>
+
+        <p>
+            الصور وملفات CSS وJavaScript نادرًا ما تتغير، فلا داعي لأن
+            يعيد المتصفح تحميلها كل زيارة. أضف هذه الكتلة داخل
+            <code>server</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`location ~* \\.(?:css|js|jpg|jpeg|png|gif|webp|svg|ico|woff2)$ {
+    expires 30d;
+    access_log off;
+
+    # add_header in a location cancels inherited headers, so re-include them
+    include snippets/security-headers.conf;
+}`}</code></pre>
+
+        <p>
+            الأمر <code>expires 30d</code> يضيف ترويستي
+            <code>Expires</code> و<code>Cache-Control</code> تلقائيًا بمدة
+            ثلاثين يومًا. لكن حذار: إن كنت تغيّر ملفاتك دون تغيير أسمائها،
+            فلن يرى الزوار التحديث قبل انتهاء المدة. الأسلم أن تضيف رقم
+            إصدار أو بصمة للاسم عند كل تعديل (مثل
+            <code>app.4f2a9c.js</code>)، وهو ما تفعله أغلب أدوات البناء
+            الحديثة.
+        </p>
+
+        <h2 id="reverse-proxy">
+            الخطوة 8: Nginx كوكيل عكسي لتطبيقك
+        </h2>
+
+        <p>
+            استخدام شائع جدًا: تشغّل تطبيقك (Node.js أو Python أو غيرهما)
+            على منفذ محلي مثل 3000، ويقف Nginx أمامه ليستقبل الطلبات
+            العامة ويمرّرها له، ويتولى HTTPS والضغط والتخزين المؤقت:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`location / {
+    proxy_pass http://127.0.0.1:3000;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+# If your app uses WebSockets, add these inside the same location:
+# proxy_http_version 1.1;
+# proxy_set_header Upgrade $http_upgrade;
+# proxy_set_header Connection "upgrade";`}</code></pre>
+
+        <p>
+            ترويسات <code>X-Forwarded-*</code> تُعلم تطبيقك بعنوان
+            العميل الحقيقي وبروتوكول الاتصال الأصلي، وبدونها سيرى تطبيقك
+            كل الطلبات قادمة من 127.0.0.1. تأكد أن تطبيقك يستمع على
+            <code>127.0.0.1</code> فقط لا على كل الواجهات، فلا يكون
+            متاحًا من الخارج متجاوزًا Nginx. وإن ظهر لك خطأ 502 عند
+            الاختبار فالمعنى أن Nginx لم يستطع الوصول لتطبيقك، فتحقق
+            أنه يعمل على المنفذ المحدد.
+        </p>
+
+        <h2 id="https-certbot">
+            الخطوة 9: تفعيل HTTPS مع Let's Encrypt
+        </h2>
+
+        <p>
+            <img
+                src="/images/articles/install-nginx-debian-initial-configuration/02.webp"
+                alt="قفل HTTPS في متصفح بعد تفعيل شهادة Let's Encrypt على Nginx"
+                width="700"
+                height="400"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الشهادات المجانية من Let's Encrypt تُصدر وتُجدَّد تلقائيًا
+            بأداة Certbot. قبل أن تبدأ تأكد من ثلاثة أمور: النطاق
+            يشير فعلًا لعنوان خادمك، والمنفذ 80 مفتوح، و<code>server_name</code>
+            في ملف موقعك يحمل اسم النطاق الصحيح.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Install Certbot and its Nginx plugin from the Debian repositories
+sudo apt install certbot python3-certbot-nginx
+
+# Request and install a certificate (it edits your server block for you)
+sudo certbot --nginx -d example.com -d www.example.com
+
+# Test the automatic renewal process without issuing anything
+sudo certbot renew --dry-run
+
+# Renewal normally runs from a systemd timer
+systemctl list-timers | grep -i certbot`}</code></pre>
+
+        <p>
+            سيسألك Certbot عن بريدك لإشعارات الانتهاء، ثم عن إعادة توجيه
+            HTTP إلى HTTPS، واختيارها مناسب لأغلب المواقع. بعد النجاح،
+            افتح ملف موقعك وراجع ما أضافه Certbot: كتلة جديدة تستمع على
+            المنفذ 443 مع مسارات الشهادة. وتذكر أن لـ Let's Encrypt حدود
+            طلبات لكل نطاق، فجرّب بخيار <code>--dry-run</code> أو
+            <code>--staging</code> قبل التكرار في الإنتاج.
+        </p>
+
+        <p>
+            ولا تتسرع في تفعيل ترويسة HSTS (التي تُلزم المتصفح بـ HTTPS
+            مدة طويلة) قبل أن تتأكد أن موقعك كله يعمل جيدًا على HTTPS،
+            لأن التراجع عنها صعب إذا خزّنها المتصفحون. وللإعدادات المتقدمة
+            لبروتوكولات التشفير يوفر موقع Mozilla مولدًا لإعدادات SSL
+            موثوقة.
+        </p>
+
+        <h2 id="logs-troubleshooting">السجلات واستكشاف الأخطاء</h2>
+
+        <p>
+            حين لا يعمل شيء، ابدأ دائمًا بالسجلات واختبار الإعداد:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Syntax check (tells you the file and line of the problem)
+sudo nginx -t
+
+# Follow the error log live while you reproduce the problem
+sudo tail -f /var/log/nginx/error.log
+
+# Last lines from the service itself
+sudo journalctl -u nginx --no-pager -n 50
+
+# Who is listening on ports 80 and 443?
+sudo ss -tlnp | grep -E ':80|:443'
+
+# Check permissions on every directory in the path to your file
+namei -l /var/www/example.com/html/index.html`}</code></pre>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">العَرَض</th>
+                        <th class="px-4 py-2 font-semibold">السبب المرجّح</th>
+                        <th class="px-4 py-2 font-semibold">ما تفحصه</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">فشل بدء الخدمة: "Address already in use"</td>
+                        <td class="px-4 py-2">خدمة أخرى (مثل Apache) تستخدم المنفذ 80</td>
+                        <td class="px-4 py-2"><code>ss -tlnp</code> لمعرفة من يحجز المنفذ</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">رسالة "directive is duplicate" أو "unknown directive"</td>
+                        <td class="px-4 py-2">توجيه مكرر أو خطأ إملائي أو وحدة غير مثبتة</td>
+                        <td class="px-4 py-2">السطر الذي يذكره <code>nginx -t</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">خطأ 403 Forbidden</td>
+                        <td class="px-4 py-2">صلاحيات مجلد في المسار أو غياب ملف index</td>
+                        <td class="px-4 py-2"><code>namei -l</code> وملف error.log</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">خطأ 404 لصفحة موجودة</td>
+                        <td class="px-4 py-2">مسار root خاطئ أو كتلة موقع غير التي تتوقعها</td>
+                        <td class="px-4 py-2"><code>nginx -T</code> لمراجعة الإعداد الفعلي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">خطأ 502 Bad Gateway</td>
+                        <td class="px-4 py-2">التطبيق الخلفي متوقف أو منفذه خاطئ</td>
+                        <td class="px-4 py-2">تشغيل التطبيق وسجل error.log</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">خطأ 413 عند رفع ملف</td>
+                        <td class="px-4 py-2">الملف أكبر من client_max_body_size</td>
+                        <td class="px-4 py-2">رفع القيمة بحسب الحاجة ثم reload</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الموقع لا يفتح من الخارج فقط</td>
+                        <td class="px-4 py-2">جدار ناري داخلي أو خارجي، أو DNS لم ينتشر بعد</td>
+                        <td class="px-4 py-2"><code>ufw status</code> ولوحة مزود الخادم</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            ملف الصلاحيات (403) أكثر الأخطاء التي تحيّر المبتدئين: يحتاج
+            المستخدم الذي يشغّل العمال (<code>www-data</code>) صلاحية
+            الدخول (<code>x</code>) على <strong>كل مجلد</strong> في المسار
+            حتى الملف، لا على الملف وحده. وأمر <code>namei -l</code> يعرض
+            لك صلاحيات كل حلقة في المسار فتكتشف المجلد المانع بسرعة.
+        </p>
+
+        <h2 id="maintenance">الصيانة والتحديثات الأمنية</h2>
+
+        <p>
+            خادم الويب مكشوف للإنترنت، فتحديثاته الأمنية ليست اختيارية.
+            وتساعدك Debian على أتمتتها للتحديثات الأمنية تحديدًا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Manual update routine
+sudo apt update && sudo apt upgrade
+
+# Automatic security updates
+sudo apt install unattended-upgrades
+sudo dpkg-reconfigure -plow unattended-upgrades
+
+# Back up your configuration before major changes
+sudo tar -czf ~/nginx-config-backup-$(date +%F).tar.gz /etc/nginx`}</code></pre>
+
+        <p>
+            سجلات Nginx تُدوَّر تلقائيًا بأداة logrotate بإعداد جاهز في
+            <code>/etc/logrotate.d/nginx</code>، فلا تمتلئ مساحة القرص
+            بالسجلات القديمة في الأحوال العادية. ومع ذلك راقب مساحة
+            القرص دوريًا، خصوصًا على المواقع كثيرة الزيارات. واحتفظ بملفات
+            الإعداد في نظام تحكم بالإصدارات مثل Git إن كنت تدير عدة
+            خوادم، فهذا يعطيك سجلًا لكل تغيير وإمكانية التراجع.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>الخدمة تعمل ومفعّلة عند الإقلاع: <code>systemctl status nginx</code></li>
+            <li>الجدار الناري يسمح بـ 22 و80 و443 فقط، وتم اختبار SSH بعد تفعيله</li>
+            <li>موقعك في ملف مستقل داخل <code>sites-available</code> ومفعّل برابط رمزي</li>
+            <li>الموقع الافتراضي القديم معطّل</li>
+            <li><code>nginx -t</code> يعرض "syntax is ok" و"test is successful"</li>
+            <li>شهادة HTTPS صالحة، واختبار <code>certbot renew --dry-run</code> ينجح</li>
+            <li>ترويسات الأمان تظهر في الاستجابة: <code>curl -I https://example.com</code></li>
+            <li>نسخة احتياطية من <code>/etc/nginx</code> محفوظة خارج الخادم</li>
+            <li>التحديثات الأمنية التلقائية مفعّلة</li>
+        </ul>
+
+        <h2 id="commands-table">جدول مرجعي للأوامر</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المهمة</th>
+                        <th class="px-4 py-2 font-semibold">الأمر</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">تثبيت Nginx</td>
+                        <td class="px-4 py-2"><code>sudo apt install nginx</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">اختبار الإعداد</td>
+                        <td class="px-4 py-2"><code>sudo nginx -t</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تطبيق الإعداد دون قطع</td>
+                        <td class="px-4 py-2"><code>sudo systemctl reload nginx</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إعادة التشغيل الكاملة</td>
+                        <td class="px-4 py-2"><code>sudo systemctl restart nginx</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">عرض الإعداد الفعلي المدمج</td>
+                        <td class="px-4 py-2"><code>sudo nginx -T</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تفعيل موقع</td>
+                        <td class="px-4 py-2"><code>sudo ln -s /etc/nginx/sites-available/SITE /etc/nginx/sites-enabled/</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تعطيل موقع</td>
+                        <td class="px-4 py-2"><code>sudo rm /etc/nginx/sites-enabled/SITE</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">متابعة سجل الأخطاء</td>
+                        <td class="px-4 py-2"><code>sudo tail -f /var/log/nginx/error.log</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إصدار شهادة HTTPS</td>
+                        <td class="px-4 py-2"><code>sudo certbot --nginx -d example.com</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">حالة الجدار الناري</td>
+                        <td class="px-4 py-2"><code>sudo ufw status verbose</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="external-resources">المصادر والتوثيق الرسمي</h2>
+
+        <ul>
+            <li>
+                <strong>الموقع الرسمي لـ Nginx:</strong>{" "}
+                <a href="https://nginx.org/" target="_blank" rel="noopener noreferrer">nginx.org</a>
+            </li>
+            <li>
+                <strong>دليل المبتدئين الرسمي:</strong>{" "}
+                <a href="https://nginx.org/en/docs/beginners_guide.html" target="_blank" rel="noopener noreferrer">nginx.org/en/docs/beginners_guide</a>
+            </li>
+            <li>
+                <strong>حزم لينكس الرسمية (مستودعات Debian وغيرها):</strong>{" "}
+                <a href="https://nginx.org/en/linux_packages.html" target="_blank" rel="noopener noreferrer">nginx.org/en/linux_packages</a>
+            </li>
+            <li>
+                <strong>كيفية مطابقة الطلبات لأسماء الخوادم (server_name):</strong>{" "}
+                <a href="https://nginx.org/en/docs/http/server_names.html" target="_blank" rel="noopener noreferrer">nginx.org/en/docs/http/server_names</a>
+            </li>
+            <li>
+                <strong>توثيق الوحدة الأساسية ngx_http_core_module:</strong>{" "}
+                <a href="https://nginx.org/en/docs/http/ngx_http_core_module.html" target="_blank" rel="noopener noreferrer">nginx.org/en/docs/http/ngx_http_core_module</a>
+            </li>
+            <li>
+                <strong>دليل التثبيت في توثيق NGINX:</strong>{" "}
+                <a href="https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/" target="_blank" rel="noopener noreferrer">docs.nginx.com: Installing NGINX Open Source</a>
+            </li>
+            <li>
+                <strong>Certbot:</strong>{" "}
+                <a href="https://certbot.eff.org/" target="_blank" rel="noopener noreferrer">certbot.eff.org</a>
+            </li>
+            <li>
+                <strong>مولد إعدادات SSL من Mozilla:</strong>{" "}
+                <a href="https://ssl-config.mozilla.org/" target="_blank" rel="noopener noreferrer">ssl-config.mozilla.org</a>
+            </li>
+            <li>
+                <strong>دليل تثبيت Nginx على Debian 13 (Linuxize):</strong>{" "}
+                <a href="https://linuxize.com/post/how-to-install-nginx-on-debian-13/" target="_blank" rel="noopener noreferrer">linuxize.com</a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>أيهما أفضل: حزمة Debian أم مستودع nginx.org؟</strong><br />
+            لأغلب المواقع، حزمة Debian كافية وأقل عناءً. اختر nginx.org إن
+            احتجت ميزة موجودة في إصدار أحدث، وتذكر أن هيكل الملفات يختلف
+            (conf.d بدل sites-enabled) وأن الحزمتين تتعارضان.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين reload وrestart؟</strong><br />
+            <code>reload</code> يطبق الإعداد الجديد دون قطع الاتصالات الجارية،
+            و<code>restart</code> يوقف الخدمة ثم يبدؤها فتنقطع الاتصالات.
+            استخدم الأول ما لم تضطر للثاني.
+        </p>
+
+        <p>
+            <strong>لماذا أرى الصفحة الافتراضية رغم أني أنشأت موقعي؟</strong><br />
+            غالبًا لأنك لم تفعّل موقعك برابط في <code>sites-enabled</code>،
+            أو لم تعطّل الموقع الافتراضي، أو نسيت reload بعد التغيير. راجع
+            <code>sudo nginx -T</code> لترى ما يقرؤه Nginx فعلًا.
+        </p>
+
+        <p>
+            <strong>هل أستطيع تشغيل Nginx وApache معًا؟</strong><br />
+            نعم بشرط ألا يستمعا على المنفذ نفسه. يمكن أن يعمل Apache على
+            منفذ داخلي مثل 8080 ويقف Nginx أمامه كوكيل عكسي، لكن إن لم
+            يكن لديك سبب لذلك فالأبسط اختيار واحد منهما.
+        </p>
+
+        <p>
+            <strong>كيف أتراجع إن أفسدت الإعداد؟</strong><br />
+            إن كان الخطأ في ملف موقع، عطّله بحذف رابطه من
+            <code>sites-enabled</code> ثم <code>reload</code>. وإن احتفظت
+            بنسخة من <code>/etc/nginx</code> فاستعدها. ولهذا السبب
+            بالضبط نختبر بـ <code>nginx -t</code> قبل كل تطبيق، فالخادم
+            يستمر بالعمل بالإعداد القديم حتى ينجح الاختبار.
+        </p>
+    </PostLayout>
+</BaseLayout>

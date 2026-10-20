@@ -1,0 +1,382 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "github-importance-open-source-projects",
+    title: "أهمية GitHub بالنسبة للمشاريع مفتوحة المصدر: دليل شامل",
+    metaTitle: "أهمية جيتهاب للمشاريع مفتوحة المصدر: دليل شامل 2026",
+    description:
+        "دليل شامل لدور GitHub في دعم المشاريع مفتوحة المصدر، من استضافة الكود وطلبات السحب إلى الأتمتة عبر GitHub Actions وGitHub Sponsors، مع نظرة موضوعية للبدائل المتاحة.",
+    keywords: [
+        "أهمية جيتهاب",
+        "GitHub",
+        "مشاريع مفتوحة المصدر",
+        "Pull Requests",
+        "GitHub Actions",
+        "GitHub Sponsors",
+        "Git",
+        "GitLab",
+        "Codeberg",
+        "Open Source",
+    ],
+    category: ["برمجة", "مقالات"],
+    author: "طلال عمران",
+    date: "19 سبتمبر 2026",
+    pubDate: new Date("2026-09-19"),
+    tags: ["GitHub", "مفتوح المصدر", "Git", "GitHub Actions", "برمجة"],
+    thumbnail: "/images/github-importance-open-source-projects.webp",
+};
+
+const tocItems = [
+    { id: "what-is-github", label: "ما هو GitHub بالضبط، وما الفرق بينه وبين Git؟" },
+    { id: "scale-in-numbers", label: "حجم GitHub اليوم بالأرقام" },
+    { id: "code-hosting", label: "استضافة الكود والتحكم بالإصدارات" },
+    { id: "pull-requests", label: "طلبات السحب (Pull Requests): قلب التعاون المفتوح" },
+    { id: "issues-discussions", label: "تتبع المشاكل والنقاشات المجتمعية" },
+    { id: "github-actions", label: "الأتمتة عبر GitHub Actions" },
+    { id: "discoverability", label: "الاكتشاف والسمعة: نجوم GitHub وSEO" },
+    { id: "funding", label: "تمويل المشاريع: GitHub Sponsors" },
+    { id: "security", label: "الأمان: من الثغرات إلى التحديثات التلقائية" },
+    { id: "career-impact", label: "الأثر على المسار المهني للمطورين" },
+    { id: "alternatives", label: "البدائل الموضوعية: GitLab وCodeberg وغيرها" },
+    { id: "comparison-table", label: "جدول مقارنة سريع بين المنصات" },
+    { id: "external-resources", label: "الروابط الرسمية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            لا يوجد مشروع مفتوح المصدر مشهور تقريبًا لا تجده على GitHub.
+            لينكس نفسها، React، بايثون، حتى الأدوات التي تستخدمها هذه
+            اللحظة لقراءة هذا المقال، غالبًا مرّت شفرتها المصدرية عبر هذه
+            المنصة في مرحلة ما. لكن GitHub ليس مجرد "مكان لتخزين الكود"،
+            بل بنية تحتية كاملة جعلت التعاون المفتوح على نطاق عالمي ممكنًا
+            فعليًا.
+        </p>
+
+        <p>
+            هذا المقال يشرح بالتفصيل لماذا أصبح GitHub بهذه الأهمية
+            للمشاريع مفتوحة المصدر تحديدًا، وما الذي يقدّمه عمليًا يتجاوز
+            مجرد استضافة الكود.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="what-is-github">
+            ما هو GitHub بالضبط، وما الفرق بينه وبين Git؟
+        </h2>
+
+        <p>
+            <img
+                src="/images/articles/github-importance-open-source-projects/01.webp"
+                alt="GitHub Logo"
+                width="1200"
+                height="563"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            خلط شائع يستحق التوضيح أولاً: <strong>Git</strong> نظام تحكم
+            بالإصدارات (Version Control System) طوّره لينوس تورفالدس نفسه
+            عام 2005، يعمل محليًا على جهازك دون الحاجة لأي خدمة خارجية.
+            <strong>GitHub</strong> منصة مستقلة أُطلقت عام 2008 على يد توم
+            بريستون-ويرنر وكريس وانستراث وبي جيه هايت وسكوت تشاكون،
+            تستضيف مستودعات Git على الإنترنت وتضيف طبقة كاملة من أدوات
+            التعاون فوقها.
+        </p>
+
+        <p>
+            بمعنى آخر: يمكنك استخدام Git دون GitHub إطلاقًا، لكن GitHub
+            بلا Git لا معنى له. استحوذت مايكروسوفت على GitHub عام 2018
+            مقابل 7.5 مليار دولار، مع الحفاظ على استقلاليته التشغيلية
+            كمنصة مفتوحة لكل المطورين.
+        </p>
+
+        <h2 id="scale-in-numbers">حجم GitHub اليوم بالأرقام</h2>
+
+        <p>
+            وفق تقرير Octoverse السنوي الرسمي لعام 2025، يستضيف GitHub
+            أكثر من <strong>180 مليون مطور</strong> حول العالم، وأكثر من
+            <strong>630 مليون مستودع</strong> (منها 395 مليون مستودع عام
+            ومفتوح المصدر). في عام 2025 وحده، سجّلت المنصة أكثر من
+            <strong>1.12 مليار مساهمة عامة</strong> (بزيادة 13% عن العام
+            السابق)، وتم دمج <strong>518.7 مليون طلب سحب (Pull Request)</strong>
+            في مستودعات عامة، بزيادة 29% سنويًا.
+        </p>
+
+        <p>
+            هذه الأرقام ليست مجرد إحصائية تسويقية؛ هي مؤشر حقيقي على أن
+            GitHub أصبح فعليًا العمود الفقري التشغيلي للبرمجيات مفتوحة
+            المصدر عالميًا، لا مجرد خيار من بين عدة خيارات متكافئة.
+        </p>
+
+        <h2 id="code-hosting">استضافة الكود والتحكم بالإصدارات</h2>
+
+        <p>
+            الوظيفة الأساسية تبقى استضافة مستودعات Git مجانًا للمشاريع
+            العامة، مع كل ميزات التحكم بالإصدارات: تتبع كل تعديل تاريخيًا،
+            العمل عبر فروع (Branches) متوازية، ودمج التغييرات دون فقدان أي
+            سجل. لكن الإضافة الحقيقية هي الواجهة: تاريخ الكود بأكمله يصبح
+            قابلاً للتصفح بصريًا من أي متصفح، دون الحاجة لأي أداة محلية.
+        </p>
+
+        <h2 id="pull-requests">
+            طلبات السحب (Pull Requests): قلب التعاون المفتوح
+        </h2>
+
+        <p>
+            <img
+                src="/images/articles/github-importance-open-source-projects/02.webp"
+                alt="واجهة طلب سحب على GitHub"
+                width="1200"
+                height="715"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            هذه هي الميزة التي غيّرت فعليًا طريقة عمل المصادر المفتوحة.
+            قبل GitHub، المساهمة في مشروع مفتوح المصدر تطلبت غالبًا إرسال
+            "رقعة" (Patch) عبر البريد الإلكتروني لقائمة بريدية، وانتظار
+            مراجعة يدوية معقدة. طلب السحب (Pull Request) حوّل هذه العملية
+            لتجربة مرئية كاملة:
+        </p>
+
+        <ul>
+            <li>أي شخص يمكنه اقتراح تعديل على أي مشروع عام، دون الحاجة لإذن مسبق</li>
+            <li>صاحب المشروع يراجع التغييرات سطرًا بسطر، بتعليقات مباشرة على الكود نفسه</li>
+            <li>اختبارات آلية تعمل تلقائيًا على كل طلب سحب قبل حتى أن ينظر إليه أحد بشريًا</li>
+            <li>نقاش كامل موثق حول كل قرار تقني، يبقى مرجعًا للمشروع مستقبلاً</li>
+        </ul>
+
+        <p>
+            هذا النموذج بالضبط هو ما جعل مشاريع ضخمة مثل نواة لينكس أو
+            React تستقبل آلاف المساهمين حول العالم دون فوضى، لأن كل
+            مساهمة تمر بمسار مراجعة موثق وشفاف بالكامل.
+        </p>
+
+        <h2 id="issues-discussions">تتبع المشاكل والنقاشات المجتمعية</h2>
+
+        <p>
+            نظام Issues يتيح لأي مستخدم الإبلاغ عن خلل، اقتراح ميزة، أو
+            طرح سؤال، بشكل منظم وقابل للتصنيف والبحث. مع نمو استخدام
+            قسم Discussions، أصبح GitHub تدريجيًا بديلاً حقيقيًا لمنتديات
+            الدعم التقليدية، بل ويحل محل موقع Stack Overflow في كثير من
+            الحالات لأسئلة خاصة بمشروع محدد.
+        </p>
+
+        <h2 id="github-actions">الأتمتة عبر GitHub Actions</h2>
+
+        <p>
+            نظام التكامل والنشر المستمر (CI/CD) المدمج، يشغّل حاليًا أكثر
+            من 71 مليون مهمة يوميًا وفق تقديرات 2026. لأي مشروع مفتوح
+            المصدر، هذا يعني إمكانية أتمتة كل شيء تقريبًا مجانًا:
+        </p>
+
+        <ul>
+            <li>تشغيل الاختبارات تلقائيًا على كل طلب سحب قبل الدمج</li>
+            <li>بناء ونشر إصدارات جديدة من البرنامج تلقائيًا عند كل وسم إصدار</li>
+            <li>فحص أمني آلي للكود بحثًا عن ثغرات معروفة أو تسريب مفاتيح سرية</li>
+        </ul>
+
+        <p>
+            قبل توفر هذه الأدوات مجانًا ومدمجة، كانت المشاريع الصغيرة
+            تفتقر غالبًا لهذا المستوى من الأتمتة، لأنه تطلب سابقًا خوادم
+            وأدوات منفصلة معقدة الإعداد.
+        </p>
+
+        <h2 id="discoverability">
+            الاكتشاف والسمعة: نجوم GitHub وSEO
+        </h2>
+
+        <p>
+            نظام "النجوم" (Stars) على GitHub أصبح مقياسًا اجتماعيًا فعليًا
+            لجودة وشعبية مشروع مفتوح المصدر، ونقطة مهمة أن كل نجمة تتطلب
+            حسابًا مسجلاً فعليًا، ما يقلل التلاعب مقارنة بمقاييس أخرى على
+            الإنترنت. بالإضافة لذلك، ملفات README الجيدة التوثيق تُفهرَس
+            في محركات البحث وتظهر في نتائج جوجل لسنوات، ما يمنح المشاريع
+            المفتوحة رؤية طويلة الأمد دون أي جهد تسويقي مدفوع.
+        </p>
+
+        <h2 id="funding">تمويل المشاريع: GitHub Sponsors</h2>
+
+        <p>
+            واحدة من أكبر مشاكل البرمجيات مفتوحة المصدر تاريخيًا: من يمول
+            الصيانة المستمرة لمشروع يستخدمه الملايين مجانًا؟ برنامج
+            GitHub Sponsors يتيح للمطورين تلقي تمويل مباشر من مستخدمي
+            مشاريعهم، وقد تجاوزت المدفوعات عبره 50 مليون دولار لأكثر من
+            49 ألف مطور حتى الآن، دون أن تأخذ GitHub عمولة على التبرعات
+            نفسها.
+        </p>
+
+        <h2 id="security">الأمان: من الثغرات إلى التحديثات التلقائية</h2>
+
+        <p>
+            GitHub يوفر طبقة أمان مدمجة أصبحت جزءًا لا يتجزأ من ثقة
+            المشاريع مفتوحة المصدر: تنبيهات تلقائية عند اكتشاف ثغرات في
+            التبعيات (Dependabot)، وفحص أمني للكود المصدري نفسه. وفق تقرير
+            2025، انخفض متوسط زمن إصلاح الثغرات الحرجة من 37 يومًا إلى 26
+            يومًا فقط، بفضل هذه الأدوات المدمجة مجانًا للمشاريع العامة.
+        </p>
+
+        <h2 id="career-impact">الأثر على المسار المهني للمطورين</h2>
+
+        <p>
+            بالنسبة لمطور فردي، سجل مساهمات علني على GitHub أصبح أحد أوضح
+            الأدلة العملية على مهاراته الفعلية، يفوق أحيانًا السيرة الذاتية
+            التقليدية. أصحاب العمل يراجعون مستودعات المرشحين مباشرة،
+            وملفات README الجيدة ومساهمات موثقة في مشاريع معروفة تمنح
+            مصداقية يصعب تزييفها.
+        </p>
+
+        <h2 id="alternatives">البدائل الموضوعية: GitLab وCodeberg وغيرها</h2>
+
+        <p>
+            بموضوعية، GitHub ليس الخيار الوحيد، ولبعض المشاريع أسباب
+            وجيهة للابتعاد عنه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>GitLab</strong>: بديل قوي يقدّم أدوات DevOps متكاملة
+                أعمق أحيانًا، ويوفر خيار الاستضافة الذاتية الكاملة لمن
+                يريد تحكمًا مطلقًا في بنيته التحتية
+            </li>
+            <li>
+                <strong>Codeberg</strong>: منصة غير ربحية أوروبية، تستضيف
+                حاليًا أكثر من 300 ألف مستودع، وتجذب مشاريع تفضّل بديلاً
+                مستقلاً تمامًا عن مايكروسوفت
+            </li>
+            <li>
+                <strong>Forgejo وGitea</strong>: برمجيات مفتوحة المصدر
+                يمكنك استضافتها بنفسك بالكامل، لأقصى استقلالية ممكنة عن أي
+                طرف ثالث
+            </li>
+        </ul>
+
+        <p>
+            رغم وجود هذه البدائل الجادة، لا تُظهر الأرقام أي "هجرة جماعية"
+            حقيقية عن GitHub حتى الآن؛ المنصة أضافت أكثر من 36 مليون مطور
+            جديد في 2025 وحدها.
+        </p>
+
+        <h2 id="comparison-table">جدول مقارنة سريع بين المنصات</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المنصة</th>
+                        <th class="px-4 py-2 font-semibold">الجهة المالكة</th>
+                        <th class="px-4 py-2 font-semibold">نقطة القوة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">GitHub</td>
+                        <td class="px-4 py-2">Microsoft</td>
+                        <td class="px-4 py-2">أكبر مجتمع واكتشاف واسع</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">GitLab</td>
+                        <td class="px-4 py-2">GitLab Inc.</td>
+                        <td class="px-4 py-2">أدوات DevOps متكاملة عميقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Codeberg</td>
+                        <td class="px-4 py-2">منظمة غير ربحية</td>
+                        <td class="px-4 py-2">استقلالية كاملة عن الشركات الكبرى</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Gitea / Forgejo</td>
+                        <td class="px-4 py-2">مجتمعي (استضافة ذاتية)</td>
+                        <td class="px-4 py-2">تحكم كامل ببنيتك التحتية</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="external-resources">الروابط الرسمية</h2>
+
+        <ul>
+            <li><strong>GitHub:</strong> <a href="https://github.com/" target="_blank" rel="noopener noreferrer">github.com</a></li>
+            <li><strong>تقرير Octoverse السنوي الرسمي:</strong> <a href="https://octoverse.github.com/" target="_blank" rel="noopener noreferrer">octoverse.github.com</a></li>
+            <li><strong>GitHub Sponsors:</strong> <a href="https://github.com/sponsors" target="_blank" rel="noopener noreferrer">github.com/sponsors</a></li>
+            <li><strong>GitLab:</strong> <a href="https://gitlab.com/" target="_blank" rel="noopener noreferrer">gitlab.com</a></li>
+            <li><strong>Codeberg:</strong> <a href="https://codeberg.org/" target="_blank" rel="noopener noreferrer">codeberg.org</a></li>
+            <li><strong>Git (الأداة الأساسية):</strong> <a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer">git-scm.com</a></li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل GitHub مجاني للمشاريع مفتوحة المصدر؟</strong><br />
+            نعم بالكامل، بما في ذلك المستودعات العامة غير المحدودة، وGitHub
+            Actions بحد شهري مجاني سخي، وأدوات الأمان الأساسية.
+        </p>
+
+        <p>
+            <strong>هل استحواذ مايكروسوفت على GitHub أثّر على استقلاليته؟</strong><br />
+            عمليًا، استمر GitHub بالعمل كمنصة مفتوحة لكل المطورين دون
+            تفضيل واضح لتقنيات مايكروسوفت، رغم أن بعض المطورين لا يزالون
+            يفضلون بدائل أكثر استقلالية لأسباب مبدئية.
+        </p>
+
+        <p>
+            <strong>هل يمكنني استخدام Git دون حساب على GitHub إطلاقًا؟</strong><br />
+            نعم تمامًا، Git أداة محلية مستقلة بالكامل. GitHub فقط خدمة
+            استضافة اختيارية تضيف طبقة تعاون فوق Git.
+        </p>
+
+        <p>
+            <strong>ما الفرق العملي بين GitHub وGitLab لمشروع صغير؟</strong><br />
+            لمشروع مفتوح المصدر عادي، الفرق صغير جدًا في التجربة اليومية؛
+            GitHub يتفوق في حجم المجتمع والاكتشاف، بينما GitLab يقدّم أدوات
+            DevOps أعمق مدمجة لمن يحتاجها.
+        </p>
+    </PostLayout>
+</BaseLayout>

@@ -1,0 +1,395 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "what-is-oop", label: "ما هي البرمجة الكائنية التوجيهية؟" },
+  { id: "why-oop", label: "لماذا نستخدم OOP؟" },
+  { id: "classes-objects", label: "الفئات والكائنات" },
+  { id: "encapsulation", label: "التغليف (Encapsulation)" },
+  { id: "inheritance", label: "الوراثة (Inheritance)" },
+  { id: "polymorphism", label: "التعددية (Polymorphism)" },
+  { id: "abstraction", label: "التجرد (Abstraction)" },
+  { id: "composition", label: "التركيب (Composition)" },
+  { id: "solid", label: "مبادئ SOLID" },
+  { id: "design-patterns", label: "أنماط التصميم" },
+  { id: "examples", label: "أمثلة عملية" },
+  { id: "faq", label: "أسئلة شائعة" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "البرمجة الكائنية التوجيهية: دليل شامل",
+  description: "شرح مفصل لمفاهيم البرمجة الكائنية التوجيهية (OOP): الفئات، الكائنات، التغليف، الوراثة، التعددية، مبادئ SOLID، وأنماط التصميم.",
+  tags: ["البرمجة الكائنية", "OOP", "Object Oriented Programming", "الفئات", "الكائنات", "الوراثة", "التغليف"],
+  category: ["برمجة", "موسوعة"],
+  thumbnail: "/images/oop-guide.webp",
+  parent: { title: "أساسيات البرمجة", href: "/wiki/programming-fundamentals/" },
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/object-oriented-programming/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+
+  <section id="what-is-oop" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ما هي البرمجة الكائنية التوجيهية؟</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      البرمجة الكائنية التوجيهية (Object-Oriented Programming أو اختصاراً OOP) هي نمط من أنماط البرمجة يعتمد على مفهوم <strong>الكائنات</strong> (Objects). بدلاً من كتابة الكود كسلسلة من التعليمات، تقوم بتقسيم البرنامج إلى وحدات مستقلة تمثل الأشياء الحقيقية أو المفاهيم المجردة.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      فكرة OOP الأساسية هي تعكس الطريقة التي نفكر بها في العالم الحقيقي. عندما ننظر إلى أي شيء حولنا، نراه كائن له خصائص (مثل اللون والحجم) وسلوكيات (مثل التحرك أو التغير). البرمجة الكائنية تتيح لك تمثيل هذه الأشياء في الكود البرمجي بشكل طبيعي ومنطقي.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أكثر لغات OOP شيوعاً: Python و Java و C++ و C# و Ruby. جميع هذه اللغات تدعم مفاهيم OOP الأساسية، على الرغم من اختلاف تنفيذها في كل لغة.
+    </p>
+  </section>
+
+  <section id="why-oop" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">لماذا نستخدم OOP؟</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      البرمجة الكائنية توفر العديد من المزايا التي تجعل الكود أسهل في القراءة والصيانة والتوسع. من أبرز هذه المزايا:
+    </p>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>تنظيم الكود:</strong> تقسيم البرنامج إلى وحدات منطقية مستقلة</li>
+      <li><strong>إعادة الاستخدام:</strong> استخدام نفس الكود في أماكن متعددة عبر الوراثة</li>
+      <li><strong>الصيانة:</strong> سهولة تعديل جزء واحد دون التأثير على الأجزاء الأخرى</li>
+      <li><strong>قابلية التوسع:</strong> إضافة ميزات جديدة بسهولة عبر الوراثة والتركيب</li>
+      <li><strong>ال debug:</strong> اكتشاف الأخطاء أسهل عندما يكون الكود منظماً في وحدات</li>
+    </ul>
+  </section>
+
+  <section id="classes-objects" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الفئات والكائنات</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>الفئة (Class)</strong> هي القالب أو المخطط الذي يتم إنشاء الكائنات منه. تحدد الفئة الخصائص (البيانات) والسلوكيات (الدوال) التي سيملكها الكائن.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>الكائن (Object)</strong> هو النسخة الفعلية من الفئة. يمكنك التفكير في الفئة كقالب صب، والكائن هو المنتج النهائي الذي يخرج من هذا القالب.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مثال عملي:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># تعريف فئة
+class Car:
+    def __init__(self, brand, model, year):
+        self.brand = brand    # خاصية
+        self.model = model    # خاصية
+        self.year = year      # خاصية
+        self.speed = 0        # خاصية افتراضية
+
+    def drive(self, speed):   # سلوك (دالة)
+        self.speed = speed
+
+    def stop(self):           # سلوك (دالة)
+        self.speed = 0
+
+# إنشاء كائنات من الفئة
+car1 = Car("Toyota", "Camry", 2024)
+car2 = Car("Honda", "Civic", 2023)
+
+# استخدام الكائنات
+car1.drive(100)
+print(car1.speed)  # الناتج: 100</code></pre>
+    </div>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      في هذا المثال، <code>Car</code> هي الفئة (القالب)، و <code>car1</code> و <code>car2</code> هما كائنات (نسخ فعلية) من هذه الفئة. كل كائن له خصائصه وقيمته الخاصة.
+    </p>
+  </section>
+
+  <section id="encapsulation" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">التغليف (Encapsulation)</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التغليف هو مبدأ يختبئ البيانات والوظائف داخل الكائن، ويسمح بالوصول إليها فقط عبر واجهة محددة. هذا يحمي البيانات من التعديل العشوائي ويضمن سلامة البيانات.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      في Python، يتم التغليف باستخدام:
+    </p>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>خاص (private):</strong> يبدأ بشرطتين <code>__variable</code> — لا يمكن الوصول إليه من خارج الفئة</li>
+      <li><strong>محمي (protected):</strong> يبدأ بشرطة واحدة <code>_variable</code> — يمكن الوصول إليه لكنه للداخل فقط بالأعراف</li>
+      <li><strong>عام (public):</strong> بدون شروط <code>variable</code> — يمكن الوصول إليه من أي مكان</li>
+    </ul>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مثال:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>class BankAccount:
+    def __init__(self, balance):
+        self.__balance = balance  # خاص (private)
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.__balance += amount
+
+    def get_balance(self):       # واجهة للوصول
+        return self.__balance
+
+account = BankAccount(1000)
+account.deposit(500)
+print(account.get_balance())    # 1500
+# print(account.__balance)      # خطأ! لا يمكن الوصول المباشر</code></pre>
+    </div>
+  </section>
+
+  <section id="inheritance" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الوراثة (Inheritance)</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الوراثة تتيح لإنشاء فئة جديدة بناءً على فئة موجودة. الفئة الجديدة (الفئة الابنة) ترث جميع الخصائص والسلوكيات من الفئة الأصلية (الفئة الأب)، ويمكنها إضافة خصائص وسلوكيات جديدة أو تعديل الموجود منها.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الوراثة تساعد على إعادة استخدام الكود وتقلل التكرار. بدلاً من كتابة نفس الكود عدة مرات، يمكنك وضعه في فئة أب وتراثه في الفئات الابنة.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مثال:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># فئة أب
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        pass
+
+# فئة ابنة
+class Dog(Animal):
+    def speak(self):
+    return f"&#123;self.name&#125; يقول: ياو!"
+
+class Cat(Animal):
+    def speak(self):
+    return f"&#123;self.name&#125; يقول: مياو!"
+
+# استخدام الوراثة
+dog = Dog("بيتي")
+cat = Cat("نيمو")
+
+print(dog.speak())  # بيتي يقول: ياو!
+print(cat.speak())  # نيمو يقول: مياو!</code></pre>
+    </div>
+  </section>
+
+  <section id="polymorphism" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">التعددية (Polymorphism)</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التعددية تعني أن نفس الدالة يمكن أن تعمل بطرق مختلفة حسب نوع الكائن المستخدم. هذا يتيح لك كتابة كود مرن وقابل للتوسع.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هناك نوعان رئيسيان من التعددية: التعددية الفرعية (compile-time) والتعددية اللحظية (runtime). في Python، نستخدم التعددية اللحظية بشكل أساسي.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مثال:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>class Circle:
+    def __init__(self, radius):
+        self.radius = radius
+
+    def area(self):
+        return 3.14 * self.radius ** 2
+
+class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def area(self):
+        return self.width * self.height
+
+# نفس الدالة، سلوك مختلف حسب الكائن
+shapes = [Circle(5), Rectangle(4, 6)]
+
+for shape in shapes:
+  print(f"المساحة: &#123;shape.area()&#125;")</code></pre>
+    </div>
+  </section>
+
+  <section id="abstraction" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">التجرد (Abstraction)</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التجرد يعني إخفاء التفاصيل المعقدة وإظهار الوظائف الأساسية فقط. المستخدم لا يحتاج إلى معرفة كيف تعمل الدالة داخلياً، يكفي أن يعرف كيف يستخدمها.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      على سبيل المثال، عندما تستخدم هاتفك، أنت تضغط على زر الكاميرا لالتقاط صورة. لا تحتاج إلى معرفة كيف تعمل الكاميرا داخلياً (العدسة، المستشعر، المعالج). هذا هو التجرد في العمل.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مثال باستخدام ABC في Python:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Circle(Shape):
+    def __init__(self, radius):
+        self.radius = radius
+
+    def area(self):
+        return 3.14 * self.radius ** 2
+
+# لا يمكن إنشاء كائن من Shape مباشرة
+# shape = Shape()  # خطأ!</code></pre>
+    </div>
+  </section>
+
+  <section id="composition" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">التركيب (Composition)</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التركيب هو مبدأ يoman إنشاء كائنات معقدة عن طريق دمج كائنات أبسط. بدلاً من استخدام الوراثة، يمكنك إضافة كائنات أخرى كخصائص داخل كائن آخر.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      القاعدة الذهبية هي: "افضّل التركيب على الوراثة" (Favor Composition over Inheritance). الوراثة تخلق ارتباطاً وثيقاً بين الفئات، بينما التركيب يوفر مرونة أكبر.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مثال:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>class Engine:
+    def __init__(self, horsepower):
+        self.horsepower = horsepower
+
+    def start(self):
+        return "المحرك يعمل!"
+
+class Car:
+    def __init__(self, brand, horsepower):
+        self.brand = brand
+        self.engine = Engine(horsepower)  # تركيب
+
+    def start(self):
+      return f"&#123;self.brand&#125;: &#123;self.engine.start()&#125;"
+
+car = Car("Toyota", 150)
+print(car.start())  # Toyota: المحرك يعمل!</code></pre>
+    </div>
+  </section>
+
+  <section id="solid" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">مبادئ SOLID</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مبادئ SOLID هي خمسة مبادئ أساسية لتصميم البرمجيات الكائنية بشكل صحيح. هذه المبادئ تساعد في كتابة كود أسهل في الفهم والصيانة والتوسع.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-navy-100 dark:border-zinc-700">
+        <thead>
+          <tr class="bg-navy-50 dark:bg-zinc-800/50">
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">المبدأ</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">الاسم</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">الشرح</th>
+          </tr>
+        </thead>
+        <tbody class="font-body text-navy-600 dark:text-zinc-300">
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-bold">S</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مبدأ المسؤولية الواحدة (Single Responsibility)</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">كل فئة يجب أن تتحمل مسؤولية واحدة فقط</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-bold">O</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مبدأ الفتح/الإغلاق (Open/Closed)</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الكائنات مفتوحة للامتداد، مغلقة للتعديل</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-bold">L</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مبدأ بطلسكي (Liskov Substitution)</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">يمكن استبدال الكائنات الأب بكائنات ابنة دون تغيير السلوك</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-bold">I</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مبدأ الفصل (Interface Segregation)</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">لا يجب إجبار الفئات على تنفيذ واجهات لا تستخدمها</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-bold">D</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مبدأ عكس الاعتماد (Dependency Inversion)</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الเฟئات يجب أن تعتمد على التجريدات وليس التنفيذات</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="design-patterns" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أنماط التصميم</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      أنماط التصميم (Design Patterns) هي حلول جاهزة لمشاكل شائعة في تصميم البرمجيات. هذه الأنماط تطورت على مدى سنوات من الخبرة في بناء الأنظمة البرمجية.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أكثر الأنماط شيوعاً:
+    </p>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>Singleton:</strong> ضمان عدم وجود أكثر من كائن واحد من نفس الفئة</li>
+      <li><strong>Factory:</strong> إنشاء كائنات دون تحديد الفئة الدقيقة مسبقاً</li>
+      <li><strong>Observer:</strong> إعلام الكائنات المشتركة عند تغيير حالة كائن آخر</li>
+      <li><strong>Strategy:</strong> تعريف سلسلة من الخوارزميات وجعلها قابلة للتبادل</li>
+      <li><strong>Decorator:</strong> إضافة سلوكيات جديدة للكائنات ديناميكياً</li>
+    </ul>
+  </section>
+
+  <section id="examples" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أمثلة عملية</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لنر كيف تُستخدم مفاهيم OOP في مشاريع حقيقية:
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">نظام إدارة متجر:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>class Product:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+class Cart:
+    def __init__(self):
+        self.items = []
+
+    def add_product(self, product):
+        self.items.append(product)
+
+    def total(self):
+        return sum(p.price for p in self.items)
+
+class Customer:
+    def __init__(self, name):
+        self.name = name
+        self.cart = Cart()  # تركيب
+
+# استخدام
+customer = Customer("أحمد")
+customer.cart.add_product(Product("لابتوب", 50000))
+customer.cart.add_product(Product("ماوس", 150))
+print(f"المجموع: &#123;customer.cart.total()&#125;")</code></pre>
+    </div>
+  </section>
+
+  <section id="faq" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أسئلة شائعة عن البرمجة الكائنية</h2>
+    <div class="space-y-6">
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يجب أن أستخدم OOP في كل مشاريعي؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">ليس بالضرورة. OOP ممتازة للمشاريع الكبيرة والمعقدة، لكن للبرامج البسيطة أو السكريبتات، البرمجة الوظيفية قد تكون أس وأسرع. اختر النمط المناسب حسب حجم وطبيعة المشروع.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">ما الفرق بين الوراثة والتركيب؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">الوراثة تخلق ارتباطاً وثيقاً بين الفئات (is-a relationship)، بينما التركيب يoman إضافة كائنات أخرى كخصائص (has-a relationship). التركيب يوفر مرونة أكبر ويُفضل عادةً.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل Python لغة OOP كاملة؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">نعم، Python تدعم OOP بالكامل، لكنها أيضاً تدعم البرمجة الوظيفية والبرمجة الإجرائية. يمكنك استخدام أي نمط أو مزيج منها حسب احتياجاتك.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">كيف أبدأ في تعلم OOP؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">ابدأ بفهم الفئات والكائنات أولاً، ثم انتقل إلى مفاهيم التغليف والوراثة. بعد ذلك، تعلم مبادئ SOLID وأنماط التصميم. الممارسة على مشاريع صغيرة أفضل طريقة للتعلم.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+    <ul class="space-y-3">
+      <li><a href="/wiki/programming-fundamentals/" class="underline">أساسيات البرمجة</a> — دليلك الشامل لبدء رحلتك في عالم البرمجة</li>
+      <li><a href="/posts/best-10-open-source-programming-languages/" class="underline">أفضل 10 لغات برمجة مفتوحة المصدر</a> — دليل شامل لأفضل لغات البرمجة المفتوحة المصدر</li>
+      <li><a href="/posts/python-open-source-complete-guide/" class="underline">دليل Python الشامل</a> — دليل مفصّل عن لغة Python من الأساسيات إلى المتقدم</li>
+      <li><a href="/wiki/open-source-libraries/" class="underline">أشهر مكتبات المصادر المفتوحة</a> — قائمة شاملة بأهم المكتبات والمكتبات المفتوحة المصدر</li>
+    </ul>
+  </section>
+
+</WikiLayout>
+</BaseLayout>

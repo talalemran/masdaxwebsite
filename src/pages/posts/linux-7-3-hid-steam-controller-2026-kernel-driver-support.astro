@@ -1,0 +1,197 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "linux-7-3-hid-steam-controller-2026-kernel-driver-support",
+    title: "لينكس 7.3 يدمج دعم التحكم بـ Steam 2026 و تحسينات HID جديدة",
+    metaTitle: "لينكس 7.3 يدعم وحدة التحكم Steam 2026 و أجهزة إدخال جديدة",
+    description:
+        "لينكس 7.3 يدمج دعم نواة جديد لوحدة تحكم Steam 2026 — تحديثات HID شاملة تضيف دعم HyperX QuadCast 2 و MSI Claw Gamepad و أزرار Logitech HID++ القابلة لإعادة البرمجة وتحسينات أجهزة الاستشعار.",
+    keywords: [
+        "Linux 7.3",
+        "Steam Controller 2026",
+        "HID",
+        "Valve",
+        "لينكس",
+        "وحدة التحكم",
+        "HyperX QuadCast 2",
+        "MSI Claw",
+        "Logitech",
+        "نواة لينكس",
+    ],
+    category: ["لينكس","ألعاب وترفيه"],
+    author: "طلال عمران",
+    date: "1 سبتمبر 2026",
+    pubDate: new Date("2026-09-01"),
+    tags: ["Linux 7.3", "Steam Controller", "HID", "لينكس", "أجهزة إدخال"],
+    thumbnail: "/images/linux-7-3-hid-steam-controller-2026-kernel-driver-support.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            تم دمج تحديثات <strong>نظام HID الفرعي</strong> مؤخراً في
+            <strong>نافذة دمج لينكس 7.3</strong> المستمرة. من بين إضافات الأجهزة الأخرى،
+            <strong>وحدة التحكم Steam 2026 الجديدة</strong> ترى
+            
+                <a href="https://www.phoronix.com/search/Linux+7.3"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>دعم برنامج تشغيل نواة أولي</strong>
+            </a>
+            .
+        </p>
+
+        <h2>وحدة التحكم Steam 2026 الجديدة</h2>
+
+        <p>
+            
+                <a href="https://www.phoronix.com/news/Steam-Controller-Shipping"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>في مايو، بدأت وحدة التحكم Steam الجديدة في الشحن</strong>
+            </a>
+            وكانت موجودة بالطبع منذ الإطلاق تحت Steam مع جميع المنصات الرئيسية. بعد ذلك،
+            
+                <a href="https://www.phoronix.com/news/SDL-Steam-Controller-2026"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>مكتبة SDL أضافت دعم وحدة التحكم Steam</strong>
+            </a>
+            للاستخدام خارج Steam، مشابهاً لدعم وحدة التحكم Steam الأصلي.
+        </p>
+
+        <p>
+            
+                <a href="https://www.phoronix.com/news/Steam-Controller-Linux-4.18"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>مقدم مرة أخرى في 2015، برنامج تشغيل نواة لينكس لوحدة التحكم Steam</strong>
+            </a>
+            للاستخدام كـ برنامج تشغيل HID عادي خارج البرنامج الذي يعتمد على مشغل Steam أو SDL.
+            هذا الدعم الآن موسّع لدعم وحدة التحكم الجديدة.
+        </p>
+
+        <h2>عمل Vicki Pfau على تحديث البرنامج التشغيل</h2>
+
+        <p>
+            <strong>Vicki Pfau عملت على الرقع لتحديث برنامج تشغيل hid-steam</strong> ودعم وحدة
+            التحكم 2026 بحيث تكون <strong>في نفس مستوى الدعم المتاح للموديل الأصلي من 2015</strong>
+            مع برنامج التشغيل هذا. كل ذلك العمل الآن موجود في
+            
+                <a href="https://www.phoronix.com/news/Linux-7.3-Steam-Controller"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>لينكس 7.3 الرئيسي</strong>
+            </a>
+            .
+        </p>
+
+        <p>
+            Vicki أيضاً عالجت
+            
+                <a href="https://www.phoronix.com/news/Linux-7.3-Steam-Controller"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>فجوة طويلة الأمد في البرنامج التشغيل الأصلي لوحدة التحكم Steam</strong>
+            </a>
+            فيما يتعلق بدعم المستشعرات.
+        </p>
+
+        <h2>تحديثات HID الإضافية</h2>
+
+        <p>
+            تحديثات HID لـ لينكس 7.3 تشمل عدة إضافات جديدة:
+        </p>
+
+        <ul>
+            <li>
+                
+                    <a href="https://www.phoronix.com/news/HID-HyperX-QuadCast-2-Linux-7.3"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>برنامج تشغيل HID-HyperX</strong>
+                </a>
+                لحالة كتم الصوت على ميكروفون
+                <strong>HyperX QuadCast 2 USB gaming</strong>
+            </li>
+            <li>
+                
+                    <a href="https://www.phoronix.com/news/MSI-Claw-Gamepad-Linux-7.3"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>برنامج تشغيل MSI Claw Gamepad</strong>
+                </a>
+            </li>
+            <li>
+                
+                    <a href="https://www.phoronix.com/news/Linux-7.3-HIDPP-Reprogrammable"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>دعم أزرار Logitech HID++ 2.0 القابلة لإعادة البرمجة</strong>
+                </a>
+            </li>
+            <li>
+                <strong>درايفر AMD Sensor Fusion Hub (SFH) أضاف دعم لمفتاح وضع الجهاز اللوحي</strong>
+                على الأجهزة ذات الصلة
+            </li>
+        </ul>
+
+        <h2>القائمة الكاملة للتحديثات</h2>
+
+        <p>
+            
+                <a href="https://lore.kernel.org/lkml/99pnqn61-qs7s-26o7-o05q-n18485pqs3q6@xreary.bet/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                القائمة الكاملة لتحديثات HID التي تم دمجها في نواة لينكس 7.3 متاحة هنا
+            </a>
+            .
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            <strong>لينكس 7.3 يجلب دعماً شاملاً لأجهزة إدخال متنوعة</strong> من وحدات التحكم إلى
+            الأجهزة اللاسلكية والميكروفونات. دعم وحدة التحكم Steam 2026 يثبت التزام لينكس
+            <strong>بدعم أحدث أجهزة Valve والمنصات الأخرى</strong>. هذا
+            <strong>يعكس استمرار لينكس في تحسين تجربة المستخدم للاعبين والمستخدمين العاديين</strong>.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.phoronix.com/news/Linux-7.3-HID"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Phoronix
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

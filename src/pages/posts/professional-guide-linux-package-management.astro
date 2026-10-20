@@ -1,0 +1,462 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "professional-guide-linux-package-management",
+    title: "دليل المحترفين لإدارة الحزم في لينكس: شرح شامل ومتقدم",
+    metaTitle: "دليل المحترفين الشامل لإدارة الحزم في لينكس لعام 2026",
+    description:
+        "دليل شامل ومتقدم لإدارة الحزم في لينكس: APT وDNF5 وPacman وZypper، بالإضافة لأنظمة الحزم الشاملة Flatpak وSnap وAppImage، مع مقارنة تقنية عميقة ونصائح للمحترفين.",
+    keywords: [
+        "إدارة الحزم لينكس",
+        "APT",
+        "DNF5",
+        "Pacman",
+        "Zypper",
+        "Flatpak",
+        "Snap",
+        "AppImage",
+        "مدير الحزم",
+        "RPM DEB",
+    ],
+    category: ["لينكس", "مقالات"],
+    author: "طلال عمران",
+    date: "23 سبتمبر 2026",
+    pubDate: new Date("2026-09-23"),
+    tags: ["إدارة الحزم", "APT", "Pacman", "Flatpak", "Snap"],
+    thumbnail: "/images/professional-guide-linux-package-management.webp",
+};
+
+const tocItems = [
+    { id: "what-is-package-management", label: "ما هي إدارة الحزم أصلاً، ولماذا تهم المحترف؟" },
+    { id: "package-formats", label: "تنسيقات الحزم الأساسية: DEB وRPM وأخرى" },
+    { id: "apt", label: "APT: مدير حزم عائلة Debian وأوبونتو" },
+    { id: "dnf5", label: "DNF5: الجيل الجديد لمدير حزم فيدورا" },
+    { id: "pacman", label: "Pacman: أسرع مدير حزم بين التوزيعات الكبرى" },
+    { id: "zypper", label: "Zypper: مدير حزم openSUSE" },
+    { id: "universal-formats", label: "أنظمة الحزم الشاملة: Flatpak وSnap وAppImage" },
+    { id: "flatpak-vs-snap", label: "Flatpak مقابل Snap: الفروقات التقنية الحقيقية" },
+    { id: "dependency-resolution", label: "حل التبعيات: كيف يعمل فعليًا تحت الغطاء؟" },
+    { id: "professional-practices", label: "ممارسات احترافية في إدارة الحزم" },
+    { id: "comparison-table", label: "جدول مقارنة شامل" },
+    { id: "troubleshooting", label: "حل المشاكل الشائعة" },
+    { id: "external-resources", label: "الروابط الرسمية والتوثيق" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            الفارق بين مستخدم لينكس عادي ومحترف حقيقي غالبًا لا يظهر في
+            التطبيقات التي يستخدمها، بل في مدى فهمه لما يحدث خلف الكواليس
+            حين يكتب أمر تثبيت واحد. إدارة الحزم ليست مجرد "تثبيت برنامج"،
+            بل نظام كامل لحل التبعيات، التحقق من التوقيعات الأمنية، وإدارة
+            دورة حياة كل مكوّن في نظامك.
+        </p>
+
+        <p>
+            هذا الدليل يغطي أنظمة إدارة الحزم الأساسية في التوزيعات الكبرى،
+            أنظمة الحزم الشاملة الحديثة، وممارسات احترافية تفيدك بغض النظر
+            عن التوزيعة التي تستخدمها.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="what-is-package-management">
+            ما هي إدارة الحزم أصلاً، ولماذا تهم المحترف؟
+        </h2>
+
+        <p>
+            <img
+                src="/images/articles/professional-guide-linux-package-management/01.webp"
+                alt="تثبيت حزمة عبر مدير الحزم في طرفية لينكس"
+                width="1200"
+                height="625"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            مدير الحزم (Package Manager) برنامج يتولى تثبيت البرمجيات
+            وتحديثها وحذفها، مع حل كل التبعيات (Dependencies) المطلوبة
+            تلقائيًا. الفرق عن نموذج ويندوز التقليدي (تحميل ملف تنفيذي من
+            موقع الشركة) جوهري: كل الحزم تأتي من مستودعات مركزية موثوقة،
+            موقّعة رقميًا، ومُختبرة قبل النشر.
+        </p>
+
+        <p>
+            بالنسبة للمحترف، فهم هذا النظام يعني القدرة على تشخيص تعارضات
+            التبعيات، استعادة نظام معطّل، وإدارة إصدارات دقيقة من البرمجيات
+            لبيئات إنتاج حساسة، لا مجرد الاعتماد الأعمى على أمر "تثبيت"
+            والأمل ألا تحدث مشكلة.
+        </p>
+
+        <h2 id="package-formats">تنسيقات الحزم الأساسية: DEB وRPM وأخرى</h2>
+
+        <p>
+            كل حزمة هي أرشيف مضغوط يحتوي الملفات التنفيذية، بيانات وصفية
+            (Metadata) عن التبعيات المطلوبة، ونصوص تثبيت (Scripts) تُنفَّذ
+            قبل وبعد التثبيت. تنسيقان يهيمنان على المشهد:
+        </p>
+
+        <ul>
+            <li>
+                <strong>DEB</strong>: تنسيق Debian الأصلي، تستخدمه أوبونتو
+                وLinux Mint وMX Linux وعشرات التوزيعات المشتقة
+            </li>
+            <li>
+                <strong>RPM</strong>: طوّرته Red Hat، تستخدمه فيدورا
+                وopenSUSE وRHEL ومشتقاتها
+            </li>
+        </ul>
+
+        <p>
+            هذان التنسيقان غير متوافقين مباشرة مع بعضهما؛ حزمة DEB لن
+            تعمل على نظام RPM دون تحويل (عبر أدوات مثل alien، وهذا غير
+            مُنصح به احترافيًا لأنه قد يسبب تعارضات غير متوقعة).
+        </p>
+
+        <h2 id="apt">APT: مدير حزم عائلة Debian وأوبونتو</h2>
+
+        <p>
+            APT (Advanced Package Tool) الطبقة العليا التي تدير حزم DEB،
+            وتتعامل مع حل التبعيات والاتصال بالمستودعات، بينما أداة
+            <code>dpkg</code> الأدنى مستوى تتعامل مع تثبيت الحزمة الفردية
+            نفسها مباشرة.
+        </p>
+
+        <ul>
+            <li><code>apt update</code>: يحدّث قائمة الحزم المتاحة من المستودعات، دون تثبيت أي شيء فعليًا</li>
+            <li><code>apt upgrade</code>: يُحدّث كل الحزم المثبتة لأحدث إصدار متاح</li>
+            <li><code>apt install اسم_الحزمة</code>: يثبّت حزمة محددة مع كل تبعياتها</li>
+            <li><code>apt autoremove</code>: يحذف الحزم التي كانت تبعيات لحزمة أخرى لم تعد مطلوبة</li>
+        </ul>
+
+        <p>
+            نصيحة احترافية: استخدم <code>apt-cache policy اسم_الحزمة</code>
+            لمعرفة كل الإصدارات المتاحة من حزمة معينة عبر مستودعاتك، مفيد
+            جدًا عند الحاجة لتثبيت إصدار محدد غير الأحدث.
+        </p>
+
+        <h2 id="dnf5">DNF5: الجيل الجديد لمدير حزم فيدورا</h2>
+
+        <p>
+            DNF (خليفة YUM القديم) يدير حزم RPM في فيدورا وRHEL. الجيل
+            الحالي، DNF5، مكتوب بلغة ++C بدلاً من بايثون بالكامل، وأصبح
+            الافتراضي في فيدورا منذ الإصدار 41، مع أداء أسرع بشكل ملحوظ في
+            حل التبعيات.
+        </p>
+
+        <ul>
+            <li><code>dnf install اسم_الحزمة</code>: تثبيت حزمة مع حل تبعياتها</li>
+            <li><code>dnf history</code>: يعرض سجل كامل لكل عملية تثبيت أو حذف سابقة، مع إمكانية التراجع عنها</li>
+            <li><code>dnf provides اسم_ملف</code>: يحدد أي حزمة توفر ملفًا معينًا، مفيد جدًا لتشخيص مكتبات مفقودة</li>
+        </ul>
+
+        <p>
+            ميزة <code>dnf history undo</code> تحديدًا قيّمة جدًا للمحترفين:
+            تراجع فوري عن أي عملية تثبيت أو تحديث سببت مشكلة، دون الحاجة
+            لتذكر كل التفاصيل يدويًا.
+        </p>
+
+        <h2 id="pacman">Pacman: أسرع مدير حزم بين التوزيعات الكبرى</h2>
+
+        <p>
+            مدير حزم Arch Linux، ومعروف بسرعته الاستثنائية وبساطة بنيته
+            الداخلية. يعتمد نظام تسمية أوامر مختصر جدًا (أحرف مفردة مسبوقة
+            بشرطة).
+        </p>
+
+        <ul>
+            <li><code>pacman -Syu</code>: يحدّث قائمة المستودعات ويرقّي النظام بالكامل في أمر واحد</li>
+            <li><code>pacman -S اسم_الحزمة</code>: تثبيت حزمة جديدة</li>
+            <li><code>pacman -Rns اسم_الحزمة</code>: حذف حزمة مع تبعياتها اليتيمة وملفات الإعداد المرتبطة</li>
+            <li><code>pacman -Qdt</code>: يعرض الحزم اليتيمة (تبعيات سابقة لم تعد مطلوبة) لتنظيف النظام</li>
+        </ul>
+
+        <p>
+            القاعدة الذهبية لمستخدمي pacman المحترفين: لا تُحدِّث جزئيًا
+            أبدًا (تحديث حزمة واحدة فقط دون الباقي)، لأن هذا قد يكسر تبعيات
+            مشتركة في نظام Rolling Release. استخدم <code>-Syu</code> دائمًا
+            كوحدة واحدة متكاملة.
+        </p>
+
+        <h2 id="zypper">Zypper: مدير حزم openSUSE</h2>
+
+        <p>
+            يدير حزم RPM في openSUSE، ومعروف بمحرك حل تبعيات قوي جدًا
+            (libzypp) قادر على التعامل مع سيناريوهات تعارض معقدة عبر عدة
+            مستودعات دون تدخل يدوي مكثف.
+        </p>
+
+        <ul>
+            <li><code>zypper install اسم_الحزمة</code>: تثبيت حزمة</li>
+            <li><code>zypper dup</code>: ترقية توزيع كاملة (Distribution Upgrade)، مهمة تحديدًا لمستخدمي Tumbleweed</li>
+            <li><code>zypper search اسم</code>: بحث عن حزمة بالاسم أو الوصف</li>
+        </ul>
+
+        <h2 id="universal-formats">
+            أنظمة الحزم الشاملة: Flatpak وSnap وAppImage
+        </h2>
+
+        <p>
+            بدلاً من الاعتماد على تنسيق حزمة خاص بكل توزيعة، ظهرت أنظمة
+            "شاملة" (Universal) تعمل على أي توزيعة لينكس تقريبًا، عبر عزل
+            كل برنامج في بيئته الخاصة (Sandbox) بتبعياته المدمجة معه.
+        </p>
+
+        <ul>
+            <li>
+                <strong>Flatpak</strong>: نظام لامركزي، تديره مؤسسة مستقلة،
+                ويعتمد مستودع Flathub المجتمعي كمصدر رئيسي للحزم
+            </li>
+            <li>
+                <strong>Snap</strong>: طوّرته Canonical (شركة أوبونتو)،
+                ومركزي بالكامل عبر متجر Snap Store الخاص بها
+            </li>
+            <li>
+                <strong>AppImage</strong>: أبسط الثلاثة، ملف تنفيذي واحد
+                محمول، لا يحتاج تثبيتًا أو صلاحيات مدير، تشغّله مباشرة
+            </li>
+        </ul>
+
+        <h2 id="flatpak-vs-snap">
+            Flatpak مقابل Snap: الفروقات التقنية الحقيقية
+        </h2>
+
+        <p>
+            هذا الجدل مستمر في مجتمع لينكس منذ سنوات، وله أساس تقني حقيقي
+            لا مجرد تفضيل شخصي:
+        </p>
+
+        <ul>
+            <li>
+                <strong>المركزية</strong>: مستودعات Flatpak متعددة ولا مركزية
+                (Flathub الأشهر لكن ليس الوحيد)، بينما متجر Snap يمر بالكامل
+                عبر خوادم Canonical حصريًا
+            </li>
+            <li>
+                <strong>زمن الإقلاع</strong>: تطبيقات Snap تاريخيًا كانت
+                أبطأ في الإقلاع الأول بسبب نظام الضغط (Squashfs)، رغم أن
+                التحسينات الحديثة قلّصت هذا الفارق
+            </li>
+            <li>
+                <strong>الرخصة</strong>: بنية Flatpak نفسها مفتوحة المصدر
+                بالكامل، بينما الخادم الخلفي لمتجر Snap (snap store backend)
+                ليس مفتوح المصدر، رغم أن عميل snapd نفسه مفتوح
+            </li>
+        </ul>
+
+        <p>
+            الخلاصة العملية: لا يوجد "أفضل مطلقًا"؛ Flatpak أكثر انتشارًا
+            في توزيعات مثل فيدورا وLinux Mint، وSnap افتراضي في أوبونتو
+            تحديدًا بحكم كونه مشروع الشركة المطورة لها.
+        </p>
+
+        <h2 id="dependency-resolution">
+            حل التبعيات: كيف يعمل فعليًا تحت الغطاء؟
+        </h2>
+
+        <p>
+            حين تطلب تثبيت برنامج، يفحص مدير الحزم قاعدة بيانات محلية
+            (مُحدَّثة من المستودعات) لمعرفة كل الحزم الأخرى التي يعتمد
+            عليها البرنامج، ثم تلك التي تعتمد عليها هي بدورها، وهكذا حتى
+            اكتمال الشجرة الكاملة. هذا يُسمى "حل التبعيات" (Dependency
+            Resolution)، وهو عملية حسابية معقدة تحاول إيجاد مجموعة إصدارات
+            متوافقة معًا دون أي تعارض.
+        </p>
+
+        <p>
+            حين تفشل هذه العملية (رسالة "Unable to resolve dependencies"
+            الشهيرة)، السبب غالبًا تعارض بين إصدارين مطلوبين من نفس
+            المكتبة من مصدرين مختلفين. الحل الاحترافي: فحص أي مستودع طرف
+            ثالث أضفته مؤخرًا قد يكون سبب التعارض، بدلاً من فرض التثبيت
+            بخيارات مثل <code>--force</code> التي تُخفي المشكلة دون حلها.
+        </p>
+
+        <h2 id="professional-practices">ممارسات احترافية في إدارة الحزم</h2>
+
+        <ul>
+            <li>
+                <strong>لا تخلط مستودعات طرف ثالث كثيرة</strong>: كل
+                مستودع إضافي يزيد احتمال تعارض التبعيات؛ أضف فقط ما تحتاجه
+                فعليًا
+            </li>
+            <li>
+                <strong>ثبّت البرامج التجريبية عبر Flatpak أو حاويات
+                معزولة</strong>: بدلاً من إضافتها لنظام الحزم الأساسي،
+                لتجنب تلويث بيئة النظام الرئيسية
+            </li>
+            <li>
+                <strong>راجع سجل التثبيت بانتظام</strong>: أوامر مثل
+                <code>dnf history</code> أو <code>pacman -Qdt</code>
+                تساعدك على تنظيف حزم متراكمة لم تعد مستخدمة
+            </li>
+            <li>
+                <strong>ثبّت الترقيات الكبرى في نافذة صيانة مخصصة</strong>،
+                لا في منتصف عمل حساس، خصوصًا مع توزيعات Rolling Release
+            </li>
+            <li>
+                <strong>احتفظ بنسخ احتياطية من قوائم الحزم</strong>
+                (<code>dpkg --get-selections</code> أو ما يعادلها) لإعادة
+                بناء نظامك بسرعة بعد إعادة تثبيت كاملة
+            </li>
+        </ul>
+
+        <h2 id="comparison-table">جدول مقارنة شامل</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المدير</th>
+                        <th class="px-4 py-2 font-semibold">التنسيق</th>
+                        <th class="px-4 py-2 font-semibold">التوزيعات</th>
+                        <th class="px-4 py-2 font-semibold">أبرز ميزة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">APT</td>
+                        <td class="px-4 py-2">DEB</td>
+                        <td class="px-4 py-2">Debian، أوبونتو، Mint</td>
+                        <td class="px-4 py-2">استقرار ونضج طويل الأمد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">DNF5</td>
+                        <td class="px-4 py-2">RPM</td>
+                        <td class="px-4 py-2">فيدورا، RHEL</td>
+                        <td class="px-4 py-2">تراجع سهل عبر history undo</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Pacman</td>
+                        <td class="px-4 py-2">حزم آرتش</td>
+                        <td class="px-4 py-2">Arch Linux ومشتقاته</td>
+                        <td class="px-4 py-2">سرعة أداء استثنائية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Zypper</td>
+                        <td class="px-4 py-2">RPM</td>
+                        <td class="px-4 py-2">openSUSE</td>
+                        <td class="px-4 py-2">محرك حل تبعيات قوي جدًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Flatpak</td>
+                        <td class="px-4 py-2">شامل معزول</td>
+                        <td class="px-4 py-2">كل التوزيعات تقريبًا</td>
+                        <td class="px-4 py-2">لامركزية ومفتوح المصدر بالكامل</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Snap</td>
+                        <td class="px-4 py-2">شامل معزول</td>
+                        <td class="px-4 py-2">كل التوزيعات (افتراضي في أوبونتو)</td>
+                        <td class="px-4 py-2">تكامل عميق مع أوبونتو</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="troubleshooting">حل المشاكل الشائعة</h2>
+
+        <ul>
+            <li>
+                <strong>"Broken packages" أو حزم مكسورة في APT</strong>:
+                جرّب <code>apt --fix-broken install</code> أولاً قبل أي
+                حل أكثر تدخلاً
+            </li>
+            <li>
+                <strong>تعارض توقيع GPG لمستودع</strong>: تأكد من صحة
+                مفتاح المستودع بدلاً من تعطيل التحقق الأمني بالكامل، وهو
+                خيار خطير لا يُنصح به احترافيًا
+            </li>
+            <li>
+                <strong>مساحة قرص ممتلئة بحزم قديمة مخبأة</strong>: أوامر
+                مثل <code>apt clean</code> أو <code>dnf clean all</code>
+                تحذف نسخ الحزم المؤقتة المخزّنة محليًا بعد التثبيت
+            </li>
+        </ul>
+
+        <h2 id="external-resources">الروابط الرسمية والتوثيق</h2>
+
+        <ul>
+            <li><strong>توثيق APT الرسمي (Debian):</strong> <a href="https://wiki.debian.org/Apt" target="_blank" rel="noopener noreferrer">wiki.debian.org/Apt</a></li>
+            <li><strong>توثيق DNF الرسمي:</strong> <a href="https://dnf.readthedocs.io/" target="_blank" rel="noopener noreferrer">dnf.readthedocs.io</a></li>
+            <li><strong>Pacman على ArchWiki:</strong> <a href="https://wiki.archlinux.org/title/Pacman" target="_blank" rel="noopener noreferrer">wiki.archlinux.org/title/Pacman</a></li>
+            <li><strong>توثيق Zypper (openSUSE):</strong> <a href="https://en.opensuse.org/SDB:Zypper_usage" target="_blank" rel="noopener noreferrer">en.opensuse.org/SDB:Zypper_usage</a></li>
+            <li><strong>Flatpak:</strong> <a href="https://flatpak.org/" target="_blank" rel="noopener noreferrer">flatpak.org</a></li>
+            <li><strong>Flathub (متجر Flatpak):</strong> <a href="https://flathub.org/" target="_blank" rel="noopener noreferrer">flathub.org</a></li>
+            <li><strong>Snapcraft (توثيق Snap):</strong> <a href="https://snapcraft.io/docs" target="_blank" rel="noopener noreferrer">snapcraft.io/docs</a></li>
+            <li><strong>AppImage:</strong> <a href="https://appimage.org/" target="_blank" rel="noopener noreferrer">appimage.org</a></li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل يمكنني استخدام أكثر من نظام حزم معًا على نفس التوزيعة؟</strong><br />
+            نعم تمامًا، وهذا شائع جدًا: مدير الحزم الأساسي (APT أو DNF)
+            للنظام الأساسي، وFlatpak أو Snap للتطبيقات المكتبية الإضافية.
+        </p>
+
+        <p>
+            <strong>لماذا بعض البرامج أبطأ في الفتح عبر Flatpak أو Snap؟</strong><br />
+            بسبب طبقة العزل (Sandboxing) الإضافية وتحميل التبعيات المدمجة
+            مع كل تطبيق بدلاً من مشاركتها مع النظام، وهذا ثمن الأمان
+            والعزل الإضافي الذي توفره هذه الأنظمة.
+        </p>
+
+        <p>
+            <strong>هل تحديث النظام بانتظام يستحق المخاطرة بكسر شيء ما؟</strong><br />
+            نعم على المدى الطويل، لأن التحديثات تحمل غالبًا إصلاحات أمنية
+            حرجة؛ المخاطرة الحقيقية تكمن في تجاهل التحديثات لفترة طويلة ثم
+            القيام بترقية ضخمة دفعة واحدة.
+        </p>
+
+        <p>
+            <strong>كيف أعرف أي مدير حزم تستخدمه توزيعتي بالضبط؟</strong><br />
+            تحقق من ملف <code>/etc/os-release</code> لمعرفة اسم التوزيعة
+            وقاعدتها، فتنسيق الحزم يتبع مباشرة عائلة التوزيعة (Debian،
+            Red Hat، Arch، أو SUSE).
+        </p>
+    </PostLayout>
+</BaseLayout>

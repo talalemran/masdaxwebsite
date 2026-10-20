@@ -1,0 +1,422 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-open-source-python-libraries",
+    title: "أهم مكتبات بايثون مفتوحة المصدر يجب أن يعرفها كل مطور",
+    metaTitle: "أفضل 10 مكتبات بايثون مفتوحة المصدر: دليل شامل 2026",
+    description:
+        "دليل شامل لأهم مكتبات بايثون مفتوحة المصدر — NumPy وPandas وPyTorch وDjango وFastAPI وغيرها — مع شرح الاستخدامات المثالية لكل مكتبة والروابط الرسمية للتعلم والتعمق.",
+    keywords: [
+        "مكتبات بايثون مفتوحة المصدر",
+        "NumPy",
+        "Pandas",
+        "PyTorch",
+        "Django",
+        "FastAPI",
+        "Flask",
+        "Scikit-learn",
+        "Matplotlib",
+        "Requests بايثون",
+    ],
+    category: ["برمجة", "مقالات"],
+    author: "طلال عمران",
+    date: "15 سبتمبر 2026",
+    pubDate: new Date("2026-09-15"),
+    tags: ["Python", "بايثون", "NumPy", "PyTorch", "Django"],
+    thumbnail: "/images/best-open-source-python-libraries.webp",
+};
+
+const tocItems = [
+    { id: "why-libraries-matter", label: "لماذا تُعتبر المكتبات القوة الحقيقية لبايثون؟" },
+    { id: "numpy", label: "1. NumPy" },
+    { id: "pandas", label: "2. Pandas" },
+    { id: "matplotlib", label: "3. Matplotlib" },
+    { id: "scikit-learn", label: "4. Scikit-learn" },
+    { id: "pytorch", label: "5. PyTorch" },
+    { id: "django", label: "6. Django" },
+    { id: "fastapi", label: "7. FastAPI" },
+    { id: "flask", label: "8. Flask" },
+    { id: "requests", label: "9. Requests" },
+    { id: "polars", label: "10. Polars" },
+    { id: "comparison-table", label: "جدول مقارنة شامل" },
+    { id: "how-to-choose", label: "كيف تختار المكتبة المناسبة لمشروعك؟" },
+    { id: "external-resources", label: "الروابط الرسمية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            بايثون وحدها لغة بسيطة نسبيًا، لكن ما يجعلها تقود اليوم مجالات
+            الذكاء الاصطناعي وتحليل البيانات وتطوير الويب في آن واحد هو
+            الطبقة الهائلة من المكتبات المفتوحة المصدر المبنية فوقها. أكثر
+            من 530 ألف حزمة متاحة حاليًا على PyPI، والتحدي الحقيقي لم يعد
+            "أين أجد أداة لهذا؟" بل "أي أداة من هذه الأدوات تستحق وقتي؟"
+        </p>
+
+        <p>
+            هذا الدليل يستعرض أهم عشر مكتبات بايثون مفتوحة المصدر، الفرق
+            الجوهري بينها، ومتى تختار كل واحدة لمشروعك تحديدًا.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="why-libraries-matter">
+            لماذا تُعتبر المكتبات القوة الحقيقية لبايثون؟
+        </h2>
+
+        <p>
+            بايثون لغة مفسّرة، وهذا يعني أنها أبطأ نسبيًا من لغات مُجمَّعة
+            مثل C++ في التنفيذ الخام. لكن أغلب المكتبات المهمة (وعلى رأسها
+            NumPy وPandas وPyTorch) مكتوبة جزئيًا بلغة C أو C++ تحت الغطاء،
+            فتحصل على سهولة كتابة بايثون مع أداء قريب جدًا من اللغات
+            منخفضة المستوى. هذا التوازن تحديدًا هو سر هيمنة بايثون في
+            مجالات تتطلب معالجة بيانات ضخمة.
+        </p>
+
+        <h2 id="numpy">1. NumPy</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-python-libraries/01.webp"
+                alt="NumPy"
+                width="1024"
+                height="562"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            حجر الأساس الذي تُبنى فوقه تقريبًا كل مكتبة علمية أخرى في هذه
+            القائمة، من Pandas إلى PyTorch نفسها. توفر بنية بيانات المصفوفة
+            متعددة الأبعاد (Array)، مع عمليات رياضية تُنفَّذ بكود C محسّن
+            تحت الغطاء، أسرع بمراتب من التعامل مع قوائم بايثون العادية.
+        </p>
+
+        <ul>
+            <li>عمليات جبر خطي، تحويلات فورييه، وتوليد أرقام عشوائية جاهزة ومحسّنة</li>
+            <li>الأساس الفعلي الذي تعتمد عليه SciPy وPandas وScikit-learn وTensorFlow</li>
+            <li>تعمل غالبًا في الخلفية دون أن تتفاعل معها مباشرة، لكنها موجودة تحت كل شيء تقريبًا</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أي عملية حسابية على بيانات ضخمة، ونقطة انطلاق إجبارية عمليًا لتعلم علوم البيانات.</p>
+
+        <h2 id="pandas">2. Pandas</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-python-libraries/02.webp"
+                alt="Pandas"
+                width="1024"
+                height="339"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            المكتبة القياسية لتحليل البيانات المُهيكلة (الجداول)، وتقدّم
+            بنية DataFrame الشهيرة، أقرب لجدول إكسل قابل للبرمجة الكاملة.
+            مبنية فوق NumPy مباشرة.
+        </p>
+
+        <ul>
+            <li>قراءة وكتابة أي صيغة بيانات تقريبًا: CSV، Excel، JSON، قواعد بيانات SQL</li>
+            <li>تصفية، تجميع، ودمج بيانات ضخمة بأسطر كود قليلة جدًا</li>
+            <li>معيار فعلي في كل وظيفة تحليل بيانات تقريبًا حول العالم</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: تحليل البيانات الجدولية، تنظيف البيانات، والتقارير التحليلية.</p>
+
+        <h2 id="matplotlib">3. Matplotlib</h2>
+
+        <p>
+            مكتبة الرسوم البيانية الأقدم والأكثر رسوخًا في بايثون، وتظل
+            المعيار الفعلي رغم ظهور بدائل أحدث مثل Plotly وSeaborn (التي
+            تُبنى أصلاً فوق Matplotlib نفسها في أغلب الأحيان).
+        </p>
+
+        <ul>
+            <li>تحكم دقيق جدًا في كل تفصيل بصري من الرسم البياني</li>
+            <li>تكامل عميق مع Jupyter Notebooks لعرض النتائج فوريًا أثناء التحليل</li>
+            <li>توثيق ضخم وأمثلة جاهزة لكل نوع رسم بياني تقريبًا يمكن تخيله</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أي مشروع يحتاج تصور بيانات، من التقارير البسيطة إلى الأبحاث العلمية المعقدة.</p>
+
+        <h2 id="scikit-learn">4. Scikit-learn</h2>
+
+        <p>
+            المكتبة الأشهر للتعلم الآلي التقليدي (غير العميق)، وتوفر واجهة
+            برمجية موحدة وبسيطة لعشرات الخوارزميات: التصنيف، الانحدار،
+            التجميع (Clustering)، وتقليل الأبعاد.
+        </p>
+
+        <ul>
+            <li>واجهة برمجية متسقة جدًا (fit وpredict) عبر كل الخوارزميات المختلفة</li>
+            <li>أدوات مدمجة لتقسيم البيانات، التحقق المتقاطع (Cross-validation)، وتقييم النماذج</li>
+            <li>الخيار الأول للتعلم الآلي الكلاسيكي، قبل الانتقال لأطر التعلم العميق الأثقل</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مشاريع تعلم آلي تقليدية، وتعلم أساسيات الذكاء الاصطناعي قبل التعمق في الشبكات العصبية.</p>
+
+        <h2 id="pytorch">5. PyTorch</h2>
+
+        <p>
+            طوّرتها Meta (فيسبوك سابقًا)، وأصبحت الإطار المهيمن فعليًا على
+            أبحاث وتطوير الذكاء الاصطناعي الحديث، بما في ذلك تدريب أضخم
+            نماذج اللغة الكبرى في العالم.
+        </p>
+
+        <ul>
+            <li>رسوم حسابية ديناميكية (Dynamic Computation Graphs) تُبنى أثناء التنفيذ نفسه، ما يسهّل التجريب وتعديل بنية النموذج</li>
+            <li>تسريع عبر معالجات GPU (CUDA) أو رقائق Apple (MPS) بسلاسة كاملة</li>
+            <li>وحدة Autograd المدمجة تحسب المشتقات تلقائيًا، أساس عملية تدريب أي شبكة عصبية</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: التعلم العميق، أبحاث الذكاء الاصطناعي، ومعالجة اللغة الطبيعية ورؤية الحاسوب.</p>
+
+        <h2 id="django">6. Django</h2>
+
+        <p>
+            إطار عمل ويب متكامل "بكل شيء مدمج" (Batteries Included):
+            المصادقة، لوحة إدارة جاهزة تلقائيًا، ربط بقاعدة البيانات (ORM)،
+            كل ذلك دون تجميع أدوات منفصلة من الصفر.
+        </p>
+
+        <ul>
+            <li>لوحة إدارة (Admin Panel) تُبنى تلقائيًا من نماذج بياناتك دون كتابة واجهة يدويًا</li>
+            <li>حماية مدمجة ضد ثغرات ويب شائعة (CSRF، حقن SQL) دون إعداد إضافي</li>
+            <li>مناسب جدًا لبناء تطبيقات ويب كاملة كبيرة بسرعة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: تطبيقات ويب متكاملة كبيرة، خصوصًا التي تحتاج لوحة إدارة داخلية سريعة.</p>
+
+        <h2 id="fastapi">7. FastAPI</h2>
+
+        <p>
+            إطار عمل حديث نسبيًا (ظهر 2018)، متخصص تحديدًا في بناء واجهات
+            برمجية (APIs)، وتجاوزت تحميلاته الشهرية حتى أطر عمل كاملة مثل
+            Django وفق إحصاءات PyPI الحديثة. أصبح الخيار الأول لخدمة نماذج
+            الذكاء الاصطناعي عبر API.
+        </p>
+
+        <ul>
+            <li>توثيق تفاعلي تلقائي (عبر معايير OpenAPI) يُنشأ فورًا من كود بايثون نفسه</li>
+            <li>يعتمد تلميحات الأنواع (Type Hints) للتحقق التلقائي من صحة البيانات الواردة</li>
+            <li>دعم أصلي لاتصالات WebSocket والعمليات غير المتزامنة (Async) عالية الأداء</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: بناء واجهات برمجية سريعة وخفيفة، خصوصًا لخدمة نماذج تعلم آلي أو تطبيقات ذكاء اصطناعي.</p>
+
+        <h2 id="flask">8. Flask</h2>
+
+        <p>
+            على عكس Django، Flask "إطار عمل مصغّر" (Microframework): نواة
+            بسيطة جدًا، تضيف إليها فقط الأجزاء التي تحتاجها فعليًا عبر
+            إضافات منفصلة.
+        </p>
+
+        <ul>
+            <li>مرونة كاملة في اختيار الأدوات المصاحبة (قاعدة البيانات، المصادقة) دون فرض بنية معينة</li>
+            <li>منحنى تعلم سلس جدًا، مثالي لفهم كيفية عمل خادم ويب من الأساس</li>
+            <li>خيار ممتاز للمشاريع الصغيرة والمتوسطة التي لا تحتاج ثقل Django الكامل</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مشاريع ويب صغيرة إلى متوسطة، وتعلم أساسيات تطوير الويب الخلفي.</p>
+
+        <h2 id="requests">9. Requests</h2>
+
+        <p>
+            مكتبة بسّطت التعامل مع طلبات HTTP في بايثون بشكل جذري، لدرجة
+            أن توثيقها الرسمي يصف نفسه بـ"HTTP للبشر". أصبحت المعيار الفعلي
+            لأي تفاعل مع واجهات برمجية خارجية.
+        </p>
+
+        <ul>
+            <li>نحو بسيط جدًا لإرسال طلبات GET وPOST وغيرها بسطر واحد تقريبًا</li>
+            <li>معالجة تلقائية لتفاصيل معقدة مثل الجلسات وملفات تعريف الارتباط وإعادة التوجيه</li>
+            <li>تُستخدم في كل مكان تقريبًا: من سكربتات بسيطة إلى أنظمة إنتاج ضخمة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أي مشروع يحتاج التواصل مع واجهات برمجية خارجية أو جلب صفحات ويب.</p>
+
+        <h2 id="polars">10. Polars</h2>
+
+        <p>
+            بديل حديث لـ Pandas، مكتوب أساسًا بلغة Rust، ويقدّم أداءً أسرع
+            بأضعاف على مجموعات بيانات ضخمة، خصوصًا في العمليات المتوازية.
+            أصبح خيارًا أساسيًا في خطوط أنابيب بيانات الأداء العالي.
+        </p>
+
+        <ul>
+            <li>أداء أسرع بشكل ملحوظ من Pandas على البيانات الضخمة، بفضل معالجة متوازية أصيلة</li>
+            <li>استهلاك ذاكرة أقل، مفيد جدًا مع مجموعات بيانات لا تتسع بالكامل في الذاكرة</li>
+            <li>واجهة برمجية مختلفة عن Pandas، تتطلب تعلمًا إضافيًا رغم التشابه المفاهيمي</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: خطوط أنابيب بيانات كبيرة تتطلب أداءً عاليًا يتجاوز ما توفره Pandas التقليدية.</p>
+
+        <h2 id="comparison-table">جدول مقارنة شامل</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المكتبة</th>
+                        <th class="px-4 py-2 font-semibold">الفئة</th>
+                        <th class="px-4 py-2 font-semibold">الاستخدام الأساسي</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">NumPy</td>
+                        <td class="px-4 py-2">حوسبة علمية</td>
+                        <td class="px-4 py-2">عمليات رياضية على المصفوفات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Pandas</td>
+                        <td class="px-4 py-2">تحليل بيانات</td>
+                        <td class="px-4 py-2">معالجة بيانات جدولية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Matplotlib</td>
+                        <td class="px-4 py-2">تصور بيانات</td>
+                        <td class="px-4 py-2">رسوم بيانية مخصصة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Scikit-learn</td>
+                        <td class="px-4 py-2">تعلم آلي</td>
+                        <td class="px-4 py-2">تعلم آلي تقليدي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">PyTorch</td>
+                        <td class="px-4 py-2">تعلم عميق</td>
+                        <td class="px-4 py-2">شبكات عصبية وذكاء اصطناعي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Django</td>
+                        <td class="px-4 py-2">تطوير ويب</td>
+                        <td class="px-4 py-2">تطبيقات ويب متكاملة كبيرة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">FastAPI</td>
+                        <td class="px-4 py-2">تطوير ويب</td>
+                        <td class="px-4 py-2">واجهات برمجية سريعة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Flask</td>
+                        <td class="px-4 py-2">تطوير ويب</td>
+                        <td class="px-4 py-2">مشاريع ويب صغيرة ومرنة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Requests</td>
+                        <td class="px-4 py-2">أدوات مساعدة</td>
+                        <td class="px-4 py-2">طلبات HTTP وتواصل مع APIs</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Polars</td>
+                        <td class="px-4 py-2">تحليل بيانات</td>
+                        <td class="px-4 py-2">بيانات ضخمة بأداء عالٍ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-choose">كيف تختار المكتبة المناسبة لمشروعك؟</h2>
+
+        <ul>
+            <li><strong>تبدأ في علوم البيانات:</strong> NumPy ← Pandas ← Matplotlib، بهذا الترتيب بالضبط</li>
+            <li><strong>تريد الدخول للتعلم الآلي:</strong> Scikit-learn أولاً، ثم PyTorch للتعلم العميق لاحقًا</li>
+            <li><strong>تبني تطبيق ويب متكاملًا كبيرًا:</strong> Django</li>
+            <li><strong>تبني واجهة برمجية سريعة أو تخدم نموذج ذكاء اصطناعي:</strong> FastAPI</li>
+            <li><strong>مشروع ويب صغير وتريد مرونة كاملة:</strong> Flask</li>
+            <li><strong>بياناتك ضخمة جدًا وPandas أصبحت بطيئة:</strong> Polars</li>
+        </ul>
+
+        <h2 id="external-resources">الروابط الرسمية</h2>
+
+        <ul>
+            <li><strong>NumPy:</strong> <a href="https://numpy.org/" target="_blank" rel="noopener noreferrer">numpy.org</a></li>
+            <li><strong>Pandas:</strong> <a href="https://pandas.pydata.org/" target="_blank" rel="noopener noreferrer">pandas.pydata.org</a></li>
+            <li><strong>Matplotlib:</strong> <a href="https://matplotlib.org/" target="_blank" rel="noopener noreferrer">matplotlib.org</a></li>
+            <li><strong>Scikit-learn:</strong> <a href="https://scikit-learn.org/" target="_blank" rel="noopener noreferrer">scikit-learn.org</a></li>
+            <li><strong>PyTorch:</strong> <a href="https://pytorch.org/" target="_blank" rel="noopener noreferrer">pytorch.org</a></li>
+            <li><strong>Django:</strong> <a href="https://www.djangoproject.com/" target="_blank" rel="noopener noreferrer">djangoproject.com</a></li>
+            <li><strong>FastAPI:</strong> <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noopener noreferrer">fastapi.tiangolo.com</a></li>
+            <li><strong>Flask:</strong> <a href="https://flask.palletsprojects.com/" target="_blank" rel="noopener noreferrer">flask.palletsprojects.com</a></li>
+            <li><strong>Requests:</strong> <a href="https://requests.readthedocs.io/" target="_blank" rel="noopener noreferrer">requests.readthedocs.io</a></li>
+            <li><strong>Polars:</strong> <a href="https://pola.rs/" target="_blank" rel="noopener noreferrer">pola.rs</a></li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل يجب أن أتعلم كل هذه المكتبات دفعة واحدة؟</strong><br />
+            لا إطلاقًا. اختر مجالًا واحدًا (علوم بيانات، ذكاء اصطناعي، أو
+            تطوير ويب)، وتعلم المكتبات الخاصة به تحديدًا أولاً.
+        </p>
+
+        <p>
+            <strong>ما الفرق العملي بين Django وFlask؟</strong><br />
+            Django يأتي بكل شيء جاهزًا (لوحة إدارة، مصادقة، ORM)، بينما
+            Flask نواة بسيطة تضيف إليها فقط ما تحتاجه بنفسك.
+        </p>
+
+        <p>
+            <strong>هل أحتاج تعلم NumPy مباشرة إن كنت سأستخدم Pandas فقط؟</strong><br />
+            ليس إجباريًا في البداية، لأن Pandas تخفي أغلب تفاصيل NumPy عنك،
+            لكن فهمًا أساسيًا لـ NumPy يفيدك كثيرًا لاحقًا في تصحيح الأخطاء
+            وتحسين الأداء.
+        </p>
+
+        <p>
+            <strong>هل Polars سيحل محل Pandas بالكامل مستقبلاً؟</strong><br />
+            غير مرجح قريبًا. Pandas لا تزال الأوسع توثيقًا ودعمًا مجتمعيًا،
+            وPolars يبرز تحديدًا في حالات البيانات الضخمة جدًا التي تحتاج
+            أداءً إضافيًا فعليًا.
+        </p>
+    </PostLayout>
+</BaseLayout>

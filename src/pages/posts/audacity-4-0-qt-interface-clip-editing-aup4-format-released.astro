@@ -1,0 +1,252 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "audacity-4-0-qt-interface-clip-editing-aup4-format-released",
+    title: "Audacity 4.0: محرر صوتي جديد بواجهة Qt وتحرير مقاطع حديث",
+    metaTitle: "Audacity 4.0 صدرت بواجهة Qt جديدة وتحسينات شاملة",
+    description:
+        "Audacity 4.0 أطلقت رسمياً — إعادة بناء شاملة للواجهة بـ Qt بدلاً من wxWidgets، نموذج تحرير مقاطع جديد، مساحات عمل قابلة للتخصيص، دعم HiDPI محسّن، وصيغة مشروع AUP4 جديدة مع دعم VST3 و LV2.",
+    keywords: [
+        "Audacity 4.0",
+        "محرر صوتي",
+        "Qt interface",
+        "Clip editing",
+        "AUP4 format",
+        "VST3",
+        "LV2",
+        "Audio editor",
+        "مفتوح المصدر",
+        "تحرير صوت",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "3 سبتمبر 2026",
+    pubDate: new Date("2026-09-03"),
+    tags: ["Audacity", "محرر صوتي", "مفتوح المصدر", "Qt", "تحرير"],
+    thumbnail: "/images/audacity-4-0-qt-interface-clip-editing-aup4-format-released.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت 
+                <a href="https://www.audacityteam.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Audacity</strong>
+            </a>
+            رسمياً اليوم <strong>الإصدار 4.0</strong> — أحدث إصدار مستقر من
+            <strong>برنامج تحرير الصوت الرقمي مفتوح المصدر</strong>. التحديث الكبير يقدم
+            <strong>ميزات جديدة وتحسينات شاملة</strong> تمثل أكبر تغيير في البرنامج
+            <strong>منذ أكثر من عقد من الزمان</strong>.
+        </p>
+
+        <h2>إعادة بناء شاملة بـ Qt</h2>
+
+        <p>
+            أبرز تغيير في <strong>Audacity 4.0 هو التحول من wxWidgets إلى Qt</strong>. البرنامج
+            كان يستخدم wxWidgets منذ بدايته، لكن <strong>الواجهة الجديدة مبنية بالكامل على Qt</strong>
+            مما يوفر:
+        </p>
+
+        <ul>
+            <li><strong>دعم HiDPI محسّن:</strong> رسم أصلي عالي الدقة</li>
+            <li>
+                <strong>واجهة حديثة:</strong> تبدو أن البرنامج مصمم لـ
+                <strong>عام 2026 بدلاً من 2011</strong>
+            </li>
+            <li>
+                <strong>أشرطة أدوات مرنة:</strong> يمكن نقل الألواح والأشرطة وإعادة ترتيبها
+            </li>
+        </ul>
+
+        <h2>نموذج تحرير مقاطع جديد</h2>
+
+        <p>
+            <strong>Audacity 4.0 يقدم نموذج تحرير موجه نحو المقاطع</strong>. المقاطع يمكن أن:
+        </p>
+
+        <ul>
+            <li><strong>تُختار بنقرة:</strong> انقر على رؤوس المقاطع لاختيارها</li>
+            <li>
+                <strong>تُجمع:</strong> عدة مقاطع يمكن تحريرها معاً في نفس الوقت
+            </li>
+            <li>
+                <strong>تُنقل بحرية:</strong> المقاطع يمكن أن تنتقل بين مسارات مختلفة
+            </li>
+            <li>
+                <strong>تُجمع في مجموعات:</strong> عدة مقاطع يمكن تجميعها لتبقى معاً عند التحريك
+            </li>
+        </ul>
+
+        <h2>مساحات عمل قابلة للتخصيص</h2>
+
+        <p>
+            يمكن للمستخدمين الآن <strong>إنشاء تخطيطات واجهة مخصصة</strong>. Audacity توفر:
+        </p>
+
+        <ul>
+            <li><strong>Modern:</strong> تخطيط حديث</li>
+            <li><strong>Classic:</strong> تخطيط كلاسيكي</li>
+            <li><strong>Music:</strong> تخطيط متخصص للموسيقى</li>
+        </ul>
+
+        <p>
+            بالإضافة إلى ذلك، <strong>ثيمات مختلفة متاحة</strong>: فاتح وداكن وعالي التباين
+            مع <strong>ألوان تأكيد وألوان مسارات قابلة للتخصيص</strong>.
+        </p>
+
+        <h2>صيغة مشروع AUP4 جديدة</h2>
+
+        <p>
+            <strong>Audacity 4.0 يستخدم صيغة مشروع جديدة تسمى AUP4</strong>. الخبر الجيد:
+            <strong>الإصدار متوافق بشكل كامل مع مشاريع Audacity 3</strong> — جميع مقاطع الصوت
+            والمسارات والتسميات <strong>ستُنقل تلقائياً عند الترقية</strong>.
+        </p>
+
+        <h2>دعم البرامج الإضافية الحديثة</h2>
+
+        <p>
+            <strong>Audacity 4.0 تدعم برامج إضافية حديثة</strong>:
+        </p>
+
+        <ul>
+            <li><strong>Nyquist:</strong> على جميع المنصات</li>
+            <li>
+                <strong>VST3:</strong>
+                
+                    <a href="https://www.phoronix.com/news/Audacity-4.0-Released"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    على Windows و macOS و Linux
+                </a>
+            </li>
+            <li><strong>LV2:</strong> على Linux</li>
+            <li><strong>Audio Units:</strong> على macOS</li>
+        </ul>
+
+        <h2>مدير مشاريع جديد</h2>
+
+        <p>
+            <strong>Audacity 4.0 تقدم مدير مشاريع جديد</strong> يتيح:
+        </p>
+
+        <ul>
+            <li>
+                <strong>اختيار المشاريع:</strong> من نظام الملفات المحلي أو السحابة
+            </li>
+            <li><strong>إنشاء مشاريع جديدة:</strong> بسهولة مباشرة</li>
+            <li>
+                <strong>نسخ مقاطع صوتية:</strong> عبر المشاريع المختلفة
+            </li>
+        </ul>
+
+        <h2>أداة Envelope المعاد تصميمها</h2>
+
+        <p>
+            
+                <a href="https://linuxiac.com/audacity-4-0-audio-editor-released-with-redesigned-qt-interface-new-editing-model/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>أداة Envelope تم إعادة تصميمها بالكامل</strong>
+            </a>
+            <strong>لتعديل مظاريف الكسب عبر مقاطع الصوت</strong>. كما تم إضافة
+            <strong>تحرير طيفي بتحديد مناطق التردد في مخطط الطيف</strong>.
+        </p>
+
+        <h2>الميزات المفقودة</h2>
+
+        <p>
+            لا تزال بعض الميزات من Audacity 3 غير موجودة في الإصدار 4.0:
+        </p>
+
+        <ul>
+            <li><strong>Time Tracks</strong></li>
+            <li><strong>MIDI و Note Tracks</strong></li>
+            <li><strong>Mixer</strong></li>
+            <li><strong>Macro Manager و Scripting Pipe</strong></li>
+            <li><strong>VAMP و LADSPA Plugin Hosting</strong></li>
+            <li><strong>Play-at-Speed</strong></li>
+        </ul>
+
+        <p>
+            لكن المطورون وعدوا بـ <strong>إعادة هذه الميزات في إصدارات مستقبلية</strong>،
+            <strong>خاصةً دعم MIDI في غضون أشهر قليلة</strong>.
+        </p>
+
+        <h2>التوفر والتحميل</h2>
+
+        <p>
+            <strong>Audacity 4.0 متاحة الآن للتحميل</strong> من:
+        </p>
+
+        <ul>
+            <li>
+                <a href="https://www.audacityteam.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                
+                    <a href="https://github.com/audacity/audacity/releases"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    GitHub
+                </a>
+            </li>
+            <li><strong>Microsoft Store (Windows)</strong></li>
+        </ul>
+
+        <p>
+            <strong>AppImage عالمي لـ Linux</strong> متاح الآن وليس محصوراً على Ubuntu فقط.
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            <strong>Audacity 4.0 تمثل تحولاً كبيراً للبرنامج الذي يبلغ من العمر 26 سنة</strong>.
+            
+                <a href="https://www.linuxcompatible.org/story/audacity-400-released-complete-qt-rewrite-new-clip-editing-and-aup4-format"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                بعد سنوات من التطوير والانتظار، البرنامج أخيراً حصل على الإعادة التي انتظرها المستخدمون
+            </a>
+            . مع واجهة حديثة وميزات جديدة، Audacity 4.0 جاهزة للعام 2026 وما بعده.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://9to5linux.com/audacity-4-0-open-source-audio-editor-officially-released-heres-whats-new"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                9to5Linux
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

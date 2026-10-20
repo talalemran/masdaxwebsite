@@ -1,0 +1,221 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "cosmic-1-6-desktop-environment-per-app-sound-wayland-improvements",
+    title: "COSMIC 1.6: بيئة سطح مكتب بتحكم صوتي لكل تطبيق ودعم Wayland محسّن",
+    metaTitle: "COSMIC 1.6 بتحكم صوتي فردي وبروتوكولات Wayland",
+    description:
+        "System76 أطلقت COSMIC 1.6 — بيئة سطح مكتب Rust المفتوحة المصدر مع تحكم صوتي لكل تطبيق، دعم wl-dmabuf-v6، بروتوكول EI للإدخال المحاكى، وإصلاحات شاملة في المكونات الأساسية.",
+    keywords: [
+        "COSMIC 1.6",
+        "سطح المكتب",
+        "System76",
+        "Wayland",
+        "Rust",
+        "تحكم صوتي",
+        "desktop environment",
+        "Pop!_OS",
+        "لينكس",
+        "مفتوح المصدر",
+    ],
+    category: "بيئة سطح المكتب",
+    author: "طلال عمران",
+    date: "19 أغسطس 2026",
+    pubDate: new Date("2026-08-19"),
+    tags: ["COSMIC", "System76", "سطح المكتب", "Wayland", "لينكس"],
+    thumbnail: "/images/cosmic-1-6-desktop-environment-per-app-sound-wayland-improvements.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت <strong>System76</strong> اليوم <strong>COSMIC 1.6</strong> —
+            أحدث إصدار مستقر من بيئة سطح المكتب المفتوحة المصدر والمبنية بلغة
+            <strong>Rust</strong> الخاصة بها. يأتي الإصدار الجديد بعد ثلاثة أسابيع من
+            <strong>COSMIC 1.5</strong> وحمل معه تحسينات كبيرة في التحكم الصوتي
+            والبروتوكولات و واجهات المستخدم.
+        </p>
+
+        <h2>تحكم صوتي لكل تطبيق</h2>
+
+        <p>
+            الميزة الأبرز في <strong>COSMIC 1.6</strong> هي <strong
+                >التحكم الصوتي حسب التطبيق</strong
+            >. الآن يمكن للمستخدمين إدارة جودة الصوت لكل تطبيق على حدة بدلاً من
+            الاعتماد فقط على التحكم الصوتي على مستوى النظام.
+        </p>
+
+        <p>
+            <strong>cosmic-settings-daemon</strong> يدعم الآن
+            <strong>معالجة إعدادات الصوت الخاصة بالتشغيل</strong> وأحداث الصوت
+            المتوافقة للخلف. كما أن <strong>applet الصوت</strong> يقلل الآن تحديثات
+            مستوى الصوت بـ 128 ميلي ثانية <strong>لتجنب التغييرات السريعة غير الضرورية</strong>
+            عند ضبط مستوى الصوت.
+        </p>
+
+        <h2>تحسينات بروتوكول Wayland</h2>
+
+        <p>
+            <strong>COSMIC compositor</strong> يحصل على عدة تحسينات مهمة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>دعم wl-dmabuf-v6:</strong> 
+                    <a href="https://wayland.freedesktop.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    بروتوكول Wayland
+                </a>
+                لتمرير ذاكرة مباشرة بين العملاء والكومبوزيتور (dma-buf)
+            </li>
+            <li>
+                <strong>دعم بروتوكول EI:</strong> <strong
+                    >Emulated Input</strong
+                > لمحاكاة أجهزة الإدخال مثل لوحات المفاتيح والفئران — دعم للمكتب عن بعد
+                في المستقبل
+            </li>
+            <li>
+                <strong>ملاحظات العرض من الشاشات ملء الشاشة:</strong> تحسين في
+                تتبع أداء الرسم
+            </li>
+        </ul>
+
+        <h2>تحسينات تطبيقات COSMIC</h2>
+
+        <p>
+            تطبيقات COSMIC الأساسية حصلت على عدة تحسينات:
+        </p>
+
+        <ul>
+            <li>
+                <strong>COSMIC Files:</strong> 
+                    <a href="https://github.com/pop-os/cosmic-files"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    مدير الملفات
+                </a>
+                الآن يحتوي على قائمة سياق لحقول النص والعناصر القابلة للتحديد
+            </li>
+            <li>
+                <strong>COSMIC Greeter:</strong> <strong
+                    >اكتشاف logind في الوقت الفعلي</strong
+                > ودعم صيغ صور <strong>JPEG-XL و AVIF</strong>
+            </li>
+            <li>
+                <strong>COSMIC Settings:</strong> توفير <strong
+                    >إعدادات خاصة بالتطبيق</strong
+                > وحل مشاكل بحث الصفحات
+            </li>
+            <li>
+                <strong>COSMIC Edit:</strong> تحسينات الأداء مع <strong
+                    >عدد أقل من إعادة الرسم</strong
+                >
+            </li>
+            <li>
+                <strong>COSMIC Terminal:</strong> دعم <strong
+                    >تحديد حدود الطرفية المقسومة</strong
+                > وتحسينات في تصحيح إحداثيات الرسم
+            </li>
+        </ul>
+
+        <h2>إصلاحات شاملة</h2>
+
+        <p>يتضمن الإصدار عدة إصلاحات مهمة:</p>
+
+        <ul>
+            <li>
+                إصلاح <strong>حوارات لا نهائية في COSMIC Files</strong> عند فشل
+                الأقراص المشبوكة بالشبكة
+            </li>
+            <li>
+                إصلاح <strong>وميض COSMIC Launcher</strong> عند استخدام مفتاح
+                Ctrl
+            </li>
+            <li>
+                إصلاح <strong
+                    >انهيار cosmic-settings-daemon</strong
+                > عند قيمة سطوع قصوى -1
+            </li>
+            <li>
+                <strong>تحسين كشف حالة الطاقة</strong> من خلال الاستماع لأحداث
+                AC plug/unplug عبر UPower
+            </li>
+        </ul>
+
+        <h2>التوفر والتوزيعات</h2>
+
+        <p>
+            <strong>COSMIC 1.6</strong> متاح الآن لمستخدمي <strong>Pop!_OS 24.04 LTS</strong>
+            ومتوقع أن يصل قريباً للتوزيعات الأخرى مثل:
+        </p>
+
+        <ul>
+            <li>
+                
+                    <a href="https://archlinux.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    Arch Linux
+                </a>
+            </li>
+            <li>
+                
+                    <a href="https://www.opensuse.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    openSUSE Tumbleweed
+                </a>
+            </li>
+            <li>
+                
+                    <a href="https://cachyos.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    CachyOS
+                </a>
+            </li>
+        </ul>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            <strong>COSMIC 1.6</strong> تحديث متوازن يركز على <strong
+                >حسين تجربة الصوت والإشارات بين العميل والخادم</strong
+            >. تحسينات بروتوكول Wayland تشير إلى أن <strong>System76 تستعد لدعم المكتب عن بعد</strong>
+            في إصدارات مستقبلية. بيئة سطح المكتب المبنية بلغة Rust تستمر في النضج والتطور.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://9to5linux.com/cosmic-1-6-desktop-environment-released-with-more-improvements"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                9to5Linux
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

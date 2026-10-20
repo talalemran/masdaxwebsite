@@ -1,0 +1,476 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "ubuntu-complete-guide",
+    title: "توزيعة أوبونتو: دليل شامل لأشهر وأكثر توزيعات لينكس انتشارًا",
+    metaTitle: "أوبونتو 26.04: دليلك الشامل لأشهر توزيعة لينكس اليوم",
+    description:
+        "دليل شامل لتوزيعة أوبونتو، من تاريخها وإصدارها الأحدث Ubuntu 26.04 LTS، إلى نظام Snap ودورة الإصدارات والنكهات الرسمية المختلفة، ولمن تناسب فعليًا.",
+    keywords: [
+        "أوبونتو",
+        "Ubuntu",
+        "Ubuntu 26.04 LTS",
+        "توزيعات لينكس",
+        "Canonical",
+        "Snap Store",
+        "Kubuntu",
+        "Xubuntu",
+        "لينكس للمبتدئين",
+        "GNOME",
+    ],
+    category: ["لينكس", "مقالات"],
+    author: "طلال عمران",
+    date: "15 أغسطس 2026",
+    pubDate: new Date("2026-08-15"),
+    tags: ["Ubuntu", "أوبونتو", "Canonical", "Snap", "توزيعات لينكس"],
+    thumbnail: "/images/ubuntu-complete-guide.webp",
+};
+
+const tocItems = [
+    { id: "history", label: "نبذة تاريخية سريعة" },
+    { id: "release-cycle", label: "دورة الإصدارات: LTS مقابل الإصدارات المؤقتة" },
+    { id: "latest-release", label: "أوبونتو 26.04 LTS: أحدث إصدار طويل الدعم" },
+    { id: "package-management", label: "إدارة الحزم: APT وSnap" },
+    { id: "flavors", label: "نكهات أوبونتو الرسمية (Flavors)" },
+    { id: "desktop-experience", label: "تجربة سطح المكتب الافتراضية" },
+    { id: "comparison-table", label: "جدول مقارنة سريع: أوبونتو مقابل توزيعات أخرى" },
+    { id: "why-choose", label: "لماذا يختار المستخدمون أوبونتو تحديدًا؟" },
+    { id: "challenges", label: "التحديات والانتقادات" },
+    { id: "who-fits", label: "لمن تناسب أوبونتو فعليًا؟" },
+    { id: "official-links", label: "الروابط الرسمية والمصادر" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            لا توزيعة لينكس أخرى ساهمت في تعريف ملايين المستخدمين حول العالم
+            بهذا النظام أكثر من أوبونتو. منذ ظهورها عام 2004، أصبحت البوابة
+            الافتراضية التي ينصح بها أي شخص يسأل "من أين أبدأ مع لينكس؟"،
+            ولا تزال تحتفظ بهذا الموقع حتى اليوم.
+        </p>
+
+        <p>
+            هذا الدليل يشرح كل ما تحتاج معرفته عن أوبونتو: تاريخها، دورة
+            إصداراتها، أدواتها المميزة مثل Snap، نكهاتها الرسمية المتعددة،
+            ولمن تناسب فعليًا مقارنة بتوزيعات أخرى.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="history">نبذة تاريخية سريعة</h2>
+
+        <p>
+            <img
+                src="/images/Ubuntu_26.04_LTS_desktop.webp"
+                alt="واجهة سطح مكتب GNOME الافتراضية في أوبونتو"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            أطلق رجل الأعمال الجنوب أفريقي مارك شاتلوورث توزيعة أوبونتو عام
+            2004، عبر شركته Canonical، بهدف واضح: تقديم نسخة من لينكس تكون
+            "بديهية للإنسان العادي"، لا موجهة فقط للمبرمجين والخبراء
+            التقنيين كما كانت أغلب توزيعات تلك الحقبة.
+        </p>
+
+        <p>
+            اسم "أوبونتو" نفسه مستمد من فلسفة أفريقية تعني تقريبًا "الإنسانية
+            تجاه الآخرين"، وهي فلسفة انعكست فعليًا في قرارات المشروع: توزيع
+            مجاني بالكامل، إرسال أقراص مجانية بالبريد في السنوات الأولى، ودعم
+            مجتمعي ضخم منذ اليوم الأول.
+        </p>
+
+        <p>
+            التوزيعة مبنية على قاعدة Debian، لكنها أضافت طبقة من السهولة
+            والتنظيم جعلتها لاحقًا الأساس الذي بُنيت عليه عشرات التوزيعات
+            الأخرى، مثل Linux Mint وZorin OS وElementary OS وPop!_OS.
+        </p>
+
+        <h2 id="release-cycle">دورة الإصدارات: LTS مقابل الإصدارات المؤقتة</h2>
+
+        <p>
+            أوبونتو تصدر نسخة جديدة كل ستة أشهر بانتظام صارم، لكن هذه
+            النسخ تنقسم لنوعين مختلفين جوهريًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>إصدارات LTS (الدعم طويل الأمد)</strong>: تصدر كل
+                سنتين، وتحصل على خمس سنوات من التحديثات الأمنية القياسية، مع
+                إمكانية تمديدها حتى عشر سنوات عبر اشتراك Ubuntu Pro (مجاني
+                للاستخدام الشخصي حتى خمسة أجهزة)
+            </li>
+            <li>
+                <strong>الإصدارات المؤقتة (Interim Releases)</strong>: تصدر
+                كل ستة أشهر بين إصدارات LTS، وتحمل أحدث النواة والبرمجيات،
+                لكن دعمها يقتصر على تسعة أشهر فقط
+            </li>
+        </ul>
+
+        <p>
+            القاعدة العملية البسيطة: إن كنت تريد الاستقرار طويل الأمد
+            لجهاز تعتمد عليه يوميًا أو خادم إنتاج، اختر أحدث نسخة LTS. إن
+            كنت تريد تجربة أحدث التقنيات والمخاطرة بدعم أقصر، جرّب الإصدار
+            المؤقت الحالي.
+        </p>
+
+        <h2 id="latest-release">أوبونتو 26.04 LTS: أحدث إصدار طويل الدعم</h2>
+
+        <p>
+            صدر أحدث إصدار LTS، ويحمل الاسم الرمزي "Resolute Raccoon"، في
+            23 أبريل 2026، ويحصل على دعم قياسي حتى عام 2031 (وحتى 2036 عبر
+            Ubuntu Pro). يحمل هذا الإصدار تغييرات جوهرية مقارنة بسابقيه:
+        </p>
+
+        <ul>
+            <li>
+                انتقال كامل لبروتوكول العرض Wayland، بعد سنوات من اعتماد
+                X11 كخيار افتراضي مواز
+            </li>
+            <li>
+                استبدال تدريجي لأدوات النظام الأساسية بأدوات مكتوبة بلغة
+                Rust، لتحسين الأمان وسلامة الذاكرة
+            </li>
+            <li>
+                ترقية نواة لينكس لإصدار 7.0، بدعم أوسع للمعالجات وكروت
+                الرسوميات الحديثة
+            </li>
+            <li>
+                تشفير كامل للقرص مدعوم بشريحة TPM، مفعّل بسهولة أكبر أثناء
+                التثبيت
+            </li>
+            <li>
+                تحسينات ملحوظة في نظام Snap ودعم أفضل لكروت الرسوميات من AMD
+            </li>
+        </ul>
+
+        <p>
+            متطلبات التشغيل المريح لأوبونتو الأساسية: معالج ثنائي النواة
+            بسرعة 2 جيجاهرتز، 6 غيغابايت رام، و25 غيغابايت مساحة تخزين
+            حرة. للأجهزة الأضعف، تُنصح Canonical نفسها باستخدام إحدى
+            النكهات الأخف مثل Xubuntu أو Lubuntu بدلاً من النسخة الأساسية.
+        </p>
+
+        <h2 id="package-management">إدارة الحزم: APT وSnap</h2>
+
+        <p>
+            أوبونتو تعتمد نظامين متوازيين لتثبيت البرامج، وفهم الفرق بينهما
+            مهم لأي مستخدم جديد:
+        </p>
+
+        <ul>
+            <li>
+                <strong>APT (Advanced Package Tool)</strong>: النظام
+                التقليدي المبني على حزم DEB، سريع وخفيف، ومناسب لأغلب
+                البرامج الأساسية وأدوات النظام
+            </li>
+            <li>
+                <strong>Snap</strong>: نظام حزم طورته Canonical نفسها،
+                يُشغّل كل برنامج في بيئة معزولة (Sandbox) عن باقي النظام،
+                ما يزيد الأمان ويقلل تعارض التبعيات بين البرامج
+            </li>
+        </ul>
+
+        <p>
+            هذا القرار كان مثار جدل داخل مجتمع لينكس، لأن Snap أبطأ نسبيًا
+            في الإقلاع الأول للتطبيق مقارنة بحزم APT التقليدية، ولأن متجر
+            Snap Store مركزي بالكامل تحت سيطرة Canonical، على عكس Flatpak
+            اللامركزي الذي تفضله توزيعات أخرى. رغم ذلك، التحسينات في
+            أوبونتو 26.04 قلّصت هذا الفارق في الأداء بشكل ملحوظ.
+        </p>
+
+        <h2 id="flavors">نكهات أوبونتو الرسمية (Flavors)</h2>
+
+        <p>
+            أوبونتو الأساسية تأتي بواجهة GNOME، لكن المشروع يدعم رسميًا عدة
+            "نكهات" ببيئات سطح مكتب مختلفة، لكل منها فريق تطوير مستقل تحت
+            مظلة أوبونتو:
+        </p>
+
+        <ul>
+            <li><strong>Kubuntu</strong>: بواجهة KDE Plasma، لمن يريد تخصيصًا أعمق</li>
+            <li><strong>Xubuntu</strong>: بواجهة Xfce الخفيفة، متوازنة بين الأداء والمظهر</li>
+            <li><strong>Lubuntu</strong>: بواجهة LXQt، الأخف بين كل النكهات، للأجهزة الضعيفة جدًا</li>
+            <li><strong>Ubuntu MATE</strong>: بواجهة MATE الكلاسيكية</li>
+            <li><strong>Ubuntu Cinnamon</strong>: بواجهة Cinnamon الأقرب لويندوز</li>
+            <li><strong>Ubuntu Studio</strong>: موجهة لصناع المحتوى الصوتي والمرئي، بأدوات إبداعية مثبتة مسبقًا</li>
+        </ul>
+
+        <p>
+            نقطة مهمة تحديثت مؤخرًا: بعض النكهات مثل Ubuntu MATE لم تعد
+            ملتزمة بإصدار نسخة LTS كاملة الدعم مع كل دورة، بسبب محدودية عدد
+            المتطوعين، رغم استمرار تطويرها بانتظام.
+        </p>
+
+        <h2 id="desktop-experience">تجربة سطح المكتب الافتراضية</h2>
+
+        <p>
+            <img
+                src="/images/Ubuntu-App-Center.webp"
+                alt="متجر التطبيقات App Center في أوبونتو"
+                width="1200"
+                height="792"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            واجهة أوبونتو الافتراضية تعتمد نسخة معدّلة من GNOME، مع بعض
+            اللمسات الخاصة بـ Canonical: شريط جانبي (Dock) ثابت، وتصميم
+            موحد يميزها بصريًا عن نسخة GNOME الأصلية النقية. متجر التطبيقات
+            (App Center) أُعيد بناؤه بالكامل في السنوات الأخيرة بواجهة أسرع
+            وأبسط، ويجمع تطبيقات Snap وDeb في مكان واحد.
+        </p>
+
+        <h2 id="comparison-table">
+            جدول مقارنة سريع: أوبونتو مقابل توزيعات أخرى
+        </h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">أوبونتو</th>
+                        <th class="px-4 py-2 font-semibold">Fedora</th>
+                        <th class="px-4 py-2 font-semibold">Linux Mint</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">القاعدة</td>
+                        <td class="px-4 py-2">Debian</td>
+                        <td class="px-4 py-2">مستقلة (RPM)</td>
+                        <td class="px-4 py-2">أوبونتو نفسها</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">دورة الدعم</td>
+                        <td class="px-4 py-2">5 سنوات (LTS)</td>
+                        <td class="px-4 py-2">13 شهرًا لكل إصدار</td>
+                        <td class="px-4 py-2">تتبع دعم LTS الخاص بأوبونتو</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">نظام الحزم الإضافي</td>
+                        <td class="px-4 py-2">Snap (افتراضي)</td>
+                        <td class="px-4 py-2">Flatpak (افتراضي)</td>
+                        <td class="px-4 py-2">Flatpak (Snap معطّل عمدًا)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">حجم المجتمع والتوثيق</td>
+                        <td class="px-4 py-2">الأضخم بين كل توزيعات لينكس</td>
+                        <td class="px-4 py-2">كبير، مدعوم من Red Hat</td>
+                        <td class="px-4 py-2">كبير جدًا نسبيًا لحجم الفريق</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأنسب لـ</td>
+                        <td class="px-4 py-2">المبتدئين، الخوادم، السحابة</td>
+                        <td class="px-4 py-2">المطورين وأحدث التقنيات</td>
+                        <td class="px-4 py-2">القادمين من ويندوز تحديدًا</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-choose">لماذا يختار المستخدمون أوبونتو تحديدًا؟</h2>
+
+        <ul>
+            <li>
+                <strong>أضخم مجتمع دعم في عالم لينكس</strong>: أي مشكلة
+                تقريبًا لها حل موثق بالتفصيل عبر منتديات ومقالات لا تُحصى
+            </li>
+            <li>
+                <strong>التوافق الأوسع مع البرامج والعتاد</strong>: أغلب
+                الشركات تختبر برامجها ومحركاتها على أوبونتو أولًا قبل غيرها
+            </li>
+            <li>
+                <strong>خيار افتراضي في الحوسبة السحابية</strong>: أوبونتو
+                هي التوزيعة الأكثر استخدامًا على منصات مثل AWS وAzure
+                وGoogle Cloud
+            </li>
+            <li>
+                <strong>دعم تجاري حقيقي</strong>: عبر Canonical وUbuntu Pro
+                للشركات التي تحتاج ضمانات ودعمًا رسميًا مدفوعًا
+            </li>
+            <li>
+                <strong>مرونة عبر النكهات الرسمية</strong>: تجربة أوبونتو
+                نفسها لكن بواجهة مختلفة تمامًا حسب تفضيلك
+            </li>
+        </ul>
+
+        <h2 id="challenges">التحديات والانتقادات</h2>
+
+        <p>بموضوعية، أوبونتو ليست بلا انتقادات مستمرة من جزء من المجتمع:</p>
+
+        <ul>
+            <li>
+                <strong>الاعتماد المتزايد على Snap</strong>: بعض المستخدمين
+                يفضلون Flatpak أو حزم APT التقليدية، وشعروا بأن Snap فُرض
+                عليهم دون بديل افتراضي واضح
+            </li>
+            <li>
+                <strong>مركزية متجر Snap</strong>: على عكس Flatpak الموزّع
+                عبر مستودعات متعددة، متجر Snap يمر بالكامل عبر خوادم
+                Canonical
+            </li>
+            <li>
+                <strong>بعض القرارات التصميمية المثيرة للجدل تاريخيًا</strong>:
+                مثل تجربة واجهة Unity السابقة، أو دمج نتائج بحث تجارية في
+                قائمة التطبيقات في إصدارات قديمة
+            </li>
+        </ul>
+
+        <h2 id="who-fits">لمن تناسب أوبونتو فعليًا؟</h2>
+
+        <ul>
+            <li>
+                <strong>للقادمين الجدد إلى لينكس</strong>: بفضل ضخامة
+                التوثيق والمجتمع، يصعب أن تواجه مشكلة دون حل موثق
+            </li>
+            <li>
+                <strong>لمسؤولي الخوادم والحوسبة السحابية</strong>: كونها
+                المعيار الفعلي في أغلب بيئات النشر السحابي
+            </li>
+            <li>
+                <strong>للمطورين</strong>: توافق واسع مع أدوات التطوير
+                وحاويات Docker المبنية أصلاً على صور أوبونتو غالبًا
+            </li>
+            <li>
+                <strong>للشركات التي تحتاج دعمًا تجاريًا موثقًا</strong>: عبر
+                Ubuntu Pro وCanonical مباشرة
+            </li>
+            <li>
+                <strong>أقل ملاءمة</strong>: لمن يرفض تمامًا فكرة نظام Snap
+                أو يفضّل تحكمًا كاملاً في كل تفصيل من تفاصيل النظام، حيث
+                توزيعات مثل Arch Linux أو Fedora قد تناسبه أكثر
+            </li>
+        </ul>
+
+        <h2 id="official-links">الروابط الرسمية والمصادر</h2>
+
+        <p>
+            للتحميل أو التعمق أكثر فيما ذُكر في هذا المقال، هذه المصادر
+            الرسمية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الموقع الرسمي لأوبونتو:</strong>{" "}
+                <a href="https://ubuntu.com/" target="_blank" rel="noopener noreferrer nofollow">
+                    ubuntu.com
+                </a>
+            </li>
+            <li>
+                <strong>صفحة التحميل الرسمية:</strong>{" "}
+                <a href="https://ubuntu.com/download/desktop" target="_blank" rel="noopener noreferrer nofollow">
+                    ubuntu.com/download/desktop
+                </a>
+            </li>
+            <li>
+                <strong>ملاحظات إصدار Ubuntu 26.04 LTS:</strong>{" "}
+                <a href="https://documentation.ubuntu.com/release-notes/26.04/" target="_blank" rel="noopener noreferrer nofollow">
+                    documentation.ubuntu.com/release-notes/26.04
+                </a>
+            </li>
+            <li>
+                <strong>جدول دورة الإصدارات الرسمي:</strong>{" "}
+                <a href="https://ubuntu.com/about/release-cycle" target="_blank" rel="noopener noreferrer nofollow">
+                    ubuntu.com/about/release-cycle
+                </a>
+            </li>
+            <li>
+                <strong>موقع Canonical (الشركة المطورة):</strong>{" "}
+                <a href="https://canonical.com/" target="_blank" rel="noopener noreferrer nofollow">
+                    canonical.com
+                </a>
+            </li>
+            <li>
+                <strong>Kubuntu (النكهة الرسمية بواجهة KDE):</strong>{" "}
+                <a href="https://kubuntu.org/" target="_blank" rel="noopener noreferrer nofollow">
+                    kubuntu.org
+                </a>
+            </li>
+            <li>
+                <strong>Xubuntu (النكهة الرسمية بواجهة Xfce):</strong>{" "}
+                <a href="https://xubuntu.org/" target="_blank" rel="noopener noreferrer nofollow">
+                    xubuntu.org
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>ما الفرق بين إصدار LTS والإصدار المؤقت لمستخدم عادي؟</strong><br />
+            LTS يمنحك استقرارًا ودعمًا لخمس سنوات كاملة، بينما الإصدار
+            المؤقت يمنحك أحدث البرمجيات لكن بدعم يقتصر على تسعة أشهر فقط.
+        </p>
+
+        <p>
+            <strong>هل أوبونتو مجانية بالكامل؟</strong><br />
+            نعم، النظام نفسه مجاني تمامًا. Ubuntu Pro اشتراك اختياري
+            للحصول على دعم أمني ممتد، وهو مجاني أصلاً للاستخدام الشخصي حتى
+            خمسة أجهزة.
+        </p>
+
+        <p>
+            <strong>هل يجب علي استخدام Snap بدلاً من APT؟</strong><br />
+            لا إجبار حقيقي. يمكنك تثبيت أغلب البرامج عبر APT التقليدي، وSnap
+            يُستخدم غالبًا فقط للبرامج التي توفرها الشركة المطورة بهذه
+            الصيغة تحديدًا.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين أوبونتو وLinux Mint؟</strong><br />
+            Linux Mint مبنية أصلاً على أوبونتو نفسها، لكنها تستخدم واجهة
+            Cinnamon الأقرب لويندوز، وتعطل Snap افتراضيًا لصالح Flatpak،
+            بفلسفة أبسط للقادمين حديثًا من ويندوز تحديدًا.
+        </p>
+    </PostLayout>
+</BaseLayout>

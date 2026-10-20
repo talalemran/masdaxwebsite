@@ -1,0 +1,463 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "peppermint-os-pepvoid-void-linux-rolling-release-xlibre",
+    title: "Peppermint OS توسّع نطاقها: تجريب PepVoid المبني على Void Linux",
+    metaTitle: "PepVoid: Peppermint يجلب أسلوبه إلى Void Linux Rolling Release",
+    description:
+        "Peppermint OS تختبر PepVoid — نسخة تجريبية جديدة مبنية على Void Linux بدلاً من Debian. الإصدار يدعم Xorg و XLibre، يستخدم XBPS بدلاً من APT، و runit بدلاً من systemd. إطلاق رسمي متوقع في نوفمبر 2026.",
+    keywords: [
+        "Peppermint OS",
+        "PepVoid",
+        "Void Linux",
+        "Rolling Release",
+        "XLibre",
+        "Xorg",
+        "XBPS",
+        "Runit",
+        "لينكس",
+        "توزيعة لينكس",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "12 أكتوبر 2026",
+    pubDate: new Date("2026-10-12"),
+    tags: ["Peppermint OS", "Void Linux", "PepVoid", "Linux Distro"],
+    thumbnail: "/images/peppermint-os-pepvoid-void-linux-rolling-release-xlibre.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            أعلنت فريق Peppermint OS في أكتوبر 2026 
+            عن مشروع تجريبي جديد يُدعى PepVoid — 
+            نسخة جديدة تماماً من Peppermint OS مبنية على Void Linux 
+            بدلاً من Debian الذي استخدمته الإصدارات السابقة.
+
+            PepVoid توفر نفس فلسفة Peppermint (خفيفة الوزن و سهلة الاستخدام)
+            لكن مع أساس تقني مختلف تماماً: rolling-release model من Void،
+            XBPS package manager بدلاً من APT،
+            و runit init system بدلاً من systemd.
+
+            الفريق الآن في مرحلة اختبار، أطلقوا ISO images محدثة،
+            و يستهدفون إطلاق رسمي في نوفمبر 2026.
+            PepVoid ليست بديل عن Peppermint الأصلي بل خيار إضافي 
+            للمستخدمين المهتمين بـ Void Linux و الاستفادة من تصميم Peppermint.
+        </p>
+
+        <h2>السياق: Peppermint OS و Void Linux</h2>
+
+        <p>
+            <img
+                src="/images/articles/peppermint-os-pepvoid-void-linux-rolling-release-xlibre/01.webp"
+                alt="Peppermint OS PepVoid Void Linux Rolling Release XLibre"
+                width="1200"
+                height="750"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <h3>من هو Peppermint OS؟</h3>
+
+        <p>
+            Peppermint OS توزيعة لينكس خفيفة الوزن جداً 
+            مشهورة لـ أجهزة الكمبيوتر القديمة و المحمولة. 
+            معروفة بـ:
+        </p>
+
+        <ul>
+            <li>
+                استهلاك موارد منخفض جداً (تعمل على أجهزة بـ 512 MB RAM)
+            </li>
+            <li>
+                XFCE desktop environment (خفيفة و سريعة)
+            </li>
+            <li>
+                تركيز على سهولة الاستخدام (للمبتدئين)
+            </li>
+            <li>
+                أساس Debian (Stable و reliable)
+            </li>
+            <li>
+                أدوات مخصصة مثل PepTools
+            </li>
+        </ul>
+
+        <p>
+            Peppermint كانت دائماً Debian-based، 
+            لكن الآن تجرّب شيء جديد تماماً.
+        </p>
+
+        <h3>ما هو Void Linux؟</h3>
+
+        <p>
+            Void Linux توزيعة مستقلة تماماً (ليست مشتقة من Debian أو Red Hat). 
+            معروفة بـ:
+        </p>
+
+        <ul>
+            <li>
+                Rolling-release model: تحديثات مستمرة بدون major version jumps
+            </li>
+            <li>
+                XBPS package manager: بديل من APT، مكتوب بـ C، سريع جداً
+            </li>
+            <li>
+                systemd-free: استخدام runit init system (أبسط و أسرع)
+            </li>
+            <li>
+                Minimalist philosophy: فقط ما تحتاجه، لا bloat
+            </li>
+            <li>
+                Bleeding edge: software حديث جداً
+            </li>
+        </ul>
+
+        <p>
+            Void محبوبة من power users لكن صعبة للـ beginners 
+            لأن installer الافتراضي عبارة عن CLI (command-line).
+        </p>
+
+        <h3>الفرق الأساسي بين Debian و Void</h3>
+
+        <p>
+            Debian (Peppermint الأصلي):
+        </p>
+
+        <ul>
+            <li>
+                Fixed-release: Debian Stable، Testing، Unstable
+            </li>
+            <li>
+                التحديثات أبطأ لكن more stable
+            </li>
+            <li>
+                APT package manager (معروف و موثوق)
+            </li>
+            <li>
+                systemd (dominant في Linux الحديث)
+            </li>
+        </ul>
+
+        <p>
+            Void (PepVoid):
+        </p>
+
+        <ul>
+            <li>
+                Rolling-release: تحديثات مستمرة
+            </li>
+            <li>
+                Software أحدث لكن قد يأتي بـ bugs جديدة
+            </li>
+            <li>
+                XBPS package manager (أسرع من APT)
+            </li>
+            <li>
+                runit (أبسط، أسرع، أقل resources)
+            </li>
+        </ul>
+
+        <h2>ميزات PepVoid</h2>
+
+        <h3>Calamares Installer</h3>
+
+        <p>
+            أهم ميزة: PepVoid تستخدم Calamares graphical installer 
+            بدلاً من CLI installation الافتراضية في Void.
+
+            السبب: Void عادة صعبة للـ beginners لأن installation يحتاج commands. 
+            PepVoid تجعل هذا سهلاً مع GUI installer من Calamares.
+
+            الفائدة: أي شخص يمكنه ينصب PepVoid دون خبرة سطر الأوامر.
+        </p>
+
+        <h3>Xorg و XLibre Options</h3>
+
+        <p>
+            PepVoid توفر نسختين من ISO images:
+        </p>
+
+        <ul>
+            <li>
+                Xorg edition: X11 الافتراضية (compatible أكثر)
+            </li>
+            <li>
+                XLibre edition: بديل من X11 (أحدث، أقل dependencies)
+            </li>
+        </ul>
+
+        <p>
+            كلاهما حوالي 3.2 GB. 
+            المستخدم يختار حسب الحاجة.
+        </p>
+
+        <h3>PepTools على PepVoid</h3>
+
+        <p>
+            PepTools (أدوات نظام Peppermint المخصصة) 
+            موجودة على PepVoid مع adjustments لـ Void Linux.
+
+            التحسينات:
+        </p>
+
+        <ul>
+            <li>
+                Version محدثة من PepTools
+            </li>
+            <li>
+                بعض tasks الإدارة أصبحت graphical (ليس CLI فقط)
+            </li>
+            <li>
+                Tailored لـ Void's workflow (XBPS بدلاً من APT)
+            </li>
+        </ul>
+
+        <h3>Package Selection</h3>
+
+        <p>
+            PepVoid "Loaded" builds تأتي مع اختيار من التطبيقات:
+        </p>
+
+        <ul>
+            <li>
+                Applications و utilities مختارة مسبقاً
+            </li>
+            <li>
+                ليست final selection — قد تتغير مع التطوير
+            </li>
+            <li>
+                تستخدم Void upstream repositories (نفسها المتوفرة في Void الأصلي)
+            </li>
+            <li>
+                XLibre edition لديها dedicated repository للـ XLibre packages
+            </li>
+        </ul>
+
+        <h2>التفاصيل التقنية</h2>
+
+        <h3>Linux Kernel و System</h3>
+
+        <p>
+            PepVoid يستخدم:
+        </p>
+
+        <ul>
+            <li>
+                Linux kernel 6.18 (حديث جداً)
+            </li>
+            <li>
+                runit init system (بدلاً من systemd)
+            </li>
+            <li>
+                XBPS package manager
+            </li>
+            <li>
+                Void Linux rolling-release base
+            </li>
+        </ul>
+
+        <h3>المستودعات و التحديثات</h3>
+
+        <p>
+            PepVoid يستخدم نفس repos التي يستخدمها Void:
+        </p>
+
+        <ul>
+            <li>
+                Upstream Void repositories (musl و glibc variants)
+            </li>
+            <li>
+                nonfree repository متاح اختيارياً
+            </li>
+            <li>
+                لـ XLibre edition: xlibre-void repository إضافي
+            </li>
+        </ul>
+
+        <p>
+            التحديثات rolling-release يعني التحديثات قادمة باستمرار 
+            بدلاً من انتظار release جديد كل 6-8 أشهر.
+        </p>
+
+        <h3>عدم وجود systemd</h3>
+
+        <p>
+            واحد من الفروقات الأساسية من Debian-based systems:
+            PepVoid لا تستخدم systemd.
+
+            الفوائد:
+        </p>
+
+        <ul>
+            <li>
+                Simpler init system: runit أبسط من systemd
+            </li>
+            <li>
+                Faster boot: أسرع startup
+            </li>
+            <li>
+                Lower resource usage: أقل استهلاك RAM
+            </li>
+            <li>
+                Modular design: أسهل في الفهم و التخصيص
+            </li>
+        </ul>
+
+        <p>
+            التحدي: بعض software قد يتوقع systemd. 
+            لكن Void community حل هذا عادة.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            PepVoid تمثل تحول مثير للاهتمام جداً في Peppermint:
+        </p>
+
+        <ul>
+            <li>
+                لا تحل محل Peppermint-Debian (الأصلي)
+            </li>
+            <li>
+                خيار إضافي للـ users المهتمين بـ Void
+            </li>
+            <li>
+                توازن بين Peppermint's ease of use و Void's technical approach
+            </li>
+        </ul>
+
+        <p>
+            المميزات:
+        </p>
+
+        <ul>
+            <li>
+                Perfect للـ users الذين يريدون rolling-release مع سهولة تثبيت
+            </li>
+            <li>
+                runit أخف من systemd = أداء أفضل على أجهزة قديمة
+            </li>
+            <li>
+                Calamares installer يجعل Void أسهل للـ beginners
+            </li>
+            <li>
+                Community Void كبيرة و مفيدة
+            </li>
+        </ul>
+
+        <p>
+            التحديات:
+        </p>
+
+        <ul>
+            <li>
+                Rolling-release يعني updates متكررة (قد تكسر الأشياء)
+            </li>
+            <li>
+                Void أصغر من Debian (packages أقل متوفرة)
+            </li>
+            <li>
+                Community أصغر من Debian (support أقل)
+            </li>
+            <li>
+                systemd-free قد يكون تحدي لـ بعض software
+            </li>
+        </ul>
+
+        <p>
+            الـ bigger picture: PepVoid يعكس willingness من Peppermint 
+            أن تجرّب أساس technical مختلف. هذا خطر و طموح. 
+            إذا نجحت، قد نرى توزيعات أخرى تفعل نفس الشيء (Debian-based + Void-based versions).
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: هل PepVoid ستحل محل Peppermint العادي؟</h3>
+        <p>
+            ج: لا، هذا تجريبي. Peppermint-Debian تبقى الأساس. PepVoid خيار إضافي.
+        </p>
+
+        <h3>س: هل PepVoid آمنة على production systems؟</h3>
+        <p>
+            ج: تجريبية الآن. إذا كنت تريد stable، استخدم Peppermint-Debian. إذا كنت تريد experiment، جرّب PepVoid.
+        </p>
+
+        <h3>س: لماذا Void Linux و ليس توزيعة أخرى؟</h3>
+        <p>
+            ج: Void مشهورة بـ minimal footprint و runit. مطابقة جيدة لـ Peppermint's lightweight philosophy.
+        </p>
+
+        <h3>س: هل PepVoid تحتاج كمبيوتر قوي؟</h3>
+        <p>
+            ج: لا، نفس متطلبات Peppermint: 512 MB RAM minimum. رامات أكثر مفضل لـ modern apps.
+        </p>
+
+        <h3>س: متى الإطلاق الرسمي؟</h3>
+        <p>
+            ج: نوفمبر 2026 المتوقع. لكن يعتمد على testing progress. اختبر الآن من PepVoid directory.
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            PepVoid خطوة مثيرة جداً في تطور Peppermint OS. 
+
+            بـ بناء نسخة على Void Linux بدلاً من الالتزام بـ Debian، 
+            Peppermint توضح أنها distro مرنة و تجريبية. 
+            لا تخاف أن تجرب أساس technical جديد تماماً.
+
+            للـ users:
+        </p>
+
+        <ul>
+            <li>
+                تريد lightweight distro + rolling-release + سهلة التثبيت؟ → PepVoid
+            </li>
+            <li>
+                تريد stable + tested + proven؟ → Peppermint-Debian
+            </li>
+        </ul>
+
+        <p>
+            للـ Linux community:
+            PepVoid مثال على كيف distros يمكنها أن تتحاور 
+            و تبني على philosophies مختلفة 
+            (Peppermint's ease + Void's technical purity).
+
+            إطلاق نوفمبر 2026 متوقع. 
+            Users المهتمين بـ rolling-release + lightweight 
+            يجب أن يراقبوا هذا المشروع. 
+            قد يكون بالضبط ما يبحثون عنه.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://linuxiac.com/peppermint-os-expands-beyond-debian-with-void-linux-based-pepvoid/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Linuxiac: Peppermint OS Expands Beyond Debian with Void Linux-Based PepVoid
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

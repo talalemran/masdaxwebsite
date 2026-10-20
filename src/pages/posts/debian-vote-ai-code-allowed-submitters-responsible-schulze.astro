@@ -1,0 +1,169 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "debian-vote-ai-code-allowed-submitters-responsible-schulze",
+    title: "ديبيان توافق على أكواد الذكاء الاصطناعي لكن المسؤولية على المطورين",
+    metaTitle: "ديبيان توافق على استخدام AI: مسؤولية المطورين أولاً",
+    description:
+        "ديبيان أنهت تصويتاً استغرق أسبوعين — اختيار الاستخدام المسؤول للذكاء الاصطناعي فاز بـ طريقة Schulze، ممما يسمح بأكواد AI لكن المساهمون يتحملون المسؤولية الكاملة عن الجودة والقانونية.",
+    keywords: [
+        "Debian",
+        "AI code",
+        "توصيت",
+        "مسؤولية",
+        "Schulze voting",
+        "مفتوح المصدر",
+        "أكواد ذكاء اصطناعي",
+        "مجتمع Debian",
+        "لينكس",
+        "مساهمات",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "29 أغسطس 2026",
+    pubDate: new Date("2026-08-29"),
+    tags: ["Debian", "AI", "توصيت", "لينكس", "مفتوح المصدر"],
+    thumbnail: "/images/debian-vote-ai-code-allowed-submitters-responsible-schulze.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            انتهت مجتمع 
+                <a href="https://www.debian.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>ديبيان</strong>
+            </a>
+            من <strong>أسبوعين من التصويت الكثيف</strong> حول ما إذا كانت أكواد الذكاء الاصطناعي
+            مسموحة في قاعدة الأكواس. <strong>النتيجة أعلنت رسمياً</strong>: مجتمع ديبيان يريد
+            <strong>السماح بأكواد AI</strong>، لكن <strong>مع جعل المساهم مسؤولاً بالكامل</strong> عن
+            الجودة والقانونية — نفس النموذج الذي يستخدمه Linux kernel.
+        </p>
+
+        <h2>Schulze: طريقة تصويت متقدمة</h2>
+
+        <p>
+            استخدمت ديبيان <strong>طريقة Schulze للتصويت</strong> — ليست عملية عد بسيطة. بدلاً من
+            ذلك، 
+                <a href="https://lists.debian.org/debian-devel-announce/2026/08/msg00002.html"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>الفائز يتم اختياره بناءً على أي خيار فاز على الآخرين في الاقتراع</strong>
+            </a>
+            . <strong>الخيار الخامس "الاستخدام المسؤول للذكاء الاصطناعي"</strong> فاز بشكل واضح.
+        </p>
+
+        <h2>الخيارات التي كانت على الطاولة</h2>
+
+        <p>
+            كانت هناك <strong>9 خيارات مختلفة</strong> في الاقتراع:
+        </p>
+
+        <ul>
+            <li><strong>1:</strong> حظر مساهمات LLM من ديبيان</li>
+            <li><strong>2:</strong> السماح بمساهمات مساعدة من AI مع شروط</li>
+            <li><strong>3:</strong> رفض LLMs عملياً، تحديث قواعس السلوك</li>
+            <li><strong>4:</strong> قبول مساهمات AI لعمل Debian محدد</li>
+            <li>
+                <strong>5 (الفائز):</strong>
+                
+                    <a href="https://www.debian.org/vote/2026/vote_002#texte"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>الاستخدام المسؤول للذكاء الاصطناعي</strong>
+                </a>
+            </li>
+            <li><strong>6:</strong> نهج حذر تجاه الذكاء الاصطناعي</li>
+            <li><strong>7:</strong> ديبيان مخلوقة من قبل البشر</li>
+            <li><strong>8:</strong> تجنب استخدام LLMs: تدمير المناخ مثير للقلق</li>
+            <li><strong>9:</strong> لا أحد من الخيارات أعلاه</li>
+        </ul>
+
+        <h2>ماذا يعني الخيار الخامس بالضبط؟</h2>
+
+        <p>
+            الخيار الخامس <strong>حيادي تجاه الذكاء الاصطناعي</strong> — لا ينتقد ولا يؤيد. يقبل
+            أن البعض يجدها معززاً للإنتاجية بينما قد لا يريدها آخرون. <strong>النقطة الأساسية: المسؤولية
+            على الشخص، لا على الممارسة</strong>.
+        </p>
+
+        <p>
+            <strong>المقتطف الرئيسي من الاقتراح:</strong>
+        </p>
+
+        <blockquote>
+            <p>
+                "استخدام أداة ذكاء اصطناعي توليدية <strong>لا يقلل من مسؤولية المساهم</strong> عن
+                العمل الذي يقدمه. يتوقع من المساهمين أن
+                <strong>يفهموا ويراجعوا ويختبروا وإذا لزم الأمر يعدّلوا على المخرجات المساعدة بـ AI</strong>
+                قبل إدراجها في Debian. قبول أو تحميل مواد مولدة من AI بدون مراجعة إنسانية مناسبة
+                <strong>غير متسق مع ممارسات تطوير Debian المثبتة</strong>."
+            </p>
+        </blockquote>
+
+        <h2>الشروط الواضحة</h2>
+
+        <p>
+            القاعدة الجديدة <strong>لا تتطلب الكشف عما إذا استخدم المساهم AI</strong>. لكن
+            <strong>يجب على المساهمين تحمل مسؤولية قانونية كاملة</strong> عن أكواد AI، وهي مسؤولية
+            <strong>لا يمكن حلها بالكامل في هذا التصويت وحده</strong>.
+        </p>
+
+        <p>
+            بشكل أساسي: <strong>لا فحص واجب من قبل ديبيان على أكواد AI</strong> —
+            <strong>المساهم يتحمل المسؤولية الكاملة</strong>.
+        </p>
+
+        <h2>تعكس سياسة Linux Kernel</h2>
+
+        <p>
+            هذا النموذج 
+                <a href="https://www.kernel.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>يعكس سياسة نواة لينكس</strong>
+            </a>
+            — كل مساهم مسؤول عما يقدمه، بغض النظر عن الأداة المستخدمة أو الطريقة. إذا كان الكود
+            AI محض بدون فحص، فالمساهم يتحمل القصاص، ليس المشروع.
+        </p>
+
+        <h2>الأثر العملي</h2>
+
+        <p>
+            بخلاف القلق حول <strong>أكواد AI المسروقة أو ذات جودة منخفضة</strong>، القرار
+            <strong>ودود نسبياً للمساهمين</strong> الذين يريدون استخدام أدوات AI. لا إعلان مطلوب،
+            فقط تحمل المسؤولية الكاملة عند الإرسال.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a href="https://www.xda-developers.com/debian-gives-the-green-light-to-ai-code-after-a-two-week-vote-but-submitters-are-responsible-for-it/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                XDA Developers
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

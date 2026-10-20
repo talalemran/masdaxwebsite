@@ -1,0 +1,204 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "image-toolbox-android-app-free-open-source-8-in-1",
+    title: "Image Toolbox: تطبيق أندرويد مجاني يحل محل 8 تطبيقات متخصصة",
+    metaTitle: "Image Toolbox: تطبيق واحد لكل مهام الصور والوسائط",
+    description:
+        "Image Toolbox تطبيق مفتوح المصدر مجاني لـ أندرويد — أداة واحدة شاملة تحل محل 8 تطبيقات متخصصة مع صور وPDF وQR وخلفيات وصور متحركة وتحرير شامل، بدون إعلانات.",
+    keywords: [
+        "Image Toolbox",
+        "تطبيق أندرويد",
+        "معالجة صور",
+        "تحرير الصور",
+        "مجاني",
+        "مفتوح المصدر",
+        "PDF tools",
+        "QR code",
+        "Android app",
+        "أندرويد",
+    ],
+    category: "أندرويد",
+    author: "طلال عمران",
+    date: "22 أغسطس 2026",
+    pubDate: new Date("2026-08-22"),
+    tags: ["Image Toolbox", "أندرويد", "مجاني", "مفتوح المصدر", "صور"],
+    thumbnail: "/images/image-toolbox-android-app-free-open-source-8-in-1.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أندرويد يعطيك <strong>تطبيقات لكل شيء</strong> — من
+            <strong>ربط الصور وإعادة ترتيب ملفات PDF إلى إنشاء رموز QR</strong>. لكن
+            المشكلة؟ كنت أحتاج إلى تنزيل عشرات التطبيقات المتخصصة، وإعادة تحميلها كلما
+            غيرت الهاتف، والحفاظ عليها محدثة. ثم اكتشفت <strong>Image Toolbox</strong> —
+            تطبيق واحد يجمع
+            <strong>عشرات الأدوات للعمل مع الوسائط</strong> وحل محل 8 تطبيقات كنت أستخدمها.
+        </p>
+
+        <h2>Image Toolbox: سكين الجيش السويسري للوسائط</h2>
+
+        <p>
+            <strong>Image Toolbox</strong> تطبيق قوي جداً يجمع عشرات أدوات الوسائط تحت
+            سقف واحد، مما يلغي الحاجة
+            <strong>للبحث وتنزيل تطبيقات متعددة بشكل منفصل</strong>. التطبيق
+            
+                <a href="https://github.com/T8RIN/ImageToolbox"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                مفتوح المصدر
+            </a>
+            وخالي <strong>تماماً من الإعلانات</strong> رغم أنه مجاني.
+        </p>
+
+        <p>
+            الواجهة <strong>سريعة جداً وسهلة في التنقل</strong>. تحتوي على
+            <strong>أربع علامات تبويب في شريط التنقل السفلي</strong>: Edit و Create و Image و
+            Tools. كل الأدوات التي يقدمها موزعة على هذه الأقسام. مثلاً، Edit يحتوي على
+            أدوات تحرير مثل إعادة الحجم والقص وتحويل الصيغ. Tools يحتوي على أدوات متخصصة
+            مثل ماسح المستندات وأدوات الصور المتحركة ورموز QR.
+        </p>
+
+        <h2>التطبيقات التي لم أعد بحاجة إليها</h2>
+
+        <p>
+            استخدمت Image Toolbox لسنوات، لكن منذ بضعة أشهر بدأت استخدامه بشكل منتظم
+            ولم أعد بحاجة للعودة للتطبيقات المتخصصة:
+        </p>
+
+        <h3>معدِّل ومحول الصور</h3>
+
+        <p>
+            أداة <strong>Resize and Convert</strong> تتعامل مع تغيير حجم الصور وتحويلها بشكل
+            فعال. يمكنك إدخال العرض والارتفاع المفضل، وتحويل الصور بين صيغ مختلفة مع
+            <strong>خيار اختيار نوع الضغط</strong>. بالإضافة لذلك، توجد أداة
+            <strong>Format Conversion المخصصة لتحويل دفعات من الصور</strong> بسرعة.
+        </p>
+
+        <h3>مزيل بيانات EXIF</h3>
+
+        <p>
+            أداة <strong>Delete EXIF</strong> تبسّط حذف بيانات EXIF من الصور. بشكل افتراضي
+            تحذف كل البيانات، لكن يمكنك
+            <strong>اختيار حذف tags محددة</strong>. والأفضل أن تستطيع حذف EXIF من
+            <strong>عشرات الصور في وقت واحد</strong>.
+        </p>
+
+        <h3>مزيل الخلفية</h3>
+
+        <p>
+            <strong>Background Remover</strong> رائع جداً لإزالة الخلفيات بسرعة، مع
+            <strong>وضع تلقائي ويدوي</strong>. نماذج RMBG و InSPyReNet و BiRefNet الأفضل
+            للإزالة التلقائية. وعندما لا تعمل بشكل جيد، الوضع اليدوي
+            <strong>يدعك دليل مساعد للتحكم بدقة</strong>.
+        </p>
+
+        <h3>محرر PDF</h3>
+
+        <p>
+            <strong>PDF Tools</strong> أداة قوية جداً — إنشاء PDF من الصور، دمج PDFs،
+            حذف الصفحات، إعادة ترتيبها،
+            
+                <a href="https://github.com/T8RIN/ImageToolbox"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                حماية بـ كلمات مرور
+            </a>
+            ، وضغط ملفات PDF لتقليل الحجم.
+        </p>
+
+        <h3>أداة ربط الصور</h3>
+
+        <p>
+            <strong>Image Stitching</strong> تجعل ربط الصور أفقياً أو رأسياً بسيطة جداً.
+            أستخدمها طوال الوقت لربط لقطات الشاشة. يمكنك تغيير ترتيب الظهور، التبديل بين
+            الأوضاع، وتعديل التباعد والصيغة والضغط.
+        </p>
+
+        <h3>محرر الصور المتحركة</h3>
+
+        <p>
+            <strong>GIF Tools</strong> مجموعة من أدوات الصور المتحركة. المفضل لدي هو
+            <strong>Images to GIF</strong> — يحول مجموعة صور إلى صورة متحركة، مفيد جداً
+            لتوضيح العمليات.
+        </p>
+
+        <h3>مولد رموز QR</h3>
+
+        <p>
+            <strong>QR & Barcode</strong> أداة شاملة تساعدك
+            <strong>إنشاء رموز QR فوراً</strong>. توجد قوالب كثيرة مثل Wi-Fi و Email و
+            Phone. وتخصيص كامل للرموز — يمكنك
+            
+                <a href="https://en.wikipedia.org/wiki/QR_code"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                إنشاء رموز مخصصة
+            </a>
+            بألوانك المفضلة.
+        </p>
+
+        <h3>صانع الكولاج</h3>
+
+        <p>
+            <strong>Collage Maker</strong> ينشئ كولاجات بفعالية عالية. يختار القالب
+            المناسب تلقائياً، وإذا أردت تغييراً،
+            <strong>سحب وإفلات الصور سهل جداً</strong>. خيارات كثيرة للشبكات والنسب
+            والألوان والتباعد.
+        </p>
+
+        <h2>التخصيص الكامل للتطبيق</h2>
+
+        <p>
+            Image Toolbox <strong>قابل للتخصيص بدرجة عالية</strong>. يمكنك تغيير المظهر
+            وترتيب الأدوات والمجلد الافتراضي للحفظ. اضغط على
+            <strong>أيقونة الترس في الزاوية اليمنى العليا</strong> للدخول للإعدادات.
+        </p>
+
+        <p>
+            أنا أفعّل <strong>Launcher Mode</strong> لعرض الأدوات كأيقونات الشاشة الرئيسية،
+            و<strong>Search</strong> لإضافة زر بحث عائم. كما أفعّل
+            <strong>Save to Original Folder</strong> لحفظ الملفات بجانب الأصلية، وأضيف
+            "image-toolbox" كـ suffix لأسماء الملفات لسهولة تعريفها.
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            كنت متشككاً في البداية حول ما إذا كان Image Toolbox يستطيع
+            <strong>تعويض التطبيقات المتخصصة</strong>. لكن بعد استخدامه لأشهر، أؤكد أنه
+            <strong>يقوم بالمهمة بفعالية وكفاءة عالية</strong>. لن أعود للتطبيقات المنفصلة.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.androidauthority.com/image-toolbox-android-app-hands-on-3699127/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Android Authority
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

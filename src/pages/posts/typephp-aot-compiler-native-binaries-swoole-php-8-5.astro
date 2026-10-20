@@ -1,0 +1,240 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "typephp-aot-compiler-native-binaries-swoole-php-8-5",
+    title: "TypePHP: مترجم PHP يحول الأكواد إلى برامج أصلية أسرع 135 مرة",
+    metaTitle: "TypePHP مترجم AOT يحول PHP لثنائيات أصلية",
+    description:
+        "Swoole أطلقت TypePHP — مترجم AOT مفتوح المصدر يحول PHP 8.4/8.5 إلى ثنائيات أصلية، أسرع 135 مرة من ZendVM في اختبار Fibonacci، مكتوبة بـ PHP نفسها وقابلة للاستضافة الذاتية.",
+    keywords: [
+        "TypePHP",
+        "Swoole",
+        "مترجم PHP",
+        "AOT compiler",
+        "PHP native binaries",
+        "برمجة",
+        "PHP 8.5",
+        "C++17",
+        "native compilation",
+        "مفتوح المصدر",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "27 أغسطس 2026",
+    pubDate: new Date("2026-08-27"),
+    tags: ["TypePHP", "PHP", "مترجم", "Swoole", "أداء"],
+    thumbnail: "/images/typephp-aot-compiler-native-binaries-swoole-php-8-5.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت <strong>Swoole</strong> رسمياً <strong>TypePHP</strong> — مشروع مترجم
+            
+                <a href="https://github.com/swoole/typephp"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>AOT مفتوح المصدر</strong>
+            </a>
+            يحول <strong>PHP 8.4/8.5 إلى ثنائيات أصلية قابلة للتنفيذ</strong>. المشروع
+            <strong>مكتوب بالكامل بـ PHP نفسه ويستضيف نفسه بنفسه</strong> — المترجم الثنائي يتم
+            بناؤه بتجميع مصدر المترجم نفسه عبر TypePHP.
+        </p>
+
+        <h2>ما هو TypePHP؟</h2>
+
+        <p>
+            <strong>TypePHP</strong> هو
+            
+                <a href="https://en.wikipedia.org/wiki/Ahead-of-time_compilation"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>مترجم AOT (Ahead-Of-Time)</strong>
+            </a>
+            يترجم <strong>كود PHP إلى C++17 ثم إلى كود آلي أصلي</strong>. بخلاف ذاكرة التخزين المؤقت
+            للـ bytecode أو الـ VM، <strong>لا يحتوي على مفسّر في وقت التشغيل</strong> — بدلاً من
+            ذلك، <strong>ينتج عنه ثنائيات محسّنة تعمل مباشرة على المعالج</strong>.
+        </p>
+
+        <p>
+            TypePHP <strong>يحافظ على بناء جملة PHP المألوف</strong> ويضيف
+            <strong>معلومات نوع وقت الترجمة</strong>، مما يسمح للمترجم بإصدار
+            <strong>C++ سريع ومكتوب بشكل ثابت</strong> للمسارات الحارة.
+        </p>
+
+        <h2>الأداء: أسرع 135 مرة من ZendVM</h2>
+
+        <p>
+            <strong>اختبار فيبوناتشي العودي</strong> يكشف النقاب عن الفارق الدراماتيكي:
+        </p>
+
+        <ul>
+            <li>
+                <strong>TypePHP:</strong> 0.11 ثانية
+            </li>
+            <li>
+                <strong>PHP 8.4 ZendVM:</strong> حوالي 15 ثانية
+            </li>
+            <li>
+                <strong>الفارق:</strong> <strong>أسرع 135 مرة تقريباً</strong>
+            </li>
+        </ul>
+
+        <p>
+            لكن، <strong>لتطبيقات الويب العادية، مكاسب السرعة ستكون أكثر تواضعاً</strong>. الفوائد
+            الحقيقية تأتي <strong>للتطبيقات الثقيلة حسابياً والمسارات الساخنة المحسّنة</strong>.
+        </p>
+
+        <h2>ثلاثة أوضاع بناء</h2>
+
+        <p>
+            TypePHP يدعم ثلاثة أوضاع بناء مختلفة من نفس قاعدة الأكواس:
+        </p>
+
+        <ul>
+            <li>
+                <strong>ثنائي تنفيذي:</strong> برنامج أصلي مستقل يقف بذاته
+            </li>
+            <li>
+                <strong>امتداد PHP:</strong> يمكن تحميله في PHP الموجود
+            </li>
+            <li>
+                <strong>مكتبة مشتركة:</strong> لأغراض إعادة الاستخدام
+            </li>
+        </ul>
+
+        <h2>التوافقية والتكامل</h2>
+
+        <p>
+            <strong>TypePHP مبني على C++ ABI</strong> ويمكنه
+            
+                <a href="https://en.wikipedia.org/wiki/Application_binary_interface"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>استدعاء المكتبات الثابتة والديناميكية المصنوعة من C/C++ و Rust و Go مباشرة</strong>
+            </a>
+            . من خلال التكامل مع Zend، <strong>حزم Composer والإضافات الأصلية</strong> تستمر في
+            العمل.
+        </p>
+
+        <p>
+            من الناحية النظرية، <strong>المترجم AOT مناسب حتى لتطوير برمجيات سطح المكتب الأصلية</strong>
+            والألعاب والبرامج منخفضة المستوى.
+        </p>
+
+        <h2>التطبيقات والحالات الاستخدام</h2>
+
+        <p>
+            TypePHP مشهور لـ:
+        </p>
+
+        <ul>
+            <li>
+                <strong>تطبيقات الأداء العالية:</strong> الخدمات التي تتطلب أداء ثابتة
+            </li>
+            <li>
+                <strong>حماية المصدر:</strong> <strong>الكود مترجم بعيداً عن التنفيذ</strong> — لا يمكن فك
+                تجميعه بسهولة
+            </li>
+            <li>
+                <strong>التطبيقات المستقلة:</strong> <strong>ثنائي واحد بدون تبعيات</strong> يعني نشر بسيط
+            </li>
+            <li>
+                <strong>تطبيقات الويب المختلطة:</strong> <strong>كود PHP محسّن + إطار عمل موجود</strong>
+            </li>
+        </ul>
+
+        <h2>نظام النوع الأصلي</h2>
+
+        <p>
+            <strong>TypePHP يرسم الأنواع الأصلية على أنواع C++ مباشرة</strong>:
+        </p>
+
+        <ul>
+            <li><strong>int</strong> → int64_t</li>
+            <li><strong>float</strong> → double</li>
+            <li><strong>bool</strong> → bool</li>
+        </ul>
+
+        <p>
+            هذا يؤدي إلى <strong>تحسينات بترتيب الحجم على كود الأرقام</strong>.
+        </p>
+
+        <h2>الدعم متعدد المنصات</h2>
+
+        <p>
+            TypePHP يدعم:
+        </p>
+
+        <ul>
+            <li><strong>Linux</strong> (x86-64 و ARM64)</li>
+            <li><strong>Windows</strong> (x86-64)</li>
+            <li><strong>macOS</strong> (x86-64 و ARM64)</li>
+            <li><strong>WASI 0.2 و WebAssembly</strong></li>
+        </ul>
+
+        <h2>السياق التاريخي</h2>
+
+        <p>
+            مشاريع مشابهة لـ TypePHP
+            
+                <a href="https://en.wikipedia.org/wiki/HipHop_for_PHP"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>تجمعت غباراً منذ زمن</strong>
+            </a>
+            . <strong>HipHop for PHP من Facebook</strong> (2010) كان محاولة سابقة لتحويل PHP إلى C++،
+            لكن <strong>Facebook انتقلت إلى HHVM بـ JIT في 2011 واستبدلته بالكامل بحلول 2013</strong>.
+        </p>
+
+        <p>
+            هذه المرة، يبدو أن <strong>TypePHP لديها زخم أفضل ودعم مجتمع قوي</strong>.
+        </p>
+
+        <h2>الإصدار والتطور</h2>
+
+        <p>
+            TypePHP <strong>أطلقت مفتوحة المصدر في يناير 2026</strong> وحالياً في
+            <strong>الإصدار 0.6.5</strong>. المشروع <strong>تحت تطوير نشط</strong> مع توثيق شامل
+            وتعليمات التثبيت متاحة على
+            
+                <a href="https://github.com/swoole/typephp"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                موقع Swoole</a
+            >.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.heise.de/en/news/TypePHP-Accelerates-PHP-Open-Source-Compiler-Generates-Native-Binaries-11431642.html"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Heise Online
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

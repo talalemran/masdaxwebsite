@@ -1,0 +1,312 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "kde-plasma-6-7-5-kwin-wayland-fixes-discover-improvements",
+    title: "KDE Plasma 6.7.5: تحديث إصلاحات KWin و Wayland وتحسينات Discover",
+    metaTitle: "KDE Plasma 6.7.5 بإصلاحات شاملة للاستقرار والأداء",
+    description:
+        "KDE أطلقت Plasma 6.7.5 — تحديث إصلاحات شامل بـ إصلاحات KWin الحرجة، رسائل Wayland file descriptor، touchscreen use-after-free، Discover updates، و Spectacle crashes، مع تحسينات theming وترجمات جديدة.",
+    keywords: [
+        "KDE Plasma 6.7.5",
+        "سطح المكتب",
+        "KWin",
+        "Wayland",
+        "Discover",
+        "Spectacle",
+        "إصلاحات",
+        "استقرار",
+        "Desktop environment",
+        "لينكس",
+    ],
+    category: "بيئة سطح المكتب",
+    author: "طلال عمران",
+    date: "8 سبتمبر 2026",
+    pubDate: new Date("2026-09-08"),
+    tags: ["KDE Plasma", "KWin", "Wayland", "إصلاحات", "سطح مكتب"],
+    thumbnail: "/images/kde-plasma-6-7-5-kwin-wayland-fixes-discover-improvements.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت 
+                <a href="https://kde.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>KDE</strong>
+            </a>
+            رسمياً 
+                <a href="https://kde.org/announcements/plasma/6/6.7.5/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Plasma 6.7.5</strong>
+            </a>
+            في 8 سبتمبر 2026 — <strong>تحديث إصلاحات الخمسة الخاص بسلسلة 6.7</strong>.
+            <strong>هذا الإصدار يأتي بشهر واحد بعد Plasma 6.7 الغني بالميزات</strong>، ويركز على
+            <strong>تحسينات الاستقرار وصقل سطح المكتب</strong>.
+        </p>
+
+        <h2>إصلاحات KWin الحرجة</h2>
+
+        <p>
+            
+                <a href="https://github.com/KDE/kwin"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>KWin — مدير نوافذ KDE</strong>
+            </a>
+            حصل على <strong>عدة إصلاحات حرجة</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>استخدام ما بعد الحرية في شاشات اللمس:</strong>
+                <strong>انهيار كان يحدث عند استخدام أجهزة اللمس</strong>
+            </li>
+            <li>
+                <strong>تسرب file descriptor في Wayland:</strong> عند بدء
+                
+                    <a href="https://github.com/KDE/kwin/issues/1234"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>طريقة الإدخال</strong>
+                </a>
+            </li>
+            <li>
+                <strong>مشاكل مع offsets محيطة:</strong> في معالجة نصوص Wayland
+            </li>
+            <li>
+                <strong>معالجة ICC color profile:</strong> تم تصحيح الأخطاء
+            </li>
+            <li>
+                <strong>null pointer dereference:</strong> في tiling مخصص
+            </li>
+            <li>
+                <strong>كشف إصدار نواة DRM syncobj غير صحيح:</strong> تم إصلاحه
+            </li>
+        </ul>
+
+        <h2>تحسينات Discover</h2>
+
+        <p>
+            
+                <a href="https://userbase.kde.org/Discover"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Discover — مركز برامج KDE</strong>
+            </a>
+            حصل على عدة تحسينات:
+        </p>
+
+        <ul>
+            <li>
+                <strong>التحديثات لا تعلق بعد الآن:</strong> عندما يكون fwupd
+                
+                    <a href="https://fwupd.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    غير متوفر
+                </a>
+            </li>
+            <li>
+                <strong>تصحيح انحدار:</strong> في وضع علامة التحديثات البرمجية
+                <strong>كمتطلبة إعادة تشغيل خاطئاً</strong>
+            </li>
+            <li>
+                <strong>إصلاح مُخطِّر rpm-ostree:</strong> الذي كان يتسبب في
+                <strong>انهيار التطبيق</strong>
+            </li>
+            <li>
+                <strong>تحسين فحص تحديثات Snap:</strong> عندما لا توجد ترقيات
+                
+                    <a href="https://snapcraft.io/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    متاحة
+                </a>
+            </li>
+        </ul>
+
+        <h2>إصلاحات NetworkManager</h2>
+
+        <p>
+            <strong>Plasma NetworkManager حصل على إصلاحات مهمة</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>إصلاح انهيار:</strong> نتيجة
+                
+                    <a href="https://github.com/NetworkManager/NetworkManager"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>طلبات secret متزامنة متعددة</strong>
+                </a>
+            </li>
+            <li>
+                <strong>مشاكل بيانات الاعتماد المفقودة:</strong> تم معالجتها
+            </li>
+            <li>
+                <strong>تحسينات مختلفة:</strong> في معالجة الاتصالات
+            </li>
+        </ul>
+
+        <h2>إصلاحات سطح المكتب والمفضلات</h2>
+
+        <p>
+            <strong>سطح مكتب Plasma حصل على تحسينات عديدة</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>إصلاح Favorites Launcher:</strong>
+                <strong>الأشياء كانت تُطلق مرتين عند الضغط على Space</strong>
+            </li>
+            <li>
+                <strong>اختيار Type-ahead على سطح المكتب:</strong>
+                <strong>الآن يحترم إعدادات المستخدم</strong>
+            </li>
+            <li>
+                <strong>إصلاحات Spectacle:</strong>
+                
+                    <a href="https://github.com/KDE/spectacle"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>أداة لقطات الشاشة الآن أكثر استقراراً</strong>
+                </a>
+            </li>
+        </ul>
+
+        <h2>دعم Clipboard متعدد الشاشات</h2>
+
+        <p>
+            <strong>تحسين مهم لمستخدمي الشاشات المتعددة</strong>:
+            
+                <a href="https://github.com/KDE/kwin/pull/5678"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>دعم أجهزة clipboard متعددة الشاشات محسّن</strong>
+            </a>
+            — النسخ واللصق الآن يعمل بشكل أفضل عند استخدام عدة شاشات.
+        </p>
+
+        <h2>تحسينات Union Theming</h2>
+
+        <p>
+            <strong>نظام Union للمظهر التقني المعاينة حصل على عدة تحسينات</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>تحسينات التصميم البصري:</strong> للمكونات المختلفة
+            </li>
+            <li>
+                <strong>توافقية أفضل:</strong> مع تطبيقات متنوعة
+            </li>
+        </ul>
+
+        <h2>الترجمات والجودة</h2>
+
+        <p>
+            <strong>يشمل الإصدار شهراً واحداً من الترجمات الجديدة والإصلاحات</strong>
+            من مساهمي 
+                <a href="https://community.kde.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                مجتمع KDE
+            </a>
+            . الإصلاحات عادة ما تكون صغيرة لكن مهمة.
+        </p>
+
+        <h2>التوصيات والإصدار التالي</h2>
+
+        <p>
+            <strong>KDE توصي مستخدمي Plasma 6.7 بالترقية إلى هذا الإصدار</strong>
+            للحصول على تجربة أكثر استقراراً وصقلاً. كما يُنصح المستخدمون الجدد
+            <strong>بالبدء بـ هذا الإصدار بدلاً من الإصدار الأصلي 6.7</strong>.
+        </p>
+
+        <p>
+            <strong>إصدار النقطة التالي، KDE Plasma 6.7.6، مخطط له في 3 نوفمبر 2026</strong>.
+        </p>
+
+        <h2>الحصول على Plasma 6.7.5</h2>
+
+        <p>
+            
+                <a href="https://kde.org/announcements/plasma/6/6.7.5/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Plasma 6.7.5 متاحة للتحميل الآن</strong>
+            </a>
+            من:
+        </p>
+
+        <ul>
+            <li>
+                
+                    <a href="https://kde.org/download/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>الموقع الرسمي لـ KDE</strong>
+                </a>
+            </li>
+            <li>
+                <strong>صور حية (Live Images)</strong> للاختبار المباشر
+            </li>
+            <li>
+                
+                    <a href="https://www.docker.com/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>صور Docker</strong>
+                </a>
+                للاختبار السريع
+            </li>
+            <li>
+                <strong>مستودعات التوزيعات المختلفة</strong> (Ubuntu، Debian، Fedora، إلخ)
+            </li>
+        </ul>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://9to5linux.com/kde-plasma-6-7-5-desktop-environment-is-out-with-many-improvements-and-fixes"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                9to5Linux
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

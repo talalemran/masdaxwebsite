@@ -1,0 +1,656 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "php-vs-python-web-development-comparison",
+    title: "PHP أم Python لصناعة المواقع؟ مقارنة شاملة في 2026",
+    metaTitle: "PHP مقابل Python في تطوير الويب: أي لغة تختار في 2026؟",
+    description:
+        "مقارنة عملية بين PHP وPython في تطوير الويب: الأداء والتزامن، أطر العمل، سهولة التعلم، سوق العمل، النشر والاستضافة، التكامل مع الذكاء الاصطناعي، والتكلفة الإجمالية، مع جداول مقارنة وروابط رسمية.",
+    keywords: [
+        "PHP vs Python",
+        "مقارنة PHP وPython",
+        "تطوير الويب 2026",
+        "Laravel vs Django",
+        "أداء PHP 8.4",
+        "أداء Python 3.13",
+        "FastAPI",
+        "استضافة PHP",
+        "استضافة Python",
+        "اختيار لغة البرمجة للويب",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "18 أكتوبر 2026",
+    pubDate: new Date("2026-10-18"),
+    tags: ["PHP", "Python", "تطوير الويب", "أطر العمل", "الأداء", "سوق العمل"],
+    thumbnail: "/images/php-vs-python-web-development-comparison.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: جدول المقارنة الشامل" },
+    { id: "what-you-will-learn", label: "ما الذي ستتعلمه من هذه المقارنة؟" },
+    { id: "core-philosophy", label: "الفلسفة الأساسية: الويب أولًا مقابل العامة" },
+    { id: "performance-concurrency", label: "الأداء ونموذج التزامن: من يفوز فعليًا؟" },
+    { id: "frameworks", label: "أطر العمل: Laravel وDjango وFastAPI" },
+    { id: "learning-curve", label: "سهولة التعلم ومنحنى التعلم" },
+    { id: "job-market", label: "سوق العمل والرواتب والفرص" },
+    { id: "deployment-hosting", label: "النشر والاستضافة: الفرق الذي قد يحسم القرار" },
+    { id: "ai-data-integration", label: "التكامل مع الذكاء الاصطناعي وعلوم البيانات" },
+    { id: "tco-maintenance", label: "التكلفة الإجمالية للملكية والصيانة" },
+    { id: "logs-troubleshooting", label: "السجلات واستكشاف الأخطاء" },
+    { id: "maintenance", label: "الصيانة والتحديثات الأمنية" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "external-links", label: "روابط رسمية ومصادر خارجية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            الاختيار بين PHP وPython لبناء موقع أو تطبيق ويب ليس مجرد تفضيل
+            شخصي، بل قرار يمس الأداء، وسرعة التسليم، وتكلفة الاستضافة،
+            وحتى فرص التوظيف لاحقًا. في 2026، كلا اللغتين ناضجة ومستقرة
+            ولها مجتمعات ضخمة، لكن كلًا منهما وُلدت لتحل مشكلة مختلفة،
+            وما زال هذا الأصل يظهر في تفاصيل العمل اليومي.
+        </p>
+
+        <p>
+            تُشغّل PHP نسبة كبيرة جدًا من المواقع التي يمكن تحديد لغة
+            الخادم فيها، بينما تتوسع Python بسرعة في مجالات الذكاء
+            الاصطناعي وتحليل البيانات والتطبيقات التي تحتاج منطقًا معقدًا.
+            هذا الدليل لا يهدف إلى إعلان “فائز” مطلق، بل إلى مساعدتك على
+            فهم أين تتفوق كل لغة، ومتى يكون اختيار إحداهما قرارًا خاطئًا
+            لمشروعك.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: جدول المقارنة الشامل</h2>
+
+        <p>
+            يلخص الجدول التالي الفروق الجوهرية بين اللغتين في عشرة محاور
+            رئيسية، ثم نفصّل كل محور في الأقسام التالية:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">PHP</th>
+                        <th class="px-4 py-2 font-semibold">Python</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">الإصدار المستقر الحالي</td>
+                        <td class="px-4 py-2">PHP 8.4</td>
+                        <td class="px-4 py-2">Python 3.13</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الفلسفة الأصلية</td>
+                        <td class="px-4 py-2">ويب أولًا، مبنية لعرض الصفحات</td>
+                        <td class="px-4 py-2">لغة عامة الغرض لكل المهام</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">نموذج التزامن</td>
+                        <td class="px-4 py-2">طلب-لكل-عملية (متزامن)</td>
+                        <td class="px-4 py-2">asyncio / غير متزامن عبر ASGI</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أشهر إطار ويب</td>
+                        <td class="px-4 py-2">Laravel</td>
+                        <td class="px-4 py-2">Django وFastAPI</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأداء الخام</td>
+                        <td class="px-4 py-2">أعلى في الطلبات التقليدية</td>
+                        <td class="px-4 py-2">أدنى خامًا، أقوى في I/O الكثيف</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الاستضافة</td>
+                        <td class="px-4 py-2">مشتركة، VPS، أي مزود تقريبًا</td>
+                        <td class="px-4 py-2">VPS، حاويات، منصات متخصصة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">منحنى التعلم</td>
+                        <td class="px-4 py-2">بداية عملية أسرع</td>
+                        <td class="px-4 py-2">أساسيات أسهل، بيئة أعمق</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">سوق العمل</td>
+                        <td class="px-4 py-2">ثابت في وكالات الويب وCMS</td>
+                        <td class="px-4 py-2">أوسع في البيانات والذكاء الاصطناعي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التكامل مع الذكاء الاصطناعي</td>
+                        <td class="px-4 py-2">عبر واجهات خارجية فقط</td>
+                        <td class="px-4 py-2">بيئة أولى للنماذج والمعالجة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأنسب لـ</td>
+                        <td class="px-4 py-2">مواقع المحتوى والتجارة الإلكترونية</td>
+                        <td class="px-4 py-2">التطبيقات كثيفة البيانات وواجهات API</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="what-you-will-learn">ما الذي ستتعلمه من هذه المقارنة؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/php-vs-python-web-development-comparison/01.webp"
+                alt="PHP أم Python لصناعة المواقع؟ مقارنة شاملة في 2026"
+                width="1000"
+                height="632"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>بنهاية هذا المقال سيكون لديك صورة واضحة عن:</p>
+
+        <ul>
+            <li>كيف يؤثر نموذج التزامن في كل لغة على الأداء تحت الحمل</li>
+            <li>أي أطر عمل تناسب المشاريع المحتوى-الثقيلة مقابل التطبيقات كثيفة البيانات</li>
+            <li>الفرق العملي في سهولة النشر وتكلفة الاستضافة</li>
+            <li>أين تقف كل لغة في سوق العمل والفرص المستقبلية</li>
+            <li>كيف يؤثر التكامل مع الذكاء الاصطناعي على قرار الاختيار</li>
+        </ul>
+
+        <h2 id="core-philosophy">الفلسفة الأساسية: الويب أولًا مقابل العامة</h2>
+
+        <p>
+            PHP وُلدت في منتصف التسعينيات كأداة لغرض واحد: حقن البيانات
+            في صفحات HTML بسهولة. حتى بعد تحولها إلى لغة كائنية التوجه،
+            بقيت روحها “ويب أولًا”. هذا الأصل يفسر لماذا تتفوق في المهام
+            التقليدية: عرض الصفحات، التعامل مع النماذج، التكامل مع قواعد
+            البيانات، والتشغيل على أي استضافة مشتركة تقريبًا.
+        </p>
+
+        <p>
+            Python، في المقابل، لغة عامة الغرض صُممت لتكون مقروءة
+            ومناسبة لأي مهمة: من الأتمتة والسكربتات إلى علوم البيانات
+            والذكاء الاصطناعي. دخلت عالم الويب لاحقًا، لكنها جلبت معها
+            نظامًا بيئيًا هائلًا خارج الويب لا تملكه PHP بنفس العمق.
+        </p>
+
+        <p>
+            عمليًا، هذا يعني أن PHP تبدأ أسرع في “موقع ويب عادي”، بينما
+            Python تبدأ أسرع حين يكون الموقع جزءًا من منظومة أكبر تشمل
+            تحليل بيانات أو نماذج تعلّم آلي.
+        </p>
+
+        <h2 id="performance-concurrency">الأداء ونموذج التزامن: من يفوز فعليًا؟</h2>
+
+        <p>
+            الأداء في تطوير الويب لا يُقاس بعدد الطلبات في الثانية فقط،
+            بل بكيفية تعامل اللغة مع التزامن. PHP 8.4 مع مترجم JIT حققت
+            قفزة ملحوظة في الأداء الخام، بينما Python 3.13 مع FastAPI
+            تقدم نموذجًا غير متزامن قويًا. لكن هذه الأرقام لا تحكي القصة
+            كاملة.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">PHP 8.4</th>
+                        <th class="px-4 py-2 font-semibold">Python 3.13 (FastAPI)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">نموذج التزامن</td>
+                        <td class="px-4 py-2">متزامن، طلب-لكل-عملية</td>
+                        <td class="px-4 py-2">غير متزامن (asyncio / ASGI)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أداء Hello World</td>
+                        <td class="px-4 py-2">أعلى في الطلبات البسيطة</td>
+                        <td class="px-4 py-2">أدنى في الطلبات البسيطة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">استعلامات قاعدة بيانات متتالية</td>
+                        <td class="px-4 py-2">أسرع في السيناريو المحلي</td>
+                        <td class="px-4 py-2">أبطأ في السيناريو المحلي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">حمل I/O كثيف (شبكة/واجهات)</td>
+                        <td class="px-4 py-2">يحتاج Swoole أو RoadRunner لتحسينه</td>
+                        <td class="px-4 py-2">يتفوق بفضل حلقة الأحداث</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">عزل الحالة بين الطلبات</td>
+                        <td class="px-4 py-2">تلقائي (كل طلب نظيف)</td>
+                        <td class="px-4 py-2">يتطلب انتباهًا لتسرب الحالة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التوسع الأفقي</td>
+                        <td class="px-4 py-2">بسيط جدًا</td>
+                        <td class="px-4 py-2">بسيط مع ASGI/حاويات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            PHP تتبع نموذج “طلب-لكل-عملية” (request-per-process): كل طلب
+            يبدأ وينتهي بحالة نظيفة، وهذا يلغي مشاكل تسرب الذاكرة وأخطاء
+            الحالة بين الطلبات، ويجعل التوسع الأفقي بسيطًا. في المقابل،
+            Python تعتمد على asyncio ومعالجة غير متزامنة، وهي تتفوق عندما
+            يكون الحمل كثيف الإدخال/الإخراج (I/O) مثل استدعاءات الشبكة أو
+            قواعد البيانات الخارجية، لأن حلقة الأحداث تتعامل مع آلاف
+            الاتصالات دون حجز خيط لكل اتصال.
+        </p>
+
+        <p>
+            النتيجة العملية: إذا كان تطبيقك تقليديًا كثيف المحتوى ويعتمد
+            على قاعدة بيانات محلية، فغالبًا PHP ستكون أسرع وأبسط في
+            الإعداد. أما إذا كان تطبيقك يعتمد على واجهات برمجية خارجية
+            أو اتصالات متزامنة كثيرة، فإن Python غير المتزامنة قد تتفوق،
+            رغم أن أداءها الخام أقل. وفي كلتا الحالتين، قاعدة البيانات
+            والتخزين المؤقت هما غالبًا عنق الزجاجة الحقيقي، وليس اللغة
+            نفسها.
+        </p>
+
+        <h2 id="frameworks">أطر العمل: Laravel وDjango وFastAPI</h2>
+
+        <p>
+            لا يُبنى الويب الحديث باللغة وحدها، بل بإطار العمل. PHP تملك
+            Laravel، وهو الإطار الأكثر اكتمالًا من حيث الأدوات الجاهزة:
+            نظام طوابير، WebSockets، مصادقة، فواتير، تخزين مؤقت، وأدوات
+            نشر مثل Forge وVapor. هذه “البطاريات المشمولة” تقلل وقت
+            التسليم في المشاريع التي تحتاج ميزات قياسية بسرعة.
+        </p>
+
+        <p>
+            Python تملك Django، الإطار الشامل الذي يوفر لوحة إدارة
+            تلقائية، ونظام ORM قويًا، ومصادقة، وهجرات قواعد بيانات منذ
+            اليوم الأول. وهذا يجعله ممتازًا للتطبيقات المؤسسية كثيفة
+            البيانات. أما FastAPI فقد أصبح الخيار الافتراضي لواجهات
+            برمجية عالية الأداء وتقديم نماذج تعلّم الآلة، بفضل دعمه
+            الأصلي لـ async وتحقق البيانات عبر Pydantic. وFlask يبقى
+            مناسبًا للتطبيقات الخفيفة والأدوات الداخلية.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الإطار</th>
+                        <th class="px-4 py-2 font-semibold">اللغة</th>
+                        <th class="px-4 py-2 font-semibold">الأقوى في</th>
+                        <th class="px-4 py-2 font-semibold">يناسب</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">Laravel</td>
+                        <td class="px-4 py-2">PHP</td>
+                        <td class="px-4 py-2">الأدوات الجاهزة، نظام بيئي متكامل</td>
+                        <td class="px-4 py-2">مواقع المحتوى، بوابات العملاء، التجارة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Symfony</td>
+                        <td class="px-4 py-2">PHP</td>
+                        <td class="px-4 py-2">المرونة المعمارية والاستقرار</td>
+                        <td class="px-4 py-2">التطبيقات المؤسسية الكبيرة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Django</td>
+                        <td class="px-4 py-2">Python</td>
+                        <td class="px-4 py-2">لوحة إدارة، ORM، هجرات جاهزة</td>
+                        <td class="px-4 py-2">تطبيقات كثيفة البيانات والمحتوى</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">FastAPI</td>
+                        <td class="px-4 py-2">Python</td>
+                        <td class="px-4 py-2">Async، تحقق البيانات، تقديم النماذج</td>
+                        <td class="px-4 py-2">واجهات API وخدمات الذكاء الاصطناعي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Flask</td>
+                        <td class="px-4 py-2">Python</td>
+                        <td class="px-4 py-2">البساطة والتحكم الكامل</td>
+                        <td class="px-4 py-2">الأدوات الداخلية والتطبيقات الخفيفة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            الفرق الجوهري: Laravel يمنحك “كل شيء جاهزًا” بسرعة، بينما
+            Django يمنحك بنية صارمة ونظامًا بيئيًا أعمق للبيانات. إذا كان
+            مشروعك موقع عضوية أو بوابة عملاء، Laravel غالبًا أسرع
+            للإنجاز. وإذا كان مشروعك يعتمد على بيانات معقدة أو تعلّم
+            آلي، Django أو FastAPI هما الخيار الطبيعي.
+        </p>
+
+        <h2 id="learning-curve">سهولة التعلم ومنحنى التعلم</h2>
+
+        <p>
+            Python تُعتبر عمومًا أسهل للمبتدئ المطلق بفضل صياغتها
+            القريبة من الإنجليزية وإجبارها على المسافات البادئة، مما يجعل
+            الكود أنظف وأسهل قراءة. PHP أسهل من حيث “البدء العملي”:
+            يمكنك رفع ملف `.php` إلى استضافة ومشاهدته يعمل خلال دقائق،
+            دون إعداد خادم أو بيئة افتراضية.
+        </p>
+
+        <p>
+            من حيث تعلم الأساسيات، كلتاهما تستغرق تقريبًا 4–6 أسابيع
+            لإتقان القواعد الأساسية. لكن PHP قد تحتاج وقتًا أطول لفهم
+            أنماط Laravel واصطلاحات PSR، بينما Python تحتاج وقتًا لفهم
+            إدارة الحزم والبيئات الافتراضية ونشر ASGI.
+        </p>
+
+        <h2 id="job-market">سوق العمل والرواتب والفرص</h2>
+
+        <p>
+            PHP توظف بشكل ثابت في وكالات الويب، وصيانة الأنظمة القديمة،
+            ومشاريع WordPress وLaravel. الطلب موجود، لكنه مركّز في
+            “تطوير المواقع” وليس في فئات وظيفية جديدة. Python توظف في
+            نطاق أوسع: تطوير الويب، تحليل البيانات، الذكاء الاصطناعي،
+            الأتمتة، وهندسة المنصات. وهذا يمنح مطوري Python مرونة أكبر
+            في التحول بين المجالات.
+        </p>
+
+        <p>
+            في الرواتب، المستوى المبتدئ متقارب نسبيًا، لكن Python تميل
+            إلى دفع أعلى عند إضافة مهارات البيانات أو الذكاء الاصطناعي،
+            لأن الوظائف نفسها تتطلب مهارات إضافية. باختصار: PHP تعطي
+            وظيفة أسرع في الويب التقليدي، وPython تعطي مسارًا مهنيًا
+            أوسع على المدى الطويل.
+        </p>
+
+        <h2 id="deployment-hosting">النشر والاستضافة: الفرق الذي قد يحسم القرار</h2>
+
+        <p>
+            هذا هو الفرق الأكثر تجاهلًا في المقارنات، مع أنه قد يحدد
+            تكلفة المشروع بالكامل. PHP مصممة لتعمل على أي استضافة مشتركة
+            تقريبًا: ترفع الملفات عبر FTP أو من لوحة التحكم، ويعمل
+            الموقع. لا تحتاج إلى عملية خادم دائمة ولا إلى إدارة عمليات.
+            Python تحتاج عادةً إلى VPS أو حاوية Docker أو منصة سحابية
+            تدعم WSGI/ASGI، لأن تطبيق Python يظل قيد التشغيل كعملية
+            مستمرة. هذا يعني تكلفة استضافة أعلى قليلًا وإعدادًا أوليًا
+            أكبر.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">PHP</th>
+                        <th class="px-4 py-2 font-semibold">Python</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">نوع الاستضافة المعتاد</td>
+                        <td class="px-4 py-2">مشتركة أو VPS</td>
+                        <td class="px-4 py-2">VPS، حاويات، منصات متخصصة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">عملية خادم دائمة</td>
+                        <td class="px-4 py-2">لا تحتاجها</td>
+                        <td class="px-4 py-2">ضرورية (WSGI/ASGI)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">سهولة الرفع الأولى</td>
+                        <td class="px-4 py-2">ملفات عبر FTP/لوحة التحكم</td>
+                        <td class="px-4 py-2">يتطلب إعداد بيئة ونشر</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التكلفة الشهرية الدنيا</td>
+                        <td class="px-4 py-2">منخفضة</td>
+                        <td class="px-4 py-2">أعلى قليلًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التحكم في البيئة</td>
+                        <td class="px-4 py-2">محدود في الاستضافة المشتركة</td>
+                        <td class="px-4 py-2">كامل داخل الحاوية/VPS</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            إذا كنت تبني موقعًا صغيرًا أو متوسطًا بميزانية محدودة وتريد
+            أقل تعقيد تشغيلي، فـ PHP تمنحك “وقت وصول إلى السوق” أقصر.
+            أما إذا كنت تبني تطبيقًا سيُحاوَط بحاويات وتحتاج تحكمًا
+            كاملًا في البيئة، فلا مشكلة في التعامل مع تعقيد نشر Python
+            من البداية.
+        </p>
+
+        <h2 id="ai-data-integration">التكامل مع الذكاء الاصطناعي وعلوم البيانات</h2>
+
+        <p>
+            هنا تتفوق Python بفارق واضح. مكتبات مثل Pandas وNumPy
+            وscikit-learn وPyTorch وTensorFlow كلها Python-first، وأي
+            تطبيق ويب يحتاج إلى استدعاء نموذج تعلّم آلي أو معالجة بيانات
+            ضخمة سيجد في Python بيئة طبيعية. يمكن لـ PHP استدعاء واجهات
+            برمجية خارجية لنماذج الذكاء الاصطناعي، لكنها لا تقدم نفس
+            العمق في المعالجة المحلية.
+        </p>
+
+        <p>
+            إذا كان مشروعك “موقع ويب” فقط، فهذا لا يهم كثيرًا. لكن إذا
+            كان الموقع سيحتوي لاحقًا على توصيات ذكية، أو تحليل نصوص، أو
+            معالجة صور، أو أي ميزة تعتمد على البيانات، فإن اختيار Python
+            من البداية يوفر عليك إعادة كتابة أجزاء كبيرة لاحقًا.
+        </p>
+
+        <h2 id="tco-maintenance">التكلفة الإجمالية للملكية والصيانة</h2>
+
+        <p>
+            التكلفة الإجمالية لا تقتصر على استضافة أرخص، بل تشمل وقت
+            التطوير، وتكلفة المطورين، وسهولة الصيانة، وتوفر المواهب.
+            PHP غالبًا أرخص في المرحلة الأولى للمواقع التقليدية: استضافة
+            مشتركة منخفضة التكلفة، ومواهب متوفرة، وأطر عمل ناضجة. Python
+            قد تكون أعلى قليلًا في الاستضافة والإعداد، لكن قد تعوّض ذلك
+            في المشاريع التي تحتاج منطقًا معقدًا أو تكاملًا مع البيانات.
+        </p>
+
+        <p>
+            الصيانة أيضًا تعتمد على نوع النظام. أنظمة PHP القديمة قد
+            تعاني من ديون تقنية إذا لم تُحدَّث، لكن Laravel الحديث يفرض
+            ممارسات أفضل. أنظمة Python تحتاج إدارة تبعيات دقيقة
+            (virtualenv، Poetry، تحديثات Python نفسها)، وهذا عبء مستمر
+            لكنه ليس عائقًا أمام فريق منظم. في الحالتين، جودة الكود
+            والفريق أهم من اللغة.
+        </p>
+
+        <h2 id="logs-troubleshooting">السجلات واستكشاف الأخطاء</h2>
+
+        <p>
+            في PHP، تظهر الأخطاء عادةً في سجلات خادم الويب (Apache/Nginx)
+            أو في ملف السجل الخاص بالتطبيق. أطر العمل مثل Laravel توفر
+            سجلات منظمة في `storage/logs`. في Python مع Django أو FastAPI،
+            تظهر السجلات في مخرجات العملية أو في ملفات مُهيأة، وتُدار
+            عادةً عبر systemd أو Docker.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# PHP (Laravel) — متابعة السجل مباشرة
+tail -f storage/logs/laravel.log
+
+# Python (Django/FastAPI) — متابعة سجل الخدمة عبر systemd
+journalctl -u myapp.service -f`}</code></pre>
+
+        <p>
+            الفرق العملي أن PHP “تعمل أو تفشل” على مستوى الطلب، بينما
+            تطبيق Python قد يظل يعمل حتى لو فشل طلب واحد. لذلك تحتاج
+            Python إلى مراقبة أفضل للعمليات والذاكرة، بينما تحتاج PHP
+            إلى متابعة أخطاء القوالب والاستعلامات.
+        </p>
+
+        <h2 id="maintenance">الصيانة والتحديثات الأمنية</h2>
+
+        <p>
+            كلتاهما تحصلان على تحديثات أمنية بانتظام. PHP 8.x يقدم تحسينات
+            في الأداء والأنواع، وPython 3.13 يحسّن المفسّر ويقلل تأثير
+            GIL تدريجيًا. المهم هو الالتزام بتحديث الإطار واللغة، ومراجعة
+            التبعيات. PHP تتفوق في سهولة التحديث على الاستضافات المشتركة
+            لأن الحزمة تُدار مركزيًا، بينما Python تحتاج إدارة تبعيات
+            دقيقة لكل مشروع.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>هل مشروعي موقع محتوى/CMS/تجارة إلكترونية تقليدي؟ ← PHP + Laravel</li>
+            <li>هل أحتاج تكاملًا مع تعلّم آلي أو تحليل بيانات؟ ← Python</li>
+            <li>هل أبني واجهة برمجية عالية الأداء مع async؟ ← Python + FastAPI</li>
+            <li>هل ميزانيتي محدودة وأريد استضافة مشتركة؟ ← PHP</li>
+            <li>هل فريقي يعرف لغة واحدة بالفعل؟ ← ابنِ على ما تعرفه بدل التبديل بلا داعٍ</li>
+            <li>هل أتوقع نموًا كبيرًا في البيانات والمنطق خلال سنة؟ ← Python</li>
+        </ul>
+
+        <h2 id="external-links">روابط رسمية ومصادر خارجية</h2>
+
+        <p>
+            فيما يلي روابط رسمية للغتين وأطر العمل المذكورة في المقال،
+            يمكنك الرجوع إليها للتوثيق الكامل والأمثلة المحدثة:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.php.net/docs.php"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    توثيق PHP الرسمي (php.net)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    توثيق Python الرسمي (docs.python.org)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://laravel.com/docs"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    توثيق Laravel الرسمي (laravel.com)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.djangoproject.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    توثيق Django الرسمي (docs.djangoproject.com)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://fastapi.tiangolo.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    توثيق FastAPI الرسمي (fastapi.tiangolo.com)
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل PHP ميتة؟</h3>
+        <p>
+            لا. ما زالت تُشغّل نسبة كبيرة جدًا من المواقع المعروفة،
+            وتتطور بإصدارات جديدة وتحسينات أداء. لكن نمو التوظيف فيها
+            أبطأ من Python في المجالات الجديدة.
+        </p>
+
+        <h3>هل Python أبطأ من PHP دائمًا؟</h3>
+        <p>
+            في الأداء الخام التقليدي، غالبًا PHP أسرع. لكن في الأحمال
+            غير المتزامنة كثيفة الإدخال/الإخراج، قد تتفوق Python
+            المتزامنة (asyncio) عمليًا. القرار يعتمد على نمط الحمل لا
+            على رقم واحد.
+        </p>
+
+        <h3>هل يمكنني استخدام Python على استضافة مشتركة؟</h3>
+        <p>
+            نادرًا. معظم الاستضافات المشتركة تدعم PHP افتراضيًا، بينما
+            Python تحتاج VPS أو حاوية أو منصة متخصصة. هذا فرق تكلفة
+            وتشغيل حقيقي.
+        </p>
+
+        <h3>أي لغة أتعلم أولًا كمبتدئ؟</h3>
+        <p>
+            إذا هدفك الوظيفة السريعة في تطوير المواقع، PHP + Laravel
+            طريق مباشر. إذا هدفك مرونة أكبر نحو البيانات والذكاء
+            الاصطناعي، Python تمنحك خيارات أوسع.
+        </p>
+
+        <h3>هل يؤثر اختيار اللغة على الأمان؟</h3>
+        <p>
+            كلتاهما توفر أدوات أمان ناضجة. الأمان يعتمد أكثر على الإطار
+            والممارسات: Laravel وDjango يقدمان حماية مدمجة من هجمات
+            شائعة. الخطأ الأكبر هو تجاهل التحديثات وعدم مراجعة التبعيات،
+            بغض النظر عن اللغة.
+        </p>
+    </PostLayout>
+</BaseLayout>

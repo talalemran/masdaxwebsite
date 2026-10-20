@@ -1,0 +1,144 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "manjaro-linux-26-1-bian-may-gnome-50-kde-plasma-6-7",
+    title: "مانجارو 26.1 بيان-ماي: بيئات سطح مكتب جديدة وسطح مكتب Arch محدث",
+    metaTitle: "مانجارو 26.1 بيان-ماي: بيئات سطح مكتب جديدة",
+    description:
+        "مانجارو 26.1 Bian-May صدرت رسمياً — أول إصدار ميزات منذ يناير مع GNOME 50 و KDE Plasma 6.7 و Xfce 4.20، بالإضافة لـ Linux 7.1 كنواة افتراضية و LTS 6.18 و 6.12 كخيارات.",
+    keywords: [
+        "Manjaro 26.1",
+        "مانجارو",
+        "GNOME 50",
+        "KDE Plasma 6.7",
+        "Xfce 4.20",
+        "Linux 7.1",
+        "Arch Linux",
+        "لينكس",
+        "سطح المكتب",
+        "مفتوح المصدر",
+    ],
+    category: ["لينكس","بيئة سطح المكتب"],
+    author: "طلال عمران",
+    date: "12 أغسطس 2026",
+    pubDate: new Date("2026-08-12"),
+    tags: ["Manjaro", "GNOME", "KDE", "لينكس", "سطح مكتب"],
+    thumbnail: "/images/manjaro-linux-26-1-bian-may-gnome-50-kde-plasma-6-7.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلق <strong>فريق مانجارو</strong> رسمياً <strong
+                >Manjaro 26.1 Bian-May</strong
+            > — أول إصدار ميزات كبير منذ مانجارو 26.0 من يناير. التوزيعة المبنية على
+            أساس <strong>Arch Linux</strong> جاءت محملة بحزم جديدة وترقيات لبيئات
+            سطح المكتب الرئيسية.
+        </p>
+
+        <h2>بيئات سطح المكتب المدعومة</h2>
+
+        <p>مانجارو 26.1 يأتي مع خيارات متعددة لبيئات سطح المكتب:</p>
+
+        <ul>
+            <li>
+                <strong>GNOME 50:</strong> بيئة سطح المكتب الحديثة من GNOME بكل تحسيناتها
+                الجديدة
+            </li>
+            <li>
+                <strong>KDE Plasma 6.7:</strong> بيئة سطح المكتب الغنية من KDE بإمكانيات
+                تخصيص واسعة
+            </li>
+            <li>
+                <strong>Xfce 4.20:</strong> خيار أخف وزناً للمستخدمين الذين يفضلون
+                الموارد المنخفضة
+            </li>
+        </ul>
+
+        <h2>النوى المدعومة</h2>
+
+        <p>يوفر مانجارو 26.1 خيارات متعددة من نواة لينكس:</p>
+
+        <ul>
+            <li>
+                <strong>Linux 7.1:</strong> النواة المستقرة الافتراضية للتوزيعة
+            </li>
+            <li>
+                <strong>Linux 6.18 LTS:</strong> نواة دعم طويل الأجل لمن يفضلون الاستقرار
+                على حساب أحدث الميزات
+            </li>
+            <li>
+                <strong>Linux 6.12 LTS:</strong> خيار آخر من النوى طويلة الأجل
+            </li>
+        </ul>
+
+        <h2>الخيارات المتقدمة</h2>
+
+        <p>
+            مانجارو 26.1 يحتفظ بفلسفة التوزيعة في إعطاء المستخدمين الخيار
+            والتحكم. المثبّت يسمح باختيار البيئة المفضلة ونواة لينكس من البداية،
+            بدلاً من الاضطرار لتثبيت بيئة ثم تغييرها لاحقاً.
+        </p>
+
+        <h2>الجدول الزمني والإصدارات السابقة</h2>
+
+        <p>
+            مانجارو 26.0 كانت آخر إصدار ميزات في يناير 2026. منذ ذاك الحين،
+            توزيعة مانجارو استمرت في الحصول على تحديثات صيانة عبر فرع البحث
+            المستمر، لكن 26.1 تمثل نقطة إصدار رسمية موثقة مع مجموعة مكتملة من
+            المكونات المختبرة.
+        </p>
+
+        <h2>من يجب أن يُحدّث؟</h2>
+
+        <ul>
+            <li>
+                <strong>مستخدمو مانجارو الحاليون:</strong> يمكنهم التحديث عبر مدير
+                الحزم باستخدام أمر `pacman -Syu`
+            </li>
+            <li>
+                <strong>جدد على مانجارو:</strong> هذه نقطة دخول جيدة جداً مع آخر إصدار
+                رسمي
+            </li>
+            <li>
+                <strong>مستخدمو Arch Linux المتقدمون:</strong> مانجارو توفر نسخة أكثر
+                استقراراً من Arch مع دعم أفضل للمبتدئين
+            </li>
+        </ul>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            مانجارو 26.1 تحديث متوازن يجلب أحدث بيئات سطح المكتب مع الحفاظ على
+            خيارات نوى متعددة. إذا كنت تبحث عن توزيعة قوية مبنية على Arch لكن
+            بدعم أفضل وأكثر سهولة في الاستخدام، فمانجارو 26.1 خيار جيد جداً.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://www.phoronix.com/news/Manjaro-Linux-26.1"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Phoronix
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

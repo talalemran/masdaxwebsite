@@ -1,0 +1,514 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-linux-distros-gaming",
+    title: "أفضل توزيعات لينكس للألعاب: دليل شامل ومحدث لعام 2026",
+    metaTitle: "أفضل توزيعات لينكس للألعاب في 2026: دليل شامل ومحدث",
+    description:
+        "دليل شامل لأفضل توزيعات لينكس للألعاب في 2026، من Bazzite وCachyOS إلى Nobara وSteamOS، مع شرح Proton وProtonDB وحالة أنظمة مكافحة الغش، ومقارنة تساعدك على اختيار الأنسب.",
+    keywords: [
+        "أفضل توزيعات لينكس للألعاب",
+        "Bazzite",
+        "CachyOS",
+        "Nobara",
+        "SteamOS",
+        "Proton",
+        "ProtonDB",
+        "Garuda Linux",
+        "ألعاب لينكس 2026",
+        "Pop!_OS للألعاب",
+    ],
+    category: ["ألعاب وترفيه", "مقالات"],
+    author: "طلال عمران",
+    date: "13 سبتمبر 2026",
+    pubDate: new Date("2026-09-13"),
+    tags: ["Bazzite", "CachyOS", "Nobara", "SteamOS", "ألعاب لينكس"],
+    thumbnail: "/images/best-linux-distros-gaming.webp",
+};
+
+const tocItems = [
+    { id: "why-linux-gaming-changed", label: "لماذا تغيّر واقع الألعاب على لينكس جذريًا؟" },
+    { id: "proton-explained", label: "Proton وProtonDB: ما الذي يجعل الألعاب تعمل أصلاً؟" },
+    { id: "anticheat-status", label: "حالة أنظمة مكافحة الغش (Anti-Cheat) الحقيقية" },
+    { id: "bazzite", label: "1. Bazzite" },
+    { id: "cachyos", label: "2. CachyOS" },
+    { id: "nobara", label: "3. Nobara" },
+    { id: "steamos", label: "4. SteamOS" },
+    { id: "popos", label: "5. Pop!_OS" },
+    { id: "garuda", label: "6. Garuda Linux" },
+    { id: "fedora-kde", label: "7. Fedora KDE Plasma" },
+    { id: "linux-mint", label: "8. Linux Mint / Ubuntu" },
+    { id: "gpu-considerations", label: "اعتبارات كرت الرسوميات: AMD مقابل NVIDIA مقابل Intel Arc" },
+    { id: "comparison-table", label: "جدول مقارنة شامل" },
+    { id: "how-to-choose", label: "كيف تختار فعليًا؟" },
+    { id: "before-you-switch", label: "قبل أن تنتقل: خطوات عملية مهمة" },
+    { id: "external-resources", label: "الروابط الرسمية ومصادر خارجية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            "لينكس لا يصلح للألعاب" كانت مقولة صحيحة لعقد كامل تقريبًا.
+            اليوم، مع طبقة التوافق Proton من Valve، أصبحت نسبة ضخمة من
+            مكتبة Steam تعمل على لينكس بنفس الأداء أو أفضل من ويندوز في
+            كثير من الحالات، وهذا التحول الحقيقي هو ما يجعل مقالًا كهذا
+            ممكنًا أصلاً في 2026.
+        </p>
+
+        <p>
+            هذا الدليل يستعرض أفضل توزيعات لينكس المخصصة أو المناسبة
+            للألعاب، مع شرح واقعي لحالة التوافق الحالية، ومقارنة تساعدك
+            على اختيار التوزيعة المناسبة لعتادك وأسلوب لعبك.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="why-linux-gaming-changed">
+            لماذا تغيّر واقع الألعاب على لينكس جذريًا؟
+        </h2>
+
+        <p>
+            نجاح جهاز Steam Deck المحمول من Valve، المبني بالكامل على
+            لينكس، دفع مطورين كثيرين لتحسين توافق ألعابهم مع هذه البيئة،
+            سواء أرادوا ذلك مباشرة أم لا. النتيجة نظام بيئي كامل من
+            التوزيعات المتخصصة، والأدوات، ومجتمع ضخم يوثق كل تفصيل عن أداء
+            كل لعبة تقريبًا.
+        </p>
+
+        <h2 id="proton-explained">
+            Proton وProtonDB: ما الذي يجعل الألعاب تعمل أصلاً؟
+        </h2>
+
+        <p>
+            <strong>Proton</strong> طبقة توافق طورتها Valve فوق Wine،
+            تترجم استدعاءات ويندوز البرمجية (DirectX وغيرها) إلى ما يفهمه
+            لينكس (Vulkan)، فتعمل ألعاب ويندوز دون الحاجة لنسخة لينكس
+            أصلية من اللعبة نفسها. مدمجة مباشرة في Steam، وتُفعَّل بضغطة
+            واحدة من الإعدادات.
+        </p>
+
+        <p>
+            <strong>Proton-GE</strong> (اختصار GloriousEggroll، اسم مطوره)
+            نسخة مجتمعية معدّلة من Proton، تحتوي إصلاحات لم تصل بعد للنسخة
+            الرسمية، وتُثبَّت عادة عبر أداة ProtonUp-Qt. التوزيعات
+            المتخصصة بالألعاب مثل Nobara وBazzite تأتي بها مثبّتة مسبقًا.
+        </p>
+
+        <p>
+            <strong>ProtonDB</strong> موقع مجتمعي يجمّع تقييمات آلاف
+            اللاعبين لكل لعبة على حدة (تعمل بلا مشاكل، تحتاج تعديلًا،
+            لا تعمل إطلاقًا). قبل شراء أي لعبة أو الانتقال للينكس، مراجعة
+            تقييمها على ProtonDB خطوة ضرورية لا تفريط فيها.
+        </p>
+
+        <h2 id="anticheat-status">
+            حالة أنظمة مكافحة الغش (Anti-Cheat) الحقيقية
+        </h2>
+
+        <p>
+            هذه النقطة الأكثر أهمية وواقعية لأي لاعب يفكر بالانتقال: أنظمة
+            EAC وBattlEye تدعمان لينكس تقنيًا، لكن التفعيل قرار يعود
+            للناشر نفسه لكل لعبة على حدة، لا لـ Valve أو للينكس.
+        </p>
+
+        <ul>
+            <li><strong>تعمل حاليًا</strong>: Apex Legends، CS2، Rust، Helldivers 2، Black Desert (بعضها يحتاج Proton-GE تحديدًا)</li>
+            <li><strong>لا تعمل حتى الآن</strong>: Valorant (نظام Vanguard يرفض العمل صراحة تحت Proton)، Fortnite (لم يُفعّل الناشر EAC على لينكس)، ألعاب Call of Duty الحديثة (نظام Ricochet)</li>
+        </ul>
+
+        <p>
+            القاعدة العملية: راجع حالة لعبتك تحديدًا عبر موقع
+            AreWeAntiCheatYet قبل أي قرار انتقال نهائي، خصوصًا إن كنت لاعبًا
+            تنافسيًا في ألعاب متعددة اللاعبين.
+        </p>
+
+        <h2 id="bazzite">1. Bazzite</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-linux-distros-gaming/01.webp"
+                alt="Bazzite Linux"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الخيار الأفضل حاليًا لأغلب اللاعبين وفق أغلب المقارنات
+            المستقلة. توزيعة مبنية على Fedora Atomic (غير قابلة للتعديل
+            المباشر)، وتحاكي تجربة SteamOS على أي جهاز حاسوب عادي، لا فقط
+            على عتاد Valve الرسمي.
+        </p>
+
+        <ul>
+            <li>Steam وProton وتعريفات كروت الرسوميات مثبتة ومهيأة مسبقًا بالكامل</li>
+            <li>وضع "Gaming Mode" يحاكي واجهة وحدة تحكم، بجانب سطح مكتب كامل عند الحاجة</li>
+            <li>تحديثات قابلة للتراجع الفوري من قائمة الإقلاع، فتحديث فاشل لا يكسر نظامك أبدًا</li>
+            <li>يدعم أجهزة لينكس المحمولة (Handhelds) وأجهزة سطح المكتب العادية معًا</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أغلب اللاعبين الذين يريدون تجربة SteamOS دون عتاد Valve الرسمي.</p>
+
+        <h2 id="cachyos">2. CachyOS</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-linux-distros-gaming/02.webp"
+                alt="CachyOS Linux"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+
+        <p>
+            توزيعة مبنية على Arch Linux، وتصدّرت حديثًا قائمة أكثر
+            التوزيعات استخدامًا بين لاعبي لينكس على Steam وفق بيانات
+            ProtonDB، متجاوزة حتى آرتش نفسها. تركز بالكامل على استخراج أقصى
+            أداء ممكن من العتاد.
+        </p>
+
+        <ul>
+            <li>نواة مخصصة محسّنة للأداء، مع دعم مجموعات تعليمات معالج متقدمة (x86-64-v3)</li>
+            <li>أداء ممتاز خاص مع كروت AMD، يصل أحيانًا لأكثر من 95% من أداء ويندوز</li>
+            <li>Rolling Release كامل مثل آرتش، بأحدث الحزم دائمًا</li>
+        </ul>
+
+        <p>
+            <strong>تنبيه مهم</strong>: المشروع نفسه يحذّر من أن تحسيناته
+            قد لا تمنح فرقًا محسوسًا في كل الألعاب، وتتطلب صيانة دورية
+            كأي توزيعة Arch أخرى.
+        </p>
+
+        <p><strong>الأنسب لـ</strong>: مستخدمين متقدمين يفهمون صيانة آرتش، ويريدون أقصى أداء ممكن.</p>
+
+        <h2 id="nobara">3. Nobara</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-linux-distros-gaming/03.webp"
+                alt="Nobara Linux"
+                width="1200"
+                height="750"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            بناها مطور Proton-GE نفسه (GloriousEggroll)، فوق قاعدة فيدورا،
+            مع تطبيق إصلاحات وتعديلات ألعاب لم تصل بعد للمستودعات الرسمية.
+            تجربة سطح مكتب تقليدية كاملة، لا وضع "وحدة تحكم" منفصل كما في
+            Bazzite.
+        </p>
+
+        <ul>
+            <li>تعريفات NVIDIA مثبتة افتراضيًا، ميزة نادرة بين التوزيعات</li>
+            <li>أدوات البث المباشر (OBS) وStream وتحسينات الألعاب مثبتة مسبقًا</li>
+            <li>استقرار جيد جدًا للبث والتسجيل، مصدر شهرتها الأساسي بين صنّاع المحتوى</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مستخدمي كروت NVIDIA، والبثّ المباشر، ومن يريد سطح مكتب فيدورا عادي مع إصلاحات ألعاب جاهزة.</p>
+
+        <h2 id="steamos">4. SteamOS</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-linux-distros-gaming/04.webp"
+                alt="SteamOS"
+                width="1200"
+                height="750"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            نظام Valve الرسمي نفسه، المستخدم على جهاز Steam Deck. الدعم
+            الرسمي حاليًا يقتصر على Steam Deck وجهاز Lenovo Legion Go S
+            تحديدًا، بينما التوافق مع عتاد حواسيب محمولة أخرى من AMD يتحسن
+            دون أن يكون "مدعومًا رسميًا" بالكامل بعد.
+        </p>
+
+        <ul>
+            <li>أفضل تجربة "اضبطه وانسه" ممكنة، لكن على عتاد محدود رسميًا حتى الآن</li>
+            <li>دعم كروت NVIDIA لا يزال قيد التطوير، ويُنصح بتجنبه حاليًا على أجهزة NVIDIA</li>
+            <li>Bazzite يبقى البديل العملي الأوسع توافقًا لمن يريد "تجربة SteamOS" على عتاد متنوع</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مالكي Steam Deck نفسه أو العتاد المدعوم رسميًا تحديدًا.</p>
+
+        <h2 id="popos">5. Pop!_OS</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-linux-distros-gaming/05.webp"
+                alt="Pop!_OS"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            توزيعة من شركة System76 (صانعة أجهزة لينكس)، مبنية على أوبونتو،
+            ومعروفة تحديدًا بأفضل دعم لكروت NVIDIA على أجهزة اللابتوب بين
+            كل التوزيعات، بفضل صور تثبيت رسمية منفصلة تأتي بتعريفات NVIDIA
+            جاهزة.
+        </p>
+
+        <ul>
+            <li>أفضل خيار عملي للابتوبات بكرت NVIDIA مخصص (Hybrid Graphics)</li>
+            <li>مدير نوافذ Tiling مدمج، مفيد لمن يعمل وينتج محتوى بجانب اللعب</li>
+            <li>توازن جيد بين الاستخدام اليومي الإنتاجي والألعاب، لا مخصصة للألعاب حصرًا</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مستخدمي لابتوبات NVIDIA الذين يريدون جهازًا واحدًا للعمل واللعب معًا.</p>
+
+        <h2 id="garuda">6. Garuda Linux</h2>
+
+        <p>
+            توزيعة أخرى مبنية على آرتش، لكنها تركز على تقديم تجربة "جاهزة
+            من الصندوق" بواجهة KDE Plasma مصقولة بصريًا جدًا، مع أدوات
+            وتحسينات ألعاب مدمجة منذ اللحظة الأولى.
+        </p>
+
+        <ul>
+            <li>واجهة مذهلة بصريًا افتراضيًا، دون أي تعديل يدوي مطلوب</li>
+            <li>نظام Rolling Release مع أحدث تعريفات الرسوميات دائمًا</li>
+            <li>أدوات BTRFS مدمجة للتراجع عن أي تحديث فاشل بسهولة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: محبي التخصيص البصري الفوري مع قاعدة آرتش القوية، دون الإعداد اليدوي الكامل.</p>
+
+        <h2 id="fedora-kde">7. Fedora KDE Plasma</h2>
+
+        <p>
+            ليست توزيعة مخصصة للألعاب إطلاقًا، لكنها خيار قوي جدًا لمن يريد
+            نظامًا عامًا ممتازًا يلعب عليه بشكل جيد أيضًا، دون تخصص ضيق.
+            بفضل نواة حديثة دائمًا (فيدورا سبّاقة في تحديثات Mesa وVulkan)،
+            تحصل على دعم مبكر لتحسينات الرسوميات الجديدة.
+        </p>
+
+        <ul>
+            <li>توازن ممتاز بين الاستخدام العام الاحترافي والألعاب</li>
+            <li>دعم مبكر جدًا لتحسينات Intel Arc تحديدًا، بفضل نواة ومكتبات Mesa حديثة</li>
+            <li>يتطلب إعدادًا يدويًا بسيطًا لـ Steam وProton، غير جاهز تمامًا كـ Bazzite أو Nobara</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: من يريد نظامًا احترافيًا شاملاً للعمل، يلعب عليه أيضًا دون تخصيص للألعاب فقط.</p>
+
+        <h2 id="linux-mint">8. Linux Mint / Ubuntu</h2>
+
+        <p>
+            ليستا الأفضل أداءً للألعاب بين هذه القائمة، لكنهما الأنسب
+            للمبتدئين المطلقين في لينكس الذين يريدون البدء بتجربة موثوقة
+            جدًا ومجتمع دعم ضخم، مع إمكانية تثبيت Steam وProton بسهولة نسبية.
+        </p>
+
+        <ul>
+            <li>أوسع توافق عتاد وأكبر مجتمع دعم لحل أي مشكلة تقريبًا</li>
+            <li>استقرار عالٍ يناسب من يريد جهازًا للاستخدام العام يلعب عليه أحيانًا</li>
+            <li>لا يأتيان بأي تحسينات ألعاب خاصة مسبقة كما في التوزيعات المتخصصة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: المبتدئين تمامًا في لينكس، الذين يفضلون التعلم التدريجي على القفز مباشرة لتوزيعة معقدة.</p>
+
+        <h2 id="gpu-considerations">
+            اعتبارات كرت الرسوميات: AMD مقابل NVIDIA مقابل Intel Arc
+        </h2>
+
+        <ul>
+            <li>
+                <strong>AMD</strong>: أفضل تجربة عمومًا، بفضل تعريفات مفتوحة
+                المصدر مدمجة في نواة لينكس نفسها دون أي تثبيت إضافي مطلوب
+            </li>
+            <li>
+                <strong>NVIDIA</strong>: تتطلب تعريفات ملكية منفصلة، لكن
+                الأداء ممتاز بعد التثبيت. Nobara وBazzite تأتيان بهذه
+                التعريفات جاهزة افتراضيًا
+            </li>
+            <li>
+                <strong>Intel Arc</strong>: تحسّن كثيرًا خلال 2025-2026 عبر
+                تعريفات i915 وXe مفتوحة المصدر، وفيدورا وتوزيعات آرتش
+                توفران أفضل دعم لها بفضل نواة ومكتبات Mesa حديثة دائمًا
+            </li>
+        </ul>
+
+        <h2 id="comparison-table">جدول مقارنة شامل</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">التوزيعة</th>
+                        <th class="px-4 py-2 font-semibold">القاعدة</th>
+                        <th class="px-4 py-2 font-semibold">نموذج الإصدار</th>
+                        <th class="px-4 py-2 font-semibold">الأنسب لـ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">Bazzite</td>
+                        <td class="px-4 py-2">Fedora Atomic</td>
+                        <td class="px-4 py-2">ثابت غير قابل للتعديل</td>
+                        <td class="px-4 py-2">تجربة SteamOS شاملة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">CachyOS</td>
+                        <td class="px-4 py-2">Arch Linux</td>
+                        <td class="px-4 py-2">Rolling Release</td>
+                        <td class="px-4 py-2">أقصى أداء على AMD</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Nobara</td>
+                        <td class="px-4 py-2">Fedora</td>
+                        <td class="px-4 py-2">ثابت مع إصلاحات إضافية</td>
+                        <td class="px-4 py-2">مستخدمي NVIDIA والبث المباشر</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">SteamOS</td>
+                        <td class="px-4 py-2">Arch Linux</td>
+                        <td class="px-4 py-2">ثابت غير قابل للتعديل</td>
+                        <td class="px-4 py-2">Steam Deck وعتاد مدعوم رسميًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Pop!_OS</td>
+                        <td class="px-4 py-2">Ubuntu</td>
+                        <td class="px-4 py-2">ثابت</td>
+                        <td class="px-4 py-2">لابتوبات NVIDIA للعمل واللعب</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Garuda Linux</td>
+                        <td class="px-4 py-2">Arch Linux</td>
+                        <td class="px-4 py-2">Rolling Release</td>
+                        <td class="px-4 py-2">تجربة مصقولة بصريًا فورًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Fedora KDE</td>
+                        <td class="px-4 py-2">Fedora</td>
+                        <td class="px-4 py-2">ثابت كل 6 أشهر</td>
+                        <td class="px-4 py-2">استخدام عام احترافي مع لعب جيد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Linux Mint / Ubuntu</td>
+                        <td class="px-4 py-2">Debian / مستقلة</td>
+                        <td class="px-4 py-2">LTS مستقر</td>
+                        <td class="px-4 py-2">مبتدئين تمامًا في لينكس</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-choose">كيف تختار فعليًا؟</h2>
+
+        <ul>
+            <li><strong>جهاز مخصص للألعاب فقط، تريد أقل عناء ممكن:</strong> Bazzite</li>
+            <li><strong>لديك كرت AMD وتريد أقصى FPS ممكن وتفهم Arch:</strong> CachyOS</li>
+            <li><strong>لديك كرت NVIDIA وتبث مباشرة أو تسجل محتوى:</strong> Nobara</li>
+            <li><strong>لابتوب بكرت NVIDIA للعمل واللعب معًا:</strong> Pop!_OS</li>
+            <li><strong>تريد مظهرًا مذهلاً فورًا دون إعداد يدوي:</strong> Garuda Linux</li>
+            <li><strong>تريد نظامًا احترافيًا شاملاً يلعب جيدًا أيضًا:</strong> Fedora KDE</li>
+            <li><strong>مبتدئ تمامًا في لينكس:</strong> Linux Mint</li>
+        </ul>
+
+        <h2 id="before-you-switch">قبل أن تنتقل: خطوات عملية مهمة</h2>
+
+        <ul>
+            <li>راجع مكتبة ألعابك بالكامل على ProtonDB قبل أي قرار نهائي، لا مجرد التحقق من عمل Steam نفسه</li>
+            <li>تحقق من حالة أي لعبة تنافسية تلعبها عبر AreWeAntiCheatYet تحديدًا</li>
+            <li>فضّل التثبيت المزدوج (Dual Boot) في البداية، مع إبقاء ويندوز لأي لعبة لا تعمل بعد</li>
+            <li>انتبه لإعداد BitLocker وSecure Boot في ويندوز قبل التثبيت المزدوج، لتفادي مشاكل إقلاع شائعة</li>
+        </ul>
+
+        <h2 id="external-resources">الروابط الرسمية ومصادر خارجية</h2>
+
+        <ul>
+            <li><strong>Bazzite:</strong> <a href="https://bazzite.gg/" target="_blank" rel="noopener noreferrer">bazzite.gg</a></li>
+            <li><strong>CachyOS:</strong> <a href="https://cachyos.org/" target="_blank" rel="noopener noreferrer">cachyos.org</a></li>
+            <li><strong>Nobara:</strong> <a href="https://nobaraproject.org/" target="_blank" rel="noopener noreferrer">nobaraproject.org</a></li>
+            <li><strong>SteamOS:</strong> <a href="https://store.steampowered.com/steamos" target="_blank" rel="noopener noreferrer">store.steampowered.com/steamos</a></li>
+            <li><strong>Pop!_OS:</strong> <a href="https://system76.com/pop/" target="_blank" rel="noopener noreferrer">system76.com/pop</a></li>
+            <li><strong>Garuda Linux:</strong> <a href="https://garudalinux.org/" target="_blank" rel="noopener noreferrer">garudalinux.org</a></li>
+            <li><strong>ProtonDB (تقييمات توافق الألعاب):</strong> <a href="https://www.protondb.com/" target="_blank" rel="noopener noreferrer">protondb.com</a></li>
+            <li><strong>Are We Anti-Cheat Yet (حالة مكافحة الغش):</strong> <a href="https://areweanticheatyet.com/" target="_blank" rel="noopener noreferrer">areweanticheatyet.com</a></li>
+            <li><strong>GamingOnLinux (أخبار متخصصة):</strong> <a href="https://www.gamingonlinux.com/" target="_blank" rel="noopener noreferrer">gamingonlinux.com</a></li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل ستعمل كل ألعابي الحالية على لينكس؟</strong><br />
+            الغالبية العظمى من الألعاب أحادية اللاعب تعمل بلا مشاكل، لكن
+            بعض ألعاب الأونلاين التنافسية محظورة بسبب قرار الناشر لا
+            القدرة التقنية. راجع كل لعبة على ProtonDB قبل الحكم.
+        </p>
+
+        <p>
+            <strong>هل الأداء على لينكس أسرع فعلاً من ويندوز؟</strong><br />
+            أحيانًا نعم وأحيانًا لا، حسب اللعبة والعتاد وإصدار Proton. لا
+            تتوقع تحسنًا تلقائيًا بمجرد تغيير النظام؛ الفروقات عادة طفيفة
+            في أي اتجاه.
+        </p>
+
+        <p>
+            <strong>هل أحتاج تعلم أوامر الطرفية للعب على لينكس؟</strong><br />
+            مع توزيعات مثل Bazzite وNobara، لا. التثبيت والتشغيل يتمان عبر
+            واجهات رسومية بالكامل تقريبًا في الاستخدام اليومي العادي.
+        </p>
+
+        <p>
+            <strong>ما الفرق العملي بين Bazzite وSteamOS الرسمي؟</strong><br />
+            SteamOS مدعوم رسميًا فقط على Steam Deck وجهاز واحد آخر حاليًا،
+            بينما Bazzite يقدّم تجربة مشابهة جدًا على أي عتاد حاسوب عادي،
+            بما في ذلك كروت NVIDIA غير المدعومة جيدًا بعد في SteamOS.
+        </p>
+    </PostLayout>
+</BaseLayout>

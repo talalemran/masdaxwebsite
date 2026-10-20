@@ -1,0 +1,177 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "epic-games-store-coming-to-linux-official-launcher-soon",
+    title: "متجر إيبيك جيمز يأتي إلى لينكس: نسخة رسمية قريباً",
+    metaTitle: "متجر إيبيك جيمز الرسمي يصل لينكس قريباً",
+    description:
+        "إيبيك جيمز تؤكد تطوير نسخة رسمية من متجر إيبيك جيمز لينكس — لا توجد موعد إطلاق محدد بعد، لكن الشركة أكدت أن دعم Fortnite لم يُؤكد بعد. محاولة فعلية لتحرير لاعبي لينكس من الأدوات المجتمعية.",
+    keywords: [
+        "Epic Games Store",
+        "متجر إيبيك جيمز",
+        "لينكس",
+        "Linux",
+        "Steam Deck",
+        "Heroic Games Launcher",
+        "ألعاب",
+        "إيبيك جيمز",
+        "Proton",
+        "Fortnite",
+    ],
+    category: ["ألعاب وترفيه","لينكس"],
+    author: "طلال عمران",
+    date: "14 أغسطس 2026",
+    pubDate: new Date("2026-08-14"),
+    tags: ["Epic Games", "Linux", "متجر", "Steam Deck", "لينكس"],
+    thumbnail: "/images/epic-games-store-coming-to-linux-official-launcher-soon.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أعلنت <strong>إيبيك جيمز</strong> رسمياً عن خطط تطوير نسخة رسمية من
+            <strong>متجر إيبيك جيمز</strong> لنظام <strong>لينكس</strong>،
+            مما يوفر لاعبي لينكس بديلاً حقيقياً من الدرجة الأولى بدلاً من الأدوات
+            المجتمعية المختلفة وأدوات التوافق الحالية المستخدمة للوصول إلى
+            مكتبات إيبيك.
+        </p>
+
+        <h2>التأكيد الرسمي</h2>
+
+        <p>
+            أكد موظف من إيبيك جيمز هذه الخطة خلال جلسة أسئلة وأجوبة على خادم
+            ديسكورد مجتمع متجر إيبيك جيمز. عندما سُئل عن نسخة لينكس من برنامج
+            التشغيل، قال المطور إنها ستأتي "قريباً". لكن لا توجد موعد إطلاق محدد
+            بعد.
+        </p>
+
+        <p>
+            إيبيك أيضاً أوضحت أن دعم لينكس لن يأتي مع الإصدار المعاين من متجرها
+            الجديد المُعاد تصميمه. حسب المطور، دعم لينكس يتطلب عملاً أكثر من مجرد
+            إنتاج بناء مخصص لينكس.
+        </p>
+
+        <h2>تفاصيل ناقصة</h2>
+
+        <p>
+            إيبيك لم تعلن عن توزيعات لينكس التي تخطط لدعمها ولم توفر متطلبات
+            النظام. كما لم يتم تأكيد <strong>SteamOS</strong> و<strong>Steam Deck</strong>
+            بشكل صريح حتى الآن.
+        </p>
+
+        <h2>لاعبو لينكس يعتمدون على أدوات تابعة لجهات خارجية حالياً</h2>
+
+        <p>
+            يمكن لمستخدمي لينكس بالفعل الوصول إلى العديد من الألعاب من مكتبات
+            متجر إيبيك جيمز الخاصة بهم، لكن إيبيك لا توفر برنامج تشغيل رسمياً
+            لينكس اليوم.
+        </p>
+
+        <ul>
+            <li>
+                <strong>Heroic Games Launcher:</strong> يتيح للمستخدمين الوصول
+                إلى مكتبات إيبيك و GOG على لينكس
+            </li>
+            <li>
+                <strong>Wine و Proton:</strong> تقنيات التوافق التي تشغّل العديد
+                من ألعاب Windows على أنظمة لينكس
+            </li>
+            <li>
+                <strong>Steam Deck:</strong> يستخدم مالكوها هذه الأساليب بشكل
+                شائع لتثبيت الألعاب من متاجر خارج Steam
+            </li>
+        </ul>
+
+        <h2>Fortnite على لينكس: لا تزال غير مؤكدة</h2>
+
+        <p>
+            Fortnite تبقى واحدة من أكبر الأسئلة المطروحة دون إجابة. إيبيك لم
+            تعلن عن دعم Fortnite للينكس أو SteamOS، ويجب عدم معاملة تأكيد برنامج
+            التشغيل الجديد كدليل على أن Fortnite قادمة إلى Steam Deck.
+        </p>
+
+        <p>
+            <strong>مشكلة Anti-Cheat:</strong> تبقى مشكلة حقيقية لبعض ألعاب
+            المضاعفة التنافسية على لينكس. بينما يدعم Anti-Cheat من إيبيك بالفعل
+            لينكس و Proton، يقرر المطورون ما إذا كان سيتم تفعيل ودعم هذه الوظيفة
+            للألعاب الفردية.
+        </p>
+
+        <p>
+            هناك دليل على أن إيبيك تريد تحسين قدرات مكافحة الغش على لينكس. في
+            يونيو 2026، أعلنت الشركة عن وظيفة مهندس أمان اللعبة الأول في فريق
+            Anti-Cheat الخاص بها. طلبت وصف الوظيفة صراحةً شخصاً "يقود قدرات
+            مكافحة الغش على لينكس لـ إيبيك" وسعت للحصول على خبرة مع لينكس و
+            Windows أنظمة التشغيل.
+        </p>
+
+        <h2>لينكس تحصل على دعم من الدرجة الأولى</h2>
+
+        <p>
+            إعلان إيبيك يأتي خلال فترة مشغولة غير عادية لخدمات الألعاب على
+            لينكس:
+        </p>
+
+        <ul>
+            <li>
+                <strong>NVIDIA:</strong>
+                
+                <a href="https://thepcenthusiast.com/geforce-now-linux-app-out-of-beta/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    أطلقت رسمياً تطبيق GeForce NOW الأصلي لـ لينكس من البيتا
+                </a>
+                هذا الأسبوع
+            </li>
+            <li>
+                <strong>GOG:</strong> تعمل على إحضار عميل Galaxy سطح المكتب
+                الخاص بها إلى لينكس — أكدت الشركة التطوير في يوليو
+            </li>
+        </ul>
+
+        <p>
+            إيبيك الانضمام إلى NVIDIA و GOG سيوفر لاعبي لينكس برامج رسمية من
+            عدة منصات ألعاب PC رئيسية كانت تتطلب سابقاً الوصول عبر المتصفح أو
+            برامج تشغيل مطورة من المجتمع أو حلول بديلة.
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            بالنسبة لمستخدمي متجر إيبيك جيمز، الأخبار الفورية بسيطة: عميل
+            رسمي لينكس قيد التطوير الآن وإيبيك تقول إنه قادم "قريباً". ما الوقت
+            بالضبط، توزيعات لينكس التي يدعمها، وما إذا كان مستخدمو SteamOS سيحصلون
+            على دعم رسمي تبقى أسئلة بدون إجابة.
+        </p>
+
+        <p>Fortnite على لينكس تبقى غير مؤكدة.</p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+            <a href="https://thepcenthusiast.com/epic-games-confirms-the-epic-games-store-is-coming-to-linux/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                ThePCEnthusiast
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

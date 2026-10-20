@@ -1,0 +1,332 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "what-are-distros", label: "ما هي التوزيعات؟" },
+  { id: "how-to-choose", label: "كيف تختار التوزيعة المناسبة؟" },
+  { id: "ubuntu", label: "Ubuntu — أوبنتو" },
+  { id: "linux-mint", label: "Linux Mint — لينكس مينت" },
+  { id: "fedora", label: "Fedora — فيدورا" },
+  { id: "debian", label: "Debian — ديبيان" },
+  { id: "opensuse", label: "openSUSE — أوبن سوزا" },
+  { id: "arch", label: "Arch Linux — أرش لينكس" },
+  { id: "manjaro", label: "Manjaro — مانجارو" },
+  { id: "zorin", label: "Zorin OS — زورين" },
+  { id: "categories", label: "تصنيف التوزيعات حسب الاستخدام" },
+  { id: "faq", label: "أسئلة شائعة" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "أشهر توزيعات لينكس",
+  description: "قائمة شاملة بأشهر توزيعات لينكس: Ubuntu, Mint, Fedora, Debian, Arch والمزيد، مع شرح مميزات كل توزيعة وروابط مباشرة.",
+  tags: ["توزيعات لينكس", "Ubuntu", "Linux Mint", "Fedora", "Debian", "Arch Linux", "openSUSE"],
+  category: ["لينكس", "موسوعة"],
+  thumbnail: "/images/linux-distros-wiki.webp",
+  parent: { title: "لينكس", href: "/wiki/linux-wiki/" },
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/linux-distributions/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+  <section id="what-are-distros" class="mb-12">
+    <h2 id="what-are-distros" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ما هي التوزيعات؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>التوزيعة (Distribution أو Distro)</strong> هي نظام تشغيل كامل مبني على
+      نواة لينكس. تجمع كل توزيعة بين النواة ومكتبات البرامج ومدير الحزم وبيئة سطح
+      المكتب، مع إعدادات افتراضية مخصصة لغرض معين. لا يوجد توزيعة "أفضل" بشكل
+      مطلق — كل منها مصمم لشريحة مختلفة من المستخدمين.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يوجد حاليًا مئات التوزيعات النشطة، لكن القائمة التالية تغطي أشهرها وأكثرها
+      استخدامًا حول العالم.
+    </p>
+  </section>
+
+  <section id="how-to-choose" class="mb-12">
+    <h2 id="how-to-choose" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف تختار التوزيعة المناسبة؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      قبل اختيار توزيعة، حدد ما الذي تبحث عنه:
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>مبتدئ وتريد سهولة الاستخدام؟</strong> Ubuntu أو Linux Mint</li>
+      <li><strong>مطور وتريد أحدث التقنيات؟</strong> Fedora</li>
+      <li><strong>تريد استقرارًا طويل المدى؟</strong> Debian</li>
+      <li><strong>تريد التحكم الكامل وتتعلم بكثرة؟</strong> Arch Linux</li>
+      <li><strong>تريد Arch بدون التعقيد؟</strong> Manjaro</li>
+      <li><strong>قادم من Windows وتريد واجهة مألوفة؟</strong> Zorin OS أو Linux Mint</li>
+    </ul>
+  </section>
+
+  <section id="ubuntu" class="mb-12">
+    <h2 id="ubuntu" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Ubuntu — أوبنتو</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>Ubuntu</strong> هي الأكثر شهرة وانتشارًا في العالم. مبنية على Debian،
+      تأتي ببيئة GNOME الافتراضية، وبدعم كبير من شركة Canonical والمجتمع العربي.
+      تُصدر إصدارات جديدة كل 6 أشهر (LTS كل سنتين) مع دعم طويل المدى.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> سهلة الاستخدام، مجتمع ضخم، دعم عربي ممتاز، مخازن برامج واسعة</li>
+      <li><strong>بيئة المكتب:</strong> GNOME (الافتراضية)</li>
+      <li><strong>مدير الحزم:</strong> APT / Snap</li>
+      <li><strong>مناسبة لـ:</strong> المبتدئين، المطورين، الخوادم، الشركات</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للتفاصيل: <a href="/posts/ubuntu-complete-guide/">دليل أوبنتو الشامل</a>
+      | المشروع: <a href="/projects/ubuntu/">مشروع Ubuntu على مصدر إكس</a>
+    </p>
+  </section>
+
+  <section id="linux-mint" class="mb-12">
+    <h2 id="linux-mint" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Linux Mint — لينكس مينت</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>Linux Mint</strong> مبنية على Ubuntu وتتميز ببيئة سطح مكتب <strong>Cinnamon</strong>
+      المألوفة لمستخدمي Windows. تُعتبر من أفضل الخيارات للانتقال من Windows إلى لينكس
+      بفضل واجهتها البسيطة والمستقرة.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> واجهة مألوفة، خفيفة ومستقرة، جاهزة للعمل فور التثبيت</li>
+      <li><strong>بيئة المكتب:</strong> Cinnamon (الافتراضية)، XFCE، MATE</li>
+      <li><strong>مدير الحزم:</strong> APT / Flatpak</li>
+      <li><strong>مناسبة لـ:</strong>قادمون من Windows، المبتدئين، الأجهزة القديمة</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للمقارنة: <a href="/posts/zorin-os-vs-linux-mint-windows-migration/">Zorin OS أم Linux Mint</a>
+      | المشروع: <a href="/projects/linux-mint/">مشروع Linux Mint على مصدر إكس</a>
+    </p>
+  </section>
+
+  <section id="fedora" class="mb-12">
+    <h2 id="fedora" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Fedora — فيدورا</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>Fedora</strong> هي توزيعة مبتكرة تقدم أحدث التقنيات بسرعة. مدعومة من
+      شركة Red Hat، وتُعتبر بيئة اختبار للتقنيات التي تصل لاحقًا إلى Red Hat
+      Enterprise Linux. ممتازة للمطورين الذين يريدون الكشف عن أحدث الأدوات.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> تقنيات حديثة، أداء عالي، أمان قوي</li>
+      <li><strong>بيئة المكتب:</strong> GNOME (الافتراضية)</li>
+      <li><strong>مدير الحزم:</strong> DNF / Flatpak</li>
+      <li><strong>مناسبة لـ:</strong> المطورين، مستخدمي التقنيات الحديثة</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للمزيد: <a href="/posts/fedora-45-stratis-storage-anaconda-integration-approved/">فيدورا 45 ونظام Stratis</a>
+    </p>
+  </section>
+
+  <section id="debian" class="mb-12">
+    <h2 id="debian" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Debian — ديبيان</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>Debian</strong> من أقدم التوزيعات وأكثرها استقرارًا. هي الأساس الذي
+      بُنيت عليه Ubuntu وغيرها من التوزيعات. تشتهر بنظام إصداراتها الثلاث (Stable,
+      Testing, Unstable) ونظام حزمها القوي.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> استقرار استثنائي، مجتمع ضخم، ترخيص حر بالكامل</li>
+      <li><strong>بيئة المكتب:</strong> GNOME (الافتراضية)، KDE، XFCE</li>
+      <li><strong>مدير الحزم:</strong> APT / dpkg</li>
+      <li><strong>مناسبة لـ:</strong> الخوادم، المستخدمون الذين يفضلون الاستقرار</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للمزيد: <a href="/posts/debian-13-6-trixie-124-bug-fixes-120-security-updates/">ديبيان 13.6 تريكسي</a>
+    </p>
+  </section>
+
+  <section id="opensuse" class="mb-12">
+    <h2 id="opensuse" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">openSUSE — أوبن سوزا</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>openSUSE</strong> توزيعة ألمانية تتميز بأدواتها المميزة مثل <strong>YaST</strong>
+      لإعداد النظام بأكمله من واجهة واحدة. تقدم إصدارين: <strong>Leap</strong> (مستقر)
+      و<strong>Tumbleweed</strong> (إصدار متجدد).
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> أداة YaST القوية، استقرار ممتاز، جودة كود عالية</li>
+      <li><strong>بيئة المكتب:</strong> KDE Plasma (الافتراضية)، GNOME</li>
+      <li><strong>مدير الحزم:</strong> Zypper / RPM</li>
+      <li><strong>مناسبة لـ:</strong> المستخدمين الذين يحبون التحكم، مطورو KDE</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للتفاصيل: <a href="/posts/opensuse-complete-guide/">دليل openSUSE الشامل</a>
+      أو تعرف على <a href="/posts/opensuse-tumbleweed-unsung-rolling-distro/">Tumbleweed</a>
+    </p>
+  </section>
+
+  <section id="arch" class="mb-12">
+    <h2 id="arch" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Arch Linux — أرش لينكس</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>Arch Linux</strong> توزيعة تعتمد على مبدأ "البساطة" و"الإصدار المتجدد".
+      تتطلب تثبيتًا يدويًا عبر سطر الأوامر، لكنها توفر لك تحكمًا كاملًا بكل شيء
+      في نظامك. تتميز بمخازن المستخدمين <strong>AUR</strong> الضخمة.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> تحكم كامل، أحدث إصدارات البرامج، مخازن AUR</li>
+      <li><strong>بيئة المكتب:</strong> تختارها أنت عند التثبيت</li>
+      <li><strong>مدير الحزم:</strong> Pacman / yay (AUR)</li>
+      <li><strong>مناسبة لـ:</strong> المطورين المتقدمين، الهواة المȝتنمين للتعلم</li>
+    </ul>
+  </section>
+
+  <section id="manjaro" class="mb-12">
+    <h2 id="manjaro" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Manjaro — مانجارو</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>Manjaro</strong> مبنية على Arch لكنها أسهل بكثير في التثبيت والاستخدام.
+      تأتي ببيئات سطح مكتب جاهزة ومخازن برامج مخصصة. تقدم توازنًا جيدًا بين
+      أحدث التقنيات والاستقرار.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> سهلة الاستخدام كـ Arch، مخازن برامج واسعة، دعم hardware ممتاز</li>
+      <li><strong>بيئة المكتب:</strong> XFCE (الافتراضية)، KDE Plasma، GNOME</li>
+      <li><strong>مدير الحزم:</strong> Pacman / yay (AUR)</li>
+      <li><strong>مناسبة لـ:</strong> من يريد تجربة Arch دون التعقيد</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للمزيد: <a href="/posts/manjaro-linux-26-1-bian-may-gnome-50-kde-plasma-6-7/">مانجارو 26.1</a>
+    </p>
+  </section>
+
+  <section id="zorin" class="mb-12">
+    <h2 id="zorin" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Zorin OS — زورين</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>Zorin OS</strong> صُممت خصيصًا للقادمين من Windows. تقدم واجهات
+      مألوفة تمامًا (تبدو مثل Windows 7 أو Windows 11) مع قدرة على تشغيل
+      بعض برامج Windows عبر Wine.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>المميزات:</strong> واجهة Windows مألوفة، تشغيل برامج Windows، جاهزة للعمل فورًا</li>
+      <li><strong>بيئة المكتب:</strong> Zorin Desktop (مبنية على GNOME)</li>
+      <li><strong>مدير الحزم:</strong> APT / Flatpak</li>
+      <li><strong>مناسبة لـ:</strong> القادمون من Windows، المبتدئين</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للمقارنة: <a href="/posts/zorin-os-vs-linux-mint-windows-migration/">Zorin OS أم Linux Mint</a>
+    </p>
+  </section>
+
+  <section id="categories" class="mb-12">
+    <h2 id="categories" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تصنيف التوزيعات حسب الاستخدام</h2>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-navy-100 dark:border-zinc-700">
+        <thead class="bg-navy-50 dark:bg-zinc-800/50">
+          <tr>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">الاستخدام</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">التوزيعات المقترحة</th>
+          </tr>
+        </thead>
+        <tbody class="font-body text-navy-600 dark:text-zinc-300">
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">المبتدئين</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Ubuntu, Linux Mint, Zorin OS</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">المطورين</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Fedora, Arch Linux, openSUSE</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الخوادم</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Debian, Ubuntu Server, Rocky Linux</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الأمن السيبراني</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Kali Linux, Parrot OS</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الأجهزة القديمة</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Linux Mint XFCE, Lubuntu, Puppy Linux</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2"> KDE lovers</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">KDE Neon, openSUSE, Fedora KDE</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq" class="mb-12">
+    <h2 id="faq" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أسئلة شائعة</h2>
+
+    <div class="space-y-6">
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">ما هي أفضل توزيعة للمبتدئين؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          <strong>Ubuntu</strong> و<strong>Linux Mint</strong> هما الخياران الأفضل للمبتدئين.
+          كلاهما سهل الاستخدام ويهما دعم عربي واسع.
+        </p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يمكنني تجربة توزيعة قبل تثبيتها؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          نعم، جميع التوزيعات تقريبًا توفر <strong>بيئة حية (Live Environment)</strong>
+          يمكنك تشغيلها من USB دون تثبيت. هذا يتيح لك تجربة الواجهة والأداء قبل الالتزام.
+        </p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يمكنني تبديل التوزيعة لاحقًا؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          نعم، يمكنك تثبيت توزيعة جديدة في أي وقت. بعض التوزيعات توفر خيار الترقية
+          من توزيعة لأخرى، لكن الأفضل عادةً هو التثبيت النظيف مع نسخ احتياطي للبيانات.
+        </p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">أي توزيعة أخف وزنًا؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          توزيعات مثل <strong>Puppy Linux</strong> و<strong>Lubuntu</strong> و<strong>Xubuntu</strong>
+          مصممة للعمل على أجهزة قديمة بموارد محدودة.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 id="resources" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+
+    <ul class="space-y-3">
+      <li><a href="/wiki/linux-wiki/">دليل لينكس الشامل</a></li>
+      <li><a href="/posts/linux-distros-by-use-case-which-one-suits-you/">أنواع توزيعات لينكس حسب الاستخدام</a></li>
+      <li><a href="/posts/ubuntu-complete-guide/">دليل أوبنتو الشامل</a></li>
+      <li><a href="/posts/opensuse-complete-guide/">دليل openSUSE الشامل</a></li>
+      <li><a href="/posts/zorin-os-vs-linux-mint-windows-migration/">Zorin OS أم Linux Mint</a></li>
+      <li><a href="/posts/best-linux-distros-cybersecurity/">أفضل 5 توزيعات لينكس للأمن السيبراني</a></li>
+      <li><a href="/posts/common-linux-problems-beginners-guide/">المشاكل الشائعة في لينكس وحلولها</a></li>
+    </ul>
+  </section>
+</WikiLayout>
+</BaseLayout>

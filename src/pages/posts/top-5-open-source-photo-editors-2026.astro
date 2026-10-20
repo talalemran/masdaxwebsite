@@ -1,0 +1,327 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+  .map((mod: any) => mod.post)
+  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+  slug: "top-5-open-source-photo-editors-2026",
+  title: "أفضل 5 أدوات مفتوحة المصدر لتحرير الصور في 2026",
+  metaTitle: "أفضل 5 أدوات مفتوحة المصدر لتحرير الصور 2026",
+  description:
+    "قائمة مباشرة بأقوى 5 أدوات مفتوحة المصدر لتحرير الصور هذا العام — من جيمب وداركتيبل إلى رابيد رو الناشئة، مع الرابط الرسمي لكل أداة.",
+  keywords: [
+    "تحرير الصور",
+    "مفتوح المصدر",
+    "GIMP",
+    "darktable",
+    "Krita",
+    "Pixelorama",
+    "RapidRAW",
+    "أدوات مجانية",
+    "بديل فوتوشوب",
+    "بديل لايت روم",
+  ],
+  category: ["برامج", "مقالات"],
+  author: "طلال عمران",
+  date: "8 يوليو 2026",
+  pubDate: new Date("2026-07-08"),
+  tags: [
+    "تحرير الصور",
+    "مفتوح المصدر",
+    "GIMP",
+    "darktable",
+    "Krita",
+    "Pixelorama",
+    "RapidRAW",
+    "أدوات مجانية",
+  ],
+  thumbnail: "/images/top-5-open-source-photo-editors-2026.webp",
+};
+---
+
+<BaseLayout
+  title={post.title}
+  metaTitle={post.metaTitle}
+  description={post.description}
+  keywords={post.keywords}
+  canonical={`/posts/${post.slug}/`}
+  ogImage={post.thumbnail}
+  ogType="article"
+>
+  <PostLayout {post} allPosts={allPosts}>
+    <p>
+      الاشتراكات الشهرية لأدوات مثل Lightroom وPhotoshop لم تعد الخيار الوحيد.
+      سنة 2026 تشهد نضجاً حقيقياً في أدوات تحرير الصور مفتوحة المصدر، بأداء
+      ينافس البرامج التجارية دون أي قيود على الترخيص أو نقل البيانات إلى سيرفرات
+      خارجية. الفارق الحقيقي هنا ليس فقط في المال الموفَّر، بل في التحكم الكامل
+      بالكود والبيانات، وهذا ما يجعل هذه الأدوات خياراً جدياً لأي مطوّر أو مصمم
+      يبني سير عمل مستقلاً بعيداً عن قفل المزوّد (vendor lock-in). هذه القائمة
+      تركّز على القيمة الفعلية لكل أداة، لا على الشعارات.
+    </p>
+
+    <h2>1. جيمب (GIMP)</h2>
+
+    <img
+      src="/images/gimp.webp"
+      alt="GIMP - محرر صور مفتوح المصدر"
+      width="600"
+      height="400"
+      class="w-full h-auto rounded-lg mb-4"
+      loading="lazy"
+    />
+
+    <p>
+      الرابط الرسمي:
+      <a href="https://www.gimp.org" target="_blank" rel="noopener noreferrer"
+        >gimp.org</a
+      >
+    </p>
+
+    <p>
+      الاسم الأكثر شهرة في هذا المجال، وما زال يتطور بجدية. النسخة 3.2 التي صدرت
+      هذا العام جلبت تحسينات في الأداء، وتحديثاً لمحرك GEGL، وتوافقاً أفضل مع
+      معالجات Apple Silicon.
+    </p>
+
+    <ul>
+      <li>محرر بكسل (raster) كامل الطبقات، مقارب لفوتوشوب من حيث القدرات</li>
+      <li>
+        نظام إضافات (plugins) ضخم، أشهرها Resynthesizer لملء المحتوى وحذف
+        العناصر بذكاء، وهو ما يقارب أدوات الذكاء الاصطناعي التجارية في فوتوشوب
+      </li>
+      <li>
+        دعم واسع للصيغ، سكربتات Script-Fu وPython لأتمتة أي مهمة تحرير متكررة،
+        وهذا يجعله مناسباً لبناء خطوط معالجة دفعية (batch pipelines) كاملة
+      </li>
+      <li>
+        التحرير غير الإتلافي (non-destructive) لا يزال غير موحّد على كل الأدوات،
+        وهذه نقطة الضعف الرئيسية مقارنة بمحررات RAW الحديثة
+      </li>
+    </ul>
+
+    <p>
+      <strong>الأفضل لـ:</strong> من يحتاج تحكماً كاملاً في الطبقات والفرش والدمج،
+      ولا يمانع منحنى تعلّم أعلى قليلاً.
+    </p>
+
+    <h2>2. داركتيبل (darktable)</h2>
+
+    <img
+      src="/images/darktable.webp"
+      alt="darktable - محرر صور RAW مفتوح المصدر"
+      width="600"
+      height="400"
+      class="w-full h-auto rounded-lg mb-4"
+      loading="lazy"
+    />
+
+    <p>
+      الرابط الرسمي:
+      <a
+        href="https://www.darktable.org"
+        target="_blank"
+        rel="noopener noreferrer">darktable.org</a
+      >
+    </p>
+
+    <p>
+      بديل مفتوح المصدر مباشر لـ Lightroom، وليس لفوتوشوب. مبني بالكامل حول فكرة
+      سير عمل غير إتلافي لملفات RAW.
+    </p>
+
+    <ul>
+      <li>
+        تنظيم المكتبة، تطبيق التعديلات، وتصدير الصور، كل ذلك في تدفق عمل واحد
+        متكامل
+      </li>
+      <li>
+        أدوات لون احترافية ووحدات معالجة قابلة للتكديس (module stack)، مع
+        إمكانية إعادة ترتيبها حسب الحاجة
+      </li>
+      <li>
+        إدارة ألوان دقيقة عبر ملفات ICC، وتحكم في التعرض والضوضاء يضاهي أدوات
+        RAW التجارية الأعلى سعراً
+      </li>
+      <li>
+        مجتمع مطورين نشط باستمرار، ما يعني تحديثات دورية وإصلاحات سريعة للثغرات،
+        وهذه ميزة مباشرة لطبيعة الكود المفتوح
+      </li>
+    </ul>
+
+    <p>
+      <strong>الأفضل لـ:</strong> المصورين الذين يريدون بديلاً حقيقياً لـ Lightroom
+      دون اشتراك شهري.
+    </p>
+
+    <h2>3. كريتا (Krita)</h2>
+
+    <img
+      src="/images/krita.webp"
+      alt="Krita - استوديو رسم ورتوش مفتوح المصدر"
+      width="600"
+      height="400"
+      class="w-full h-auto rounded-lg mb-4"
+      loading="lazy"
+    />
+
+    <p>
+      الرابط الرسمي:
+      <a href="https://krita.org" target="_blank" rel="noopener noreferrer"
+        >krita.org</a
+      >
+    </p>
+
+    <p>
+      ليس محرر RAW، بل استوديو رسم ورتوش قائم بذاته. إصدار 2026 المزدوج (5.3
+      و6.0) جلب محرك نصوص جديداً بالكامل، ودعم HDR أصلياً على Wayland في نسخة
+      6.0.
+    </p>
+
+    <ul>
+      <li>
+        أداة الملء أصبحت قادرة على إغلاق الفجوات تلقائياً، وسرعة نمط Liquify في
+        أداة التحويل تحسّنت بشكل ملحوظ
+      </li>
+      <li>
+        فلاتر جديدة، من أبرزها propagate colors وreset transparent، إضافة لدعم
+        أفضل للرسم بنطاق ديناميكي عالٍ (HDR)
+      </li>
+      <li>
+        محرك فرش قابل للتخصيص بعمق، مثالي للرتوش الدقيق ودمج طبقات متعددة يدوياً
+        بخلاف سير عمل RAW الآلي
+      </li>
+      <li>
+        إصدار 6.0 مبني على Qt6 ولا يزال تجريبياً؛ للعمل الفعلي يُنصح بالبقاء على
+        5.3 المستقرة
+      </li>
+    </ul>
+
+    <p>
+      <strong>الأفضل لـ:</strong> من يحتاج رتوشاً يدوياً وتلاعباً إبداعياً بالطبقات،
+      لا مجرد معالجة RAW آلية.
+    </p>
+
+    <h2>4. بيكسلوراما (Pixelorama)</h2>
+
+    <img
+      src="/images/pixelorama.webp"
+      alt="Pixelorama - محرر بيكسل آرت مفتوح المصدر"
+      width="600"
+      height="400"
+      class="w-full h-auto rounded-lg mb-4"
+      loading="lazy"
+    />
+
+    <p>
+      الرابط الرسمي:
+      <a href="https://pixelorama.org" target="_blank" rel="noopener noreferrer"
+        >pixelorama.org</a
+      >
+      &nbsp;|&nbsp; الكود المصدري:
+      <a
+        href="https://github.com/Orama-Interactive/Pixelorama"
+        target="_blank"
+        rel="noopener noreferrer">github.com/Orama-Interactive/Pixelorama</a
+      >
+    </p>
+
+    <p>
+      خروج عن السياق التقليدي لتحرير الصور، لكنه استحقاق حقيقي في هذه القائمة.
+      أداة مخصصة بالكامل لفن البكسل، مبنية على محرك Godot، وهي البديل المفتوح
+      المصدر الأبرز لأداة Aseprite المدفوعة.
+    </p>
+
+    <ul>
+      <li>
+        أدوات رسم دقيقة مصممة خصيصاً لفن البكسل: خطوط بكسل مثالية، ووضع الألوان
+        المفهرسة (indexed mode)، وخوارزميات تحجيم مثل cleanEdge وOmniScale
+        وrotxel
+      </li>
+      <li>
+        نظام طبقات قوي مع أقنعة قص وتأثيرات غير إتلافية كالحدود الخارجية وخرائط
+        التدرج والظلال
+      </li>
+      <li>
+        دعم كامل للرسوم المتحركة عبر خط زمني (timeline) بإطارات وخلايا، مع تقنية
+        onion skinning ومزامنة صوتية
+      </li>
+      <li>
+        طبقات Tilemap لإنشاء بلاطات مستطيلة أو متساوية القياس أو سداسية، ما
+        يجعلها أداة جاهزة لتطوير الألعاب لا التصوير الفوتوغرافي فقط
+      </li>
+    </ul>
+
+    <p>
+      <strong>الأفضل لـ:</strong> مطوّري الألعاب وفناني السبرايت الذين يريدون بديلاً
+      مجانياً ومفتوح المصدر لـ Aseprite.
+    </p>
+
+    <h2>5. رابيد رو (RapidRAW)</h2>
+
+    <img
+      src="/images/rapidraw.webp"
+      alt="RapidRAW - محرر صور RAW حديث وسريع"
+      width="600"
+      height="400"
+      class="w-full h-auto rounded-lg mb-4"
+      loading="lazy"
+    />
+
+    <p>
+      الرابط الرسمي:
+      <a
+        href="https://www.getrapidraw.com"
+        target="_blank"
+        rel="noopener noreferrer">getrapidraw.com</a
+      >
+      &nbsp;|&nbsp; الكود المصدري:
+      <a
+        href="https://github.com/CyberTimon/RapidRAW"
+        target="_blank"
+        rel="noopener noreferrer">github.com/CyberTimon/RapidRAW</a
+      >
+    </p>
+
+    <p>
+      الاسم الأحدث والأكثر إثارة للاهتمام في هذه القائمة. أداة معالجة RAW حديثة،
+      سريعة، وبواجهة مبنية لعصر الأداء لا لعصر القوائم الثقيلة.
+    </p>
+
+    <ul>
+      <li>
+        تصميم أخف بكثير من داركتيبل وروثيرابي، مع تركيز واضح على السرعة وزمن
+        استجابة أقل عند تعديل الصور بدقة عالية
+      </li>
+      <li>
+        واجهة نظيفة مبنية بأدوات حديثة، بعيدة عن كثافة القوائم التي تُنفّر
+        المستخدمين الجدد
+      </li>
+      <li>
+        ما زالت في مرحلة مبكرة، ويقودها مطوّر واحد أساسي حتى الآن، ما يعني
+        مخاطرة أكبر على المدى الطويل مقارنة بالمشاريع المجتمعية الكبيرة مثل
+        داركتيبل وروثيرابي
+      </li>
+      <li>
+        تستحق المتابعة كأداة مساعدة إلى جانب محرر أساسي أكثر رسوخاً، وليس كبديل
+        كامل بعد، إلى أن يتوسع فريق تطويرها
+      </li>
+    </ul>
+
+    <p>
+      <strong>الأفضل لـ:</strong> من يريد تجربة سير عمل RAW حديث وسريع، مع الوعي بأن
+      المشروع لا يزال ناشئاً.
+    </p>
+
+    <h2>الخلاصة</h2>
+
+    <p>
+      بحلول 2026، لم يعد اختيار أداة مفتوحة المصدر لتحرير الصور تنازلاً عن
+      الجودة، بل قراراً عملياً يوفر المال ويحافظ على استقلالية بياناتك وكودك دون
+      التضحية بالاحترافية.
+    </p>
+  </PostLayout>
+</BaseLayout>

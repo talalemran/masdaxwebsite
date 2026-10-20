@@ -1,0 +1,835 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "7-tips-improve-linux-boot-time-systemd",
+    title: "7 نصائح لتحسين وقت إقلاع نظام لينكس باستخدام systemd",
+    metaTitle: "7 نصائح لتسريع إقلاع لينكس باستخدام systemd وأوامر عملية",
+    description:
+        "سبع نصائح عملية لتقليل وقت إقلاع لينكس مع أمثلة كود جاهزة: قياس الإقلاع بـ systemd-analyze، معالجة انتظار الشبكة، تعطيل الخدمات غير الضرورية، تنظيف fstab، تأجيل المهام الثقيلة، محمّل الإقلاع وinitramfs، والفيرموير.",
+    keywords: [
+        "تحسين وقت إقلاع لينكس",
+        "تسريع إقلاع لينكس",
+        "systemd",
+        "systemd-analyze",
+        "systemd-analyze blame",
+        "critical-chain",
+        "NetworkManager-wait-online",
+        "fstab nofail",
+        "GRUB timeout",
+        "systemd timer",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "16 أكتوبر 2026",
+    pubDate: new Date("2026-10-16"),
+    tags: ["systemd", "إقلاع لينكس", "الأداء", "سطر الأوامر", "إدارة النظام"],
+    thumbnail: "/images/7-tips-improve-linux-boot-time-systemd.webp",
+};
+
+const tocItems = [
+    { id: "boot-stages", label: "قبل التعديل: ما الذي يستغرق الوقت فعلًا في الإقلاع؟" },
+    { id: "tip-1-measure", label: "النصيحة 1: قِس أولًا بأرقام وخريطة زمنية" },
+    { id: "tip-2-wait-online", label: "النصيحة 2: عالج انتظار الشبكة (wait-online)" },
+    { id: "tip-3-services", label: "النصيحة 3: عطّل الخدمات التي لا تحتاجها" },
+    { id: "tip-4-fstab", label: "النصيحة 4: نظّف fstab وحدّد مهلة الأجهزة" },
+    { id: "tip-5-timers", label: "النصيحة 5: أجّل المهام الثقيلة بمؤقتات systemd" },
+    { id: "tip-6-bootloader-initramfs", label: "النصيحة 6: قلّص مهلة محمّل الإقلاع وخفّف initramfs" },
+    { id: "tip-7-firmware-storage", label: "النصيحة 7: الفيرموير والتخزين" },
+    { id: "verify-and-rollback", label: "كيف تتحقق من التحسن وتتراجع بأمان؟" },
+    { id: "safety-rules", label: "قواعد أمان قبل أي تعديل" },
+    { id: "commands-table", label: "جدول: أوامر تختلف بحسب التوزيعة" },
+    { id: "impact-table", label: "جدول: الأثر والمخاطرة لكل نصيحة" },
+    { id: "external-resources", label: "المصادر والتوثيق الرسمي" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            تضغط زر التشغيل وتنتظر. نصف دقيقة، أحيانًا أكثر، قبل أن
+            تظهر شاشة تسجيل الدخول. على جهاز حديث بقرص SSD يجب ألا يحدث
+            هذا، ومع ذلك يحدث، وغالبًا لسبب واحد أو اثنين محددين يمكن
+            العثور عليهما وإصلاحهما خلال دقائق.
+        </p>
+
+        <p>
+            هذا الدليل يعرض سبع نصائح عملية لتقليل وقت إقلاع لينكس على
+            التوزيعات التي تعتمد systemd، وهي الغالبية العظمى من
+            التوزيعات الشائعة. كل نصيحة مرفقة بكود جاهز للنسخ، مع شرح
+            متى تنفعك ومتى تتركها.
+        </p>
+
+        <p>
+            ملاحظة مهمة: الأرقام الظاهرة في مخرجات الأوامر أدناه أمثلة
+            توضيحية لشكل المخرجات، وليست قياسات من جهازك. وقدر ما ستوفره
+            من وقت يختلف من جهاز لآخر، ولا يمكن لأحد أن يعدك برقم
+            معين قبل أن يقيس.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="boot-stages">
+            قبل التعديل: ما الذي يستغرق الوقت فعلًا في الإقلاع؟
+        </h2>
+
+        <p>
+            <img
+                src="/images/articles/7-tips-improve-linux-boot-time-systemd/01.webp"
+                alt="إقلاع لينكس"
+                width="1200"
+                height="775"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الإقلاع ليس خطوة واحدة، بل سلسلة مراحل، وكل مرحلة لها
+            أدواتها في التحسين:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الفيرموير (UEFI أو BIOS)</strong>: فحص العتاد
+                واختيار جهاز الإقلاع، قبل أن يبدأ لينكس أصلًا
+            </li>
+            <li>
+                <strong>محمّل الإقلاع</strong>: مثل GRUB أو systemd-boot،
+                وفيه مهلة اختيار النظام
+            </li>
+            <li>
+                <strong>النواة (Kernel)</strong>: تهيئة العتاد وتحميل
+                برامج التشغيل الأساسية، وقد تتضمن مرحلة initrd
+            </li>
+            <li>
+                <strong>مساحة المستخدم (Userspace)</strong>: هنا يعمل
+                systemd ويبدأ الخدمات واحدة تلو الأخرى، وغالبًا هنا يكمن
+                أكبر هامش للتحسين
+            </li>
+        </ul>
+
+        <p>
+            الأمر الذي يوزّع لك الوقت بين هذه المراحل هو:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`systemd-analyze time
+
+# Illustrative output only (not measured on your machine):
+# Startup finished in 6.1s (firmware) + 3.2s (loader) + 2.4s (kernel)
+#                     + 21.8s (userspace) = 33.5s
+# graphical.target reached after 21.7s in userspace.`}</code></pre>
+
+        <p>
+            حين ترى أن الجزء الأكبر في مساحة المستخدم، ركّز على
+            النصائح من الثانية إلى الخامسة. وإن كان في الفيرموير أو
+            المحمّل، فالنصيحتان السادسة والسابعة هما ما يعنيك.
+        </p>
+
+        <h2 id="tip-1-measure">
+            النصيحة 1: قِس أولًا بأرقام وخريطة زمنية
+        </h2>
+
+        <p>
+            أخطر خطأ في تحسين الإقلاع أن تعطّل خدمات عشوائيًا بناءً على
+            وصفة من الإنترنت. ابدأ بثلاثة أوامر تعطيك الصورة الكاملة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# 1) Total time per boot phase
+systemd-analyze time
+
+# 2) Units sorted by how long each one took to initialize
+systemd-analyze blame | head -n 15
+
+# 3) The chain of units that actually delayed the default target
+systemd-analyze critical-chain
+
+# 4) A visual timeline you can open in a browser
+systemd-analyze plot > boot.svg`}</code></pre>
+
+        <p>
+            الفرق بين الأمرين الثاني والثالث جوهري. أمر
+            <code>blame</code> يرتّب الوحدات بحسب مدة تهيئتها، لكن كثيرًا
+            منها يعمل بالتوازي مع غيره، فوحدة تبدو الأبطأ قد لا تؤخر
+            الإقلاع إطلاقًا. أما <code>critical-chain</code> فيعرض
+            السلسلة التي حدّدت فعلًا زمن الوصول للهدف. اعتبر الأول
+            تلميحًا والثاني تشخيصًا.
+        </p>
+
+        <p>
+            ويستحق التنبيه أيضًا ما يذكره التوثيق الرسمي: هذه الأوامر
+            تحسب فقط الوقت الذي قضته الوحدة في حالة "التفعيل"، فلا تظهر
+            فيها الوحدات التي تنتقل مباشرة إلى الحالة النشطة، كبعض وحدات
+            الأجهزة.
+        </p>
+
+        <p>
+            احفظ قياسك الأول لتقارن به لاحقًا. هذا سكربت بسيط يحفظ
+            لقطة من القياسات في ملف باسم تاريخ ووقت الإقلاع:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`#!/bin/bash
+# boot-profile.sh - save a snapshot of the current boot measurements
+mkdir -p ~/boot-profiles
+stamp=$(date +%F_%H-%M-%S)
+out=~/boot-profiles/$stamp.txt
+
+systemd-analyze time              >  "$out"
+echo "--- blame (top 20) ---"     >> "$out"
+systemd-analyze blame | head -n 20 >> "$out"
+echo "--- critical-chain ---"     >> "$out"
+systemd-analyze critical-chain --no-pager >> "$out"
+
+echo "Saved to $out"`}</code></pre>
+
+        <p>
+            شغّله الآن وبعد كل تعديل. ومن الأوامر المفيدة أيضًا لكشف
+            الأخطاء التي تهدر وقتًا بإعادة المحاولة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Units that failed during this boot
+systemctl --failed
+
+# Errors logged during the current boot
+journalctl -b -p err --no-pager`}</code></pre>
+
+        <h2 id="tip-2-wait-online">
+            النصيحة 2: عالج انتظار الشبكة (wait-online)
+        </h2>
+
+        <p>
+            من أكثر أسباب بطء الإقلاع شيوعًا وحدة تنتظر اكتمال اتصال
+            الشبكة قبل أن يكمل النظام: <code>NetworkManager-wait-online.service</code>
+            مع NetworkManager، أو <code>systemd-networkd-wait-online.service</code>
+            مع systemd-networkd. إن ظهرت في سلسلة <code>critical-chain</code>
+            فهي المشتبه الأول.
+        </p>
+
+        <p>
+            الخطوة الأولى أن تعرف من يحتاجها فعلًا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Is it on the critical path?
+systemd-analyze critical-chain network-online.target
+
+# Which units are ordered after network-online.target?
+systemctl list-dependencies --reverse --no-pager network-online.target`}</code></pre>
+
+        <p>
+            إن لم تجد شيئًا يحتاج الشبكة أثناء الإقلاع (لا تركيبات NFS
+            أو SMB تلقائية، ولا خادم يجب أن يبدأ بعد وصول الشبكة)،
+            فتعطيل الانتظار يوفر وقتًا بلا ضرر عادةً. وتوثيق Red Hat نفسه
+            ينصح بتعطيلها فقط إن لم تكن بحاجة لاتصال شغّال بعد الإقلاع
+            مباشرة. ولديك خياران:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Option A: disable the wait entirely
+sudo systemctl disable NetworkManager-wait-online.service
+
+# Option B: keep it, but cap the wait with a drop-in override
+sudo systemctl edit NetworkManager-wait-online.service
+
+# In the editor, add (the empty ExecStart= clears the original line):
+[Service]
+ExecStart=
+ExecStart=/usr/bin/nm-online -s -q --timeout=10
+
+# Confirm the real path of nm-online on your distro first:
+systemctl cat NetworkManager-wait-online.service`}</code></pre>
+
+        <p>
+            الخيار الثاني أهدأ: يحافظ على الانتظار لكن بسقف عشر ثوانٍ
+            بدل مهلة طويلة. وإن كان الانتظار طويلًا بسبب مشكلة حقيقية،
+            كعنوان DHCP لا يصل، فاحرص أن تعالج السبب لا أن تخفي
+            العَرَض.
+        </p>
+
+        <h2 id="tip-3-services">
+            النصيحة 3: عطّل الخدمات التي لا تحتاجها
+        </h2>
+
+        <p>
+            التوزيعات تفعّل خدمات لتناسب أكبر عدد من المستخدمين،
+            وأنت لا تحتاجها كلها. جهاز مكتبي بلا طابعة لا يحتاج خدمة
+            الطباعة عند كل إقلاع، وجهاز بلا بلوتوث لا يحتاج خدمته.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# What is enabled at boot?
+systemctl list-unit-files --type=service --state=enabled
+
+# Inspect one before touching it
+systemctl status bluetooth.service
+systemctl list-dependencies --reverse bluetooth.service
+
+# Stop it now AND stop it from starting at boot
+sudo systemctl disable --now bluetooth.service
+
+# Stronger: block it from being started by anything (even as a dependency)
+sudo systemctl mask ModemManager.service
+
+# Undo either decision
+sudo systemctl enable --now bluetooth.service
+sudo systemctl unmask ModemManager.service`}</code></pre>
+
+        <p>
+            الفرق بين الأمرين: <code>disable</code> يمنع البدء التلقائي
+            لكن خدمة أخرى قد تستدعيها، و<code>mask</code> يربطها
+            بالفراغ فلا يشغّلها أي شيء. ابدأ بـ <code>disable</code>،
+            ولا تستخدم <code>mask</code> إلا إذا رأيت الخدمة تعود
+            لتعمل رغم تعطيلها.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الخدمة</th>
+                        <th class="px-4 py-2 font-semibold">يمكن تعطيلها إن كنت</th>
+                        <th class="px-4 py-2 font-semibold">تنبيه</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">bluetooth.service</td>
+                        <td class="px-4 py-2">لا تستخدم أجهزة بلوتوث</td>
+                        <td class="px-4 py-2">لوحات المفاتيح والسماعات اللاسلكية قد تتوقف</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">ModemManager.service</td>
+                        <td class="px-4 py-2">لا تستخدم مودم شبكة جوال أو شريحة</td>
+                        <td class="px-4 py-2">بعض أجهزة USB للإنترنت تحتاجها</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">cups.service</td>
+                        <td class="px-4 py-2">لا تطبع، أو يمكنك الاكتفاء بالتفعيل عند الطلب</td>
+                        <td class="px-4 py-2">إن توفرت وحدة cups.socket فأبقِها مفعّلة ليبدأ الطباعة عند الحاجة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">avahi-daemon.service</td>
+                        <td class="px-4 py-2">لا تعتمد على اكتشاف الأجهزة محليًا</td>
+                        <td class="px-4 py-2">اكتشاف الطابعات وبعض أجهزة البث يعتمد عليها</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            وقاعدة ثابتة: لا تعطّل وحدات تبدأ بـ <code>systemd-</code>
+            ولا dbus ولا udev ولا مدير الدخول الرسومي، ولا أي شيء لا
+            تفهم وظيفته. وحدات الانتظار مثل <code>plymouth-quit-wait.service</code>
+            قد تظهر في <code>blame</code> بأرقام كبيرة، لكنها تنتظر
+            غالبًا انتهاء شاشة الإقلاع الرسومية، ولا تعني أنها السبب.
+        </p>
+
+        <h2 id="tip-4-fstab">
+            النصيحة 4: نظّف fstab وحدّد مهلة الأجهزة
+        </h2>
+
+        <p>
+            ملف <code>/etc/fstab</code> يخبر النظام بما يركّبه عند
+            الإقلاع. حين يشير سطر فيه إلى قرص غير موجود (قرص خارجي
+            فُصل، أو قسم حُذف، أو مشاركة شبكية غير متاحة)، ينتظر systemd
+            ظهور الجهاز حتى تنتهي مهلته الافتراضية الطويلة. وسترى هذا في
+            <code>blame</code> وحدات اسمها يشبه <code>dev-disk-by...device</code>.
+        </p>
+
+        <p>
+            الحل لأي قرص ثانوي غير ضروري للإقلاع: أضف <code>nofail</code>
+            ومهلة قصيرة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Find the UUID of your partitions
+lsblk -f
+
+# /etc/fstab - a secondary data disk that must not block boot
+UUID=3f1c2a7e-8b4d-4e2a-9c61-5d7f0b9e2a14  /data  ext4  defaults,nofail,x-systemd.device-timeout=5s  0 2
+
+# A network share mounted only when first accessed
+//nas.local/share  /mnt/share  cifs  credentials=/root/.smbcred,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=60  0 0`}</code></pre>
+
+        <ul>
+            <li>
+                <code>nofail</code>: يكمل الإقلاع حتى لو تعذّر التركيب
+            </li>
+            <li>
+                <code>x-systemd.device-timeout=5s</code>: يحدّد مدة
+                الانتظار لظهور الجهاز، وهو لا يحدّد زمن التركيب نفسه
+            </li>
+            <li>
+                <code>x-systemd.automount</code>: يؤجل تركيب المشاركة
+                حتى أول وصول إليها بدل تركيبها أثناء الإقلاع
+            </li>
+        </ul>
+
+        <p>
+            خطأ في هذا الملف قد يرميك في وضع الطوارئ عند الإقلاع القادم،
+            فاختبر قبل أن تعيد التشغيل:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Check fstab for errors without rebooting
+sudo findmnt --verify
+
+# Try mounting everything listed (reports problems immediately)
+sudo mount -a
+
+# Make systemd re-read the changes
+sudo systemctl daemon-reload`}</code></pre>
+
+        <p>
+            ولا تضف <code>nofail</code> للأقسام الأساسية مثل الجذر (/)
+            ولا لـ <code>/home</code> إن كان قسمًا مستقلًا، فالنظام
+            يحتاجها فعلًا ليعمل.
+        </p>
+
+        <h2 id="tip-5-timers">
+            النصيحة 5: أجّل المهام الثقيلة بمؤقتات systemd
+        </h2>
+
+        <p>
+            بعض المهام لا تحتاج أن تتم في الدقيقة الأولى بعد التشغيل:
+            فهرسة ملفات، نسخ احتياطي، مزامنة، تنظيف. حين تبدأ كلها
+            مع الإقلاع تتزاحم على القرص والمعالج وتبطئ ظهور سطح
+            المكتب. الحل أن تحوّلها إلى مؤقت يبدأ بعد وقت من الإقلاع.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# /etc/systemd/system/index-files.service
+[Unit]
+Description=Heavy file indexing job
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/index-files.sh
+Nice=19
+IOSchedulingClass=idle
+
+# /etc/systemd/system/index-files.timer
+[Unit]
+Description=Run the indexing job 5 minutes after boot
+
+[Timer]
+OnBootSec=5min
+Unit=index-files.service
+
+[Install]
+WantedBy=timers.target`}</code></pre>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# If the job was enabled as a boot-time service, remove that first
+sudo systemctl disable index-files.service
+
+# Activate the timer instead
+sudo systemctl daemon-reload
+sudo systemctl enable --now index-files.timer
+
+# Check when it will fire
+systemctl list-timers --all`}</code></pre>
+
+        <p>
+            الإعدادان <code>Nice=19</code> و<code>IOSchedulingClass=idle</code>
+            يخفضان أولوية المهمة فلا تزاحم عملك حين تبدأ. وهذا نفسه
+            ينطبق على تطبيقات جلسة المستخدم: راجع ما يبدأ تلقائيًا
+            بعد تسجيل الدخول.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Boot-time analysis for your user session
+systemd-analyze --user blame | head -n 15
+
+# User services enabled at login
+systemctl --user list-unit-files --state=enabled
+
+# Desktop autostart entries (GNOME, KDE, Xfce and others)
+ls ~/.config/autostart/`}</code></pre>
+
+        <p>
+            حدّد البرامج التي لا تحتاجها عند الدخول (مزامنة سحابية،
+            برامج محادثة، مطلقات) وأزل بدء تشغيلها التلقائي من إعدادات
+            بيئتك أو بحذف ملف <code>.desktop</code> الخاص بها من مجلد
+            autostart.
+        </p>
+
+        <h2 id="tip-6-bootloader-initramfs">
+            النصيحة 6: قلّص مهلة محمّل الإقلاع وخفّف initramfs
+        </h2>
+
+        <h3>مهلة المحمّل</h3>
+
+        <p>
+            مهلة GRUB الافتراضية في كثير من التوزيعات خمس ثوانٍ أو أكثر،
+            وهي تُحسب كلها من وقتك دون أن تؤدي عملًا. تقليلها إلى
+            ثانيتين مكسب سهل:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# /etc/default/grub
+GRUB_TIMEOUT=2
+
+# Then regenerate the config (command depends on your distro):
+sudo update-grub                                    # Debian / Ubuntu / Mint
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg         # Fedora / openSUSE
+sudo grub-mkconfig -o /boot/grub/grub.cfg           # Arch
+
+# systemd-boot users: edit loader.conf on the ESP
+# (commonly /boot/loader/loader.conf or /efi/loader/loader.conf)
+timeout 2`}</code></pre>
+
+        <p>
+            إن كان لديك أكثر من نظام على الجهاز، فاحتفظ بمهلة كافية
+            لتختار، ولا تُخفِ القائمة تمامًا. فتخفيض أقل من ثانيتين
+            يوفّر القليل ويكلّفك فرصة الدخول إلى وضع الاسترداد عند
+            الحاجة.
+        </p>
+
+        <h3>تخفيف initramfs</h3>
+
+        <p>
+            صورة initramfs تُحمَّل في الذاكرة مع النواة وتحتوي برامج
+            تشغيل لازمة لتركيب القرص. بعض التوزيعات تضمّن فيها وحدات
+            لكل عتاد ممكن، فتكبر الصورة وتطول مدة فكّها. يمكن تضييقها
+            لتضمّ ما يحتاجه جهازك فقط، وضغطها بطريقة أسرع في الفكّ:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Debian / Ubuntu: /etc/initramfs-tools/initramfs.conf
+MODULES=dep
+COMPRESS=lz4
+# (the lz4 package may need to be installed first)
+sudo update-initramfs -u
+
+# Fedora / openSUSE (dracut): /etc/dracut.conf.d/boot-speed.conf
+hostonly="yes"
+sudo dracut --force
+
+# Arch (mkinitcpio): edit /etc/mkinitcpio.conf, then
+sudo mkinitcpio -P`}</code></pre>
+
+        <p>
+            لهذه الخطوة ثمن يجب أن تعرفه: الصورة المخصّصة لعتادك الحالي
+            قد تفشل إن نقلت القرص إلى جهاز آخر أو غيّرت متحكم التخزين.
+            احتفظ بنواة احتياطية وقرص إنقاذ USB، ولا تجرّب هذا على جهاز
+            عملك الوحيد دون خطة رجوع. ثم إن مكسبها غالبًا أصغر بكثير من
+            إصلاح wait-online أو fstab، فاتركها للنهاية.
+        </p>
+
+        <h2 id="tip-7-firmware-storage">
+            النصيحة 7: الفيرموير والتخزين
+        </h2>
+
+        <p>
+            إن رأيت في <code>systemd-analyze time</code> أن مرحلة الفيرموير
+            تستغرق عدة ثوانٍ، فالمشكلة قبل لينكس. على أجهزة UEFI تستطيع
+            الدخول لإعدادات الفيرموير مباشرة من النظام:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Reboot straight into the UEFI setup screen
+systemctl reboot --firmware-setup
+
+# Check for firmware updates through fwupd (back up first, stay plugged in)
+sudo fwupdmgr refresh
+sudo fwupdmgr get-updates
+sudo fwupdmgr update
+
+# Is your boot disk a spinning HDD? (ROTA = 1 means rotational)
+lsblk -d -o NAME,ROTA,SIZE,MODEL`}</code></pre>
+
+        <p>
+            داخل إعدادات UEFI ابحث عن:
+        </p>
+
+        <ul>
+            <li>خيار الإقلاع السريع (Fast Boot) وفعّله إن لم يسبب مشاكل مع أجهزتك</li>
+            <li>أجهزة الإقلاع غير اللازمة: عطّل الإقلاع من الشبكة (PXE) والأقراص التي لا تقلع منها</li>
+            <li>أي تأخير مصطنع في شاشة الشعار أو فحص الذاكرة المطوّل</li>
+        </ul>
+
+        <p>
+            وأعطِ الأولوية لتحديث الفيرموير عبر fwupd بحذر: خذ نسخة
+            احتياطية، وصِل الشاحن، ولا تقاطع العملية. أما إن كان قرص
+            الإقلاع تقليديًا (<code>ROTA=1</code>)، فالانتقال إلى SSD
+            أكبر تحسين تجده بين كل ما في هذا المقال، ويتفوق وحده على
+            مجموع الإعدادات الأخرى في أغلب الحالات.
+        </p>
+
+        <h2 id="verify-and-rollback">
+            كيف تتحقق من التحسن وتتراجع بأمان؟
+        </h2>
+
+        <p>
+            بعد كل تعديل، أعد التشغيل وقارن مع لقطة القياس التي حفظتها:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# After the reboot
+./boot-profile.sh
+
+# Compare the new snapshot against the baseline
+ls ~/boot-profiles/
+diff ~/boot-profiles/OLD_STAMP.txt ~/boot-profiles/NEW_STAMP.txt`}</code></pre>
+
+        <p>
+            ومبدأ يوفر عليك ساعات من التخمين: <strong>غيّر شيئًا واحدًا
+            في كل مرة</strong>. إن غيّرت خمسة أشياء ثم تحسّن الإقلاع أو
+            تعطّل، فلن تعرف أيّها السبب. كما أن زمن الإقلاع يتفاوت
+            قليلًا من مرة لأخرى، فخذ أكثر من قياس قبل أن تحكم.
+        </p>
+
+        <p>
+            وللتراجع: أي <code>disable</code> يُعكس بـ <code>enable</code>،
+            وأي <code>mask</code> يُعكس بـ <code>unmask</code>، وأي ملف
+            تعديل (drop-in) يُحذف بأمر <code>systemctl revert</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Remove all your local overrides for a unit and restore the default
+sudo systemctl revert NetworkManager-wait-online.service`}</code></pre>
+
+        <h2 id="safety-rules">قواعد أمان قبل أي تعديل</h2>
+
+        <ul>
+            <li>
+                <strong>خذ نسخة احتياطية</strong> من <code>/etc/fstab</code>
+                و<code>/etc/default/grub</code> قبل تعديلهما
+            </li>
+            <li>
+                <strong>جهّز قرص إنقاذ USB</strong> للتوزيعة نفسها، يفيد إن
+                أخطأت في ملف إقلاع
+            </li>
+            <li>
+                <strong>لا تعطّل ما لا تفهمه</strong>: ابحث عن اسم الخدمة
+                وراجع من يعتمد عليها بأمر <code>list-dependencies --reverse</code>
+            </li>
+            <li>
+                <strong>راجع توثيق توزيعتك</strong>: أسماء الملفات وأوامر
+                التحديث تختلف، وما يصلح على أوبونتو قد لا يصلح كما هو على
+                فيدورا
+            </li>
+            <li>
+                <strong>لا تنفّذ أوامر لصقتها من الإنترنت قبل فهمها</strong>،
+                خصوصًا ما يتضمن <code>sudo</code> أو <code>rm</code>
+            </li>
+        </ul>
+
+        <h2 id="commands-table">جدول: أوامر تختلف بحسب التوزيعة</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المهمة</th>
+                        <th class="px-4 py-2 font-semibold">Debian / Ubuntu / Mint</th>
+                        <th class="px-4 py-2 font-semibold">Fedora</th>
+                        <th class="px-4 py-2 font-semibold">Arch</th>
+                        <th class="px-4 py-2 font-semibold">openSUSE</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">إعادة توليد إعداد GRUB</td>
+                        <td class="px-4 py-2"><code>update-grub</code></td>
+                        <td class="px-4 py-2"><code>grub2-mkconfig -o /boot/grub2/grub.cfg</code></td>
+                        <td class="px-4 py-2"><code>grub-mkconfig -o /boot/grub/grub.cfg</code></td>
+                        <td class="px-4 py-2"><code>grub2-mkconfig -o /boot/grub2/grub.cfg</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إعادة بناء initramfs</td>
+                        <td class="px-4 py-2"><code>update-initramfs -u</code></td>
+                        <td class="px-4 py-2"><code>dracut --force</code></td>
+                        <td class="px-4 py-2"><code>mkinitcpio -P</code></td>
+                        <td class="px-4 py-2"><code>dracut -f</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">ملف إعداد initramfs</td>
+                        <td class="px-4 py-2"><code>/etc/initramfs-tools/initramfs.conf</code></td>
+                        <td class="px-4 py-2"><code>/etc/dracut.conf.d/</code></td>
+                        <td class="px-4 py-2"><code>/etc/mkinitcpio.conf</code></td>
+                        <td class="px-4 py-2"><code>/etc/dracut.conf.d/</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="impact-table">جدول: الأثر والمخاطرة لكل نصيحة</h2>
+
+        <p>
+            التقدير هنا نوعي لا رقمي، لأن الأثر الفعلي يعتمد على جهازك
+            وعلى ما إذا كانت المشكلة موجودة عندك أصلًا:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النصيحة</th>
+                        <th class="px-4 py-2 font-semibold">الأثر المحتمل</th>
+                        <th class="px-4 py-2 font-semibold">المخاطرة</th>
+                        <th class="px-4 py-2 font-semibold">الصعوبة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">1. القياس</td>
+                        <td class="px-4 py-2">لا يسرّع بذاته، لكنه يوجّه كل ما بعده</td>
+                        <td class="px-4 py-2">لا مخاطرة</td>
+                        <td class="px-4 py-2">سهلة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">2. wait-online</td>
+                        <td class="px-4 py-2">كبير إن كان على المسار الحرج</td>
+                        <td class="px-4 py-2">منخفضة، ما لم تعتمد خدمات على الشبكة</td>
+                        <td class="px-4 py-2">سهلة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">3. الخدمات غير الضرورية</td>
+                        <td class="px-4 py-2">متوسط، يختلف حسب ما تعطّل</td>
+                        <td class="px-4 py-2">متوسطة إن عطّلت ما لا تفهمه</td>
+                        <td class="px-4 py-2">سهلة إلى متوسطة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">4. fstab</td>
+                        <td class="px-4 py-2">كبير إن وُجدت أقراص غائبة، وإلا لا شيء</td>
+                        <td class="px-4 py-2">متوسطة، خطأ فيه قد يوقف الإقلاع</td>
+                        <td class="px-4 py-2">متوسطة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">5. المؤقتات وبدء الجلسة</td>
+                        <td class="px-4 py-2">متوسط في سرعة ظهور سطح المكتب</td>
+                        <td class="px-4 py-2">منخفضة</td>
+                        <td class="px-4 py-2">متوسطة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">6. المحمّل وinitramfs</td>
+                        <td class="px-4 py-2">صغير إلى متوسط</td>
+                        <td class="px-4 py-2">متوسطة إلى مرتفعة في initramfs</td>
+                        <td class="px-4 py-2">متوسطة إلى متقدمة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">7. الفيرموير وSSD</td>
+                        <td class="px-4 py-2">كبير إن كان القرص تقليديًا أو الفيرموير بطيئًا</td>
+                        <td class="px-4 py-2">تحديث الفيرموير فيه مخاطرة</td>
+                        <td class="px-4 py-2">سهلة إلى متوسطة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="external-resources">المصادر والتوثيق الرسمي</h2>
+
+        <ul>
+            <li>
+                <strong>دليل systemd-analyze الرسمي:</strong>{" "}
+                <a href="https://www.freedesktop.org/software/systemd/man/latest/systemd-analyze.html" target="_blank" rel="noopener noreferrer">freedesktop.org/.../systemd-analyze</a>
+            </li>
+            <li>
+                <strong>خيارات التركيب في systemd (nofail وx-systemd):</strong>{" "}
+                <a href="https://www.freedesktop.org/software/systemd/man/latest/systemd.mount.html" target="_blank" rel="noopener noreferrer">freedesktop.org/.../systemd.mount</a>
+            </li>
+            <li>
+                <strong>مؤقتات systemd:</strong>{" "}
+                <a href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html" target="_blank" rel="noopener noreferrer">freedesktop.org/.../systemd.timer</a>
+            </li>
+            <li>
+                <strong>مشروع systemd:</strong>{" "}
+                <a href="https://systemd.io/" target="_blank" rel="noopener noreferrer">systemd.io</a>
+            </li>
+            <li>
+                <strong>توثيق Red Hat: تحسين systemd لتقصير الإقلاع (وفيه قائمة بالخدمات التي يمكن تعطيلها):</strong>{" "}
+                <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/using_systemd_unit_files_to_customize_and_optimize_your_system/optimizing-systemd-to-shorten-the-boot-time_working-with-systemd" target="_blank" rel="noopener noreferrer">docs.redhat.com</a>
+            </li>
+            <li>
+                <strong>ArchWiki: تحسين أداء مرحلة الإقلاع:</strong>{" "}
+                <a href="https://wiki.archlinux.org/title/Improving_performance/Boot_process" target="_blank" rel="noopener noreferrer">wiki.archlinux.org/title/Improving_performance/Boot_process</a>
+            </li>
+            <li>
+                <strong>دليل GNU GRUB:</strong>{" "}
+                <a href="https://www.gnu.org/software/grub/manual/grub/grub.html" target="_blank" rel="noopener noreferrer">gnu.org/software/grub/manual</a>
+            </li>
+            <li>
+                <strong>fwupd (تحديثات الفيرموير على لينكس):</strong>{" "}
+                <a href="https://fwupd.org/" target="_blank" rel="noopener noreferrer">fwupd.org</a>
+            </li>
+            <li>
+                <strong>مقال Tecmint عن الموضوع نفسه بالإنجليزية (للمقارنة):</strong>{" "}
+                <a href="https://www.tecmint.com/speed-up-systemd-boot-time-in-linux/" target="_blank" rel="noopener noreferrer">tecmint.com/speed-up-systemd-boot-time-in-linux</a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>كم ثانية سأوفّر فعليًا؟</strong><br />
+            لا يمكن تحديد رقم قبل القياس. من لديه wait-online أو قرص
+            غائب في fstab قد يوفّر عشرات الثواني، ومن جهازه سليم قد لا يوفر
+            إلا ثانية أو اثنتين. لذلك ابدأ بالقياس لا بالتعديل.
+        </p>
+
+        <p>
+            <strong>هل تعطيل الخدمات آمن؟</strong><br />
+            آمن حين تعطّل خدمة تعرف وظيفتها وتتأكد أن شيئًا لا يعتمد عليها،
+            وتستطيع التراجع بأمر واحد. يصبح خطرًا حين تعطّل بالتخمين أو
+            تعطّل وحدات النظام الأساسية.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين disable وmask؟</strong><br />
+            <code>disable</code> يمنع البدء التلقائي فقط، و<code>mask</code>
+            يمنع أي تشغيل للخدمة حتى لو استدعتها خدمة أخرى. ابدأ
+            بـ <code>disable</code>.
+        </p>
+
+        <p>
+            <strong>هل SSD أهم من كل هذه النصائح؟</strong><br />
+            إن كان قرص الإقلاع تقليديًا، فنعم في أغلب الحالات: الانتقال
+            إلى SSD يتفوق عادة على مجموع التعديلات البرمجية. أما إن كان
+            لديك SSD بالفعل، فالنصائح السابقة هي ما تبقى لك.
+        </p>
+
+        <p>
+            <strong>هل تنطبق هذه النصائح على توزيعات بلا systemd؟</strong><br />
+            لا. أوامر <code>systemctl</code> و<code>systemd-analyze</code>
+            خاصة بـ systemd. توزيعات مثل antiX وDevuan وAlpine وVoid
+            تستخدم أنظمة تشغيل خدمات أخرى بأدوات وأوامر مختلفة.
+        </p>
+    </PostLayout>
+</BaseLayout>

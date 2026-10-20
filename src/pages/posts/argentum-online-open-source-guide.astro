@@ -1,0 +1,423 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "argentum-online-open-source-guide",
+    title: "لعبة Argentum Online مفتوحة المصدر: دليل شامل وتاريخها",
+    metaTitle: "لعبة Argentum Online مفتوحة المصدر: دليل شامل وتاريخها",
+    description:
+        "دليل شامل للعبة Argentum Online، أول لعبة MMORPG أرجنتينية، من نشأتها عام 1999 وفتح كودها المصدري 2003، إلى مجتمع الخوادم الخاصة الضخم ونسختها الحديثة AO20 على Steam.",
+    keywords: [
+        "Argentum Online",
+        "أرجنتوم أونلاين",
+        "ألعاب مفتوحة المصدر",
+        "MMORPG مفتوح المصدر",
+        "AO20",
+        "Pablo Marquez Morgolock",
+        "خوادم خاصة Argentum",
+        "ألعاب أرجنتينية",
+    ],
+    category: ["ألعاب وترفيه", "مقالات"],
+    author: "طلال عمران",
+    date: "3 أكتوبر 2026",
+    pubDate: new Date("2026-10-03"),
+    tags: ["Argentum Online", "AO20", "ألعاب مفتوحة المصدر", "MMORPG"],
+    thumbnail: "/images/argentum-online-open-source-guide.webp",
+};
+
+const tocItems = [
+    { id: "what-is-argentum", label: "ما هي Argentum Online أصلاً؟" },
+    { id: "origin-story", label: "البداية عام 1999: من مودِّل محلي إلى ظاهرة" },
+    { id: "ore-engine", label: "محرك ORE: الأساس التقني الذي بُنيت عليه اللعبة" },
+    { id: "open-sourcing-2003", label: "2003: اللحظة التي فُتح فيها الكود المصدري" },
+    { id: "private-servers-culture", label: "ثقافة الخوادم الخاصة: الإرث الأكبر للعبة" },
+    { id: "technical-architecture", label: "البنية التقنية: كيف صُمم عالم اللعبة؟" },
+    { id: "license-details", label: "الترخيص: GPL وتبعاته العملية" },
+    { id: "ao20-revival", label: "AO20: إحياء حديث رسمي عبر Steam" },
+    { id: "community-forks", label: "تنوع المشتقات المجتمعية: من Java إلى Python" },
+    { id: "why-it-matters", label: "لماذا تستحق Argentum Online الدراسة كحالة تاريخية؟" },
+    { id: "comparison-table", label: "جدول مقارنة: النسخة الكلاسيكية مقابل AO20" },
+    { id: "how-to-try", label: "كيف تجرّبها اليوم؟" },
+    { id: "external-resources", label: "مصادر خارجية ورسمية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            قبل أن تصبح عبارة "لعبة مفتوحة المصدر" شائعة ومتداولة كما هي
+            اليوم، كانت هناك تجربة أرجنتينية صغيرة، كتبها مجموعة أصدقاء
+            بلغة Visual Basic في أواخر التسعينيات، ستتحول لاحقًا لواحدة من
+            أطول قصص الألعاب مفتوحة المصدر عمرًا واستمرارية في أمريكا
+            اللاتينية بأكملها: Argentum Online.
+        </p>
+
+        <p>
+            هذا المقال يروي قصة اللعبة الكاملة: نشأتها، لحظة فتح كودها
+            المصدري، الثقافة الفريدة من الخوادم الخاصة التي أنتجتها، وصولاً
+            لإحيائها الرسمي الحديث على منصة Steam.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="what-is-argentum">ما هي Argentum Online أصلاً؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/argentum-online-open-source-guide/01.webp"
+                alt="لقطة من عالم اللعبة الكلاسيكي في Argentum Online"
+                width="1023"
+                height="770"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Argentum Online لعبة تقمّص أدوار جماعية ضخمة عبر الإنترنت
+            (MMORPG)، بمنظور علوي ثنائي الأبعاد (2D Top-Down)، تتضمن نقابات
+            (Guilds)، سحرًا، قتالًا، ترويض حيوانات، وأكثر من عشرين مهارة
+            مختلفة يطوّرها اللاعب عبر عالم واسع من المدن والزنازين. صدرت
+            أول نسخة منها عام 1999، لتصبح أول لعبة MMORPG تُطوَّر في
+            الأرجنتين على الإطلاق.
+        </p>
+
+        <h2 id="origin-story">
+            البداية عام 1999: من مودِّل محلي إلى ظاهرة
+        </h2>
+
+        <p>
+            طوّر باولو إغناسيو ماركيز (المعروف بلقبه "غولفاس مورغولوك")
+            وفرناندو تيستا اللعبة الأولى بمساعدة مجموعة من الأصدقاء، كمشروع
+            شبه هاوٍ في البداية. لم يكن الهدف إنتاج منتج تجاري ضخم، بل بناء
+            عالم افتراضي يمكن للاعبين الأرجنتينيين الاجتماع فيه عبر
+            الإنترنت، في وقت كانت فيه ألعاب MMORPG لا تزال حكرًا شبه كامل
+            على الإنتاجات الأمريكية والآسيوية الكبرى.
+        </p>
+
+        <p>
+            النجاح المحلي كان سريعًا وغير متوقع. بحلول عام 2001، كان
+            المجتمع قد أنتج بالفعل أربع نسخ مختلفة ومعدّلة من اللعبة، تطور
+            بعضها بشكل مستقل عن الفريق الأصلي، في مؤشر مبكر على الطابع
+            التشاركي الذي سيحدد مستقبل المشروع بأكمله.
+        </p>
+
+        <h2 id="ore-engine">
+            محرك ORE: الأساس التقني الذي بُنيت عليه اللعبة
+        </h2>
+
+        <p>
+            Argentum Online لم تُبنَ من الصفر المطلق؛ هي فعليًا تعديل
+            (Modification) على محرك لعبة سابق يُدعى ORE (الإصدار 0.4)، طوّره
+            استوديو Baronsoft. هذا النمط، البناء فوق محرك قائم بدلاً من
+            كتابة كل شيء من الصفر، كان شائعًا في ثقافة الهواة المبرمجين
+            في تلك الحقبة، ومكّن فريقًا صغيرًا من إطلاق لعبة كاملة الوظائف
+            في وقت قصير نسبيًا.
+        </p>
+
+        <h2 id="open-sourcing-2003">
+            2003: اللحظة التي فُتح فيها الكود المصدري
+        </h2>
+
+        <p>
+            في نوفمبر 2003، اتُخذ القرار الذي حدد مصير اللعبة لعقدين
+            ونصف لاحقًا: إطلاق الكود المصدري الكامل تحت رخصة GNU GPL،
+            واستضافته على منصة SourceForge (المنصة المهيمنة على استضافة
+            المشاريع مفتوحة المصدر قبل عصر GitHub). هذا القرار حوّل
+            Argentum Online من "لعبة أرجنتينية ناجحة محليًا" إلى "قاعدة
+            كود حرة يمكن لأي مبرمج في العالم البناء عليها".
+        </p>
+
+        <p>
+            هذا التوقيت المبكر نسبيًا (2003) يجعل Argentum Online واحدة من
+            أقدم تجارب الألعاب الضخمة متعددة اللاعبين التي اختارت الانفتاح
+            الكامل، في زمن كانت فيه فكرة "فتح كود لعبة تجارية ناجحة" لا
+            تزال غير مألوفة إطلاقًا في صناعة الألعاب.
+        </p>
+
+        <h2 id="private-servers-culture">
+            ثقافة الخوادم الخاصة: الإرث الأكبر للعبة
+        </h2>
+
+        <p>
+            النتيجة المباشرة لفتح الكود كانت انفجارًا حقيقيًا في عدد
+            "الخوادم الخاصة" (Private Servers) عبر أمريكا اللاتينية
+            بأكملها، كل منها بمجتمعه الخاص، تعديلاته الخاصة على التوازن
+            واللعب، وأحيانًا قصته الخاصة المنفصلة تمامًا عن اللعبة الأصلية.
+            مشروع "Argentum Online Libre" (AO-Libre)، المستضاف عبر
+            argentumonline.org، أصبح أحد أبرز هذه المبادرات المجتمعية،
+            محافظًا على فلسفة الترخيص الحر الأصلية صراحة.
+        </p>
+
+        <p>
+            وفق بيانات منصة تحليل المشاريع مفتوحة المصدر Open Hub، استقبل
+            المشروع الأساسي أكثر من 1,537 التزام برمجي (Commit) من 25
+            مساهمًا مختلفًا عبر سنوات نشاطه، بما يعادل تقديرًا يناهز 17
+            عامًا من جهد التطوير التراكمي وفق نموذج COCOMO لتقدير تكلفة
+            المشاريع البرمجية.
+        </p>
+
+        <h2 id="technical-architecture">
+            البنية التقنية: كيف صُمم عالم اللعبة؟
+        </h2>
+
+        <p>
+            النسخة الأصلية كُتبت بلغة Visual Basic 6.0 للعميل (Client)،
+            مع هندسة خادم-عميل (Client-Server) تقليدية لعصرها: الخادم
+            يحتفظ بالحالة الكاملة للعالم (مواقع اللاعبين، معارك جارية،
+            اقتصاد السوق)، بينما يعرض كل عميل متصل نافذة من هذا العالم
+            لمستخدمه. الخريطة مبنية على نظام بلاطات (Tiles) ثنائي الأبعاد
+            كلاسيكي، أسلوب تصميم كان يومها معيارًا فعليًا لألعاب الأدوار
+            الجماعية قبل هيمنة الرسوميات ثلاثية الأبعاد.
+        </p>
+
+        <h2 id="license-details">الترخيص: GPL وتبعاته العملية</h2>
+
+        <p>
+            الترخيص تحت GNU GPL (بعض الإصدارات المشتقة لاحقًا استخدمت
+            Affero GPL تحديدًا) يعني عمليًا أن أي شخص يمكنه أخذ الكود،
+            تعديله، وتشغيل خادمه الخاص، بشرط الحفاظ على نفس الترخيص الحر
+            لأي تعديل يُعاد توزيعه. هذا بالضبط ما أتاح وجود عشرات، بل
+            مئات، الخوادم الخاصة المستقلة على مدى أكثر من عقدين، دون أي
+            تدخل قانوني من الفريق الأصلي.
+        </p>
+
+        <h2 id="ao20-revival">AO20: إحياء حديث رسمي عبر Steam</h2>
+
+        <p>
+            <img
+                src="/images/articles/argentum-online-open-source-guide/02.webp"
+                alt="واجهة النسخة الحديثة AO20 من Argentum Online على Steam"
+                width="1200"
+                height="842"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            في 29 أبريل 2022، أطلق استوديو Noland Studios نسخة حديثة
+            رسمية باسم "Argentum 20" (AO20) على منصة Steam، مجانية بالكامل
+            (Free to Play)، محافظة على روح اللعبة الأصلية وأسلوبها البصري
+            المميز بمنظور ثنائي الأبعاد، مع تحسينات تقنية وتوازن لعب حديث.
+            اللعبة لا تزال نشطة فعليًا حتى اليوم، بتحديثات دورية وفعاليات
+            مجتمعية مستمرة.
+        </p>
+
+        <p>
+            الأهم من الناحية الموضوعية لهذا المقال: أعلن فريق AO20 لاحقًا
+            أن كود النسخة الحديثة نفسها أصبح مفتوح المصدر أيضًا، عبر منظمة
+            ao-org على GitHub، مستمرين بذلك بنفس فلسفة الانفتاح التي ميّزت
+            المشروع منذ 2003، بدلاً من إغلاق الكود كما قد تفعل أغلب
+            المشاريع التجارية المُحيَاة حديثًا.
+        </p>
+
+        <h2 id="community-forks">
+            تنوع المشتقات المجتمعية: من Java إلى Python
+        </h2>
+
+        <p>
+            بفضل حرية الترخيص، أنتج المجتمع عبر السنين مشتقات تقنية
+            متنوعة جدًا لإعادة تطبيق اللعبة بلغات حديثة:
+        </p>
+
+        <ul>
+            <li>نسخة بلغة Java باستخدام مكتبة LWJGL3 للرسوميات، كمحاولة لتحديث العميل الأصلي تقنيًا</li>
+            <li>نسخة بلغة ++C مبنية على مكتبة SDL2، بما فيها مشروع أكاديمي كامل طوّره طلاب هندسة من جامعة بوينس آيرس كمشروع تخرج دراسي</li>
+            <li>محاولات تطبيق بلغة بايثون، وحتى نسخة ويب كاملة باستخدام جافاسكريبت ومكتبة PixiJS للرسوميات</li>
+        </ul>
+
+        <p>
+            هذا التنوع التقني نفسه شاهد حي على قيمة فتح الكود المصدري:
+            مشروع واحد صغير نسبيًا تحوّل لمختبر تعليمي حقيقي لأجيال من
+            المبرمجين الناطقين بالإسبانية، يتعلمون عبره هندسة الألعاب
+            متعددة اللاعبين بلغات مختلفة.
+        </p>
+
+        <h2 id="why-it-matters">
+            لماذا تستحق Argentum Online الدراسة كحالة تاريخية؟
+        </h2>
+
+        <ul>
+            <li>
+                <strong>سبّاقة زمنيًا</strong>: فتح كودها عام 2003 يسبق
+                كثيرًا من أشهر قصص الألعاب مفتوحة المصدر المعروفة اليوم
+            </li>
+            <li>
+                <strong>استمرارية نادرة</strong>: أكثر من عقدين ونصف من
+                النشاط المجتمعي المستمر، نادر جدًا حتى بين المشاريع
+                مفتوحة المصدر الناجحة
+            </li>
+            <li>
+                <strong>نموذج اقتصادي بديل</strong>: أثبتت أن لعبة يمكن أن
+                تزدهر تجاريًا بنموذج اللاعب يدفع اختياريًا (عبر خوادم
+                خاصة لها اقتصادها الخاص)، لا نموذج البيع المركزي التقليدي
+            </li>
+            <li>
+                <strong>أثر تعليمي حقيقي</strong>: درّبت فعليًا أجيالًا من
+                المبرمجين في أمريكا اللاتينية على بناء أنظمة خوادم ألعاب
+                حقيقية، خارج أي سياق أكاديمي رسمي
+            </li>
+        </ul>
+
+        <h2 id="comparison-table">
+            جدول مقارنة: النسخة الكلاسيكية مقابل AO20
+        </h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">النسخة الكلاسيكية (2003)</th>
+                        <th class="px-4 py-2 font-semibold">AO20 (2022)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">المنصة</td>
+                        <td class="px-4 py-2">تحميل مباشر، خوادم خاصة متفرقة</td>
+                        <td class="px-4 py-2">Steam رسميًا، خادم مركزي رسمي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">لغة البرمجة الأصلية</td>
+                        <td class="px-4 py-2">Visual Basic 6.0</td>
+                        <td class="px-4 py-2">محدّثة تقنيًا من فريق Noland Studios</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">النموذج المالي</td>
+                        <td class="px-4 py-2">مجاني بالكامل، اقتصاد خوادم متنوع</td>
+                        <td class="px-4 py-2">Free to Play رسمي على Steam</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">حالة الكود المصدري</td>
+                        <td class="px-4 py-2">مفتوح منذ 2003 (GPL)</td>
+                        <td class="px-4 py-2">مفتوح عبر منظمة ao-org</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الدعم الرسمي</td>
+                        <td class="px-4 py-2">مجتمعي بالكامل حاليًا</td>
+                        <td class="px-4 py-2">نشط ومستمر من فريق تطوير رسمي</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-try">كيف تجرّبها اليوم؟</h2>
+
+        <ul>
+            <li>
+                <strong>للعب المباشر والحديث</strong>: ثبّت AO20 مجانًا
+                عبر Steam، وهو الخيار الأبسط والأكثر استقرارًا للاعب عادي
+            </li>
+            <li>
+                <strong>لاستكشاف الكود التاريخي الأصلي</strong>: مستودعات
+                النسخة الكلاسيكية لا تزال متاحة للفحص والتعديل عبر منصات
+                استضافة الكود المختلفة
+            </li>
+            <li>
+                <strong>لتجربة مشتقات مجتمعية بلغات حديثة</strong>: ابحث
+                عن وسم "argentum-online" على GitHub لاستكشاف عشرات
+                المشاريع المشتقة بلغات مثل Java وC++ وPython
+            </li>
+        </ul>
+
+        <h2 id="external-resources">مصادر خارجية ورسمية</h2>
+
+        <ul>
+            <li>
+                <strong>صفحة Argentum Online (AO20) على Steam:</strong>{" "}
+                <a href="https://store.steampowered.com/app/1956740/Argentum_Online/" target="_blank" rel="noopener noreferrer">store.steampowered.com/app/1956740</a>
+            </li>
+            <li>
+                <strong>Noland Studios (المطور الرسمي لـ AO20):</strong>{" "}
+                <a href="https://www.noland-studios.com/" target="_blank" rel="noopener noreferrer">noland-studios.com</a>
+            </li>
+            <li>
+                <strong>منظمة ao-org على GitHub (كود AO20 المفتوح):</strong>{" "}
+                <a href="https://github.com/ao-org" target="_blank" rel="noopener noreferrer">github.com/ao-org</a>
+            </li>
+            <li>
+                <strong>Argentum Online Libre (مجتمع الكود الكلاسيكي المفتوح):</strong>{" "}
+                <a href="http://argentumonline.org/" target="_blank" rel="noopener noreferrer">argentumonline.org</a>
+            </li>
+            <li>
+                <strong>صفحة التحليل الإحصائي على Open Hub:</strong>{" "}
+                <a href="https://openhub.net/p/morgoao" target="_blank" rel="noopener noreferrer">openhub.net/p/morgoao</a>
+            </li>
+            <li>
+                <strong>مقالة ويكيبيديا الإنجليزية عن اللعبة:</strong>{" "}
+                <a href="https://en.wikipedia.org/wiki/Argentum_Online" target="_blank" rel="noopener noreferrer">en.wikipedia.org/wiki/Argentum_Online</a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل Argentum Online لا تزال نشطة حتى الآن؟</strong><br />
+            نعم، النسخة الحديثة AO20 نشطة وتُحدَّث بانتظام عبر Steam، إلى
+            جانب خوادم خاصة مجتمعية لا تزال تعمل بالنسخة الكلاسيكية أيضًا.
+        </p>
+
+        <p>
+            <strong>هل يمكنني تشغيل خادمي الخاص بالكامل؟</strong><br />
+            نعم بالنسبة للنسخة الكلاسيكية مفتوحة الكود منذ 2003 تحت رخصة
+            GPL، وهذا بالضبط ما فعله مئات المجتمعات عبر أمريكا اللاتينية
+            على مدى عقدين.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين اللعب على AO20 والخوادم الخاصة القديمة؟</strong><br />
+            AO20 تجربة رسمية مدعومة ومحدَّثة باستمرار عبر Steam، بينما
+            الخوادم الخاصة تجارب مجتمعية متفرقة، تختلف جودتها واستقرارها
+            باختلاف من يديرها.
+        </p>
+
+        <p>
+            <strong>هل اللعبة متاحة بلغات أخرى غير الإسبانية؟</strong><br />
+            نعم، تُرجمت لعدة لغات عبر مجهود مجتمعي وجهود فريق AO20 الرسمي،
+            رغم أن قاعدة لاعبيها التاريخية تتركز في أمريكا اللاتينية
+            وإسبانيا.
+        </p>
+    </PostLayout>
+</BaseLayout>

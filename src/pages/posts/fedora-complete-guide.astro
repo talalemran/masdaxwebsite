@@ -1,0 +1,476 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "fedora-complete-guide",
+    title: "توزيعة فيدورا: دليل شامل لواحدة من أهم توزيعات لينكس تقنيًا",
+    metaTitle: "دليل فيدورا الشامل: توزيعة لينكس الأحدث تقنيًا دائمًا",
+    description:
+        "دليل شامل لتوزيعة فيدورا، من تاريخها وعلاقتها بـ Red Hat، إلى إصدارها الأحدث Fedora Linux 44، طبعاتها المختلفة، مدير الحزم DNF5، ولمن تناسب فعليًا.",
+    keywords: [
+        "فيدورا",
+        "Fedora Linux",
+        "Fedora 44",
+        "Red Hat",
+        "DNF5",
+        "توزيعات لينكس",
+        "GNOME",
+        "KDE Plasma",
+        "Fedora Silverblue",
+        "لينكس للمطورين",
+    ],
+    category: ["لينكس", "مقالات"],
+    author: "طلال عمران",
+    date: "20 أغسطس 2026",
+    pubDate: new Date("2026-08-20"),
+    tags: ["Fedora", "فيدورا", "Red Hat", "DNF5", "توزيعات لينكس"],
+    thumbnail: "/images/fedora-complete-guide.webp",
+};
+
+const tocItems = [
+    { id: "history", label: "نبذة تاريخية سريعة" },
+    { id: "release-cycle", label: "دورة الإصدارات والعلاقة بـ Red Hat" },
+    { id: "latest-release", label: "Fedora Linux 44: أحدث إصدار" },
+    { id: "package-management", label: "إدارة الحزم: من DNF إلى DNF5" },
+    { id: "editions", label: "طبعات فيدورا الرسمية (Editions)" },
+    { id: "spins-labs", label: "النسخ البديلة: Spins وLabs" },
+    { id: "silverblue-atomic", label: "فيدورا غير القابلة للتعديل: Atomic Desktops" },
+    { id: "comparison-table", label: "جدول مقارنة سريع: فيدورا مقابل توزيعات أخرى" },
+    { id: "why-choose", label: "لماذا يختار المستخدمون فيدورا تحديدًا؟" },
+    { id: "challenges", label: "التحديات والقيود" },
+    { id: "who-fits", label: "لمن تناسب فيدورا فعليًا؟" },
+    { id: "external-resources", label: "الروابط الرسمية ومصادر خارجية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            إذا سألت مطورًا محترفًا أو مهندس أنظمة عن التوزيعة التي يثق
+            بها لتجربة أحدث تقنيات لينكس دون فوضى، سيذكر فيدورا في أغلب
+            الأحيان. ليست الأكثر شهرة بين المستخدمين العاديين مقارنة
+            بأوبونتو، لكنها تحتل مكانة خاصة كمختبر تقني تُختبر فيه تقنيات
+            ستظهر لاحقًا في أنظمة أخرى كثيرة.
+        </p>
+
+        <p>
+            هذا الدليل يشرح كل ما تحتاج معرفته عن فيدورا: تاريخها وعلاقتها
+            بشركة Red Hat، دورة إصداراتها السريعة، طبعاتها الرسمية
+            المتعددة، ولمن تناسب فعليًا.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="history">نبذة تاريخية سريعة</h2>
+
+        <p>
+            <img
+                src="/images/fedora-gnome-workstation.webp"
+                alt="واجهة Fedora Workstation بسطح مكتب GNOME"
+                width="1200"
+                height="569"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            ظهرت فيدورا لأول مرة في نوفمبر 2003، كثمرة اندماج مشروعين:
+            توزيعة Red Hat Linux التجارية السابقة، ومشروع مجتمعي مستقل
+            كان يُعرف باسم Fedora Linux. النتيجة كانت توزيعة مجتمعية
+            مجانية بالكامل، لكنها ترعاها شركة Red Hat (المملوكة لاحقًا
+            لشركة IBM) ماديًا وتقنيًا.
+        </p>
+
+        <p>
+            العلاقة بين فيدورا وRed Hat مبنية على فلسفة واضحة: فيدورا هي
+            "المختبر" الذي تُجرَّب فيه التقنيات الجديدة أولاً، وبعد أن
+            تثبت نضجها واستقرارها عبر عدة إصدارات، تنتقل لاحقًا إلى توزيعة
+            Red Hat Enterprise Linux (RHEL) التجارية الموجهة للشركات.
+        </p>
+
+        <p>
+            هذا يفسر سمعة فيدورا كتوزيعة "طليعية": أي تقنية جديدة مهمة في
+            عالم لينكس، من Wayland إلى PipeWire إلى systemd نفسه، ظهرت في
+            فيدورا كخيار افتراضي قبل أن تنتشر في باقي التوزيعات بفترة
+            طويلة أحيانًا.
+        </p>
+
+        <h2 id="release-cycle">دورة الإصدارات والعلاقة بـ Red Hat</h2>
+
+        <p>
+            فيدورا تصدر نسخة رئيسية جديدة كل ستة أشهر تقريبًا، بدعم يمتد
+            نحو 13 شهرًا لكل إصدار (يغطي الإصدار التالي بعده بعدة أشهر
+            لإتاحة وقت كافٍ للترقية). هذه الدورة السريعة مقصودة: فيدورا لا
+            تحاول أن تكون توزيعة "استقرار طويل الأمد" كأوبونتو LTS، بل
+            توازن بين الحداثة والاستقرار المعقول ضمن كل دورة قصيرة.
+        </p>
+
+        <p>
+            من الناحية العملية، هذا يعني أنك ستحتاج لترقية النظام لإصدار
+            جديد مرة أو مرتين سنويًا، لكن عملية الترقية نفسها موثقة جيدًا
+            ونادرًا ما تسبب مشاكل كبرى إن اتبعت الخطوات الرسمية.
+        </p>
+
+        <h2 id="latest-release">Fedora Linux 44: أحدث إصدار</h2>
+
+        <p>
+            صدر أحدث إصدار رئيسي، Fedora Linux 44، في 28 أبريل 2026، بعد
+            تأخير أسبوعين عن الموعد المخطط بسبب أخطاء في معالج إعداد KDE.
+            أبرز ما يحمله هذا الإصدار:
+        </p>
+
+        <ul>
+            <li>نواة لينكس 6.19، مع تضمين وحدة NTSYNC لتحسين أداء وتوافق ألعاب وبرامج ويندوز العاملة عبر Wine أو Steam</li>
+            <li>واجهة GNOME 50 كافتراضية في طبعة Workstation، مع تحسينات في الرقابة الأبوية وإمكانية الوصول وسطح المكتب البعيد</li>
+            <li>واجهة KDE Plasma 6.6 في الطبعة الرسمية الخاصة بـ KDE، مع مدير تسجيل دخول جديد ودعم إعداد شبكة Wi-Fi عبر رمز QR</li>
+            <li>تحويل PackageKit بالكامل للاعتماد على DNF5 كطبقة خلفية، بعد سنوات من التطوير التدريجي</li>
+            <li>محمّل شهادات OpenSSL أسرع، وتحسينات عامة في زمن الإقلاع</li>
+        </ul>
+
+        <p>
+            ملاحظة تقنية للمستخدمين المتقدمين: نواة لينكس 7.0 كانت قد
+            صدرت فعليًا قبل إطلاق فيدورا 44، لكنها وصلت متأخرة جدًا في دورة
+            التطوير لتُدرَج ضمن هذا الإصدار تحديدًا، وستظهر على الأرجح في
+            الإصدار التالي.
+        </p>
+
+        <h2 id="package-management">إدارة الحزم: من DNF إلى DNF5</h2>
+
+        <p>
+            فيدورا تعتمد تنسيق حزم RPM، وتديره تاريخيًا أداة DNF (خليفة
+            YUM القديمة). منذ إصدار فيدورا 41، أصبح الجيل الجديد DNF5
+            (مكتوب بلغة ++C بدلاً من بايثون بالكامل) هو الافتراضي، ومع
+            فيدورا 44 اكتمل الانتقال بربط PackageKit نفسه (طبقة إدارة
+            الحزم الرسومية) بمكتبة libdnf5 مباشرة.
+        </p>
+
+        <ul>
+            <li>أداء أسرع بشكل ملحوظ في حل تعارضات التبعيات مقارنة بـ DNF التقليدي</li>
+            <li>مخرجات طرفية أوضح وأكثر تنظيمًا بصريًا</li>
+            <li>دعم متكامل لمفهوم "الوحدات النمطية" (Modularity) لإدارة إصدارات متعددة من نفس البرنامج</li>
+        </ul>
+
+        <p>
+            بالإضافة لـ DNF، تدعم فيدورا رسميًا نظام Flatpak كخيار افتراضي
+            لتثبيت التطبيقات المعزولة، بدلاً من Snap الذي تفضله أوبونتو.
+        </p>
+
+        <h2 id="editions">طبعات فيدورا الرسمية (Editions)</h2>
+
+        <p>
+            فيدورا ليست نظامًا واحدًا، بل مجموعة طبعات رسمية موجهة لسياقات
+            استخدام مختلفة تمامًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Fedora Workstation</strong>: الطبعة الأشهر، موجهة
+                للاستخدام المكتبي والتطوير، بواجهة GNOME افتراضيًا
+            </li>
+            <li>
+                <strong>Fedora KDE Plasma Desktop</strong>: نفس فيدورا لكن
+                بواجهة KDE Plasma كطبعة رسمية كاملة الدعم، لا مجرد نسخة
+                بديلة ثانوية
+            </li>
+            <li>
+                <strong>Fedora Server</strong>: موجهة لتشغيل الخوادم،
+                بأدوات إدارة مخصصة وواجهة ويب إدارية (Cockpit) مدمجة
+            </li>
+            <li>
+                <strong>Fedora IoT</strong>: مصممة لأجهزة إنترنت الأشياء
+                والحوسبة الطرفية (Edge Computing)
+            </li>
+            <li>
+                <strong>Fedora CoreOS</strong>: نظام مخصص للحاويات، بتحديثات
+                تلقائية آمنة وتصميم غير قابل للتعديل يدويًا
+            </li>
+        </ul>
+
+        <h2 id="spins-labs">النسخ البديلة: Spins وLabs</h2>
+
+        <p>
+            <img
+                src="/images/fedora-kde-plasma.webp"
+                alt="واجهة Fedora KDE Plasma Desktop"
+                width="1200"
+                height="570"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            بجانب الطبعات الرسمية، يوفر المشروع فئتين إضافيتين من الصور
+            الجاهزة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Spins</strong>: نفس فيدورا الأساسية لكن ببيئات سطح
+                مكتب بديلة مثل Xfce وMATE وCinnamon وLXQt، لمن يريد بيئة
+                أخف من GNOME الافتراضية
+            </li>
+            <li>
+                <strong>Labs</strong>: حزم جاهزة مخصصة لمجال معين، مثل
+                Fedora Design Suite للمصممين أو Fedora Scientific للحوسبة
+                العلمية، تأتي مع أدوات المجال مثبتة مسبقًا
+            </li>
+        </ul>
+
+        <h2 id="silverblue-atomic">فيدورا غير القابلة للتعديل: Atomic Desktops</h2>
+
+        <p>
+            من أبرز ابتكارات فيدورا الحديثة عائلة "أسطح المكتب الذرية"
+            (Atomic Desktops)، مثل Fedora Silverblue (بواجهة GNOME)
+            وFedora Kinoite (بواجهة KDE). هذه الأنظمة تعتمد فلسفة مختلفة
+            جذريًا عن فيدورا التقليدية:
+        </p>
+
+        <ul>
+            <li>نظام الملفات الأساسي للتشغيل غير قابل للتعديل المباشر، ما يمنع تلف النظام بسبب تعديلات يدوية خاطئة</li>
+            <li>التحديثات تُطبَّق كوحدة واحدة كاملة (Image-based)، مع إمكانية التراجع الفوري لأي حالة سابقة</li>
+            <li>البرامج تُثبَّت أساسًا عبر Flatpak أو حاويات معزولة (Toolbox)، بدلاً من التثبيت المباشر على النظام</li>
+        </ul>
+
+        <p>
+            هذا النموذج يستهدف تحديدًا من يريد استقرارًا صارمًا مع مرونة
+            تجربة برامج جديدة دون خطر كسر النظام الأساسي.
+        </p>
+
+        <h2 id="comparison-table">
+            جدول مقارنة سريع: فيدورا مقابل توزيعات أخرى
+        </h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">فيدورا</th>
+                        <th class="px-4 py-2 font-semibold">أوبونتو</th>
+                        <th class="px-4 py-2 font-semibold">openSUSE Tumbleweed</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">نموذج الإصدار</td>
+                        <td class="px-4 py-2">دورة ثابتة كل 6 أشهر</td>
+                        <td class="px-4 py-2">LTS كل سنتين + إصدارات مؤقتة</td>
+                        <td class="px-4 py-2">Rolling Release مستمر</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تنسيق الحزم</td>
+                        <td class="px-4 py-2">RPM عبر DNF5</td>
+                        <td class="px-4 py-2">DEB عبر APT</td>
+                        <td class="px-4 py-2">RPM عبر Zypper</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">حداثة البرمجيات</td>
+                        <td class="px-4 py-2">عالية جدًا</td>
+                        <td class="px-4 py-2">متوسطة (تعتمد على النوع)</td>
+                        <td class="px-4 py-2">الأعلى إطلاقًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الجهة الراعية</td>
+                        <td class="px-4 py-2">Red Hat / IBM</td>
+                        <td class="px-4 py-2">Canonical</td>
+                        <td class="px-4 py-2">SUSE</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأنسب لـ</td>
+                        <td class="px-4 py-2">المطورين ومحبي أحدث لينكس</td>
+                        <td class="px-4 py-2">المبتدئين والخوادم السحابية</td>
+                        <td class="px-4 py-2">مطورين يريدون أحدث كل شيء</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-choose">لماذا يختار المستخدمون فيدورا تحديدًا؟</h2>
+
+        <ul>
+            <li>
+                <strong>أحدث التقنيات دائمًا</strong>: أول من يعتمد تقنيات
+                مثل Wayland وPipeWire وsystemd كخيار افتراضي رسمي
+            </li>
+            <li>
+                <strong>نسخة "نظيفة" من GNOME</strong>: أقل تعديلًا من نسخة
+                أوبونتو، أقرب لتجربة GNOME الأصلية كما يقصدها مطوروها
+            </li>
+            <li>
+                <strong>دعم رسمي قوي من Red Hat/IBM</strong>: خلفها فريق
+                هندسي محترف، لا مجرد مجتمع تطوعي بحت
+            </li>
+            <li>
+                <strong>خيار احترافي معتمد في صناعة البرمجيات</strong>: كثير
+                من أدوات التطوير والحاويات تُختبر على فيدورا ونظام RHEL
+                المشتق منها أولاً
+            </li>
+            <li>
+                <strong>التزام صارم بالبرمجيات الحرة</strong>: فيدورا أكثر
+                تشددًا من أغلب التوزيعات في استبعاد أي برنامج غير مفتوح
+                المصدر بالكامل من مستودعاتها الرسمية
+            </li>
+        </ul>
+
+        <h2 id="challenges">التحديات والقيود</h2>
+
+        <p>بموضوعية، فيدورا لها بعض القيود التي تستحق الذكر:</p>
+
+        <ul>
+            <li>
+                <strong>دورة ترقية متكررة</strong>: الحاجة لترقية النظام
+                كل ستة أشهر تقريبًا قد تزعج من يفضل الاستقرار الطويل دون
+                أي صيانة
+            </li>
+            <li>
+                <strong>غياب بعض الترميزات الملكية افتراضيًا</strong>:
+                بسبب التزام فيدورا الصارم بالبرمجيات الحرة، بعض ترميزات
+                الفيديو والصوت الملكية تحتاج تفعيل مستودعات إضافية يدويًا
+                (مثل RPM Fusion)
+            </li>
+            <li>
+                <strong>مجتمع أصغر نسبيًا من أوبونتو للمبتدئين المطلقين</strong>:
+                رغم قوة التوثيق الرسمي، الموارد التعليمية غير الرسمية أقل
+                كثافة من أوبونتو
+            </li>
+        </ul>
+
+        <h2 id="who-fits">لمن تناسب فيدورا فعليًا؟</h2>
+
+        <ul>
+            <li>
+                <strong>للمطورين ومهندسي البرمجيات</strong>: بيئة حديثة
+                متوافقة تمامًا مع أدوات RHEL المؤسسية
+            </li>
+            <li>
+                <strong>لمحبي تجربة GNOME الأصلية دون تعديلات كثيرة</strong>
+            </li>
+            <li>
+                <strong>لمن يريد أحدث تقنيات لينكس دون الذهاب لتوزيعات
+                Rolling Release الأكثر خطورة على الاستقرار</strong>
+            </li>
+            <li>
+                <strong>لمن يريد استقرارًا صارمًا مع مرونة عبر Silverblue
+                أو Kinoite</strong>
+            </li>
+            <li>
+                <strong>أقل ملاءمة</strong>: لمن يكره فكرة الترقيات
+                المتكررة كل ستة أشهر، أو يحتاج ترميزات ملكية جاهزة فور
+                التثبيت دون أي إعداد إضافي
+            </li>
+        </ul>
+
+        <h2 id="external-resources">الروابط الرسمية ومصادر خارجية</h2>
+
+        <p>
+            للتحميل أو التعمق أكثر فيما ذُكر في هذا المقال، هذه مصادر
+            رسمية وموثوقة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الموقع الرسمي لفيدورا:</strong>{" "}
+                <a href="https://fedoraproject.org/" target="_blank" rel="noopener noreferrer">fedoraproject.org</a>
+            </li>
+            <li>
+                <strong>صفحة تحميل Fedora Workstation:</strong>{" "}
+                <a href="https://fedoraproject.org/workstation/download" target="_blank" rel="noopener noreferrer">fedoraproject.org/workstation/download</a>
+            </li>
+            <li>
+                <strong>صفحة Fedora KDE Plasma Desktop:</strong>{" "}
+                <a href="https://fedoraproject.org/spins/kde/" target="_blank" rel="noopener noreferrer nofollow">fedoraproject.org/spins/kde</a>
+            </li>
+            <li>
+                <strong>صفحة Fedora Silverblue (الطبعة غير القابلة للتعديل):</strong>{" "}
+                <a href="https://fedoraproject.org/atomic-desktops/silverblue/" target="_blank" rel="noopener noreferrer nofollow">fedoraproject.org/atomic-desktops/silverblue</a>
+            </li>
+            <li>
+                <strong>ويكي فيدورا الرسمي (توثيق تقني تفصيلي):</strong>{" "}
+                <a href="https://fedoraproject.org/wiki/" target="_blank" rel="noopener noreferrer nofollow">fedoraproject.org/wiki</a>
+            </li>
+            <li>
+                <strong>منتدى Ask Fedora للدعم المجتمعي:</strong>{" "}
+                <a href="https://discussion.fedoraproject.org/" target="_blank" rel="noopener noreferrer nofollow">discussion.fedoraproject.org</a>
+            </li>
+            <li>
+                <strong>RPM Fusion (مستودع الترميزات والبرامج غير الحرة):</strong>{" "}
+                <a href="https://rpmfusion.org/" target="_blank" rel="noopener noreferrer nofollow">rpmfusion.org</a>
+            </li>
+            <li>
+                <strong>Red Hat (الشركة الراعية):</strong>{" "}
+                <a href="https://www.redhat.com/" target="_blank" rel="noopener noreferrer nofollow">redhat.com</a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل فيدورا مناسبة للمبتدئين في لينكس؟</strong><br />
+            ممكنة، خصوصًا مع طبعة Workstation، لكنها تفترض استعدادًا أكبر
+            للتعامل مع ترقيات نصف سنوية مقارنة بتوزيعات أبسط مثل Linux
+            Mint.
+        </p>
+
+        <p>
+            <strong>ما العلاقة بين فيدورا وRed Hat Enterprise Linux؟</strong><br />
+            فيدورا هي المختبر التجريبي الذي تُختبر فيه التقنيات أولاً، وبعد
+            نضجها تنتقل لاحقًا لتوزيعة RHEL التجارية الموجهة للشركات.
+        </p>
+
+        <p>
+            <strong>لماذا لا تشغّل فيدورا ملفات MP3 أو فيديوهات معينة مباشرة بعد التثبيت؟</strong><br />
+            بسبب التزامها الصارم بالبرمجيات الحرة فقط في مستودعاتها
+            الرسمية؛ يمكنك تفعيل هذه الترميزات بسهولة عبر مستودع RPM
+            Fusion الإضافي.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين فيدورا العادية وFedora Silverblue؟</strong><br />
+            فيدورا العادية تسمح بتعديل النظام مباشرة كأي توزيعة تقليدية،
+            بينما Silverblue نظام غير قابل للتعديل المباشر، يعتمد على
+            تحديثات كوحدة كاملة وFlatpak للتطبيقات، لأقصى استقرار وأمان.
+        </p>
+    </PostLayout>
+</BaseLayout>

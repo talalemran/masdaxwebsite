@@ -1,0 +1,200 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "definition", label: "تعريف المصادر المفتوحة" },
+  { id: "history", label: "تاريخ المصادر المفتوحة" },
+  { id: "how-it-works", label: "كيف تعمل المصادر المفتوحة؟" },
+  { id: "licenses", label: "الترخيصات" },
+  { id: "benefits", label: "فوائد المصادر المفتوحة" },
+  { id: "examples", label: "أمثلة شائعة" },
+  { id: "myths", label: "مفاهيم خاطئة" },
+  { id: "getting-involved", label: "كيف تشارك في المشاريع مفتوحة المصدر؟" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "ما هي المصادر المفتوحة؟",
+  description: "شرح مفصل لمفهوم المصادر المفتوحة: كيف نشأت، كيف تعمل، فوائدها، الترخيصات المستخدمة، وأمثلة حقيقية من حياتنا اليومية.",
+  tags: ["مصادر مفتوحة", "open source", "برمجيات حرة", "رخصة جنو", "GPL", "رخصة MIT"],
+  category: ["مصادر مفتوحة", "موسوعة"],
+  thumbnail: "/images/what-is-open-source.webp",
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/what-is-open-source/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+  <section id="definition" class="mb-12">
+    <h2 id="definition" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تعريف المصادر المفتوحة</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>المصادر المفتوحة (Open Source)</strong> هي منهجية لتطوير البرمجيات وتوزيعها تتيح للمستخدمين الوصول إلى <strong>الكود المصدري</strong> وفق شروط ترخيص محددة. ويمنح الترخيص المستخدمين حقوقًا مثل دراسة البرنامج، واستخدامه، وتعديله، وإعادة توزيعه، بحسب الشروط التي تنص عليها الرخصة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لذلك، فإن وصف برنامج بأنه مفتوح المصدر لا يعني ببساطة أن الكود موجود على الإنترنت. يجب أن تكون الرخصة التي تحكم المشروع متوافقة مع مبادئ وتعريف المصادر المفتوحة. كما أن إتاحة الكود لا تعني أن حقوق الملكية الفكرية تختفي؛ فحقوق النشر والعلامات التجارية وبراءات الاختراع، عندما تكون ذات صلة، تظل خاضعة للقوانين والرخص المعمول بها.
+    </p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل المصادر المفتوحة تعني أن البرنامج مجاني؟</h3>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      ليس بالضرورة. كلمة "مفتوح المصدر" تصف <strong>الحقوق المتاحة للمستخدمين تجاه البرنامج والكود المصدري</strong>، ولا تعني أن كل خدمة مرتبطة بالبرنامج يجب أن تكون بلا مقابل. يمكن بيع البرامج مفتوحة المصدر، كما يمكن بيع خدمات الاستضافة والدعم الفني والتدريب والميزات الإضافية.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      كذلك، لا ينبغي افتراض أن كل مشروع مفتوح المصدر أكثر أمانًا تلقائيًا. إتاحة الكود تساعد على المراجعة واكتشاف المشكلات، لكن مستوى الأمان يعتمد أيضًا على جودة المشروع، ونشاط الصيانة، وآليات المراجعة، وسرعة معالجة الثغرات، وطريقة استخدام البرنامج.
+    </p>
+  </section>
+
+  <section id="history" class="mb-12">
+    <h2 id="history" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تاريخ المصادر المفتوحة</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      ظهرت ممارسات مشاركة البرمجيات قبل ظهور مصطلح "المصادر المفتوحة" بوقت طويل. ومع انتشار البرمجيات الاحتكارية في الثمانينيات، ظهرت حركات ومشاريع ركزت على حرية المستخدم في دراسة البرمجيات وتعديلها ومشاركتها. ثم تطورت هذه الأفكار إلى حركة المصادر المفتوحة كما نعرفها اليوم.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الستينيات والسبعينيات:</strong> كان تبادل الشيفرة المصدرية والمعرفة البرمجية أكثر شيوعًا في الأوساط الأكاديمية والبحثية، قبل أن تصبح البرمجيات صناعة تجارية واسعة.</li>
+      <li><strong>1983:</strong> أعلن <strong>ريتشارد ستالمان</strong> مشروع GNU بهدف تطوير نظام برمجيات يمكن استخدامه ودراسته وتعديله ومشاركته بحرية.</li>
+      <li><strong>1985:</strong> تأسست <strong>مؤسسة البرمجيات الحرة (FSF)</strong> لدعم البرمجيات الحرة ومشروع GNU.</li>
+      <li><strong>1989:</strong> نُشرت النسخة الأولى من <strong>رخصة GNU GPL</strong>، التي أصبحت من أشهر رخص البرمجيات الحرة ومفتوحة المصدر.</li>
+      <li><strong>1991:</strong> بدأ <strong>لينوس تورفالدس</strong> تطوير نواة Linux، وأصبحت النواة لاحقًا جزءًا أساسيًا من عدد كبير من الأنظمة والمنتجات.</li>
+      <li><strong>1997:</strong> نشر إريك رايموند مقالته الشهيرة التي أصبحت أساسًا لكتاب <strong>"The Cathedral and the Bazaar"</strong>، وناقش فيها نماذج تطوير البرمجيات.</li>
+      <li><strong>1998:</strong> تأسست <strong>Open Source Initiative (OSI)</strong> للترويج لمفهوم المصادر المفتوحة ووضع تعريف واضح له.</li>
+      <li><strong>منذ الألفية الجديدة:</strong> توسعت المصادر المفتوحة من مشاريع سطح المكتب والخوادم إلى الحوسبة السحابية، وقواعد البيانات، واللغات البرمجية، والذكاء الاصطناعي، وأجهزة إنترنت الأشياء.</li>
+    </ul>
+  </section>
+
+  <section id="how-it-works" class="mb-12">
+    <h2 id="how-it-works" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف تعمل المشاريع مفتوحة المصدر؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لا توجد طريقة واحدة لإدارة كل مشروع مفتوح المصدر. بعض المشاريع يديرها مطور واحد، وبعضها تقوده مؤسسة أو شركة، بينما تعتمد مشاريع أخرى على آلاف المساهمين. ومع ذلك، تشترك معظم المشاريع في مجموعة من الممارسات الأساسية:
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الكود المصدري متاح:</strong> يمكن للمستخدمين الاطلاع على الكود وفق شروط الرخصة المعتمدة في المشروع.</li>
+      <li><strong>نظام للتحكم في الإصدارات:</strong> تستخدم مشاريع كثيرة أدوات مثل Git لتتبع التغييرات وإدارة فروع التطوير.</li>
+      <li><strong>مراجعة التغييرات:</strong> تخضع التعديلات عادةً للمراجعة والاختبار قبل دمجها في المشروع الرئيسي.</li>
+      <li><strong>الإبلاغ عن المشكلات:</strong> يستطيع المستخدمون الإبلاغ عن الأخطاء واقتراح التحسينات عبر نظام تتبع المشكلات أو قنوات المشروع.</li>
+      <li><strong>المساهمات:</strong> يمكن للمطورين إرسال تغييراتهم، مثل إصلاح خطأ أو إضافة ميزة أو تحسين التوثيق، وفق قواعد المشروع.</li>
+      <li><strong>إصدارات موثقة:</strong> ينشر المشروع إصدارات جديدة عند اكتمال مجموعة من التغييرات والاختبارات المطلوبة.</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أشهر طرق المساهمة إنشاء فرع للتغيير ثم إرسال <strong>طلب دمج (Pull Request)</strong>. بعد ذلك يمكن للمشرفين والمساهمين مراجعة التغيير واختباره قبل قبوله أو طلب تعديلات عليه.
+    </p>
+  </section>
+
+  <section id="licenses" class="mb-12">
+    <h2 id="licenses" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تراخيص المصادر المفتوحة</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>الرخصة البرمجية</strong> هي الوثيقة القانونية التي تحدد ما يستطيع المستخدم فعله بالكود، وما الشروط التي يجب الالتزام بها عند إعادة توزيعه أو دمجه في مشروع آخر. ولهذا فإن قراءة الرخصة مهمة قبل نسخ الكود أو استخدامه في برنامج جديد.
+    </p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التراخيص المتساهلة</h3>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>MIT:</strong> رخصة قصيرة ومتساهلة تسمح بالاستخدام والتعديل وإعادة التوزيع مع الالتزام بالشروط الواردة فيها، ومنها الاحتفاظ بإشعارات حقوق النشر والرخصة.</li>
+      <li><strong>Apache License 2.0:</strong> رخصة متساهلة تتضمن، من بين أمور أخرى، أحكامًا تتعلق ببراءات الاختراع.</li>
+      <li><strong>BSD:</strong> مجموعة من الرخص المتساهلة ذات شروط محدودة نسبيًا.</li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">تراخيص المشاركة بالمثل (Copyleft)</h3>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>GPL:</strong> تسمح باستخدام البرنامج وتعديله وتوزيعه، وعند توزيع عمل مشتق خاضع لشروط GPL، يجب الالتزام بمتطلبات الرخصة، ومنها إتاحة المصدر بالشروط التي تحددها الرخصة.</li>
+      <li><strong>LGPL:</strong> صممت خصوصًا لتكون مناسبة لاستخدام المكتبات البرمجية، وتفرض شروطًا مختلفة عن GPL عند الربط مع البرامج الأخرى.</li>
+      <li><strong>AGPL:</strong> مبنية على GPL مع أحكام إضافية تتعلق بتوفير المصدر للمستخدمين الذين يتفاعلون مع برنامج معدل عبر الشبكة، وفق شروط الرخصة.</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لا توجد رخصة واحدة تناسب كل المشاريع. الاختيار يعتمد على أهداف المشروع، وطريقة توزيعه، وكيفية السماح للآخرين باستخدام الكود أو دمجه في مشاريع أخرى.
+    </p>
+  </section>
+
+  <section id="benefits" class="mb-12">
+    <h2 id="benefits" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">فوائد المصادر المفتوحة</h2>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الشفافية:</strong> يتيح الكود المصدري للخبراء والمطورين فحص طريقة عمل البرنامج ومراجعة أجزاء منه.</li>
+      <li><strong>المرونة:</strong> يمكن تعديل البرنامج أو تخصيصه عندما تسمح الرخصة بذلك.</li>
+      <li><strong>تقليل الاعتماد على مزود واحد:</strong> يمكن للمؤسسات التي تملك الخبرة التقنية دراسة الكود ونقله إلى بيئات أخرى، بدل الاعتماد الكامل على جهة واحدة.</li>
+      <li><strong>التعاون:</strong> يمكن لمطورين من أماكن مختلفة المساهمة في المشروع ومشاركة الإصلاحات والتحسينات.</li>
+      <li><strong>التعلم:</strong> توفر المشاريع المفتوحة أمثلة حقيقية يمكن للطلاب والمطورين دراستها لفهم أساليب البرمجة وهندسة البرمجيات.</li>
+      <li><strong>إعادة الاستخدام:</strong> تسمح الرخص المناسبة بإعادة استخدام أجزاء من المشاريع في برامج أخرى مع الالتزام بشروط الترخيص.</li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل للمصادر المفتوحة عيوب؟</h3>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      نعم. فبعض المشاريع تعاني من نقص المساهمين أو ضعف التوثيق أو بطء الصيانة. وقد يكون تثبيت البرنامج أو دعمه أصعب على المستخدم غير التقني، كما أن بعض المشاريع المهمة تعتمد على عدد صغير من المشرفين. لذلك يجب تقييم المشروع نفسه، وليس الاكتفاء بكونه مفتوح المصدر.
+    </p>
+  </section>
+
+  <section id="examples" class="mb-12">
+    <h2 id="examples" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أمثلة شائعة على المصادر المفتوحة</h2>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>Linux:</strong> نواة مفتوحة المصدر تُستخدم في توزيعات Linux، كما تشكل الأساس التقني لنظام Android وغيره من الأنظمة والمنتجات.</li>
+      <li><strong>Firefox:</strong> متصفح ويب مفتوح المصدر تطوره مؤسسة.mozilla ومجتمع من المساهمين.</li>
+      <li><strong>WordPress:</strong> نظام إدارة محتوى مفتوح المصدر يُستخدم لبناء والمواقع والمدونات والمنصات الرقمية.</li>
+      <li><strong>Blender:</strong> حزمة مفتوحة المصدر للنمذجة ثلاثية الأبعاد والتحريك والمؤثرات البصرية والرندر.</li>
+      <li><strong>Git:</strong> نظام موزع للتحكم في الإصدارات، ويُستخدم على نطاق واسع في تطوير البرمجيات.</li>
+      <li><strong>VLC:</strong> مشغل وسائط مفتوح المصدر يدعم مجموعة كبيرة من صيغ الصوت والفيديو والبروتوكولات.</li>
+      <li><strong>GIMP:</strong> محرر صور مفتوح المصدر يوفر أدوات لمعالجة الصور والرسم الرقمي.</li>
+      <li><strong>Python:</strong> لغة برمجة مفتوحة المصدر ذات استخدام واسع في تطوير البرمجيات وتحليل البيانات والذكاء الاصطناعي.</li>
+      <li><strong>PyTorch:</strong> إطار مفتوح المصدر للتعلم الآلي والذكاء الاصطناعي يُستخدم في البحث والتطوير والتطبيقات العملية.</li>
+    </ul>
+  </section>
+
+  <section id="myths" class="mb-12">
+    <h2 id="myths" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">مفاهيم خاطئة عن المصادر المفتوحة</h2>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>"مفتوح المصدر يعني مجاني":</strong> ليس بالضرورة. يمكن بيع البرامج مفتوحة المصدر أو بيع خدمات مرتبطة بها، مثل الدعم والاستضافة والتدريب.</li>
+      <li><strong>"إتاحة الكود تعني أنه آمن تلقائيًا":</strong> لا. الشفافية تساعد على المراجعة، لكن الأمان يحتاج إلى صيانة واختبارات واستجابة سريعة للثغرات.</li>
+      <li><strong>"يمكنني فعل أي شيء بالكود":</strong> ليس دائمًا. يجب الالتزام بالرخصة، وقد تختلف الشروط كثيرًا بين MIT وGPL وApache وغيرها.</li>
+      <li><strong>"المصادر المفتوحة مخصصة للهواة فقط":</strong> غير صحيح. تعتمد الشركات والمؤسسات ومراكز البيانات والبنية التحتية السحابية على عدد كبير من المشاريع مفتوحة المصدر.</li>
+      <li><strong>"كل ما يوجد على GitHub مفتوح المصدر":</strong> غير صحيح. وجود مستودع عام لا يعني تلقائيًا أن الكود مرخص لإعادة الاستخدام. يجب البحث عن ملف الرخصة وشروطها.</li>
+    </ul>
+  </section>
+
+  <section id="getting-involved" class="mb-12">
+    <h2 id="getting-involved" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف تشارك في المشاريع مفتوحة المصدر؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لا تحتاج إلى أن تكون مطورًا محترفًا حتى تبدأ بالمساهمة. كثير من المشاريع تحتاج إلى المساعدة في التوثيق، والترجمة، والاختبار، وإعداد تقارير الأخطاء، إلى جانب كتابة الكود.
+    </p>
+
+    <ol class="list-decimal list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>استخدم المشروع:</strong> ابدأ ببرنامج أو مشروع تحتاج إليه، واقرأ وثائقه وتعرّف إلى طريقة عمله.</li>
+      <li><strong>اقرأ دليل المساهمة:</strong> ابحث عن ملف مثل <strong>CONTRIBUTING</strong> لمعرفة قواعد المشروع وطريقة إرسال التغييرات.</li>
+      <li><strong>أبلغ عن الأخطاء:</strong> إذا اكتشفت مشكلة قابلة لإعادة الإنتاج، اكتب تقريرًا واضحًا يشرح الخطوات والنتيجة المتوقعة والنتيجة الفعلية.</li>
+      <li><strong>حسّن التوثيق أو الترجمة:</strong> هذه مساهمات مفيدة ولا تتطلب دائمًا خبرة برمجية متقدمة.</li>
+      <li><strong>ابدأ بتغيير صغير:</strong> إصلاح خطأ بسيط أو تحسين رسالة أو توضيح فقرة قد يكون أفضل نقطة بداية.</li>
+      <li><strong>أرسل Pull Request:</strong> عندما تصبح مستعدًا، أرسل التغيير وفق آلية المشروع وانتظر المراجعة والملاحظات.</li>
+    </ol>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 id="resources" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+
+    <ul class="space-y-3">
+      <li><a href="/wiki/open-source-libraries/">أشهر مكتبات المصادر المفتوحة</a></li>
+      <li><a href="https://www.masdarx.com/posts/open-source-vs-proprietary-software/">الفرق بين البرامج مفتوحة المصدر والبرامج المغلقة</a></li>
+      <li><a href="/wiki/linux-wiki/">دليل لينكس الشامل</a></li>
+      <li><a href="/posts/linux-desktop-environments-guide/">مقارنة شاملة: بيئات سطح المكتب في لينكس</a></li>
+      <li><a href="/posts/linux-distros-by-use-case-which-one-suits-you/">أنواع توزيعات لينكس حسب الاستخدام</a></li>
+    </ul>
+  </section>
+</WikiLayout>
+</BaseLayout>

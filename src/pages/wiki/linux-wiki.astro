@@ -1,0 +1,659 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "what-is-linux", label: "ما هو لينكس؟" },
+  { id: "history", label: "تاريخ لينكس" },
+  { id: "how-it-works", label: "كيف يعمل لينكس؟" },
+  { id: "kernel", label: "نواة لينكس (Kernel)" },
+  { id: "distros", label: "توزيعات لينكس" },
+  { id: "desktop-environments", label: "بيئات سطح المكتب" },
+  { id: "package-managers", label: "مديرو الحزم" },
+  { id: "file-system", label: "نظام الملفات" },
+  { id: "use-cases", label: "استخدامات لينكس" },
+  { id: "linux-vs-windows", label: "لينكس مقابل ويندوز" },
+  { id: "getting-started", label: "كيف تبدأ مع لينكس؟" },
+  { id: "common-problems", label: "المشاكل الشائعة وحلولها" },
+  { id: "useful-commands", label: "أهم أوامر لينكس" },
+  { id: "security", label: "الأمان في لينكس" },
+  { id: "faq", label: "أسئلة شائعة عن لينكس" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "دليل لينكس الشامل",
+  description: "كل ما تحتاج معرفته عن نظام تشغيل لينكس — من المبتدئ إلى المتقدم",
+  tags: ["لينكس", "Linux", "نواة لينكس", "توزيعات لينكس", "بيئة سطح المكتب"],
+  category: ["لينكس", "موسوعة"],
+  thumbnail: "/images/linux-wiki.webp",
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/linux-wiki/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+  <section id="what-is-linux" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ما هو لينكس؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      <strong>لينكس (Linux)</strong> هو نظام تشغيل مفتوح المصدر مبني على نواة (Kernel)
+      كتبها في الأساس لينوس تورفالدس (Linus Torvalds) عام 1991. يُستخدم
+      لينكس اليوم في أكثر من 96% من أقوى 500 حاسوب خارق في العالم، وعلى أكثر من 80%
+      من خوادم الإنترنت، وهو النواة التي يقوم عليها نظام Android المثبَّت على
+      غالبية هواتف الذكاء الاصطناعي المحمولة حول العالم.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لينكس ليس مجرد نظام تشغيل واحد، بل هو عائلة كاملة من الأنظمة تُسمى <strong
+        >التوزيعات (Distributions)</strong
+      >، كل منها مصمم لغرض معين — من الأجهزة الشخصية إلى الخوادم الضخمة، ومن
+      المبتدئين إلى المطورين المحترفين.
+    </p>
+  </section>
+
+  <section id="history" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">تاريخ لينكس</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      بدأت القصة في عام 1991 حين كان <strong>لينوس تورفالدس</strong> طالبًا في جامعة
+      هلسنكي بفنلندا. كان تورفالدس يتعلم نظام Unix ويرغب في نظام مشابه لكنه حر
+      ومفتوح المصدر. كتب النواة الأولى كمشروع شخصي وأعلن عنها على مجموعة أخبار Usenet.
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>1991:</strong> الإصدار الأول من نواة Linux (0.01) — كان يدعم فقط
+        نظام الملفات ext
+      </li>
+      <li>
+        <strong>1992:</strong> تم ترخيص النواة تحت رخصة GPL، ما جعلها مفتوحة المصدر
+        بالكامل
+      </li>
+      <li>
+        <strong>1993:</strong> ظهرت أول توزيعتين رئيسيتين: <strong>Slackware</strong> و<strong
+          >Debian</strong
+        >
+      </li>
+      <li>
+        <strong>1994:</strong> صدرت النواة 1.0 وأصبحت جاهزة للاستخدام العملي
+      </li>
+      <li>
+        <strong>1994:</strong> إطلاق أول إصدار من <strong>Red Hat Linux</strong>،
+        التي أصبحت لاحقًا من أقوى التوزيعات التجارية
+      </li>
+      <li>
+        <strong>2004:</strong> صدر أول إصدار من <strong>Ubuntu</strong> وأحدث
+        ثورة في سهولة استخدام لينكس
+      </li>
+      <li>
+        <strong>2008:</strong> صدر أول هاتف يعمل بنظام <strong>Android</strong>،
+        المبني أصلًا على نواة لينكس
+      </li>
+      <li>
+        <strong>2020s:</strong> أصبح لينكس الخيار الافتراضي في الحوسبة السحابية
+        والذكاء الاصطناعي
+      </li>
+    </ul>
+  </section>
+
+  <section id="how-it-works" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف يعمل لينكس؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يعمل لينكس وفق مبدأ <strong>الطبقات</strong>. في الأعلى تطبيقات المستخدم
+      (مثل المتصفح والمحرر)، ثم واجهة المستخدم الرسومية (GUI)، ثم مكتبات
+      النظام الأساسية (System Libraries)، وأخيرًا النواة (Kernel) التي تتفاعل مباشرة
+      مع العتاد (Hardware).
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      عندما تريد فتح ملف أو تشغيل برنامج، يُرسل الطلب عبر <strong
+        >نداء النظام (System Call)</strong
+      > إلى النواة، التي تتولى إدارة الموارد (المعالج والذاكرة وقرص التخزين) وتوزيعها
+      على البرامج المختلفة بكفاءة عالية.
+    </p>
+  </section>
+
+  <section id="kernel" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">نواة لينكس (Kernel)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      النواة هي قلب نظام لينكس، وهي البرنامج الوحيد الذي يتفاعل مباشرة مع
+      العتاد المادي. تتولى النواة إدارة:
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>المعالج (CPU):</strong> جدولة العمليات وتوزيع وقت المعالج بين البرامج
+      </li>
+      <li>
+        <strong>الذاكرة (RAM):</strong> إدارة الذاكرة الافتراضية والفيزيائية وحماية
+        البرامج من بعضها
+      </li>
+      <li>
+        <strong>أجهزة الإدخال/الإخراج:</strong> التواصل مع لوحة المفاتيح والفأرة
+        والشاشة والأقراص
+      </li>
+      <li>
+        <strong>أنظمة الملفات:</strong> إدارة البيانات المخزنة على الأقراص الصلبة
+        وبطاقات الذاكرة
+      </li>
+      <li><strong>الشبكات:</strong> إدارة اتصالات الشبكة والأمان</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تتميز نواة لينكس بأنها <strong>نواة شبه مونوليثية (Monolithic)</strong> —
+      إذ تعمل معظم الوظائف في وضع النواة لتحسين الأداء. لكنها أيضًا <strong
+        >قابلة للتوسيع (Loadable)</strong
+      >، أي يمكن تحميل الوحدات (Modules) وتفعيلها حسب الحاجة دون إعادة تشغيل النظام.
+    </p>
+  </section>
+
+  <section id="distros" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">توزيعات لينكس</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التوزيعة هي نظام تشغيل كامل يجمع بين نواة لينكس ومكتبات البرامج ومدير
+      الحزم وبيئة سطح المكتب. تختلف كل توزيعة عن الأخرى في الأدوات المدمجة
+      وطريقة إدارة الحزم والإعدادات الافتراضية.
+    </p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">توزيعات للمبتدئين</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>Ubuntu:</strong> الأكثر شهرة وسهولة. مبنية على Debian، تأتي ببيئة
+        GNOME، ودعم كبير من المجتمع العربي
+      </li>
+      <li>
+        <strong>Linux Mint:</strong> مبنية على Ubuntu، تتميز بواجهة أقرب إلى Windows
+        وأداء خفيف
+      </li>
+      <li>
+        <strong>Zorin OS:</strong> صُممت خصيصًا للقادمين من Windows بواجهة مألوفة
+        تمامًا
+      </li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">توزيعات للمطورين</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>Fedora:</strong> توزيعة حديثة تتبنى أحدث التقنيات بسرعة، مدعومة
+        من Red Hat
+      </li>
+      <li>
+        <strong>Arch Linux:</strong> توزيعة متجددة الإصدار (Rolling Release) تتطلب
+        تثبيتًا يدويًا وتوفّر أحدث إصدارات البرامج
+      </li>
+      <li>
+        <strong>openSUSE:</strong> توزيعة مستقرة مع أداة YaST لإعداد النظام بسهولة
+      </li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">توزيعات للخوادم</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>Debian:</strong> من أقدم التوزيعات وأساس الكثير منها، مستقرة للغاية
+        ومناسبة للخوادم
+      </li>
+      <li>
+        <strong>Rocky Linux / AlmaLinux:</strong> بدائل مجانية لـ RHEL مناسبة
+        للبيئات المؤسسية
+      </li>
+      <li>
+        <strong>Ubuntu Server:</strong> الأكثر استخدامًا في الحوسبة السحابية (AWS,
+        Azure, GCP)
+      </li>
+    </ul>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">توزيعات للأجهزة الضعيفة</h3>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>Lubuntu:</strong> توزيعة خفيفة تستخدم LXQt بدلاً من GNOME
+      </li>
+      <li><strong>Xubuntu:</strong> تستخدم XFCE، خفيفة ومستقرة</li>
+      <li>
+        <strong>Puppy Linux:</strong> يمكن تشغيلها من الذاكرة مباشرة دون تثبيت
+      </li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لمعرفة المزيد عن اختيار التوزيعة المناسبة، راجع: <a
+        href="/posts/linux-distros-by-use-case-which-one-suits-you/"
+        >أنواع توزيعات لينكس حسب الاستخدام</a
+      > و<a href="/posts/zorin-os-vs-linux-mint-windows-migration/"
+        >Zorin OS أم Linux Mint</a
+      >.
+    </p>
+  </section>
+
+  <section id="desktop-environments" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">بيئات سطح المكتب</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      بيئة سطح المكتب هي الواجهة الرسومية التي يراها المستخدم: أيقونات، شريط
+      مهام، قائمة بدء تشغيل، وإعدادات النظام. توجد عدة بيئات رئيسية تعمل على
+      جميع التوزيعات تقريبًا:
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>GNOME:</strong> بيئة عصرية وبسيطة تعتمد على البحث والنشاط (Activities).
+        الافتراضية في Ubuntu وFedora
+      </li>
+      <li>
+        <strong>KDE Plasma:</strong> بيئة قابلة للتخصيص بشكل استثنائي، تبدو قريبة
+        من ويندوز، وأخف وزنًا مما قد يتوقعه البعض
+      </li>
+      <li>
+        <strong>XFCE:</strong> خفيفة جدًا ومناسبة للأجهزة القديمة، بسيطة ومستقرة
+      </li>
+      <li>
+        <strong>Cinnamon:</strong> بيئة Linux Mint الافتراضية، تصميم كلاسيكي مألوف
+      </li>
+      <li><strong>MATE:</strong> فرع (fork) من GNOME 2 الكلاسيكي، مستقرة وخفيفة</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للتفاصيل عن مستقبل بيئات سطح المكتب، راجع: <a
+        href="/posts/wayland-vs-x11-linux-future-2026/"
+        >مستقبل الواجهات في لينكس: هل ينهي Wayland عصر X11 تماماً؟</a
+      >
+    </p>
+  </section>
+
+  <section id="package-managers" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">مديرو الحزم</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مدير الحزم هو الأداة التي تُثبّت البرامج وتُحدّثها وتحذفها في لينكس. كل
+      توزيعة لديها مدير حزم خاص بها:
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>APT (Debian/Ubuntu):</strong>
+        <code>sudo apt install firefox</code>
+      </li>
+      <li>
+        <strong>DNF (Fedora):</strong>
+        <code>sudo dnf install firefox</code>
+      </li>
+      <li>
+        <strong>Pacman (Arch):</strong>
+        <code>sudo pacman -S firefox</code>
+      </li>
+      <li>
+        <strong>Zypper (openSUSE):</strong>
+        <code>sudo zypper install firefox</code>
+      </li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      بالإضافة إلى مديري الحزم الرسميين، توجد مديرو حزم عابرة للتوزيعات مثل <strong
+        >Flatpak</strong
+      > و<strong>Snap</strong> و<strong>AppImage</strong>، والتي تتيح تشغيل أي برنامج
+      على أي توزيعة تقريبًا.
+    </p>
+  </section>
+
+  <section id="file-system" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">نظام الملفات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يختلف نظام ملفات لينكس بشكل جوهري عن Windows. ففي لينكس، كل شيء يُعامل
+      كملف — الأجهزة، والمجلدات، وحتى العمليات الجارية. تبدأ شجرة الملفات من <code
+        >/</code
+      > (الجذر) وتتفرع منها:
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><code>/home</code> — مجلد المستخدمين الشخصيين</li>
+      <li><code>/etc</code> — ملفات الإعدادات النظامية</li>
+      <li><code>/var</code> — الملفات المتغيرة (السجلات، التخزين المؤقت)</li>
+      <li><code>/usr</code> — البرامج وملفات النظام</li>
+      <li><code>/bin</code> و<code>/sbin</code> — أوامر التشغيل الأساسية</li>
+      <li><code>/tmp</code> — ملفات مؤقتة تُحذف عند إعادة التشغيل</li>
+      <li><code>/dev</code> — ملفات الأجهزة</li>
+      <li><code>/proc</code> — معلومات النظام الحية</li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      نظام الملفات الافتراضي في معظم توزيعات لينكس هو <strong>ext4</strong>،
+      لكن توجد بدائل أحدث مثل <strong>Btrfs</strong> و<strong
+        >ZFS</strong
+      >.
+    </p>
+  </section>
+
+  <section id="use-cases" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">استخدامات لينكس</h2>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>الخوادم والبنية التحتية:</strong> أكثر من 80% من خوادم الإنترنت
+        تعمل على لينكس، وتعتمد عليه شركات كبرى مثل Google وMeta وAmazon
+      </li>
+      <li>
+        <strong>الحوسبة السحابية:</strong> لينكس هو النظام الأساسي في AWS وAzure
+        وGoogle Cloud
+      </li>
+      <li>
+        <strong>الذكاء الاصطناعي:</strong> TensorFlow وPyTorch وأغلب أطر عمل الذكاء
+        الاصطناعي تعمل بشكل أساسي على لينكس
+      </li>
+      <li>
+        <strong>تطوير البرمجيات:</strong> بيئة العمل المفضّلة لمعظم لغات البرمجة
+        وأدوات التطوير
+      </li>
+      <li>
+        <strong>الأجهزة المحمولة:</strong> Android مبني على نواة لينكس ويعمل على
+        ملايين الهواتف حول العالم
+      </li>
+      <li>
+        <strong>الأتمتة والروبوتات:</strong> نظام ROS (Robot Operating System) مبني
+        على لينكس
+      </li>
+      <li>
+        <strong>الأمن السيبراني:</strong> معظم أدوات اختبار الاختراق تعمل على لينكس
+      </li>
+      <li>
+        <strong>الأجهزة المدمجة (Embedded):</strong> أجهزة التلفزيون الذكية وأنظمة
+        المراقبة وإنترنت الأشياء
+      </li>
+    </ul>
+  </section>
+
+  <section id="linux-vs-windows" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">لينكس مقابل ويندوز</h2>
+
+    <div class="overflow-x-auto my-4">
+      <table class="min-w-full border border-navy-100 dark:border-zinc-700">
+        <thead class="bg-navy-50 dark:bg-zinc-800/50">
+          <tr>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">الميزة</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">لينكس</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">ويندوز</th>
+          </tr>
+        </thead>
+        <tbody class="font-body text-navy-600 dark:text-zinc-300">
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">التكلفة</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مجاني بالكامل</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">يتطلب ترخيصًا مدفوعًا</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الأمان</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">أعلى بشكل عام، نادر التأثر بالفيروسات</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">مستهدف بشكل أكبر من البرمجيات الخبيثة</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الأداء</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">خفيف وسريع حتى على أجهزة قديمة</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">قد يتطلب أجهزة أقوى</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الخصوصية</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">لا يجمع بيانات المستخدم افتراضيًا</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">يجمع بيانات استخدام متنوعة</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">التوافق</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">محدود مع بعض البرامج والألعاب</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">توافق شامل مع البرامج والألعاب</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">سهولة الاستخدام</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">تحسّنت بشكل كبير (Ubuntu, Mint)</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">أسهل للمبتدئين تقليديًا</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">التخصيص</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">تحكم كامل بالنظام</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">محدود</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="getting-started" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف تبدأ مع لينكس؟</h2>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 1: اختر توزيعة</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      إذا كنت مبتدئًا، ابدأ بـ <strong>Ubuntu</strong> أو <strong
+        >Linux Mint</strong
+      >. كلاهما سهل الاستخدام ويحظى بدعم كبير من المجتمع العربي.
+    </p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 2: جرّب قبل التثبيت</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يمكنك تجربة أي توزيعة دون تثبيتها عبر <strong
+        >البيئة الحية (Live Environment)</strong
+      >. حمّل ملف ISO واستخدمه من USB عبر برنامج مثل <strong>Rufus</strong> أو
+      <strong>Balena Etcher</strong>.
+    </p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 3: التثبيت</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      عملية التثبيت في معظم التوزيعات الحديثة بسيطة وشبه تلقائية. سيُطلب منك
+      اختيار اللغة ولوحة المفاتيح ونوع التثبيت (مسح كامل أو تثبيت مزدوج مع
+      Windows).
+    </p>
+
+    <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الخطوة 4: التعلم</h3>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تعلّم أساسيات سطر الأوامر (Terminal). لا يُشترط أن تكون خبيرًا، لكن معرفة
+      أوامر بسيطة مثل <code>ls</code> و<code>cd</code> و<code>sudo</code> و<code
+        >apt</code
+      > ستساعدك كثيرًا.
+    </p>
+  </section>
+
+  <section id="common-problems" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">المشاكل الشائعة وحلولها</h2>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>عدم توافق بعض البرامج:</strong> استخدم Wine أو ابحث عن بدائل مفتوحة
+        المصدر
+      </li>
+      <li>
+        <strong>مشاكل التعريفات مع بعض الأجهزة:</strong> معظم التعريفات تعمل تلقائيًا،
+        وابحث عن تعريفات احتكارية (proprietary) إذا لزم الأمر
+      </li>
+      <li>
+        <strong>الألعاب:</strong> أصبح Steam عبر Proton يدعم مئات الألعاب الشائعة
+        على لينكس
+      </li>
+      <li>
+        <strong>الطابعات:</strong> معظم الطابعات تعمل عبر CUPS، لكن تأكد من توافق
+        الطابعة قبل الشراء
+      </li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للتفاصيل الكاملة، راجع: <a
+        href="/posts/common-linux-problems-beginners-guide/"
+        >ما هي المشاكل الشائعة في نظام لينكس؟</a
+      >
+    </p>
+  </section>
+
+  <section id="useful-commands" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أهم أوامر لينكس</h2>
+
+    <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># التنقل بين المجلدات
+cd /home/user        # الانتقال إلى مجلد المستخدم
+ls -la               # عرض جميع الملفات مع التفاصيل
+
+# إدارة الملفات
+cp file.txt backup/  # نسخ ملف
+mv file.txt new.txt  # تغيير اسم ملف أو نقله
+rm file.txt          # حذف ملف
+mkdir new_folder     # إنشاء مجلد جديد
+
+# البحث
+find / -name "*.txt" # البحث عن ملفات بامتداد معين
+grep "keyword" file  # البحث عن نص داخل ملف
+
+# إدارة الحزم (Ubuntu/Debian)
+sudo apt update           # تحديث قائمة الحزم
+sudo apt install package  # تثبيت حزمة
+sudo apt remove package   # حذف حزمة
+sudo apt upgrade          # تحديث جميع الحزم
+
+# معلومات النظام
+uname -a             # معلومات النواة
+top                  # العمليات الجارية
+df -h                # مساحة التخزين
+free -h              # الذاكرة المتاحة
+
+# الصلاحيات
+chmod 755 file       # تغيير صلاحيات ملف
+sudo command         # تنفيذ الأمر بصلاحيات المسؤول</code></pre>
+  </section>
+
+  <section id="security" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الأمان في لينكس</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يُعرف لينكس بمستوى أمان مرتفع مقارنة بأنظمة التشغيل الأخرى، ويرجع ذلك
+      إلى بنيته المفتوحة التي تسمح لآلاف المطورين بمراجعة الكود واكتشاف
+      الثغرات، إضافة إلى نظام الصلاحيات الصارم الموروث من Unix. فيما يلي أهم
+      الركائز التي تجعل لينكس بيئة آمنة:
+    </p>
+
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li>
+        <strong>نظام الصلاحيات (Permissions):</strong> كل ملف ومجلد له صلاحيات
+        قراءة وكتابة وتنفيذ منفصلة للمالك والمجموعة والآخرين، ما يمنع البرامج
+        العادية من التأثير على النظام دون إذن صريح
+      </li>
+      <li>
+        <strong>حساب root المحمي:</strong> لا يعمل المستخدم بصلاحيات كاملة
+        افتراضيًا، بل يستخدم أمر <code>sudo</code> مؤقتًا عند الحاجة فقط، ما يقلل
+        من احتمالية الأخطاء أو الاختراقات الجسيمة
+      </li>
+      <li>
+        <strong>أنظمة التحكم الإلزامي بالوصول (MAC):</strong> أدوات مثل <strong
+          >SELinux</strong
+        > (في Fedora وRed Hat) و<strong>AppArmor</strong> (في Ubuntu) تفرض قيودًا
+        إضافية على ما يمكن لكل برنامج الوصول إليه
+      </li>
+      <li>
+        <strong>الجدار الناري:</strong> أدوات مثل <code>ufw</code> (Ubuntu) و<code
+          >firewalld</code
+        > (Fedora) تُستخدم للتحكم في حركة الشبكة الداخلة والخارجة
+      </li>
+      <li>
+        <strong>التحديثات المستمرة:</strong> يصدر مجتمع لينكس تحديثات أمنية
+        بشكل سريع ومتكرر، وغالبًا ما تُغلق الثغرات خلال ساعات من اكتشافها
+      </li>
+    </ul>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      ورغم هذا المستوى العالي من الأمان، يبقى لينكس عرضة لمخاطر مثل الإعدادات
+      الخاطئة أو استخدام كلمات مرور ضعيفة أو تجاهل التحديثات، لذا يُنصح دائمًا
+      بتفعيل الجدار الناري، وتحديث النظام بانتظام، وتجنب تشغيل الأوامر بصلاحيات
+      <code>root</code> إلا عند الضرورة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لمزيد من التفاصيل حول التوزيعات المتخصصة في هذا المجال، راجع: <a
+        href="/posts/best-linux-distros-cybersecurity/"
+        >أفضل 5 توزيعات لينكس للأمن السيبراني</a
+      >.
+    </p>
+  </section>
+
+  <section id="faq" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أسئلة شائعة عن لينكس</h2>
+
+    <div class="space-y-6">
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل لينكس مجاني فعلاً؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          نعم، معظم توزيعات لينكس مجانية بالكامل للتحميل والاستخدام والتعديل،
+          بما في ذلك على مستوى الشركات. بعض التوزيعات المخصصة للمؤسسات مثل RHEL
+          تقدم نسخًا مجانية للاستخدام الشخصي، مع باقات دعم فني مدفوعة اختياريًا
+          للشركات.
+        </p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل أحتاج إلى معرفة برمجية لاستخدام لينكس؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          لا، توزيعات مثل Ubuntu وLinux Mint وZorin OS مصممة لتكون سهلة الاستخدام
+          تمامًا كأي نظام تشغيل تقليدي، بواجهات رسومية كاملة لا تتطلب فتح الطرفية
+          (Terminal) إلا نادرًا. معرفة أوامر السطر الأساسية تُعد ميزة إضافية وليست
+          شرطًا.
+        </p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يمكنني تشغيل ألعاب Windows على لينكس؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          أصبح ذلك ممكنًا بدرجة كبيرة بفضل أدوات مثل <strong>Proton</strong> المدمجة
+          في منصة Steam، و<strong>Wine</strong> للبرامج بشكل عام. مع ذلك، بعض
+          الألعاب التي تعتمد على أنظمة حماية معينة (anti-cheat) قد لا تعمل بشكل كامل.
+        </p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يمكن تثبيت لينكس مع Windows على نفس الجهاز؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          نعم، يدعم معظم مثبتات لينكس خيار <strong>الإقلاع المزدوج (Dual Boot)</strong>،
+          حيث يمكنك الاختيار بين تشغيل Windows أو لينكس عند بدء تشغيل الجهاز، دون
+          فقدان بياناتك إذا اتبعت خطوات التثبيت بعناية.
+        </p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">ما التوزيعة الأنسب للانتقال من Windows؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">
+          تُعد Linux Mint وZorin OS من أفضل الخيارات للقادمين من Windows، بفضل
+          واجهاتهما المألوفة وسهولة التثبيت. للمزيد من التفاصيل، راجع مقارنة <a
+            href="/posts/zorin-os-vs-linux-mint-windows-migration/"
+            >Zorin OS أم Linux Mint</a
+          >.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+
+    <ul class="space-y-3">
+      <li>
+        <a href="/posts/linux-distros-by-use-case-which-one-suits-you/"
+          >أنواع توزيعات لينكس حسب الاستخدام: أيها يناسبك؟</a
+        >
+      </li>
+      <li>
+        <a href="/posts/zorin-os-vs-linux-mint-windows-migration/"
+          >Zorin OS أم Linux Mint: أيهما أفضل للقادمين من Windows؟</a
+        >
+      </li>
+      <li>
+        <a href="/posts/best-linux-distros-cybersecurity/"
+          >أفضل 5 توزيعات لينكس للأمن السيبراني عالية الكفاءة</a
+        >
+      </li>
+      <li>
+        <a href="/posts/wayland-vs-x11-linux-future-2026/"
+          >مستقبل الواجهات في لينكس: هل ينهي Wayland عصر X11 تماماً؟</a
+        >
+      </li>
+      <li>
+        <a href="/posts/common-linux-problems-beginners-guide/"
+          >ما هي المشاكل الشائعة في نظام لينكس؟ دليلك الشامل</a
+        >
+      </li>
+    </ul>
+  </section>
+</WikiLayout>
+</BaseLayout>

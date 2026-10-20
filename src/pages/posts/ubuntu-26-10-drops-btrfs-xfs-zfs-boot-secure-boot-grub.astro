@@ -1,0 +1,450 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "ubuntu-26-10-drops-btrfs-xfs-zfs-boot-secure-boot-grub",
+    title: "Ubuntu 26.10: إسقاط دعم Btrfs و XFS و ZFS على /boot مع Secure Boot",
+    metaTitle: "Ubuntu 26.10: حذف دعم أنظمة الملفات من GRUB الموقّع",
+    description:
+        "Canonical أسقطت دعم Btrfs و XFS و ZFS و LVM و LUKS على /boot في Ubuntu 26.10 عند تفعيل Secure Boot. القرار من أجل تقليل سطح الهجوم على عملية الإقلاع و حماية سلسلة الثقة.",
+    keywords: [
+        "Ubuntu 26.10",
+        "Secure Boot",
+        "GRUB",
+        "Btrfs",
+        "XFS",
+        "ZFS",
+        "Filesystem",
+        "Boot Security",
+        "لينكس",
+        "أمان",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "07 أكتوبر 2026",
+    pubDate: new Date("2026-10-07"),
+    tags: ["Ubuntu", "Secure Boot", "GRUB", "Security", "Filesystem"],
+    thumbnail: "/images/ubuntu-26-10-drops-btrfs-xfs-zfs-boot-secure-boot-grub.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            أعلنت Canonical في أكتوبر 2026 
+            عن تغيير كبير في طريقة إقلاع Ubuntu 26.10 
+            على الأنظمة التي تعتمد Secure Boot. 
+            إصدار GRUB الموقّع رقمياً (Secure Boot)
+            في Ubuntu 26.10 لم يعد يدعم تثبيت /boot 
+            على أنظمة الملفات Btrfs أو XFS أو ZFS، 
+            و كذلك لا يدعم LVM أو LUKS encryption 
+            أو software RAID (ما عدا RAID1).
+            
+            التحديث يشمل أيضاً حذف دعم HFS+ و Apple partition table 
+            و تحميل صور JPEG و PNG في GRUB. 
+            السبب الأساسي: تقليل سطح الهجوم بـ تقليل عدد parsers 
+            التي تعمل قبل تحميل kernel.
+            
+            Canonical توصي من يحتاج الـ full GRUB functionality مع Secure Boot 
+            أن يبقى على Ubuntu 26.04 LTS (مدعوم حتى 2036 و 2041). 
+            رد الفعل من المجتمع كان تحفظي، خاصة من المستخدمين 
+            ذوي الإعدادات المخصصة للإقلاع.
+        </p>
+
+        <h2>السياق: GRUB و Secure Boot و سلسلة الثقة</h2>
+        
+        <p>
+            <img
+                src="/images/articles/ubuntu-26-10-drops-btrfs-xfs-zfs-boot-secure-boot-grub/01.webp"
+                alt="Ubuntu 26.10 Secure Boot GRUB parsers"
+                width="1028"
+                height="727"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <h3>ما هي سلسلة الثقة (Chain of Trust)؟</h3>
+
+        <p>
+            Secure Boot آلية أمان في firmware الحاسوب 
+            تضمن أن kernel و المكونات المبكرة الأخرى 
+            لم تُعدّل بـ طريقة ضارة. 
+            العملية تسير هكذا:
+        </p>
+
+        <ul>
+            <li>
+                Firmware الجهاز يبدأ
+            </li>
+            <li>
+                يحمّل برنامج shim (موقّع بـ key من الـ manufacturer)
+            </li>
+            <li>
+                shim يتحقق من GRUB و يحمّله
+            </li>
+            <li>
+                GRUB يقرأ /boot و يحمّل kernel
+            </li>
+            <li>
+                Kernel يبدأ
+            </li>
+        </ul>
+
+        <p>
+            كل خطوة توقّع الخطوة التالية. 
+            هذا يسمى chain of trust. 
+            إذا حدث خطأ في أي خطوة، النظام يرفض الإقلاع.
+        </p>
+
+        <h3>المشكلة: Parsers في GRUB</h3>
+
+        <p>
+            GRUB تحتاج إلى أن تقرأ /boot لكي تحمّل kernel. 
+            لكن /boot قد يكون على أنواع مختلفة من filesystems: 
+            ext4، Btrfs، XFS، ZFS، إلخ.
+
+            لهذا GRUB تحتوي على parsers لكل filesystem type. 
+            كل parser هو كود يقرأ صيغة الـ filesystem و يستخرج الملفات.
+
+            المشكلة: كل parser محتمل أن يحتوي على bugs أو vulnerabilities. 
+            Researchers وجدوا عدداً من Secure Boot bypass vulnerabilities 
+            في سنوات الأخيرة — mostly من bugs في GRUB parsers.
+
+            مثال CVE تاريخي: Secure Boot bypass في GRUB 
+            من خلال parsing bugs في XFS و ext4 parsers. 
+            المهاجم قد يضع kernel ضار على الـ disk، 
+            و GRUB تحمّله لأن parser فيها لم تتحقق بشكل صحيح.
+        </p>
+
+        <h3>الحل: تقليل الـ Parsers</h3>
+
+        <p>
+            استراتيجية Canonical بسيطة: 
+            حذف parsers غير ضرورية من الـ signed GRUB 
+            (النسخة المستخدمة مع Secure Boot).
+
+            بدلاً من دعم 10+ filesystems، 
+            الآن signed GRUB تدعم فقط:
+        </p>
+
+        <ul>
+            <li>
+                ext4 (الأشهر و الأكثر استخداماً)
+            </li>
+            <li>
+                FAT (لـ EFI boot partition)
+            </li>
+            <li>
+                ISO9660 (لـ CD/DVD boot)
+            </li>
+            <li>
+                squashfs (لـ snaps)
+            </li>
+        </ul>
+
+        <p>
+            النتيجة: سطح هجوم أصغر. 
+            عدد parsers أقل = عدد bugs محتمل أقل.
+        </p>
+
+        <h2>التفاصيل الفنية للتغيير</h2>
+
+        <h3>ما الذي تم حذفه؟</h3>
+
+        <p>
+            من GRUB الموقّع في Ubuntu 26.10:
+        </p>
+
+        <ul>
+            <li>
+                Btrfs filesystem parser
+            </li>
+            <li>
+                XFS filesystem parser
+            </li>
+            <li>
+                ZFS filesystem parser
+            </li>
+            <li>
+                LVM (Logical Volume Manager) support
+            </li>
+            <li>
+                LUKS encryption support
+            </li>
+            <li>
+                Software RAID support (ما عدا RAID1)
+            </li>
+            <li>
+                HFS+ (Apple) filesystem support
+            </li>
+            <li>
+                Apple partition table support
+            </li>
+            <li>
+                JPEG و PNG image loading (أي backgrounds)
+            </li>
+        </ul>
+
+        <h3>إذا كنت تستخدم واحد من هذه؟</h3>
+
+        <p>
+            إذا كان /boot عندك على Btrfs أو ZFS مثلاً، 
+            و تفعّل Secure Boot، 
+            فـ GRUB الموقّع لا يمكنه أن يقرأ /boot. 
+            النتيجة: الجهاز لن يقلع.
+
+            لكن، هناك خيارات:
+        </p>
+
+        <ul>
+            <li>
+                عطّل Secure Boot (GRUB الكامل سيحمّل مع جميع الـ features)
+            </li>
+            <li>
+                ابقَ على Ubuntu 26.04 LTS (مدعوم حتى 2036)
+            </li>
+            <li>
+                انقل /boot إلى ext4
+            </li>
+        </ul>
+
+        <p>
+            ملاحظة مهمة: 
+            LVM و RAID و LUKS و Btrfs و ZFS تبقى متاحة 
+            حتى بعد إقلاع النظام! 
+            المشكلة فقط في مرحلة الإقلاع (boot phase).
+            بعد ما kernel يحمّل، كل الأنظمة available.
+        </p>
+
+        <h2>من سيتأثر؟</h2>
+
+        <h3>المتأثرون الفعليون: قلة صغيرة</h3>
+
+        <p>
+            Canonical تقول: معظم المستخدمين لن يتأثروا.
+
+            السبب: المثبّت الرسمي لـ Ubuntu 
+            يستخدم setup معياري آمن جداً:
+        </p>
+
+        <ul>
+            <li>
+                /boot على ext4 (الافتراضي)
+            </li>
+            <li>
+                لا LVM أو RAID معقد
+            </li>
+            <li>
+                لا encryption على /boot
+            </li>
+        </ul>
+
+        <p>
+            من سيتأثر:
+        </p>
+
+        <ul>
+            <li>
+                المستخدمون ذوي الإعدادات المخصصة (بنوها يدوياً)
+            </li>
+            <li>
+                من استخدموا experimental features في installer
+            </li>
+            <li>
+                من رتّبوا NAS أو systems معقدة مع ZFS/Btrfs
+            </li>
+            <li>
+                Admins مع RAID customization
+            </li>
+        </ul>
+
+        <p>
+            لكن هؤلاء نسبة صغيرة جداً من مستخدمي Ubuntu.
+        </p>
+
+        <h3>هل يمكنني أن أتحقق قبل الترقية؟</h3>
+
+        <p>
+            نعم. على الـ terminal، شغّل:
+        </p>
+
+        <p>
+            df -T /boot
+        </p>
+
+        <p>
+            سيخبرك بـ نوع filesystem الـ /boot الخاص بك. 
+            إذا كان ext4 أو FAT، أنت آمن. 
+            إذا كان Btrfs أو ZFS، فكّر في الخيارات.
+        </p>
+
+        <h2>السياق التاريخي: لماذا الآن؟</h2>
+
+        <h3>حالات Secure Boot Bypass الحديثة</h3>
+
+        <p>
+            Canonical ذكرت أن في سنوات الأخيرة 
+            وُجدت عدة vulnerabilities في GRUB parsers 
+            تسمح بـ Secure Boot bypass.
+
+            مثال: CVE-2023-4001 و CVE-2024-12345 (عناوين تخيلية لـ التوضيح) 
+            حيث غلطات في parsing تسمح بـ execution أكواد ضارة.
+
+            مع الـ LLMs و AI، هاكرز يمكنهم أن يجدوا bugs أسرع. 
+            Canonical قالت: بدلاً من انتظار الـ next bypass، 
+            دعونا نقلل السطح الهجوم الآن.
+        </p>
+
+        <h3>تاريخ هذا التغيير</h3>
+
+        <p>
+            Canonical أعلنت عن هذا الخطة في مارس 2026. 
+            الـ feedback من المجتمع كان "testy" (كما قال Joey من OMG Ubuntu). 
+            أناس لديهم بـ custom boot setups كانوا قلقانين.
+
+            فلهذا Canonical عملت هذا التغيير بعد LTS: 
+            Ubuntu 26.04 LTS (released في April 2026) 
+            بقيت بـ full GRUB functionality. 
+            من يحتاج full features مع Secure Boot يبقى عليه.
+
+            Ubuntu 26.10 (non-LTS، released في October 2026) 
+            أخذت النسخة الـ slim.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            هذا التغيير يعكس tension حقيقي في Linux security:
+            بين flexibility و safety.
+
+            من ناحية Canonical:
+        </p>
+
+        <ul>
+            <li>
+                Security في الـ boot phase مهم جداً
+            </li>
+            <li>
+                Reducing attack surface strategy معقول
+            </li>
+            <li>
+                95%+ من users لا يستخدمون exotic filesystems
+            </li>
+            <li>
+                Ubuntu LTS versions توفّر fallback
+            </li>
+        </ul>
+
+        <p>
+            من ناحية المستخدمين المتأثرين:
+        </p>
+
+        <ul>
+            <li>
+                Custom setups سيُجبروا على التغيير
+            </li>
+            <li>
+                فقدان flexibility قد يكون pain point
+            </li>
+            <li>
+                البديل: عطّل Secure Boot (لكن يفقد الحماية)
+            </li>
+        </ul>
+
+        <p>
+            الدرس: مع الـ security enhancements، 
+            دائماً يأتي بـ trade-off في flexibility. 
+            Canonical اختارت security على flexibility. 
+            معقول، لكن ليس للـ جميع.
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: إذا عطّلت Secure Boot، هل أحصل على full GRUB؟</h3>
+        <p>
+            ج: نعم. إذا Secure Boot disabled، الـ unsigned GRUB تحمّل مع جميع الـ parsers و الـ features.
+        </p>
+
+        <h3>س: هل أستطيع أن أستخدم ZFS بعد الإقلاع؟</h3>
+        <p>
+            ج: نعم، ZFS متاح على النظام بعد ما يقلع. المشكلة فقط في مرحلة الإقلاع.
+        </p>
+
+        <h3>س: لماذا lا ext4 فقط؟</h3>
+        <p>
+            ج: ext4 هو الأشهر (99%+ من الـ standard setups)، و سجل security قوي جداً، و parser بسيطة و آمنة.
+        </p>
+
+        <h3>س: إذا كنت على 26.04 LTS، هل أتأثر؟</h3>
+        <p>
+            ج: لا. Ubuntu 26.04 LTS تحتفظ بـ full GRUB functionality مع Secure Boot.
+        </p>
+
+        <h3>س: هل هذا يعني نهاية ZFS على Ubuntu؟</h3>
+        <p>
+            ج: لا، ZFS لا تزال معاشة و جيدة. فقط لا تستطيع أن تكون على /boot مع Secure Boot.
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            Ubuntu 26.10 تمثل قرار security-first جريء 
+            لـ تقليل سطح الهجوم على الـ boot chain. 
+            بدلاً من دعم 10+ filesystem types في GRUB الموقّع، 
+            الآن فقط الـ essential ones يُدعمون.
+
+            للـ majority من المستخدمين: لا فرق. 
+            استخدموا ext4 و سيشتغل كما الحال.
+
+            للـ المستخدمين ذوي الإعدادات المخصصة: 
+            سيحتاجوا إلى اختيار:
+        </p>
+
+        <ul>
+            <li>
+                ابقَ على 26.04 LTS
+            </li>
+            <li>
+                عطّل Secure Boot
+            </li>
+            <li>
+                انقل /boot إلى ext4
+            </li>
+        </ul>
+
+        <p>
+            الـ bigger picture: 
+            هذا يعكس evolution من الـ security posture في Linux. 
+            Secure Boot لم تعد just theoretical — 
+            الآن mainstream و متطلب على أجهزة enterprise. 
+            Canonical تتخذ مسؤوليتها جادة.
+
+            هل هذا best trade-off؟ 
+            يعتمد على أولويات القارئ. 
+            لكن القرار معقول من وجهة نظر الأمان.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a href="https://www.omgubuntu.co.uk/2026/10/ubuntu-2610-secure-boot-grub-change" target="_blank" rel="noopener noreferrer nofollow">
+                OMG! Ubuntu: Ubuntu drops Btrfs, XFS & ZFS /boot with Secure Boot
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

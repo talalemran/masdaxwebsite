@@ -1,0 +1,251 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "chinese-open-source-ai-models-global-metric-system-humain-m3",
+    title: "نماذج الذكاء الاصطناعي الصينية المفتوحة: معيار قياسي عالمي جديد",
+    metaTitle: "نماذج الذكاء الاصطناعي الصينية تصبح معيار قياسي عالمي",
+    description:
+        "نماذج الذكاء الاصطناعي الصينية مفتوحة المصدر تصبح المعيار القياسي العالمي — المملكة العربية السعودية تطلق HUMAIN-M3 بـ 428 مليار معامل بناءً على MiniMax، ودول عديدة تستخدم Qwen و DeepSeek و Kimi كنماذج أساسية لنماذجها المحلية.",
+    keywords: [
+        "HUMAIN-M3",
+        "MiniMax",
+        "Qwen",
+        "DeepSeek",
+        "نماذج ذكاء اصطناعي",
+        "مفتوح المصدر",
+        "الذكاء الاصطناعي",
+        "نموذج عربي",
+        "المملكة العربية السعودية",
+        "معيار قياسي",
+    ],
+    category: "ذكاء اصطناعي",
+    author: "طلال عمران",
+    date: "5 سبتمبر 2026",
+    pubDate: new Date("2026-09-05"),
+    tags: ["HUMAIN-M3", "نماذج ذكاء اصطناعي", "مفتوح المصدر", "Qwen", "DeepSeek"],
+    thumbnail: "/images/chinese-open-source-ai-models-global-metric-system-humain-m3.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في 3 سبتمبر، أطلقت <strong>HUMAIN</strong> — شركة تابعة لـ
+            
+                <a href="https://www.pif.gov.sa/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>صندوق الاستثمارات العامة السعودي (PIF)</strong>
+            </a>
+            — النموذج اللغوي العربي <strong>HUMAIN-M3</strong> بـ
+            <strong>428 مليار معامل</strong>. النموذج مدرّب على أكثر من
+            <strong>تريليون رمز عربي</strong>. لكن الجديد في الخبر ليس الأرقام، بل
+            <strong>من طورّ هذا النموذج</strong>.
+        </p>
+
+        <h2>صفقة استراتيجية: المملكة العربية السعودية و MiniMax</h2>
+
+        <p>
+            خلافاً لـ <strong>الشركات التي تعدّل نماذج مفتوحة المصدر وتدّعي أنها من صنعها</strong>،
+            أعلنت HUMAIN بوضوح في بيانها الرسمي:
+            <strong>النموذج تم تطويره بواسطة شركة MiniMax الصينية، بناءً على MiniMax-M3</strong>.
+        </p>
+
+        <p>
+            ما تقدمه هذه الصفقة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>المملكة العربية السعودية:</strong> توفر رأس المال وقوة الحوسبة وبيانات اللغة العربية
+            </li>
+            <li>
+                <strong>MiniMax:</strong> توفر النموذج الأساسي الذي أكمل التدريب الأساسي
+            </li>
+            <li>
+                <strong>النتيجة:</strong> نموذج وطني سعودي حقيقي بـ
+                
+                    <a href="https://www.humain.ai/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    وزن مفتوح مخطط
+                </a>
+            </li>
+        </ul>
+
+        <p>
+            <strong>ما تحفظه هذه الصفقة أولاً ليس تكاليف API، بل الوقت المستغرق في البدء من الصفر</strong>.
+            تطوير نموذج حديث من البداية يتطلب سنوات عديدة وتكاليف فشل ضخمة. MiniMax وفرت هذا الجهد.
+        </p>
+
+        <h2>نقلة نوعية: من تصدير التطبيقات إلى تصدير النماذج الأساسية</h2>
+
+        <p>
+            هذا الاتجاه 
+                <a href="https://huggingface.co/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                يعكس تحولاً أوسع يرصده <strong>Hugging Face</strong>
+            </a>
+            . في الماضي، كانت الصين تصدّر تطبيقات وخدمات API — المستخدمون النهائيون فقط. الآن،
+            <strong>تصدّر النماذج الأساسية، والدول الأخرى يمكنها إعادة تدريب وتعديل وإعادة تسمية النموذج
+            وتحويله إلى "ذكاء اصطناعي محلي"</strong>.
+        </p>
+
+        <h2>أمثلة عالمية على هذا الاتجاه</h2>
+
+        <p>
+            HUMAIN-M3 ليست حالة معزولة. المزيد والمزيد من المؤسسات الخارجية تختار نماذج صينية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>اليابان - Rakuten 3.0:</strong>
+                
+                    <a href="https://www.rakuten.co.jp/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    استخدمت معمارية DeepSeek V3
+                </a>
+            </li>
+            <li>
+                <strong>سنغافورة:</strong> دولة الاستحواذ على Qwen3-VL لتطوير
+                
+                    <a href="https://huggingface.co/aisingapore/sea-lion-7b"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    Qwen-SEA-LION
+                </a>
+                المكيفة لـ 7 لغات آسيوية
+            </li>
+            <li>
+                <strong>تايلاند:</strong> جامعة CMKL استخدمت Qwen3.5 لتطوير
+                
+                    <a href="https://huggingface.co/cmkl/mango"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    MANGO الثنائية اللغة
+                </a>
+            </li>
+            <li>
+                <strong>Meta (الولايات المتحدة):</strong>
+                
+                    <a href="https://www.meta.com/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    استخدمت Qwen و Gemma عند تطوير نموذج "Avocado"
+                </a>
+            </li>
+        </ul>
+
+        <h2>المعيار القياسي الجديد للذكاء الاصطناعي العالمي</h2>
+
+        <p>
+            <strong>الآن، إذا أطلقت شركة نموذج ذكاء اصطناعي جديد، لا يكفي أن تقول "أذكى من الجيل السابق"</strong>.
+            يجب أن تجيب أيضاً على:
+        </p>
+
+        <ul>
+            <li>
+                <strong>مقارنة بـ Qwen و DeepSeek و MiniMax:</strong> كم أكثر تكلفة لكل وحدة قدرة؟
+            </li>
+            <li>
+                <strong>هل يمكن الحصول على الأوزان؟</strong> أم أنه محصور على API فقط؟
+            </li>
+            <li>
+                <strong>هل يمكن للحكومات والمؤسسات الاحتفاظ ببيانات العملاء على خوادمهم الخاصة؟</strong>
+            </li>
+        </ul>
+
+        <p>
+            عندما أقرّت
+            
+                <a href="https://www.meta.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Meta
+            </a>
+            و السعودية واليابان وسنغافورة بأفعالهم الخاصة، <strong>النماذج الصينية مفتوحة المصدر أصبحت
+            معياراً قياسياً عالمياً</strong>.
+        </p>
+
+        <h2>أرقام النمو من Hugging Face</h2>
+
+        <p>
+            البيانات من 
+                <a href="https://huggingface.co/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Hugging Face
+            </a>
+            تعطي أساساً لهذا الاتجاه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>نماذج صينية:</strong> تمثل 41% من تحميلات المنصة في السنة الماضية
+                — تتفوق على الولايات المتحدة للمرة الأولى
+            </li>
+            <li>
+                <strong>عائلة Qwen وحدها:</strong> أنتجت أكثر من 113,000 نموذج مشتق
+            </li>
+        </ul>
+
+        <p>
+            التحميلات ليست مساوية للإيرادات التجارية، والنماذج المشتقة ليست الاعتماد الدائم.
+            <strong>لكن عندما يحدث التحميل والضبط الدقيق والنشر وإعادة التدريب في نفس الوقت</strong>，
+            
+                <a href="https://www.deepseek.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                النماذج الصينية المفتوحة لم تعد مجرد منتجات شهيرة
+            </a>
+            ، بل أصبحت
+            <strong>مرحلة أساسية لا مفر منها عند بناء الدول لنماذجها المحلية</strong>.
+        </p>
+
+        <h2>الخلاصة: نظام معايير جديد</h2>
+
+        <p>
+            <strong>النماذج الصينية مفتوحة المصدر أصبحت "نظام القياس" الموحد للذكاء الاصطناعي العالمي</strong>.
+            التكاليف المنخفضة والأوزان المفتوحة والقدرة على الاحتفاظ بالسيطرة المحلية على البيانات
+            والخوادم — هذا ما تطلبه الدول والشركات الآن. HUMAIN-M3 ليست مجرد نموذج عربي، بل
+            <strong>دليل على أن الصين أصبحت مورداً أساسياً للذكاء الاصطناعي العالمي</strong>.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a href="https://eu.36kr.com/en/p/3970014644295303"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                36Kr Europe
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

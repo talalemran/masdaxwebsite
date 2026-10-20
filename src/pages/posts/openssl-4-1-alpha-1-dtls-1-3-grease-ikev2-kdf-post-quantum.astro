@@ -1,0 +1,313 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "openssl-4-1-alpha-1-dtls-1-3-grease-ikev2-kdf-post-quantum",
+    title: "OpenSSL 4.1 Alpha 1: بروتوكول DTLS 1.3 و GREASE وتحسينات التشفير ما بعد الكم",
+    metaTitle: "OpenSSL 4.1 Alpha: DTLS 1.3، GREASE، وتحسينات أداء بـ AVX-512",
+    description:
+        "OpenSSL 4.1 Alpha 1 صدرت في 9 سبتمبر 2026 — معاينة أولى لنسخة رئيسية بدعم DTLS 1.3 للاتصالات الآمنة عبر UDP، آلية GREASE لمنع فشل القابلية للتوسع، IKEv2 KDF للـ IPsec، و تحسينات AVX-512 لتشفير ما بعد الكم على x86_64 و PowerPC و s390x.",
+    keywords: [
+        "OpenSSL 4.1",
+        "DTLS 1.3",
+        "GREASE",
+        "IKEv2",
+        "Post-quantum cryptography",
+        "ML-DSA",
+        "AVX-512",
+        "تشفير",
+        "أمن",
+        "SSL/TLS",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "10 سبتمبر 2026",
+    pubDate: new Date("2026-09-10"),
+    tags: ["OpenSSL", "DTLS", "أمان", "تشفير", "Post-quantum"],
+    thumbnail: "/images/openssl-4-1-alpha-1-dtls-1-3-grease-ikev2-kdf-post-quantum.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            مشروع 
+                <a href="https://www.openssl.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>OpenSSL</strong>
+            </a>
+            أطلق <strong>OpenSSL 4.1 Alpha 1</strong> في 9 سبتمبر 2026 —
+            <strong>الإصدار الأول للاختبار من النسخة الرئيسية الجديدة</strong>. هذا الإصدار
+            يجلب <strong>ميزات تشفير حديثة وتحسينات أداء شاملة</strong>
+            <strong>لمكتبة التشفير الحرة والمفتوحة المصدر الأكثر استخداماً عالمياً</strong>.
+        </p>
+
+        <h2>DTLS 1.3: الاتصالات الآمنة عبر UDP</h2>
+
+        <p>
+            أبرز ميزة جديدة هي <strong>دعم DTLS 1.3 الكامل</strong>.
+            
+                <a href="https://en.wikipedia.org/wiki/Datagram_Transport_Layer_Security"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>DTLS (Datagram Transport Layer Security)</strong>
+            </a>
+            <strong>توفر نفس الأمان الذي توفره TLS لكن فوق بروتوكول UDP غير موثوق</strong>.
+            هذا حاسم لـ:
+        </p>
+
+        <ul>
+            <li><strong>محادثات الفيديو والصوت:</strong> تطبيقات الوقت الفعلي</li>
+            <li><strong>الألعاب الإلكترونية:</strong> تتطلب زمن انتظار منخفض</li>
+            <li><strong>أجهزة IoT:</strong> مع موارد محدودة</li>
+            <li><strong>التطبيقات الملحة:</strong> الـ positioning و navigation</li>
+        </ul>
+
+        <p>
+            <strong>DTLS 1.3 يجلب عدة تحسينات على DTLS 1.2</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>مصافحات أسرع:</strong>
+                
+                    <a href="https://tools.ietf.org/html/rfc9147"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>من 3 رسائل إلى رسالة واحدة</strong>
+                </a>
+            </li>
+            <li><strong>السرية الأمامية:</strong> مفاتيح جلسة قديمة لا تُكسر</li>
+            <li>
+                <strong>دعم التشفير ما بعد الكم:</strong>
+                <strong>مدمج مباشرة في البروتوكول</strong>
+            </li>
+            <li>
+                <strong>تنسيق رأس محسّن:</strong> <strong>يقلل حجم البيانات المرسلة</strong>
+            </li>
+        </ul>
+
+        <h2>GREASE: منع فشل القابلية للتوسع</h2>
+
+        <p>
+            
+                <a href="https://tools.ietf.org/html/rfc8701"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>GREASE (Generate Random Extensions And Sustain Extensibility)</strong>
+            </a>
+            <strong>ميكانيزم بسيط لكن فعال لضمان توافقية TLS طويلة الأجل</strong>.
+        </p>
+
+        <p>
+            الفكرة: <strong>إرسال قيم عشوائية في عمليات مصافحة TLS</strong> — قيم لن تُستخدم
+            مطلقاً. بهذا، <strong>الخوادم والعملاء التي لا تتعامل مع الأشياء غير المعروفة بشكل صحيح
+            ستكتشف المشكلة مبكراً</strong>.
+        </p>
+
+        <p>
+            <strong>هذا يمنع حدوث "ossification" — حالة تصلب البروتوكول</strong> حيث
+            <strong>الخوادم تتوقف عن قبول ميزات جديدة لأنها لا تتعرف عليها</strong>.
+        </p>
+
+        <h2>IKEv2 KDF: توحيد IPsec والـ TLS</h2>
+
+        <p>
+            <strong>OpenSSL 4.1 أضافت دعم IKEv2 KDF</strong> —
+            
+                <a href="https://en.wikipedia.org/wiki/Internet_Key_Exchange"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>دالة اشتقاق المفاتيح المستخدمة في IPsec و IKEv2 VPNs</strong>
+            </a>
+            .
+        </p>
+
+        <p>
+            هذا يسمح <strong>بتوحيد عمليات التشفير عبر TLS و IPsec</strong> —
+            <strong>شيء مهم للتطبيقات التي تستخدم كلا البروتوكولين</strong>.
+        </p>
+
+        <h2>تحسينات أداء Post-Quantum Cryptography</h2>
+
+        <p>
+            <strong>OpenSSL 4.1 تقوم بدفعة شديدة على تحسينات الأداء</strong> لـ
+            
+                <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-227.pdf"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>خوارزميات NIST ما بعد الكم (ML-DSA و ML-KEM)</strong>
+            </a>
+            :
+        </p>
+
+        <ul>
+            <li>
+                <strong>AVX-512 ML-DSA SHAKE x4:</strong>
+                <strong>معالجة أربع عمليات SHAKE بالتوازي على x86_64</strong>
+            </li>
+            <li>
+                <strong>AVX-512 AES-CBC optimizations:</strong> على x86_64
+            </li>
+            <li>
+                <strong>PowerPC (ppc64le) و s390x optimizations:</strong>
+                <strong>لـ ML-DSA و ML-KEM NTT operations</strong>
+            </li>
+        </ul>
+
+        <p>
+            <strong>هذه التحسينات حاسمة لأن التشفير ما بعد الكم بطيء نسبياً</strong> —
+            <strong>المحسّنات تساعد في جعله عملياً للاستخدام على نطاق واسع</strong>.
+        </p>
+
+        <h2>دعم معمارية Elbrus2000</h2>
+
+        <p>
+            <strong>OpenSSL 4.1 أضافت دعم Elbrus2000 (e2k)</strong> —
+            
+                <a href="https://en.wikipedia.org/wiki/Elbrus_(processor)"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>معالج روسي الصنع يستخدم في الأنظمة الحكومية والعسكرية</strong>
+            </a>
+            . هذا يوسّع <strong>نطاق OpenSSL إلى معمارات غير تقليدية</strong>.
+        </p>
+
+        <h2>تغييرات في الخيارات المُعطّلة</h2>
+
+        <p>
+            <strong>OpenSSL 4.1 يزيل عدة خيارات مُعطّلة</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>no-ecdsa و no-ecdh:</strong>
+                
+                    <a href="https://github.com/openssl/openssl/pull/26000"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>استخدم no-ec بدلاً منها</strong>
+                </a>
+            </li>
+            <li>
+                <strong>Windows CE و Windows Itanium:</strong>
+                <strong>دعم البناء تم حذفه بالكامل</strong>
+            </li>
+            <li>
+                <strong>WWW::Curl::Easy:</strong>
+                
+                    <a href="https://github.com/openssl/openssl/pull/26100"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>استُبدلت بـ Net::Curl::Easy المدعومة بشكل أفضل</strong>
+                </a>
+            </li>
+        </ul>
+
+        <h2>تغييرات في التحقق من الشهادات</h2>
+
+        <p>
+            <strong>OpenSSL 4.1 يفضل الآن SAN (Subject Alternative Names) على CN (Common Name)</strong>
+            
+                <a href="https://tools.ietf.org/html/rfc6125"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>حسب معايير RFC الحديثة</strong>
+            </a>
+            . هذا يعني <strong>أن الشهادات القديمة التي تعتمد على CN وحدها قد تحتاج تحديث</strong>.
+        </p>
+
+        <h2>تحذير: Alpha فقط للاختبار</h2>
+
+        <p>
+            <strong>OpenSSL 4.1 Alpha 1 ليست للاستخدام في الإنتاج</strong>.
+            
+                <a href="https://www.openssl.org/news/newslog.html"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>المشروع ينصح صراحة أنه للاختبار فقط</strong>
+            </a>
+            .
+        </p>
+
+        <p>
+            <strong>التوصيات:</strong>
+        </p>
+
+        <ul>
+            <li>
+                <strong>فرق التطوير:</strong>
+                
+                    <a href="https://github.com/openssl/openssl/issues"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>اختبر التوافقية واطلب feedback المبكر</strong>
+                </a>
+            </li>
+            <li>
+                <strong>فرق الأمان:</strong> فهم التغييرات لتقييم تأثير الترقية المستقبلية
+            </li>
+            <li>
+                <strong>الإنتاج:</strong>
+                <strong>استمر مع OpenSSL 3.x أو 4.0 حتى الإصدار المستقر</strong>
+            </li>
+        </ul>
+
+        <h2>ما التالي؟</h2>
+
+        <p>
+            <strong>من المتوقع إصدار عدة alphas و betas قبل الإصدار المستقر لـ OpenSSL 4.1</strong>.
+            
+                <a href="https://www.openssl.org/policies/releasestrategy.html"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>OpenSSL تتبع جدول إصدار محدد مسبقاً</strong>
+            </a>
+            .
+        </p>
+
+        <p>
+            <strong>الإصدار النهائي لـ OpenSSL 4.1 متوقع في الربع الأول من 2027</strong>
+            (توقع تقريبي بناءً على الأنماط السابقة).
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://9to5linux.com/openssl-4-1-promises-support-for-dtls-1-3-ikev2-kdf-and-grease-alpha-out-now"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                9to5Linux
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

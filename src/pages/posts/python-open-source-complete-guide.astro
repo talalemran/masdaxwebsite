@@ -1,0 +1,410 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "python-open-source-complete-guide",
+    title: "لغة بايثون: دليل شامل للغة البرمجة مفتوحة المصدر الأكثر انتشارًا",
+    metaTitle: "دليل بايثون الشامل: لغة البرمجة المفتوحة المصدر الأولى",
+    description:
+        "دليل شامل للغة بايثون مفتوحة المصدر: تاريخها، ترخيصها، ميزاتها الحديثة في إصدار 3.14، أبرز مجالات استخدامها، مزاياها وقيودها، ومصادر رسمية للتعلم والتعمق.",
+    keywords: [
+        "بايثون",
+        "Python",
+        "لغة بايثون مفتوحة المصدر",
+        "Python 3.14",
+        "PSF License",
+        "CPython",
+        "تعلم بايثون",
+        "بايثون للذكاء الاصطناعي",
+        "PyPI",
+        "GIL Python",
+    ],
+    category: ["برمجة", "مقالات"],
+    author: "طلال عمران",
+    date: "31 أغسطس 2026",
+    pubDate: new Date("2026-08-31"),
+    tags: ["Python", "بايثون", "مفتوح المصدر", "CPython", "برمجة"],
+    thumbnail: "/images/python-open-source-complete-guide.webp",
+};
+
+const tocItems = [
+    { id: "history", label: "نبذة تاريخية سريعة" },
+    { id: "why-open-source", label: "لماذا بايثون مفتوحة المصدر فعليًا؟" },
+    { id: "language-features", label: "ما الذي يميز بايثون كلغة برمجة؟" },
+    { id: "latest-version", label: "بايثون 3.14: أحدث إصدار مستقر" },
+    { id: "package-ecosystem", label: "النظام البيئي للمكتبات: PyPI وpip" },
+    { id: "use-cases", label: "أبرز مجالات استخدام بايثون" },
+    { id: "strengths", label: "نقاط القوة" },
+    { id: "limitations", label: "القيود والانتقادات بموضوعية" },
+    { id: "comparison-table", label: "جدول مقارنة سريع مع لغات أخرى" },
+    { id: "who-fits", label: "لمن تناسب بايثون فعليًا؟" },
+    { id: "external-resources", label: "مصادر رسمية وخارجية للتعلم" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            قلّة من لغات البرمجة استطاعت أن تكون في آن واحد الخيار الأول
+            لطالب يكتب أول سطر كود في حياته، والأداة الأساسية التي تدرّب
+            بها أضخم نماذج الذكاء الاصطناعي في العالم. بايثون تحقق هذا
+            التوازن النادر، وهذا وحده يفسّر مكانتها كلغة الأكثر انتشارًا
+            عالميًا وفق مؤشر TIOBE الحالي.
+        </p>
+
+        <p>
+            هذا الدليل يشرح كل ما تحتاج معرفته عن بايثون كلغة مفتوحة
+            المصدر: تاريخها، ترخيصها، ميزاتها التقنية، أحدث إصدارها،
+            مجالات استخدامها، ونقاط قوتها وقيودها بموضوعية.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="history">نبذة تاريخية سريعة</h2>
+
+        <p>
+            طوّر المبرمج الهولندي غيدو فان روسوم لغة بايثون في أواخر
+            الثمانينيات، وأصدر أول نسخة رسمية منها عام 1991. اختار الاسم
+            تكريمًا لبرنامجه الكوميدي المفضل "Monty Python's Flying
+            Circus"، لا نسبة للثعبان كما يعتقد كثيرون، وهذا انعكس لاحقًا
+            في روح المرح التي يحملها توثيق اللغة أحيانًا.
+        </p>
+
+        <p>
+            هدف فان روسوم كان واضحًا منذ البداية: لغة بسيطة القراءة،
+            تعتمد على المسافات البادئة (Indentation) كجزء من بنية الكود
+            نفسه بدلاً من الأقواس المعقدة، ما يجبر أي مبرمج على كتابة كود
+            منظم بصريًا بشكل طبيعي.
+        </p>
+
+        <h2 id="why-open-source">لماذا بايثون مفتوحة المصدر فعليًا؟</h2>
+
+        <p>
+            بايثون مرخّصة تحت رخصة PSF (Python Software Foundation
+            License)، وهي رخصة متوافقة مع معايير OSI للبرمجيات مفتوحة
+            المصدر، وتشبه في مرونتها رخصة MIT إلى حد كبير:
+        </p>
+
+        <ul>
+            <li>يمكن لأي شخص فحص الشفرة المصدرية الكاملة للمفسّر نفسه (CPython)</li>
+            <li>يمكن تعديل اللغة أو بناء نسخ مشتقة منها دون قيود معقدة</li>
+            <li>يمكن استخدامها في مشاريع تجارية مغلقة دون أي التزام بفتح كودك الخاص</li>
+            <li>تديرها مؤسسة غير ربحية (Python Software Foundation) لا شركة واحدة تتحكم في قراراتها</li>
+        </ul>
+
+        <p>
+            هذا النموذج جعل بايثون محايدة تمامًا تجاه أي شركة بعينها: جوجل
+            ومايكروسوفت وأمازون ومئات الشركات الأخرى تساهم فيها وتستخدمها
+            معًا، دون أن يملك أي طرف سيطرة حصرية على مستقبلها.
+        </p>
+
+        <h2 id="language-features">ما الذي يميز بايثون كلغة برمجة؟</h2>
+
+        <ul>
+            <li>
+                <strong>نحو قريب من اللغة الإنجليزية الطبيعية</strong>:
+                كود بايثون غالبًا يُقرأ كجملة عادية تقريبًا، ما يقلل حاجز
+                الدخول للمبتدئين بشكل كبير
+            </li>
+            <li>
+                <strong>كتابة ديناميكية (Dynamic Typing)</strong>: لا حاجة
+                لتحديد نوع المتغير صراحة، رغم أن بايثون الحديثة تدعم
+                تلميحات الأنواع (Type Hints) الاختيارية لمشاريع أكبر
+            </li>
+            <li>
+                <strong>لغة مفسّرة (Interpreted)</strong>: الكود يُنفَّذ
+                مباشرة دون خطوة تجميع منفصلة، ما يسرّع دورة التطوير
+                والاختبار
+            </li>
+            <li>
+                <strong>دعم متعدد الأنماط البرمجية</strong>: تدعم البرمجة
+                الكائنية والوظيفية والإجرائية معًا، دون فرض نمط واحد
+                إجباري عليك
+            </li>
+        </ul>
+
+         <p>
+            <img
+                src="/images/python-code-editor.webp"
+                alt="كود بايثون مفتوح في محرر أكواد"
+                width="1200"
+                height="801"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <h2 id="latest-version">بايثون 3.14: أحدث إصدار مستقر</h2>
+
+        <p>
+            الإصدار المستقر الحالي هو <strong>Python 3.14.7</strong>
+            (الصادر في 5 أغسطس 2026)، بينما يقترب الإصدار التالي 3.15 من
+            الإطلاق النهائي عبر مراحل الاختبار (RC1 صدر في 4 أغسطس 2026).
+            أبرز ما جلبه إصدار 3.14 الرئيسي:
+        </p>
+
+        <ul>
+            <li>
+                <strong>دعم رسمي كامل للخيوط الحرة (Free-threaded
+                Python)</strong> عبر PEP 779، ما يتيح استغلال معالجات
+                متعددة الأنوية بكفاءة أكبر دون قيود قفل المفسّر العام
+                (GIL) التقليدية
+            </li>
+            <li>
+                <strong>تقييم مؤجل للتلميحات النوعية (Deferred
+                Annotations)</strong> عبر PEP 649، ما يجعل التعامل مع
+                الأنواع في الأطر البرمجية الكبيرة أكثر مرونة واستقرارًا
+            </li>
+            <li>
+                <strong>سلاسل القوالب (Template Strings أو t-strings)</strong>
+                عبر PEP 750، طريقة جديدة أكثر أمانًا لمعالجة النصوص مقارنة
+                بسلاسل f-strings التقليدية
+            </li>
+            <li>
+                <strong>دعم مضمّن لضغط Zstandard</strong> عبر وحدة
+                compression.zstd الجديدة في المكتبة القياسية
+            </li>
+            <li>تلوين صياغة مباشر في الطرفية التفاعلية (PyREPL) وأدوات سطر الأوامر القياسية</li>
+        </ul>
+
+        <h2 id="package-ecosystem">النظام البيئي للمكتبات: PyPI وpip</h2>
+
+        <p>
+            القوة الحقيقية لبايثون لا تكمن في اللغة وحدها، بل في نظامها
+            البيئي الضخم من المكتبات الجاهزة. مستودع <strong>PyPI</strong>
+            (Python Package Index) يضم مئات الآلاف من الحزم الجاهزة
+            للاستخدام الفوري، تُثبَّت عبر أداة <strong>pip</strong> المدمجة
+            افتراضيًا مع أي تثبيت لبايثون.
+        </p>
+
+        <p>
+            هذا يعني عمليًا أن أي مشكلة برمجية شائعة تقريبًا لها مكتبة
+            جاهزة تحلها: من معالجة البيانات (Pandas) إلى التعلم الآلي
+            (PyTorch وTensorFlow) إلى تطوير الويب (Django وFlask)، دون
+            الحاجة لكتابة كل شيء من الصفر.
+        </p>
+
+        <h2 id="use-cases">أبرز مجالات استخدام بايثون</h2>
+
+        <ul>
+            <li>
+                <strong>الذكاء الاصطناعي وتعلم الآلة</strong>: اللغة
+                المهيمنة بلا منازع تقريبًا في هذا المجال، بفضل مكتبات مثل
+                PyTorch وNumPy وScikit-learn
+            </li>
+            <li>
+                <strong>علوم البيانات وتحليلها</strong>: عبر Pandas
+                وJupyter Notebooks، أصبحت المعيار الفعلي لدى محللي البيانات
+            </li>
+            <li>
+                <strong>تطوير الويب الخلفي</strong>: أطر عمل مثل Django
+                وFlask وFastAPI تُستخدم في مواقع ضخمة مثل Instagram
+                وSpotify
+            </li>
+            <li>
+                <strong>الأتمتة والسكربتات</strong>: الخيار الأول لأتمتة
+                مهام مسؤولي الأنظمة والمهام المتكررة اليومية
+            </li>
+            <li>
+                <strong>التعليم</strong>: اللغة الأكثر تدريسًا كمقدمة
+                للبرمجة في الجامعات ومنصات التعلم حول العالم
+            </li>
+            <li>
+                <strong>الحوسبة العلمية</strong>: معيار فعلي في الأبحاث
+                الأكاديمية والفيزياء الحاسوبية عبر مكتبات مثل SciPy
+            </li>
+        </ul>
+
+        <h2 id="strengths">نقاط القوة</h2>
+
+        <ul>
+            <li>منحنى تعلم لطيف جدًا، مناسب حتى لمن لا خلفية برمجية له إطلاقًا</li>
+            <li>نظام بيئي من المكتبات لا يُضاهى تقريبًا في أي مجال تطبيقي</li>
+            <li>مجتمع ضخم جدًا، يعني توثيقًا وافرًا وحلولًا جاهزة لأي مشكلة تقريبًا</li>
+            <li>محايدة تمامًا تجاه أي شركة، بإدارة مؤسسة غير ربحية مستقلة</li>
+            <li>تطور مستمر ونشط، مع تحسينات أداء حقيقية في كل إصدار رئيسي جديد</li>
+        </ul>
+
+        <h2 id="limitations">القيود والانتقادات بموضوعية</h2>
+
+        <ul>
+            <li>
+                <strong>أداء أبطأ نسبيًا</strong> من لغات مُجمَّعة مثل C++
+                أو Rust في المهام الحسابية الخام، رغم أن هذا يُعوَّض غالبًا
+                عبر مكتبات مكتوبة أصلاً بلغات أسرع تحت الغطاء
+            </li>
+            <li>
+                <strong>قفل المفسّر العام (GIL)</strong>: تاريخيًا حدّ من
+                الاستفادة الكاملة من المعالجات متعددة الأنوية، رغم أن
+                إصدار 3.14 بدأ يعالج هذه المشكلة جذريًا عبر النمط الحر من
+                الخيوط
+            </li>
+            <li>
+                <strong>استهلاك ذاكرة أعلى</strong> نسبيًا مقارنة بلغات
+                منخفضة المستوى، بسبب طبيعتها كلغة مفسّرة وديناميكية
+            </li>
+            <li>
+                <strong>تشتت في إدارة البيئات الافتراضية</strong>: تعدد
+                الأدوات (venv، conda، poetry، uv) قد يربك المبتدئين في
+                البداية قبل أن يستقروا على أداة واحدة
+            </li>
+        </ul>
+
+        <h2 id="comparison-table">جدول مقارنة سريع مع لغات أخرى</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">Python</th>
+                        <th class="px-4 py-2 font-semibold">JavaScript</th>
+                        <th class="px-4 py-2 font-semibold">Rust</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">سهولة التعلم</td>
+                        <td class="px-4 py-2">سهلة جدًا</td>
+                        <td class="px-4 py-2">سهلة</td>
+                        <td class="px-4 py-2">صعبة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأداء الخام</td>
+                        <td class="px-4 py-2">متوسط</td>
+                        <td class="px-4 py-2">جيد</td>
+                        <td class="px-4 py-2">ممتاز جدًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">المجال الأبرز</td>
+                        <td class="px-4 py-2">ذكاء اصطناعي وبيانات</td>
+                        <td class="px-4 py-2">تطوير الويب</td>
+                        <td class="px-4 py-2">أنظمة وأداء حرج</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">نوع الترخيص</td>
+                        <td class="px-4 py-2">PSF (مشابهة MIT)</td>
+                        <td class="px-4 py-2">مفتوحة (المحرك V8)</td>
+                        <td class="px-4 py-2">MIT / Apache 2.0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="who-fits">لمن تناسب بايثون فعليًا؟</h2>
+
+        <ul>
+            <li><strong>المبتدئين تمامًا في البرمجة</strong>: أفضل نقطة انطلاق تقريبًا لتعلم مفاهيم البرمجة الأساسية</li>
+            <li><strong>الراغبين في العمل في الذكاء الاصطناعي وعلوم البيانات</strong>: تكاد تكون اللغة الإجبارية في هذا المجال</li>
+            <li><strong>مطوري الويب الخلفي</strong>: عبر أطر عمل ناضجة مثل Django وFastAPI</li>
+            <li><strong>الباحثين الأكاديميين</strong>: بفضل مكتباتها العلمية القوية وسهولة كتابة نماذج تجريبية سريعة</li>
+            <li>
+                <strong>أقل ملاءمة</strong>: للمشاريع التي تتطلب أقصى أداء
+                خام ممكن (محركات ألعاب، أنظمة تشغيل) دون طبقة وسيطة، حيث
+                لغات مثل Rust أو C++ أنسب مباشرة
+            </li>
+        </ul>
+
+        <h2 id="external-resources">مصادر رسمية وخارجية للتعلم</h2>
+
+        <ul>
+            <li>
+                <strong>الموقع الرسمي للغة:</strong>{" "}
+                <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">python.org</a>
+            </li>
+            <li>
+                <strong>صفحة تحميل أحدث إصدار:</strong>{" "}
+                <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer">python.org/downloads</a>
+            </li>
+            <li>
+                <strong>التوثيق الرسمي الكامل:</strong>{" "}
+                <a href="https://docs.python.org/3/" target="_blank" rel="noopener noreferrer">docs.python.org/3</a>
+            </li>
+            <li>
+                <strong>مؤسسة Python Software Foundation:</strong>{" "}
+                <a href="https://www.python.org/psf/" target="_blank" rel="noopener noreferrer">python.org/psf</a>
+            </li>
+            <li>
+                <strong>مستودع الحزم PyPI:</strong>{" "}
+                <a href="https://pypi.org/" target="_blank" rel="noopener noreferrer">pypi.org</a>
+            </li>
+            <li>
+                <strong>الكود المصدري لمفسّر CPython على GitHub:</strong>{" "}
+                <a href="https://github.com/python/cpython" target="_blank" rel="noopener noreferrer">github.com/python/cpython</a>
+            </li>
+            <li>
+                <strong>Real Python (شروحات إنجليزية عميقة ومجانية جزئيًا):</strong>{" "}
+                <a href="https://realpython.com/" target="_blank" rel="noopener noreferrer">realpython.com</a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل بايثون مجانية بالكامل للاستخدام التجاري؟</strong><br />
+            نعم تمامًا. رخصة PSF تسمح باستخدامها في أي مشروع تجاري دون أي
+            رسوم أو قيود على فتح كودك الخاص.
+        </p>
+
+        <p>
+            <strong>هل يستحق الانتقال لبايثون 3.14 فورًا؟</strong><br />
+            إن كنت تبدأ مشروعًا جديدًا، نعم. للمشاريع القائمة، يُنصح
+            بمراجعة توافق مكتباتك الأساسية أولًا قبل الترقية الكاملة.
+        </p>
+
+        <p>
+            <strong>هل بايثون بطيئة جدًا لدرجة غير عملية؟</strong><br />
+            لا في أغلب الاستخدامات. المهام الحسابية الثقيلة تُنفَّذ عادة
+            عبر مكتبات مكتوبة بلغات أسرع تحت الغطاء (مثل NumPy المبنية
+            جزئيًا بلغة C)، فتحصل على سهولة بايثون مع أداء قريب من اللغات
+            المُجمَّعة.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين Python وCPython؟</strong><br />
+            Python هي مواصفات اللغة نفسها، بينما CPython هو التطبيق
+            المرجعي الرسمي الأكثر استخدامًا لهذه المواصفات، وهناك تطبيقات
+            بديلة أخرى مثل PyPy تركز على الأداء بشكل خاص.
+        </p>
+    </PostLayout>
+</BaseLayout>

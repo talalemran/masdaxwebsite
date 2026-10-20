@@ -1,0 +1,348 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "steam-beta-proton-default-non-steam-games-windows-linux",
+    title: "Steam Beta الجديد: تشغيل ألعاب Windows كـ Non-Steam Games بـ Proton تلقائياً",
+    metaTitle: "Steam Beta: Proton Default للألعاب غير المتجر على Linux",
+    description:
+        "Steam أطلقت beta جديد يجعل Proton الخيار الافتراضي للألعاب Windows المسجلة كـ non-Steam games على Linux. التحديث يبسط تجربة تشغيل الألعاب و يصلح عدة مشاكل في Linux.",
+    keywords: [
+        "Steam",
+        "Steam Beta",
+        "Proton",
+        "Non-Steam Games",
+        "Windows Games",
+        "Linux Gaming",
+        "Steam Deck",
+        "SteamOS",
+        "ألعاب",
+        "لينكس",
+    ],
+    category: "ألعاب وترفيه",
+    author: "طلال عمران",
+    date: "10 أكتوبر 2026",
+    pubDate: new Date("2026-10-10"),
+    tags: ["Steam", "Linux Gaming", "Proton", "Windows Games"],
+    thumbnail: "/images/steam-beta-proton-default-non-steam-games-windows-linux.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            أطلقت Valve في 7 أكتوبر 2026 نسخة beta جديدة من Steam client 
+            تحمل تحسينات مهمة لـ مستخدمي Linux. 
+            أهم تحديث: Steam الآن يعيّن Proton كـ الخيار الافتراضي 
+            لـ الألعاب Windows المسجلة كـ non-Steam games.
+
+            هذا يعني: إذا أضفت لعبة Windows عادية (ليست من متجر Steam) 
+            إلى مكتبتك على Linux أو Steam Deck، 
+            Steam سيحاول تشغيلها بـ Proton افتراضياً 
+            بدلاً من محاولة تشغيلها بـ native Windows (الذي لا يعمل على Linux).
+
+            التحديث يشمل أيضاً إصلاحات عدة bugs مزعجة على Linux، 
+            مثل مشكلة الزر "Stop" الذي لا يُغلق اللعبة، 
+            و خيارات جديدة في Steam Big Picture.
+
+            هذا تحديث صغير لكن مفيد جداً للـ gamers اللذين يريدون 
+            تشغيل ألعابهم Windows المفضلة على Linux بـ أقل effort ممكن.
+        </p>
+
+        <h2>السياق: Non-Steam Games و مشكلة التوافقية</h2>
+
+        <p>
+            <img
+                src="/images/articles/steam-beta-proton-default-non-steam-games-windows-linux/01.webp"
+                alt="Steam Beta: Proton Default للألعاب غير المتجر على Linux"
+                width="1200"
+                height="671"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <h3>ما هي Non-Steam Games؟</h3>
+
+        <p>
+            Non-Steam Games هي ألعاب (أو تطبيقات) 
+            لا تأتي من متجر Steam الرسمي. 
+            قد تكون:
+        </p>
+
+        <ul>
+            <li>
+                ألعاب مشتراة من متاجر أخرى (GOG، Epic Games Store)
+            </li>
+            <li>
+                ألعاب indie مستقلة
+            </li>
+            <li>
+                تطبيقات Windows عادية
+            </li>
+            <li>
+                ألعاب قديمة أو مجانية
+            </li>
+        </ul>
+
+        <p>
+            Users يمكنهم إضافة non-Steam games إلى مكتبة Steam الخاصة بهم 
+            بـ ضغط زر "Add a Non-Steam Game to My Library" في Steam. 
+            هذا يسمح بـ تشغيلها من نفس واجهة Steam.
+        </p>
+
+        <h3>المشكلة قبل هذا التحديث</h3>
+
+        <p>
+            المشكلة القديمة: عندما تضيف non-Steam game على Linux، 
+            Steam كان يحاول تشغيله بـ نفس الطريقة اللتي يشغل بها native Linux games — 
+            أي بـ محاولة تشغيل الملف التنفيذي الـ Windows مباشرة. 
+            النتيجة؟ اللعبة تفشل لأن Linux لا تفهم binary Windows.
+
+            Users كانوا يضطرون إلى:
+        </p>
+
+        <ul>
+            <li>
+                الذهاب إلى Settings > Compatibility > Enable Proton
+            </li>
+            <li>
+                اختيار نسخة Proton معينة
+            </li>
+            <li>
+                أحياناً تغيير هذه الإعدادات لكل لعبة
+            </li>
+        </ul>
+
+        <p>
+            هذا process معقد جداً لـ non-technical users. 
+            الـ gamers العاديين ما يعرفوا ما هي Proton أو ليش تحتاجوها.
+
+            الذي يحدث: user جديد يضيف لعبة Windows، 
+            يحاول تشغيلها، تفشل، يستسلم.
+        </p>
+
+        <h3>كيفية تحديد التاريخ الضروري</h3>
+
+        <p>
+            Steam beta من 7 أكتوبر 2026 كان يجب أن يُغيّر هذا الـ workflow. 
+            الآن، non-Steam Windows games تُعيّن على Proton افتراضياً.
+        </p>
+
+        <h2>الميزات الجديدة في هذا التحديث</h2>
+
+        <h3>Proton Default لـ Non-Steam Windows Binaries</h3>
+
+        <p>
+            الميزة الأساسية:
+        </p>
+
+        <ul>
+            <li>
+                عند إضافة non-Steam game Windows إلى Steam على Linux/SteamOS
+            </li>
+            <li>
+                Steam الآن يختار Proton افتراضياً كـ compatibility layer
+            </li>
+            <li>
+                المستخدم ما يحتاج يفعل شيء يدوي
+            </li>
+            <li>
+                اللعبة يجب أن تُشتغل (حسب توافقية Proton)
+            </li>
+        </ul>
+
+        <p>
+            هذا يُقلّل الـ friction بشكل كبير. 
+            إذا كانت اللعبة محتوى Windows و أضفتها على Linux، 
+            Steam تفترض أنك تريد استخدام Proton.
+        </p>
+
+        <h3>Bug Fixes لـ Linux</h3>
+
+        <p>
+            التحديث أيضاً يصلح عدة مشاكل مزعجة:
+        </p>
+
+        <ul>
+            <li>
+                Non-Steam games لم تكن تُشتغل إذا غيّرت الـ binary عبر "browse" button
+            </li>
+            <li>
+                الزر "Stop" في Steam كان يفشل في إغلاق اللعبة إذا تم تشغيلها من external tool
+            </li>
+            <li>
+                Steam Input bugs على Linux
+            </li>
+        </ul>
+
+        <p>
+            هذه bugs صغيرة لكن مزعجة لـ Linux gamers. 
+            الإصلاحات مهمة لـ تحسين stability.
+        </p>
+
+        <h3>Steam Big Picture: Screensaver Control</h3>
+
+        <p>
+            ميزة جديدة: Steam Big Picture (الواجهة المصممة للـ TV)
+            الآن لديها setting لـ تعطيل الـ screensaver عند اللعب.
+
+            السبب: screensaver يمكن أن يتدخل في gameplay على التلفاز. 
+            الآن users يمكنهم تعطيله من Settings.
+        </p>
+
+        <h2>التأثير على Steam Deck و SteamOS</h2>
+
+        <h3>Steam Deck: الفائدة الأكبر</h3>
+
+        <p>
+            Steam Deck users يستفيدون الأكثر من هذا التحديث.
+
+            السيناريو: Deck user لديه لعبة GOG غير محتوى Steam. 
+            يريد تشغيلها على الـ Deck. 
+            قبل التحديث: يضيف اللعبة، يفشل التشغيل، يذهب للـ Settings، 
+            يختار Proton يدوياً.
+
+            بعد التحديث: يضيف اللعبة، تُشتغل Proton افتراضياً، 
+            يلعب مباشرة.
+
+            الفرق؟ أقل clicks، أقل confusion، تجربة أفضل.
+        </p>
+
+        <h3>SteamOS: نحو أفضلية Windows-on-Linux</h3>
+
+        <p>
+            SteamOS التوجه الجديد من Valve 
+            هو جعل Linux الـ default لـ gaming عند Steam. 
+            Proton-by-default لـ non-Steam games 
+            هو step في هذا الاتجاه.
+
+            الـ philosophy: بدلاً من محاولة إقناع المصنعين 
+            أن يصنعوا native Linux versions، 
+            Valve تقول: نحن نشغّل Windows games على Linux بـ كفاءة. 
+            Linux الآن قابلة للتنافس مع Windows للـ gaming.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            هذا التحديث قد يبدو صغيراً (مجرد Proton default)، 
+            لكنه يعكس فلسفة Valve المهمة:
+        </p>
+
+        <ul>
+            <li>
+                Reduce friction: أقل خطوات = أفضل تجربة
+            </li>
+            <li>
+                Default sensible: الخيار الافتراضي يجب أن يكون الخيار الأمثل
+            </li>
+            <li>
+                Empower non-technical users: ليس الجميع يفهم Proton
+            </li>
+        </ul>
+
+        <p>
+            من منظور أوسع: Proton-by-default 
+            هو شهادة على نضج Proton كـ compatibility layer. 
+            Valve واثقة جداً أن Proton يعمل بـ جودة جيدة 
+            بحيث تجعلها الخيار الافتراضي للـ جميع non-Steam Windows games.
+
+            هناك مخاطر صغيرة: بعض games قد تشتغل بـ أسوأ من التوقع 
+            إذا كانت تحتاج Proton version معينة. 
+            لكن Steam يمكنها أن تُعدّل هذا في compatibility data.
+
+            الـ bigger picture: كل تحديث Proton و كل تحديث Steam 
+            يجعل Linux gaming أقرب إلى الـ mainstream. 
+            لا تزال هناك طريق طويلة، 
+            لكن اتجاه الحركة واضح: Linux يصبح viable gaming platform.
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: هل أحتاج إلى opt-out إذا لم أريد Proton؟</h3>
+        <p>
+            ج: لا، إذا أضفت non-Steam game و اخترت binary Windows، Steam سيختار Proton افتراضياً. لكن يمكنك تغيير هذا يدوياً في compatibility settings.
+        </p>
+
+        <h3>س: هل كل non-Steam Windows games ستعمل مع هذا؟</h3>
+        <p>
+            ج: لا، توافقية Proton تختلف. البعض يعمل تمام، البعض partially، البعض لا يعمل. لكن تلقائياً Proton سيحاول.
+        </p>
+
+        <h3>س: لماذا لم تفعل Valve هذا من البداية؟</h3>
+        <p>
+            ج: Proton كان في بدايته غير موثوق. الآن، بعد سنوات من التطوير، مستقر بـ كفاية لكي يكون default.
+        </p>
+
+        <h3>س: هل هذا يؤثر على Steam Deck فقط؟</h3>
+        <p>
+            ج: لا، يؤثر على أي نظام Linux مع Steam (Desktop Computers، SteamOS، Steam Deck).
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            Steam beta من 7 أكتوبر 2026 تمثل step مهم جداً 
+            نحو جعل Linux gaming أسهل و أكثر سهولة.
+
+            Proton-by-default لـ non-Steam games 
+            قد يبدو feature صغيرة، 
+            لكنها تحل مشكلة فعلية لـ المستخدمين:
+        </p>
+
+        <ul>
+            <li>
+                أقل configuration مطلوبة
+            </li>
+            <li>
+                أقل confusion لـ non-technical users
+            </li>
+            <li>
+                أفضل تجربة من الـ first-run
+            </li>
+        </ul>
+
+        <p>
+            Bug fixes على Linux أيضاً مهمة، 
+            و Steam Big Picture screensaver control 
+            يُحسّن تجربة TV gaming.
+
+            كـ whole، التحديث يعكس التزام Valve 
+            بـ جعل Linux gaming platform first-class. 
+            لم تعد ملحوظة جانبية أو experimental. 
+            Linux gaming، خاصة مع Proton و Steam Deck، 
+            أصبحت serious business.
+
+            للمستخدمين: إذا كان عندك non-Steam games على Linux أو Deck، 
+            يُفضل تحديث Steam client إلى الـ beta هذا 
+            و استمتع بـ تشغيل أسهل و أسرع.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://www.phoronix.com/news/Steam-Beta-Use-Proton-Default"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Phoronix: Steam Beta Now Defaults Non-Steam Windows Binaries To Using Proton
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

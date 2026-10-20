@@ -1,0 +1,174 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "gimp-add-ons-photoggimp-resynthesizer-photoshop-alternative-free",
+    title: "إضافات جيمب المجانية: PhotoGIMP و Resynthesizer يحاصران فوتوشوب",
+    metaTitle: "إضافات جيمب المجانية التي تجعل فوتوشوب غير ضروري",
+    description:
+        "إضافتا PhotoGIMP و Resynthesizer المجانيتان تقربان جيمب من فوتوشوب بشكل كبير — الأولى تعيد تنسيق الواجهة لتشعر بالألفة، والثانية تضيف Heal Selection المماثل للـ Content-Aware Fill بـ 276 دولار توفير سنوي.",
+    keywords: [
+        "جيمب",
+        "GIMP",
+        "PhotoGIMP",
+        "Resynthesizer",
+        "فوتوشوب",
+        "Photoshop",
+        "إضافات مجانية",
+        "تحرير الصور",
+        "Heal Selection",
+        "Content-Aware Fill",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "26 أغسطس 2026",
+    pubDate: new Date("2026-08-26"),
+    tags: ["GIMP", "PhotoGIMP", "Resynthesizer", "تحرير", "مجاني"],
+    thumbnail: "/images/gimp-add-ons-photoggimp-resynthesizer-photoshop-alternative-free.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            <strong>جيمب GIMP</strong> لا تزال محرر الصور المجاني الأفضل، لكن الانتقال من
+            <strong>فوتوشوب Photoshop</strong> يتطلب التعود على واجهة مختلفة. Adobe تتقاضى
+            
+                <a href="https://www.adobe.com/products/photoshop/plans.html"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>$22.99 شهرياً</strong>
+            </a>
+            على الخطة السنوية، أي حوالي <strong>$276 سنوياً</strong> قبل إضافة تطبيقات Adobe أخرى.
+        </p>
+
+        <p>
+            ألغيت اشتراكي في فوتوشوب منذ سنوات واعتمدت على جيمب بالكامل. أصعب جزء لم يكن
+            <strong>نقص القدرات</strong> بل <strong>تعلم مكان كل شيء والتكيف مع طريقة عمل مختلفة</strong>.
+            الآن مع إضافات جيمب المجانية، الانتقال أصبح أسهل بكثير.
+        </p>
+
+        <h2>PhotoGIMP: تعريف الواجهة بشعور فوتوشوب</h2>
+
+        <p>
+            <strong>PhotoGIMP</strong> هي إضافة تعيد ترتيب واجهة جيمب بالكامل لتشعر وكأنك في
+            <strong>فوتوشوب</strong>. تغير الاختصارات وترتب الأدوات واللوحات بطريقة مألوفة
+            لمستخدمي فوتوشوب. بدلاً من قضاء أول ساعات محبطة في البحث عن الأدوات،
+            <strong>معظم الأساسيات يكون في مكان قريب من التوقع</strong>.
+        </p>
+
+        <p>
+            التثبيت على Windows يتطلب بعض الخطوات الإضافية:
+        </p>
+
+        <ul>
+            <li>
+                اضغط
+                
+                    <a href="https://www.howtogeek.com/windows-11s-run-dialog-finally-has-dark-mode/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>Windows + R</strong>
+                </a>
+                وأدخل `%APPDATA%\GIMP`
+            </li>
+            <li>
+                
+                    <a href="https://github.com/Diolinux/PhotoGIMP/releases"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    نزّل ملف PhotoGIMP ZIP
+                </a>
+            </li>
+            <li>
+                انسخ محتويات مجلد `3.0` إلى:
+                `C:\Users\[Your username]\AppData\Roaming\GIMP\3.2`
+            </li>
+            <li>اسمح بـ Windows بالكتابة فوق الملفات الموجودة</li>
+            <li>
+                عند فتح جيمب القادمة، تخطيط PhotoGIMP سيكون في مكانه
+            </li>
+        </ul>
+
+        <h2>Resynthesizer: نسخة مفتوحة من Content-Aware Fill</h2>
+
+        <p>
+            <strong>Resynthesizer</strong> أفضل إضافة جيمب تضيف قوة تحرير حقيقية. أفضل ميزة فيها هي
+            <strong>Heal Selection</strong> التي تعمل مثل <strong>Content-Aware Fill</strong> من فوتوشوب.
+        </p>
+
+        <p>
+            اختر شيئاً تريد إزالته، شغّل Heal Selection، و
+            <strong>Resynthesizer تستخدم البكسلات المحيطة لإعادة بناء ذلك الجزء</strong>. تعمل
+            <strong>بشكل استثنائي على الأرصفة والعشب والجدران وأي مناطق بتفاصيل محيطة كافية</strong>.
+        </p>
+
+        <p>التثبيت يتطلب:</p>
+
+        <ul>
+            <li>
+                
+                    <a href="https://github.com/bootchk/resynthesizer/releases"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    نزّل Resynthesizer 3 الحالي
+                </a>
+            </li>
+            <li>
+                افتح جيمب واذهب إلى
+                <strong>Edit &gt; Preferences &gt; Folders &gt; Plug-ins</strong>
+            </li>
+            <li>أغلق جيمب قبل نسخ الملفات</li>
+            <li>انسخ ملفات Resynthesizer إلى مجلد البرامج الإضافية</li>
+            <li>أعد تشغيل جيمب والبحث عن **Filters &gt; Enhance &gt; Heal Selection**</li>
+        </ul>
+
+        <h2>الفجوة أصبحت أصغر بكثير</h2>
+
+        <p>
+            جيمب ليست مصقولة مثل فوتوشوب، لكن لا تحتاج لتكون. ما يهم هو
+            <strong>ما إذا كانت تستطيع التعامل مع العمل الفعلي دون تذكيرك بما تفتقده</strong>.
+            هنا تصنع إضافات مثل PhotoGIMP و Resynthesizer فارقاً كبيراً.
+        </p>
+
+        <p>
+            PhotoGIMP تجعل الواجهة أسهل للتكيف معها، بينما Resynthesizer تضيف أداة تحرير
+            <strong>حقيقية مفيدة ستكون سبباً قوياً للاحتفاظ بـ فوتوشوب</strong>. هذا لا يعني أن
+            <strong>كل ميزة Adobe لها نظير مجاني مثالي</strong>، لكن الفجوة أصبحت
+            <strong>أصغر بكثير مما كانت عليه</strong>.
+        </p>
+
+        <p>
+            وبما أن جيمب مجانية، لا تكلفك شيئاً لاكتشاف ما إذا كانت تعمل لك. إذا تجنبت
+            جيمب لأنها شعرت بعدم الألفة، فمن الجدير إعطاؤها فرصة أخرى الآن.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a href="https://www.howtogeek.com/these-free-gimp-add-ons-make-photoshops-price-tag-harder-to-justify/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                How-To Geek
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

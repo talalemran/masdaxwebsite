@@ -1,0 +1,69 @@
+---
+export interface Props {
+  title: string;
+  metaTitle?: string;
+  description: string;
+  keywords?: string[];
+  canonical?: string;
+  ogImage?: string;
+  ogType?: string;
+  twitterCard?: "summary_large_image" | "summary";
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  metaTitle,
+  description,
+  keywords = [],
+  canonical,
+  ogImage,
+  ogType = "article",
+  twitterCard = "summary_large_image",
+  noIndex = false,
+} = Astro.props;
+
+const siteName = "مصدر إكس";
+const seoTitle = metaTitle || title;
+const fullTitle = `${seoTitle} | ${siteName}`;
+const domain = "https://www.masdarx.com";
+const canonicalUrl = canonical ? `${domain}${canonical}` : undefined;
+const defaultOgImage = "/images/masdarx.webp";
+const ogImageUrl = ogImage?.startsWith("http") ? ogImage : ogImage ? `${domain}${ogImage}` : `${domain}${defaultOgImage}`;
+const truncatedDesc =
+  description.length > 160 ? description.slice(0, 157) + "..." : description;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={truncatedDesc} />
+<meta name="keywords" content={keywords.join("، ")} />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Language" content="ar" />
+<meta charset="utf-8" />
+
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+{canonicalUrl && <link rel="alternate" hreflang="ar" href={canonicalUrl} />}
+
+{noIndex ? (
+  <meta name="robots" content="noindex, nofollow" />
+) : (
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+)}
+
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={truncatedDesc} />
+<meta property="og:url" content={canonicalUrl || domain} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content="ar_AR" />
+
+<meta name="twitter:card" content={twitterCard} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={truncatedDesc} />
+<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:site" content="@masdarx" />
+<meta name="twitter:creator" content="@masdarx" />
+<meta name="p:domain_verify" content="bbf25bfda7eed0ab0844a86d57bee994"/>

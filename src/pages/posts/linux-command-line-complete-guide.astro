@@ -1,0 +1,726 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+import FAQSchema from "@/components/seo/FAQSchema.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "linux-command-line-complete-guide",
+    title: "سطر الأوامر في لينكس: دليل شامل من الصفر حتى الاحتراف",
+    metaTitle: "سطر الأوامر في لينكس: دليل شامل من الصفر للإحتراف",
+    description:
+        "دليل شامل لسطر الأوامر في لينكس (Terminal): من المفاهيم الأساسية والتنقل بين الملفات، إلى الصلاحيات وإدارة الحزم والعمليات والبرمجة النصية، مع أمثلة عملية ومصادر خارجية موثوقة.",
+    keywords: [
+        "سطر الأوامر لينكس",
+        "Linux Terminal",
+        "أوامر لينكس",
+        "Bash",
+        "Shell Scripting",
+        "صلاحيات الملفات لينكس",
+        "chmod",
+        "sudo",
+        "إدارة الحزم لينكس",
+        "تعلم لينكس للمبتدئين",
+    ],
+    category: ["لينكس", "مقالات"],
+    author: "طلال عمران",
+    date: "14 أغسطس 2026",
+    pubDate: new Date("2026-08-14"),
+    tags: ["سطر الأوامر", "Bash", "Terminal", "أوامر لينكس", "لينكس للمبتدئين"],
+    thumbnail: "/images/linux-command-line-complete-guide.webp",
+};
+
+const tocItems = [
+    { id: "what-is-terminal", label: "ما هو سطر الأوامر أصلاً؟" },
+    {
+        id: "why-learn-it",
+        label: "لماذا تتعلم سطر الأوامر رغم توفر الواجهة الرسومية؟",
+    },
+    { id: "opening-terminal", label: "كيف تفتح الطرفية؟" },
+    { id: "anatomy-of-command", label: "تشريح الأمر: البنية الأساسية" },
+    { id: "navigation", label: "التنقل بين الملفات والمجلدات" },
+    { id: "file-management", label: "إدارة الملفات: إنشاء، نسخ، نقل، حذف" },
+    { id: "viewing-files", label: "عرض محتوى الملفات وقراءتها" },
+    { id: "permissions", label: "الصلاحيات: chmod وchown وsudo" },
+    { id: "package-management", label: "إدارة الحزم من الطرفية" },
+    { id: "process-management", label: "إدارة العمليات (Processes)" },
+    {
+        id: "pipes-redirection",
+        label: "الأنابيب (Pipes) وإعادة التوجيه (Redirection)",
+    },
+    { id: "text-processing", label: "معالجة النصوص: grep وsed وawk" },
+    { id: "networking", label: "أوامر الشبكة الأساسية" },
+    {
+        id: "shell-scripting",
+        label: "مقدمة في البرمجة النصية (Shell Scripting)",
+    },
+    { id: "useful-tips", label: "نصائح عملية تسرّع عملك" },
+    {
+        id: "common-commands-table",
+        label: "جدول مرجعي لأكثر الأوامر استخدامًا",
+    },
+    { id: "safety-notes", label: "ملاحظات أمان مهمة قبل أن تبدأ" },
+    { id: "external-resources", label: "مصادر خارجية للتعمق أكثر" },
+    { id: "conclusion", label: "خلاصة عملية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    preloadImage={post.thumbnail}
+>
+    <FAQSchema items={[
+        {
+            question: "ما هو سطر الأوامر في لينكس؟",
+            answer: "سطر الأوامر (Terminal) هو واجهة نصية تسمح لك بالتفاعل مع نظام التشغيل لينكس عبر كتابة أوامر نصية بدلاً من استخدام الفأرة والنوافذ. يُعتبر الأداة الأساسية لإدارة النظام والشبكات والبرمجة."
+        },
+        {
+            question: "هل يسهل تعلم سطر الأوامر في لينكس؟",
+            answer: "نعم، تعلم سطر الأوامر في لينكس ممكن في أسابيع قليلة. ابدأ بالأوامر الأساسية مثل ls وcd وpwd ثم تدرّج نحو أوامر إدارة الملفات والصلاحيات. الممارسة اليومية هي المفتاح."
+        },
+        {
+            question: "ما الفرق بين sudo وsu في لينكس؟",
+            answer: "sudo تسمح لمستخدم عادي بتنفيذ أمر بصلاحيات المستخدم root لمرة واحدة، بينما su تنقلك إلى جلسة root كاملة. يُفضل استخدام sudo لأسباب أمان."
+        },
+        {
+            question: "كيف أصلح صلاحيات ملف في لينكس؟",
+            answer: "استخدم أمر chmod لتغيير الصلاحيات. مثال: chmod 755 الملف.exe يمنح صلاحيات القراءة والتنفيذ للجميع والكتابة لصاحب الملف فقط."
+        },
+        {
+            question: "ما هي أفضل توزيعة لينكس للمبتدئين؟",
+            answer: " Ubuntu وLinux Mint هما أفضل خيار للمبتدئين بسبب سهولة الاستخدام وتوفر الدعم بالعربية. كلاهما يوفر واجهة سطح مكتب سلسة وkkezat حزم جاهزة."
+        }
+    ]} />
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            سطر الأوامر هو القلب النابض للينكس، حتى لو لم تلمسه أبدًا خلال
+            استخدامك اليومي. هو الأداة التي تحوّلك من مستخدم يتبع ما توفره
+            الواجهة الرسومية، إلى شخص يتحكم في كل تفصيل من تفاصيل النظام مباشرة.
+        </p>
+
+        <p>
+            هذا الدليل يأخذك من الصفر: ما هو سطر الأوامر، لماذا يستحق التعلم،
+            وكيف تتقن أساسياته خطوة بخطوة، وصولًا لمفاهيم متقدمة مثل معالجة
+            النصوص والبرمجة النصية البسيطة.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="what-is-terminal">ما هو سطر الأوامر أصلاً؟</h2>
+
+        <p>
+            سطر الأوامر (Command Line) هو طريقة للتفاعل مع الحاسوب عبر كتابة
+            أوامر نصية بدلاً من النقر على أيقونات وقوائم. البرنامج الذي يستقبل
+            هذه الأوامر ويعالجها يُسمى "الصدفة" (Shell)، وأشهرها في لينكس هي
+            Bash، رغم وجود بدائل مثل Zsh وFish تقدم ميزات إضافية وواجهة أكثر
+            تلوينًا.
+        </p>
+
+        <p>
+            "الطرفية" (Terminal) هي النافذة التي تشغّل الصدفة وتعرض لك نتائج
+            الأوامر. الفرق بسيط: الطرفية هي "الشاشة"، والصدفة هي "البرنامج" الذي
+            يفهم ما تكتبه فعليًا.
+        </p>
+
+        <h2 id="why-learn-it">
+            لماذا تتعلم سطر الأوامر رغم توفر الواجهة الرسومية؟
+        </h2>
+
+        <p>
+            ليس عليك تعلمه إن كان استخدامك بسيطًا، لكن هناك أسبابًا عملية قوية
+            تجعله يستحق الوقت المستثمر فيه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>السرعة</strong>: تنفيذ مهمة معينة عبر أمر واحد أسرع
+                غالبًا من التنقل بين عدة قوائم رسومية
+            </li>
+            <li>
+                <strong>الدقة</strong>: الأوامر تنفذ بالضبط ما تطلبه، دون لبس في
+                التفسير كما قد يحدث أحيانًا مع واجهة رسومية معقدة
+            </li>
+            <li>
+                <strong>الأتمتة</strong>: يمكنك حفظ سلسلة أوامر في ملف واحد
+                (سكربت) وتشغيلها لاحقًا تلقائيًا، وهذا غير ممكن بنفس السهولة عبر
+                النقر اليدوي
+            </li>
+            <li>
+                <strong>العمل عن بُعد</strong>: خوادم لينكس غالبًا لا تملك واجهة
+                رسومية أصلاً، فالطرفية هي الطريقة الوحيدة للتحكم فيها عبر اتصال
+                SSH
+            </li>
+            <li>
+                <strong>فهم أعمق للنظام</strong>: تعلم سطر الأوامر يكشف لك كيف
+                يعمل النظام فعليًا تحت الواجهة الرسومية، وهذا مفيد جدًا عند
+                تشخيص المشاكل
+            </li>
+        </ul>
+
+        <h2 id="opening-terminal">كيف تفتح الطرفية؟</h2>
+
+        <p>في أغلب توزيعات لينكس، يمكنك فتح الطرفية بإحدى هذه الطرق:</p>
+
+        <ul>
+            <li>
+                اختصار لوحة المفاتيح <code>Ctrl + Alt + T</code> في أغلب البيئات (Cinnamon،
+                GNOME، Xfce)
+            </li>
+            <li>البحث عن "Terminal" أو "طرفية" في قائمة التطبيقات</li>
+            <li>
+                النقر بزر الفأرة الأيمن على سطح المكتب واختيار "Open Terminal
+                Here" في بعض البيئات
+            </li>
+        </ul>
+
+        <p>
+            بمجرد فتحها، ستجد سطرًا يبدأ عادة باسم المستخدم واسم الجهاز، ثم رمز <code
+                >$</code
+            > ينتظر أن تكتب أمرك.
+        </p>
+
+        <h2 id="anatomy-of-command">تشريح الأمر: البنية الأساسية</h2>
+
+        <p>أغلب أوامر لينكس تتبع نمطًا ثابتًا يسهّل فهم أي أمر جديد تصادفه:</p>
+
+        <pre><code>الأمر [خيارات] [وسيطات]</code></pre>
+
+        <p>مثال عملي:</p>
+
+        <pre><code>ls -la /home/user</code></pre>
+
+        <ul>
+            <li><code>ls</code>: اسم الأمر نفسه (عرض محتويات مجلد)</li>
+            <li>
+                <code>-la</code>: خيارات تُعدّل سلوك الأمر (l للتفاصيل، a لإظهار
+                الملفات المخفية)
+            </li>
+            <li>
+                <code>/home/user</code>: الوسيطة، أي المسار الذي تريد تطبيق
+                الأمر عليه
+            </li>
+        </ul>
+
+        <p>
+            لا تحتاج حفظ كل الخيارات عن ظهر قلب. أغلب الأوامر تدعم خيار
+            <code>--help</code>، وتوفر صفحة توثيق كاملة عبر أمر
+            <code>man</code> (اختصار Manual)، مثل: <code>man ls</code>.
+        </p>
+
+        <h2 id="navigation">التنقل بين الملفات والمجلدات</h2>
+
+        <p>هذه أول مجموعة أوامر يحتاجها أي مستخدم جديد للطرفية:</p>
+
+        <ul>
+            <li>
+                <code>pwd</code>: يعرض المسار الحالي الذي تقف فيه (Print Working
+                Directory)
+            </li>
+            <li><code>ls</code>: يعرض محتويات المجلد الحالي</li>
+            <li>
+                <code>cd اسم_المجلد</code>: ينقلك لمجلد آخر (Change Directory)
+            </li>
+            <li><code>cd ..</code>: يرجعك مجلدًا واحدًا للخلف</li>
+            <li>
+                <code>cd ~</code> أو <code>cd</code> وحدها: تعيدك مباشرة للمجلد الرئيسي
+                (Home)
+            </li>
+            <li><code>cd -</code>: تعيدك للمجلد الذي كنت فيه قبل آخر تنقل</li>
+        </ul>
+
+        <p>
+            نصيحة عملية: استخدم مفتاح <code>Tab</code> لإكمال أسماء الملفات والمجلدات
+            تلقائيًا، هذا يوفر وقتًا كبيرًا ويقلل أخطاء الكتابة.
+        </p>
+
+        <h2 id="file-management">إدارة الملفات: إنشاء، نسخ، نقل، حذف</h2>
+
+        <ul>
+            <li><code>mkdir اسم_المجلد</code>: إنشاء مجلد جديد</li>
+            <li><code>touch اسم_الملف</code>: إنشاء ملف فارغ جديد</li>
+            <li>
+                <code>cp المصدر الوجهة</code>: نسخ ملف أو مجلد (أضف <code
+                    >-r</code
+                > لنسخ مجلد بمحتوياته)
+            </li>
+            <li>
+                <code>mv المصدر الوجهة</code>: نقل أو إعادة تسمية ملف أو مجلد
+            </li>
+            <li>
+                <code>rm اسم_الملف</code>: حذف ملف (أضف <code>-r</code> لحذف مجلد
+                كامل، وكن حذرًا جدًا)
+            </li>
+            <li><code>rmdir اسم_المجلد</code>: حذف مجلد فارغ فقط</li>
+        </ul>
+
+        <p>
+            <strong>تحذير مهم</strong>: أمر <code>rm</code> في لينكس لا يرسل الملفات
+            لسلة المحذوفات، بل يحذفها نهائيًا وفوريًا. تحقق دائمًا من المسار قبل الضغط
+            على Enter، خصوصًا عند استخدام <code>-rf</code>.
+        </p>
+
+        <h2 id="viewing-files">عرض محتوى الملفات وقراءتها</h2>
+
+        <ul>
+            <li>
+                <code>cat اسم_الملف</code>: يعرض محتوى الملف كاملاً دفعة واحدة،
+                مناسب للملفات القصيرة
+            </li>
+            <li>
+                <code>less اسم_الملف</code>: يعرض الملف صفحة بصفحة، مناسب
+                للملفات الطويلة (اخرج بالضغط على q)
+            </li>
+            <li><code>head اسم_الملف</code>: يعرض أول عشرة أسطر فقط</li>
+            <li><code>tail اسم_الملف</code>: يعرض آخر عشرة أسطر فقط</li>
+            <li>
+                <code>tail -f اسم_الملف</code>: يراقب الملف ويعرض أي إضافات
+                جديدة له فوريًا، مفيد جدًا لمتابعة ملفات السجلات (Logs)
+            </li>
+        </ul>
+
+        <h2 id="permissions">الصلاحيات: chmod وchown وsudo</h2>
+
+        <p>
+            لينكس نظام متعدد المستخدمين بطبيعته، لذا كل ملف يحمل صلاحيات تحدد من
+            يمكنه قراءته أو تعديله أو تشغيله.
+        </p>
+
+        <ul>
+            <li>
+                <code>chmod</code>: يغيّر صلاحيات ملف، مثل
+                <code>chmod +x script.sh</code> لجعل ملف قابلًا للتنفيذ
+            </li>
+            <li>
+                <code>chown</code>: يغيّر مالك الملف أو المجموعة المرتبطة به
+            </li>
+            <li>
+                <code>sudo</code>: يشغّل أمرًا واحدًا بصلاحيات المدير
+                (Superuser)، ويطلب كلمة مرورك للتأكيد
+            </li>
+        </ul>
+
+        <p>
+            صلاحيات الملفات تظهر بصيغة مثل <code>rwxr-xr--</code>: تعني القراءة
+            (r) والكتابة (w) والتنفيذ (x) لكل من المالك، المجموعة، وباقي
+            المستخدمين على الترتيب.
+        </p>
+
+        <p>
+            <strong>تنبيه</strong>: تجنب استخدام <code>sudo</code> إلا عند الضرورة
+            الفعلية، ولا تنسخ أوامر تتضمنه من الإنترنت دون فهم ما تفعله بالضبط.
+        </p>
+
+        <h2 id="package-management">إدارة الحزم من الطرفية</h2>
+
+        <p>
+            كل توزيعة لينكس تستخدم مدير حزم مختلفًا، لكن المفهوم نفسه في الجميع:
+            البحث، التثبيت، التحديث، والحذف.
+        </p>
+
+        <ul>
+            <li>
+                <strong>أوبونتو / Debian / Mint</strong>: <code
+                    >sudo apt install اسم_البرنامج</code>
+            </li>
+            <li>
+                <strong>Fedora / RHEL</strong>: <code
+                    >sudo dnf install اسم_البرنامج</code>
+            </li>
+            <li>
+                <strong>Arch Linux</strong>: <code
+                    >sudo pacman -S اسم_البرنامج</code>
+            </li>
+            <li>
+                <strong>openSUSE</strong>: <code
+                    >sudo zypper install اسم_البرنامج</code>
+            </li>
+        </ul>
+
+        <p>
+            تحديث النظام بالكامل عادة عبر أمرين متتاليين، مثلًا في أوبونتو:
+            <code>sudo apt update</code> ثم <code>sudo apt upgrade</code>.
+        </p>
+
+        <h2 id="process-management">إدارة العمليات (Processes)</h2>
+
+        <ul>
+            <li><code>ps aux</code>: يعرض قائمة بكل العمليات الجارية حاليًا</li>
+            <li>
+                <code>top</code> أو <code>htop</code> (الثاني أكثر تفاعلية): يعرض
+                العمليات الجارية مع استهلاكها للموارد بشكل مباشر ومحدث
+            </li>
+            <li>
+                <code>kill رقم_العملية</code>: ينهي عملية محددة برقم معرّفها
+                (PID)
+            </li>
+            <li>
+                <code>kill -9 رقم_العملية</code>: إنهاء إجباري لعملية متجمدة لا
+                تستجيب للإنهاء العادي
+            </li>
+        </ul>
+
+        <h2 id="pipes-redirection">
+            الأنابيب (Pipes) وإعادة التوجيه (Redirection)
+        </h2>
+
+        <p>
+            هذه من أقوى مفاهيم سطر الأوامر: القدرة على ربط مخرجات أمر كمدخلات
+            لأمر آخر مباشرة، دون خطوات وسيطة.
+        </p>
+
+        <ul>
+            <li>
+                <code>|</code> (الأنبوب): يمرر مخرجات أمر لأمر آخر، مثل
+                <code>ls -la | grep ".txt"</code> لعرض ملفات النصوص فقط ضمن قائمة
+                أطول
+            </li>
+            <li>
+                <code>&gt;</code>: يحفظ مخرجات أمر في ملف (ويستبدل محتواه إن كان
+                موجودًا)
+            </li>
+            <li>
+                <code>&gt;&gt;</code>: يضيف مخرجات أمر لنهاية ملف موجود دون حذف
+                محتواه السابق
+            </li>
+            <li>
+                <code>&lt;</code>: يقرأ مدخلات أمر من ملف بدلاً من لوحة المفاتيح
+            </li>
+        </ul>
+
+        <h2 id="text-processing">معالجة النصوص: grep وsed وawk</h2>
+
+        <p>
+            ثلاثة أدوات أساسية تجعل لينكس بيئة قوية جدًا لمعالجة النصوص
+            والسجلات:
+        </p>
+
+        <ul>
+            <li>
+                <code>grep</code>: يبحث عن نص محدد داخل ملف أو مخرجات أمر، مثل <code
+                    >grep "error" logfile.txt</code
+                >
+            </li>
+            <li>
+                <code>sed</code>: يعدّل النصوص تلقائيًا وفق قواعد محددة، مثل
+                استبدال كلمة بأخرى في ملف كامل دون فتحه يدويًا
+            </li>
+            <li>
+                <code>awk</code>: أداة أقوى لمعالجة النصوص المنظمة في أعمدة
+                وصفوف، مفيدة جدًا لاستخراج بيانات محددة من ملفات كبيرة
+            </li>
+        </ul>
+
+        <h2 id="networking">أوامر الشبكة الأساسية</h2>
+
+        <ul>
+            <li>
+                <code>ping عنوان_الموقع</code>: يتحقق من الاتصال بجهاز أو موقع
+                معين
+            </li>
+            <li>
+                <code>curl الرابط</code>: يجلب محتوى صفحة ويب أو يرسل طلبات
+                لواجهات برمجية مباشرة من الطرفية
+            </li>
+            <li><code>wget الرابط</code>: يحمّل ملفًا من الإنترنت مباشرة</li>
+            <li>
+                <code>ssh user@عنوان_الخادم</code>: يفتح اتصالًا آمنًا بخادم
+                بعيد للتحكم فيه عن بُعد
+            </li>
+        </ul>
+
+        <h2 id="shell-scripting">مقدمة في البرمجة النصية (Shell Scripting)</h2>
+
+        <p>
+            بمجرد أن تعتاد على الأوامر الفردية، الخطوة الطبيعية التالية هي دمجها
+            في ملف واحد (سكربت) لتنفيذها تلقائيًا كمجموعة.
+        </p>
+
+        <pre><code>{`#!/bin/bash
+echo "بدء النسخ الاحتياطي..."
+mkdir -p ~/backup
+cp -r ~/Documents ~/backup/
+echo "تم الانتهاء بنجاح."`}</code></pre>
+
+        <p>
+            بعد حفظ هذا في ملف مثلاً باسم <code>backup.sh</code>، تمنحه صلاحية
+            التنفيذ عبر <code>chmod +x backup.sh</code>، ثم تشغله بكتابة <code
+                >./backup.sh</code
+            >.
+        </p>
+
+        <p>
+            هذا مثال بسيط جدًا، لكنه يوضح الفكرة الجوهرية: أي مهمة متكررة يمكن
+            تحويلها لسكربت واحد ينفذها بضغطة واحدة بدلاً من تكرار الأوامر يدويًا
+            في كل مرة.
+        </p>
+
+        <h2 id="useful-tips">نصائح عملية تسرّع عملك</h2>
+
+        <ul>
+            <li>
+                استخدم مفتاحي الأسهم ↑ و↓ للتنقل بين الأوامر التي كتبتها سابقًا،
+                بدلاً من إعادة كتابتها من الصفر
+            </li>
+            <li>
+                أمر <code>history</code> يعرض قائمة كل الأوامر التي نفذتها مؤخرًا،
+                ويمكنك البحث فيها بالضغط على <code>Ctrl + R</code>
+            </li>
+            <li>
+                أضف <code>alias</code> للأوامر الطويلة التي تكررها كثيرًا، مثل <code
+                    >alias ll='ls -la'</code
+                > في ملف إعدادات الصدفة
+            </li>
+            <li>
+                استخدم <code>clear</code> لتنظيف شاشة الطرفية من الفوضى البصرية المتراكمة
+            </li>
+            <li>
+                في حالة الشك بأي أمر جديد، جرّبه أولاً مع خيار
+                <code>--dry-run</code> إن كان متوفرًا، لمعاينة ما سيحدث دون تنفيذه
+                فعليًا
+            </li>
+        </ul>
+
+        <h2 id="common-commands-table">جدول مرجعي لأكثر الأوامر استخدامًا</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الأمر</th>
+                        <th class="px-4 py-2 font-semibold">الوظيفة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><code>pwd</code></td>
+                        <td class="px-4 py-2">عرض المسار الحالي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>ls -la</code></td>
+                        <td class="px-4 py-2"
+                            >عرض كل الملفات بالتفصيل، بما فيها المخفية</td
+                        >
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>cd</code></td>
+                        <td class="px-4 py-2">التنقل بين المجلدات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>cp -r</code></td>
+                        <td class="px-4 py-2">نسخ مجلد بمحتوياته</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>mv</code></td>
+                        <td class="px-4 py-2">نقل أو إعادة تسمية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>rm -r</code></td>
+                        <td class="px-4 py-2">حذف مجلد كامل (احذر)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>grep</code></td>
+                        <td class="px-4 py-2">البحث داخل النصوص</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>chmod +x</code></td>
+                        <td class="px-4 py-2">منح صلاحية التنفيذ</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>sudo apt update</code></td>
+                        <td class="px-4 py-2"
+                            >تحديث قوائم الحزم (أوبونتو/Debian)</td
+                        >
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"
+                            ><code>top</code> / <code>htop</code></td
+                        >
+                        <td class="px-4 py-2">مراقبة العمليات والموارد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>man أمر</code></td>
+                        <td class="px-4 py-2">عرض دليل توثيق الأمر</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>ssh user@host</code></td>
+                        <td class="px-4 py-2">الاتصال بخادم بعيد</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="safety-notes">ملاحظات أمان مهمة قبل أن تبدأ</h2>
+
+        <ul>
+            <li>
+                لا تنسخ وتلصق أوامر من الإنترنت دون فهم ما تفعله، خصوصًا إن كانت
+                تتضمن <code>sudo</code> أو <code>rm -rf</code>
+            </li>
+            <li>
+                تأكد دائمًا من المسار الحالي (<code>pwd</code>) قبل تنفيذ أوامر
+                حذف أو نسخ مؤثرة
+            </li>
+            <li>
+                احتفظ بنسخة احتياطية من الملفات المهمة قبل تجربة أوامر جديدة
+                عليها لأول مرة
+            </li>
+            <li>
+                استخدم أدوات مثل <code>trash-cli</code> بدلاً من
+                <code>rm</code> المباشر إن كنت تريد "سلة محذوفات" فعلية من الطرفية
+            </li>
+        </ul>
+
+        <h2 id="external-resources">مصادر خارجية للتعمق أكثر</h2>
+
+        <p>
+            هذه مصادر إنجليزية موثوقة ومجانية، تستحق الرجوع إليها لبناء مهارة
+            حقيقية بسطر الأوامر بعد إتقان الأساسيات في هذا الدليل:
+        </p>
+
+        <ul>
+            <li>
+                <strong>The Linux Command Line (الكتاب المجاني الكامل):</strong
+                >{" "}
+                <a
+                    href="https://linuxcommand.org/tlcl.php"
+                    target="_blank"
+                    rel="noopener noreferrer">linuxcommand.org/tlcl.php</a
+                >{" "}
+                — من أفضل المراجع المجانية المتاحة بصيغة PDF، يغطي كل شيء من الأساسيات
+                حتى البرمجة النصية المتقدمة
+            </li>
+            <li>
+                <strong>ExplainShell:</strong>{" "}
+                <a
+                    href="https://explainshell.com/"
+                    target="_blank"
+                    rel="noopener noreferrer">explainshell.com</a
+                >{" "}
+                — الصق أي أمر معقد وسيشرح لك كل جزء منه على حدة تلقائيًا
+            </li>
+            <li>
+                <strong>GNU Coreutils Manual:</strong>{" "}
+                <a
+                    href="https://www.gnu.org/software/coreutils/manual/coreutils.html"
+                    target="_blank"
+                    rel="noopener noreferrer">gnu.org/software/coreutils</a
+                >{" "}
+                — التوثيق الرسمي لأغلب الأوامر الأساسية مثل ls وcp وmv وrm
+            </li>
+            <li>
+                <strong>Bash Reference Manual:</strong>{" "}
+                <a
+                    href="https://www.gnu.org/software/bash/manual/bash.html"
+                    target="_blank"
+                    rel="noopener noreferrer">gnu.org/software/bash/manual</a
+                >{" "}
+                — المرجع الرسمي الكامل لصدفة Bash نفسها، مفيد جدًا عند كتابة سكربتات
+                متقدمة
+            </li>
+            <li>
+                <strong>tldr pages:</strong>{" "}
+                <a
+                    href="https://tldr.sh/"
+                    target="_blank"
+                    rel="noopener noreferrer">tldr.sh</a
+                >{" "}
+                — بديل مبسط وسريع لصفحات man التقليدية، يعرض أمثلة عملية مباشرة بدل
+                الشرح النظري الطويل
+            </li>
+            <li>
+                <strong>OverTheWire Bandit (تدريب عملي تفاعلي):</strong>{" "}
+                <a
+                    href="https://overthewire.org/wargames/bandit/"
+                    target="_blank"
+                    rel="noopener noreferrer">overthewire.org/wargames/bandit</a
+                >{" "}
+                — سلسلة تحديات تفاعلية مجانية لتعلم سطر الأوامر عبر حل ألغاز فعلية
+                خطوة بخطوة
+            </li>
+        </ul>
+
+        <h2 id="conclusion">خلاصة عملية</h2>
+
+        <p>
+            سطر الأوامر ليس عائقًا أمام استخدام لينكس، بل أداة اختيارية تفتح لك
+            مستوى تحكم أعمق كلما احتجته. لست مضطرًا لإتقان كل شيء في هذا الدليل
+            دفعة واحدة؛ ابدأ بأوامر التنقل الأساسية (<code>cd</code> و<code
+                >ls</code
+            > و<code>pwd</code>)، ثم أضف تدريجيًا إدارة الملفات، فالصلاحيات،
+            فإدارة الحزم، حتى تصل لمرحلة كتابة سكربتاتك الخاصة دون أن تشعر
+            بصعوبة القفزة.
+        </p>
+
+        <p>
+            أفضل طريقة للتعلم الفعلي هي الممارسة المباشرة: افتح الطرفية الآن،
+            وجرّب كل أمر ذكرناه في هذا الدليل على ملفات تجريبية غير مهمة، حتى
+            تبني الثقة والحدس اللازمين قبل استخدامها على ملفاتك الحقيقية.
+        </p>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل يمكنني كسر النظام بأوامر خاطئة في الطرفية؟</strong><br />
+            نظريًا نعم، خصوصًا مع أوامر تتضمن <code>sudo</code> أو حذفًا مؤثرًا، لكن
+            هذا لا يحدث عادة إلا بأوامر متعمدة وخطيرة تُنفَّذ دون فهم. الاستخدام العادي
+            الحذر آمن تمامًا.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين Bash وZsh وFish؟</strong><br />
+            كلها "صدفات" تفهم نفس الأوامر الأساسية تقريبًا، لكنها تختلف في ميزات إضافية
+            مثل الإكمال التلقائي الذكي والتلوين والتخصيص. Bash هي الافتراضية في أغلب
+            التوزيعات.
+        </p>
+
+        <p>
+            <strong>هل أحتاج حفظ كل هذه الأوامر عن ظهر قلب؟</strong><br />
+            لا. أغلب المستخدمين المتمرسين يعتمدون على أمر <code>man</code>
+            وأدوات مثل tldr وExplainShell بدلاً من الحفظ الكامل، خصوصًا للأوامر النادرة
+            الاستخدام.
+        </p>
+
+        <p>
+            <strong>هل تعلم سطر الأوامر في لينكس يفيد في أنظمة أخرى؟</strong><br
+            />
+            نعم بشكل كبير. أغلب المفاهيم (التنقل، معالجة النصوص، الصلاحيات) تنطبق
+            تقريبًا كما هي على macOS، وحتى ويندوز عبر WSL (Windows Subsystem for Linux)
+            أو PowerShell بمفاهيم مشابهة.
+        </p>
+    </PostLayout>
+</BaseLayout>

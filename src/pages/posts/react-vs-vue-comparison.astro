@@ -1,0 +1,412 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "react-vs-vue-comparison",
+    title: "React أم Vue.js: مقارنة شاملة لاختيار الأنسب لمشروعك",
+    metaTitle: "React أم Vue.js: مقارنة شاملة لاختيار الأنسب لمشروعك",
+    description:
+        "مقارنة تقنية شاملة وموضوعية بين React وVue.js، من الفلسفة والنحو إلى الأداء وسوق العمل ونظام الحزم، لمساعدتك على اختيار الأنسب لمشروعك القادم أو مسارك المهني.",
+    keywords: [
+        "React أم Vue",
+        "مقارنة React وVue",
+        "React.js",
+        "Vue.js",
+        "أطر عمل جافاسكريبت",
+        "تطوير الواجهات الأمامية",
+        "Next.js",
+        "Nuxt.js",
+        "JSX",
+    ],
+    category: ["برمجة", "مقالات"],
+    author: "طلال عمران",
+    date: "7 أكتوبر 2026",
+    pubDate: new Date("2026-10-07"),
+    tags: ["React", "Vue.js", "JavaScript", "تطوير ويب", "Frontend"],
+    thumbnail: "/images/react-vs-vue-comparison.webp",
+};
+
+const tocItems = [
+    { id: "why-compare", label: "لماذا تتكرر هذه المقارنة بالذات؟" },
+    { id: "philosophy", label: "الفلسفة: مكتبة مرنة مقابل إطار عمل تدريجي" },
+    { id: "syntax", label: "النحو: JSX مقابل القوالب (Templates)" },
+    { id: "reactivity", label: "آلية التفاعلية: كيف يعرف كل منهما متى يُحدِّث الواجهة؟" },
+    { id: "learning-curve", label: "منحنى التعلم: أيهما أسرع للإتقان؟" },
+    { id: "ecosystem", label: "النظام البيئي: الحزم والأدوات المصاحبة" },
+    { id: "meta-frameworks", label: "أطر العمل المصاحبة: Next.js مقابل Nuxt.js" },
+    { id: "performance", label: "الأداء: هل يوجد فرق حقيقي ملموس؟" },
+    { id: "job-market", label: "سوق العمل وفرص التوظيف" },
+    { id: "state-management", label: "إدارة الحالة (State Management)" },
+    { id: "company-backing", label: "من يقف خلف كل مشروع؟" },
+    { id: "comparison-table", label: "جدول مقارنة شامل" },
+    { id: "how-to-decide", label: "كيف تقرر فعليًا؟" },
+    { id: "external-resources", label: "الروابط الرسمية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            قلّما يبدأ مطور ويب رحلته دون أن يسمع هذا السؤال مبكرًا: React
+            أم Vue؟ كلاهما يحل نفس المشكلة الأساسية، بناء واجهات مستخدم
+            تفاعلية قائمة على مكونات (Components)، لكن الطريق الذي يسلكه
+            كل منهما لحل هذه المشكلة مختلف بما يكفي لجعل الاختيار بينهما
+            قرارًا حقيقيًا يستحق التفكير، لا مجرد تفضيل سطحي.
+        </p>
+
+        <p>
+            هذا المقال يقارن الأداتين من كل الزوايا العملية المهمة: الفلسفة،
+            النحو، الأداء، سوق العمل، والنظام البيئي المحيط بكل واحدة،
+            دون إعلان فائز مطلق لأن الإجابة الصادقة تعتمد على سياقك أنت
+            تحديدًا.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="why-compare">لماذا تتكرر هذه المقارنة بالذات؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/react-vs-vue-comparison/01.webp"
+                alt="مقارنة بصرية بين كود React وVue.js"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            React وVue هما الخياران الأكثر هيمنة عمليًا على سوق تطوير
+            الواجهات الأمامية الحديثة، إلى جانب Angular كإطار عمل مؤسسي
+            أثقل. الاثنان مفتوحا المصدر بالكامل تحت رخصة MIT، ويعتمدان
+            بنية قائمة على المكونات القابلة لإعادة الاستخدام، لكنهما نشآ
+            من سياقين مختلفين تمامًا: React كمشروع داخلي لحل مشكلة واجهة
+            فيسبوك الإعلانية المعقدة، وVue كمشروع شخصي لمهندس سابق في فريق
+            Angular أراد نسخة أبسط وأخف.
+        </p>
+
+        <h2 id="philosophy">
+            الفلسفة: مكتبة مرنة مقابل إطار عمل تدريجي
+        </h2>
+
+        <p>
+            <strong>React</strong> يصف نفسه رسميًا كـ"مكتبة" لا "إطار
+            عمل"، وهذا الفرق مقصود: React يتولى فقط طبقة الواجهة، تاركًا
+            لك حرية اختيار كل شيء آخر (التوجيه، إدارة الحالة، الاتصال
+            بالخادم) من نظام بيئي خارجي منفصل. هذه الفلسفة تمنح مرونة
+            هائلة، لكنها تعني أيضًا قرارات أكثر يجب اتخاذها بنفسك منذ أول
+            يوم في أي مشروع جديد.
+        </p>
+
+        <p>
+            <strong>Vue</strong> يصف نفسه كـ"إطار عمل تدريجي" (Progressive
+            Framework): يمكنك استخدامه كمكتبة بسيطة لتحسين صفحة HTML
+            موجودة، أو كإطار عمل كامل لتطبيق ضخم، حسب حاجتك بالضبط. الفريق
+            الأساسي يوفر رسميًا حلولًا متكاملة للتوجيه (Vue Router) وإدارة
+            الحالة (Pinia)، فتحصل على مجموعة أدوات متناسقة مصممة لتعمل
+            معًا منذ البداية.
+        </p>
+
+        <h2 id="syntax">النحو: JSX مقابل القوالب (Templates)</h2>
+
+        <p>
+            هذا الفرق هو أول ما يلاحظه أي مطور جديد على كلتا الأداتين.
+        </p>
+
+        <p>
+            React يعتمد <strong>JSX</strong>: صياغة تمزج جافاسكريبت وHTML
+            في نفس الملف، فتكتب منطق العرض بلغة جافاسكريبت كاملة القوة
+            (حلقات، شروط، دوال) مباشرة داخل الواجهة. هذا يمنح مرونة برمجية
+            كاملة، لكنه يتطلب تعلم JSX نفسه كطبقة إضافية فوق جافاسكريبت
+            العادية.
+        </p>
+
+        <p>
+            Vue يعتمد <strong>قوالب (Templates)</strong> أقرب لـ HTML
+            التقليدي، مع توجيهات خاصة (Directives) مثل <code>v-if</code>
+            و<code>v-for</code> لإضافة منطق الشروط والحلقات. هذا يجعل
+            الكود أقرب بصريًا لـ HTML العادي، ويُعتبر غالبًا أسهل قراءة
+            لمطور قادم حديثًا من خلفية تصميم ويب تقليدية.
+        </p>
+
+        <h2 id="reactivity">
+            آلية التفاعلية: كيف يعرف كل منهما متى يُحدِّث الواجهة؟
+        </h2>
+
+        <p>
+            React يعتمد تاريخيًا على <strong>DOM افتراضي (Virtual
+            DOM)</strong>: حين تتغير البيانات، يبني React نسخة جديدة من
+            شجرة الواجهة في الذاكرة، يقارنها بالنسخة السابقة، ثم يُحدِّث
+            فقط الأجزاء الفعلية التي تغيّرت في المتصفح. إضافة React
+            Compiler الحديثة أصبحت تُحسّن هذه العملية تلقائيًا، مقللة
+            الحاجة لتحسينات يدوية كانت مطلوبة سابقًا (مثل useMemo
+            وuseCallback).
+        </p>
+
+        <p>
+            Vue يعتمد نظام <strong>تفاعلية دقيقة (Fine-Grained
+            Reactivity)</strong> مبني على كائنات Proxy في جافاسكريبت:
+            يتتبع Vue تلقائيًا أي قطعة بيانات محددة تستخدمها كل جزء من
+            الواجهة، ويُحدِّث فقط ذلك الجزء تحديدًا عند تغيّرها، دون الحاجة
+            لمقارنة شجرة كاملة. وضع "Vapor" الحديث يأخذ هذا لأبعد مدى،
+            بتجميع القوالب لكود جافاسكريبت محسّن مباشرة، متجاوزًا حتى DOM
+            الافتراضي بالكامل.
+        </p>
+
+        <h2 id="learning-curve">منحنى التعلم: أيهما أسرع للإتقان؟</h2>
+
+        <p>
+            هذا من أكثر النقاط اتفاقًا عليها في مجتمع المطورين: Vue عمومًا
+            أسهل للبداية. القوالب الأقرب لـ HTML، والتوثيق الرسمي الذي
+            يُعتبر من الأوضح بين كل أدوات جافاسكريبت، يجعلان مطورًا جديدًا
+            منتجًا خلال أيام قليلة.
+        </p>
+
+        <p>
+            React يتطلب وقتًا إضافيًا لفهم JSX، ومفاهيم مثل الحالة (State)
+            والخصائص (Props) وHooks (useState، useEffect) بعمق كافٍ
+            لتجنب أخطاء شائعة. لكن بمجرد تجاوز هذا المنحنى، المعرفة
+            المكتسبة (خصوصًا JSX وHooks) تنتقل بسهولة أكبر لأدوات أخرى
+            تتبنى نفس الأنماط لاحقًا، مثل React Native لتطوير تطبيقات
+            الهاتف.
+        </p>
+
+        <h2 id="ecosystem">النظام البيئي: الحزم والأدوات المصاحبة</h2>
+
+        <p>
+            بحكم كونه الأقدم والأوسع انتشارًا، نظام React البيئي أضخم
+            بفارق واضح: عدد أكبر من المكتبات الجاهزة، أدوات تصحيح أخطاء
+            أنضج، ومحتوى تعليمي أوفر بكثير على الإنترنت. هذا يعني عمليًا
+            أن أي مشكلة تقريبًا واجهتها في React، سبقك آلاف المطورين
+            وناقشوا حلها.
+        </p>
+
+        <p>
+            نظام Vue أصغر، لكنه أكثر تماسكًا: أدوات Vue Router وPinia
+            وVite (أداة البناء التي طوّرها مبتكر Vue نفسه) مصممة لتعمل
+            معًا بسلاسة، بدلاً من تجميع أدوات من جهات مختلفة قد لا تتوافق
+            فلسفيًا فيما بينها كما يحدث أحيانًا في React.
+        </p>
+
+        <h2 id="meta-frameworks">
+            أطر العمل المصاحبة: Next.js مقابل Nuxt.js
+        </h2>
+
+        <p>
+            نادرًا ما يُستخدم React أو Vue بمفردهما في مشاريع إنتاج جادة
+            اليوم؛ كلاهما يُستخدم غالبًا عبر "إطار عمل وصفي" (Meta-
+            framework) فوقهما:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Next.js</strong> (فوق React): يضيف عرضًا من جهة
+                الخادم (SSR)، توليد صفحات ثابتة، وتوجيهًا قائمًا على نظام
+                الملفات. طوّرته Vercel، وأصبح الطريقة القياسية فعليًا
+                لبناء تطبيقات React في الإنتاج
+            </li>
+            <li>
+                <strong>Nuxt.js</strong> (فوق Vue): يقدّم نفس الفلسفة
+                تقريبًا لـ Vue، مع تكامل أعمق أحيانًا مع أدوات Vue الرسمية
+                بحكم أن كلاهما يتبع نفس فريق النواة الأساسي فلسفيًا
+            </li>
+        </ul>
+
+        <h2 id="performance">الأداء: هل يوجد فرق حقيقي ملموس؟</h2>
+
+        <p>
+            في المعايير الدقيقة (Benchmarks) المعزولة، يميل Vue لإظهار
+            أداء أسرع قليلًا في بعض السيناريوهات، خصوصًا مع وضع Vapor
+            الجديد الذي يزيل طبقة DOM الافتراضي بالكامل. لكن في تطبيقات
+            العالم الحقيقي، الفارق غالبًا غير محسوس للمستخدم النهائي؛
+            العوامل التي تؤثر فعليًا على الأداء المُدرَك (حجم الصور،
+            استراتيجية التحميل، جودة الشبكة) أهم بكثير من اختيار المكتبة
+            نفسها.
+        </p>
+
+        <h2 id="job-market">سوق العمل وفرص التوظيف</h2>
+
+        <p>
+            هنا الفارق واضح وموثق إحصائيًا: React يهيمن بفارق كبير على
+            إعلانات الوظائف عالميًا، خصوصًا في السوق الأمريكي والأوروبي،
+            بحكم اعتماد شركات ضخمة مثل Meta وNetflix وAirbnb عليه مباشرة.
+            Vue له حضور قوي جدًا في أسواق محددة (خصوصًا آسيا وأجزاء من
+            أوروبا)، لكنه أصغر عالميًا من ناحية عدد الفرص المتاحة.
+        </p>
+
+        <h2 id="state-management">إدارة الحالة (State Management)</h2>
+
+        <p>
+            React يعتمد على حلول خارجية منفصلة لإدارة حالة التطبيق
+            المعقدة عبر مكونات متعددة، مثل Redux أو Zustand أو Context
+            API المدمج. هذا يعني مرونة في الاختيار، لكن أيضًا قرارًا
+            إضافيًا يجب اتخاذه.
+        </p>
+
+        <p>
+            Vue يقدّم Pinia كحل إدارة حالة رسمي من الفريق الأساسي نفسه،
+            مصمم ليتكامل بسلاسة تامة مع نظام التفاعلية المدمج في Vue،
+            فتحصل على تجربة أكثر اتساقًا دون الحاجة للبحث عن حل خارجي
+            منفصل.
+        </p>
+
+        <h2 id="company-backing">من يقف خلف كل مشروع؟</h2>
+
+        <p>
+            React طوّرته وتدعمه Meta (فيسبوك سابقًا)، وهذا يمنحه استقرارًا
+            مؤسسيًا ضخمًا، لكنه يعني أيضًا أن قرارات التطوير الكبرى تتأثر
+            أحيانًا باحتياجات Meta الداخلية تحديدًا. Vue مشروع مجتمعي
+            مستقل بالكامل، يقوده إيفان يو (Evan You) ومجموعة من المساهمين
+            المستقلين، بتمويل عبر رعاية مجتمعية (GitHub Sponsors وOpen
+            Collective) بدلاً من شركة واحدة مسيطرة.
+        </p>
+
+        <h2 id="comparison-table">جدول مقارنة شامل</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">React</th>
+                        <th class="px-4 py-2 font-semibold">Vue.js</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">النوع</td>
+                        <td class="px-4 py-2">مكتبة واجهة</td>
+                        <td class="px-4 py-2">إطار عمل تدريجي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">النحو</td>
+                        <td class="px-4 py-2">JSX</td>
+                        <td class="px-4 py-2">قوالب أقرب لـ HTML</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">منحنى التعلم</td>
+                        <td class="px-4 py-2">أعلى قليلًا في البداية</td>
+                        <td class="px-4 py-2">أسهل وأسرع للمبتدئين</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إدارة الحالة الرسمية</td>
+                        <td class="px-4 py-2">غير مدمجة، حلول خارجية</td>
+                        <td class="px-4 py-2">Pinia (رسمية ومدمجة فلسفيًا)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إطار العمل المصاحب</td>
+                        <td class="px-4 py-2">Next.js</td>
+                        <td class="px-4 py-2">Nuxt.js</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الجهة الداعمة</td>
+                        <td class="px-4 py-2">Meta</td>
+                        <td class="px-4 py-2">مجتمع مستقل</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">سوق العمل</td>
+                        <td class="px-4 py-2">الأوسع عالميًا</td>
+                        <td class="px-4 py-2">قوي في أسواق محددة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-decide">كيف تقرر فعليًا؟</h2>
+
+        <ul>
+            <li><strong>تريد أكبر فرص توظيف ممكنة عالميًا:</strong> React</li>
+            <li><strong>تبدأ للتو في تطوير الواجهات الأمامية وتريد منحنى تعلم سلسًا:</strong> Vue</li>
+            <li><strong>فريقك صغير وتريد أدوات رسمية متكاملة دون قرارات إضافية كثيرة:</strong> Vue</li>
+            <li><strong>تعمل أصلاً ضمن فريق أو شركة تستخدم React:</strong> التزم بـ React للاتساق</li>
+            <li><strong>تخطط لاحقًا لتطوير تطبيقات هاتف عبر React Native:</strong> React يمنحك انتقالًا أسهل لاحقًا</li>
+            <li><strong>تقدّر استقلالية المشروع عن شركة واحدة مسيطرة:</strong> Vue</li>
+        </ul>
+
+        <p>
+            لا يوجد اختيار "خاطئ" بين الاثنين؛ كلاهما نضج تمامًا، يُستخدم
+            في إنتاج حقيقي لآلاف الشركات حول العالم، وينتج تطبيقات ويب
+            سريعة وموثوقة حين يُستخدم بشكل صحيح.
+        </p>
+
+        <h2 id="external-resources">الروابط الرسمية</h2>
+
+        <ul>
+            <li><strong>React:</strong> <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">react.dev</a></li>
+            <li><strong>Vue.js:</strong> <a href="https://vuejs.org/" target="_blank" rel="noopener noreferrer">vuejs.org</a></li>
+            <li><strong>Next.js:</strong> <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">nextjs.org</a></li>
+            <li><strong>Nuxt.js:</strong> <a href="https://nuxt.com/" target="_blank" rel="noopener noreferrer">nuxt.com</a></li>
+            <li><strong>Pinia (إدارة حالة Vue):</strong> <a href="https://pinia.vuejs.org/" target="_blank" rel="noopener noreferrer">pinia.vuejs.org</a></li>
+            <li><strong>Vite (أداة البناء):</strong> <a href="https://vite.dev/" target="_blank" rel="noopener noreferrer">vite.dev</a></li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل يمكنني تعلم كلا الأداتين دون تعارض بينهما؟</strong><br />
+            نعم تمامًا. أغلب المفاهيم الأساسية (المكونات، الخصائص،
+            الحالة) متشابهة فلسفيًا، وتعلم واحدة يسهّل فهم الأخرى لاحقًا
+            بشكل ملحوظ.
+        </p>
+
+        <p>
+            <strong>أيهما أفضل لمشروع صغير شخصي سريع؟</strong><br />
+            Vue غالبًا أسرع للبدء بمشروع صغير بفضل بساطته وأدواته المدمجة،
+            لكن الفرق ليس كبيرًا جدًا لمشروع بسيط حقًا.
+        </p>
+
+        <p>
+            <strong>هل React مجاني بالكامل مثل Vue؟</strong><br />
+            نعم، كلاهما مرخّص تحت MIT، مفتوحا المصدر بالكامل، ومجانيان
+            تمامًا للاستخدام التجاري دون أي قيود أو رسوم.
+        </p>
+
+        <p>
+            <strong>هل تعلم React يستحق رغم منحنى التعلم الأصعب؟</strong><br />
+            إن كان هدفك سوق العمل العالمي أو فرص توظيف أوسع، نعم يستحق
+            الجهد الإضافي؛ الفارق في منحنى التعلم ليس كبيرًا لدرجة تستحق
+            تجاهل هذا العامل.
+        </p>
+    </PostLayout>
+</BaseLayout>

@@ -1,0 +1,476 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-10-ai-models-2026",
+    title: "أفضل 10 نماذج ذكاء اصطناعي في عام 2026: دليل شامل ومحدث",
+    metaTitle: "أفضل 10 نماذج ذكاء اصطناعي في 2026: دليل شامل",
+    description:
+        "مقارنة شاملة لأفضل 10 نماذج ذكاء اصطناعي في 2026 — من GPT وClaude وGemini إلى DeepSeek وQwen وKimi — مع نقاط القوة، الاستخدامات المثالية، والرابط الرسمي لكل نموذج.",
+    keywords: [
+        "أفضل نماذج ذكاء اصطناعي 2026",
+        "GPT-5.6",
+        "Claude Opus 5",
+        "Gemini 3.1 Pro",
+        "Grok 4.3",
+        "DeepSeek",
+        "Qwen",
+        "Kimi K3",
+        "Llama 4",
+        "GLM-5.2",
+        "مقارنة نماذج الذكاء الاصطناعي",
+    ],
+    category: ["ذكاء اصطناعي", "مقالات"],
+    author: "طلال عمران",
+    date: "12 أغسطس 2026",
+    pubDate: new Date("2026-08-12"),
+    tags: [
+        "ذكاء اصطناعي",
+        "GPT",
+        "Claude",
+        "Gemini",
+        "DeepSeek",
+        "نماذج لغوية",
+    ],
+    thumbnail: "/images/best-10-ai-models-2026.webp",
+};
+
+const tocItems = [
+    { id: "how-we-picked", label: "كيف اخترنا هذه القائمة؟" },
+    { id: "gpt-5-6", label: "1. GPT-5.6 (OpenAI)" },
+    { id: "claude-opus-5", label: "2. Claude Opus 5 (Anthropic)" },
+    { id: "gemini-3-1-pro", label: "3. Gemini 3.1 Pro (Google)" },
+    { id: "grok-4-3", label: "4. Grok 4.3 (xAI)" },
+    { id: "deepseek-v4-pro", label: "5. DeepSeek V4 Pro (DeepSeek)" },
+    { id: "qwen-3-8-max", label: "6. Qwen3.8-Max (Alibaba)" },
+    { id: "kimi-k3", label: "7. Kimi K3 (Moonshot AI)" },
+    { id: "llama-4", label: "8. Llama 4 (Meta)" },
+    { id: "glm-5-2", label: "9. GLM-5.2 (Zhipu / Z.ai)" },
+    { id: "minimax-m3", label: "10. MiniMax M3 (MiniMax)" },
+    { id: "comparison-table", label: "جدول مقارنة شامل" },
+    { id: "how-to-choose", label: "كيف تختار النموذج المناسب لك؟" },
+    { id: "conclusion", label: "خلاصة عملية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            سباق نماذج الذكاء الاصطناعي في 2026 لم يعد سباقًا بين شركتين أو
+            ثلاث، بل ساحة مزدحمة تضم عمالقة أمريكيين تقليديين، ومختبرات
+            صينية تتقدم بوتيرة مذهلة، ونماذج مفتوحة المصدر تنافس النماذج
+            المغلقة على مستوى الأداء بكسر واضح في الأسعار.
+        </p>
+
+        <p>
+            هذا الدليل يستعرض أبرز 10 نماذج ذكاء اصطناعي حاليًا، بناءً على
+            مؤشرات أداء مستقلة ونشاط فعلي في السوق، مع رابط رسمي لكل نموذج
+            للوصول المباشر إليه.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">محتويات المقال</p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="how-we-picked">كيف اخترنا هذه القائمة؟</h2>
+
+        <p>
+            لا يوجد مقياس واحد "صحيح" لترتيب نماذج الذكاء الاصطناعي، لأن كل
+            نموذج يتفوق في جوانب مختلفة: بعضها أقوى في البرمجة، وبعضها في
+            الكتابة الإبداعية، وبعضها في التعامل مع سياقات طويلة جدًا.
+            اعتمدنا في هذه القائمة على:
+        </p>
+
+        <ul>
+            <li>مؤشرات أداء مستقلة مثل Artificial Analysis Intelligence Index وLMArena</li>
+            <li>حجم الاستخدام الفعلي والانتشار في السوق</li>
+            <li>التنوع بين النماذج المغلقة والمفتوحة المصدر</li>
+            <li>مدى حداثة الإصدار ونشاط الشركة المطورة</li>
+        </ul>
+
+        <p>
+            الترتيب أدناه لا يعني تفوقًا مطلقًا لنموذج على آخر في كل شيء،
+            بل يعكس مكانة كل نموذج ضمن الصورة العامة الحالية.
+        </p>
+
+        <h2 id="gpt-5-6">1. GPT-5.6 (OpenAI)</h2>
+
+        <p>
+            الإصدار الأحدث من عائلة GPT، ويتصدر حاليًا عدة مؤشرات أداء
+            مجمّعة تغطي البرمجة والقدرات الوكيلية (Agentic) والاستدلال
+            العام. يأتي بثلاث فئات أسعار مختلفة (Luna وTerra وSol) لتغطية
+            نطاق واسع من الاستخدامات، من المهام البسيطة السريعة إلى المهام
+            المعقدة التي تتطلب استدلالًا عميقًا.
+        </p>
+
+        <ul>
+            <li>أداء قوي في المهام الوكيلية وتنفيذ الأدوات المتسلسلة</li>
+            <li>تكامل واسع مع أدوات ومنصات خارجية بفضل النظام البيئي الضخم لـ OpenAI</li>
+            <li>يدعم توليد الصور بجودة عالية عبر ChatGPT Images</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://openai.com/" target="_blank" rel="noopener noreferrer">openai.com</a>
+        </p>
+
+        <h2 id="claude-opus-5">2. Claude Opus 5 (Anthropic)</h2>
+
+        <p>
+            أحدث نموذج رئيسي من Anthropic، ويحتل مراتب متقدمة جدًا على
+            مؤشرات الأداء المجمّعة المستقلة. يُعرف بأداء قوي في فهم الأكواد
+            البرمجية الطويلة، الكتابة عالية الجودة، والتعامل الآمن مع
+            المهام الحساسة.
+
+        </p>
+
+        <ul>
+            <li>يتفوق تاريخيًا في السياقات الطويلة جدًا وفهم قواعد أكواد كاملة</li>
+            <li>يركز بشكل واضح على الأمان والموثوقية في التطبيقات الحساسة</li>
+            <li>يأتي ضمن عائلة نماذج متعددة (Haiku، Sonnet، Opus) بأسعار وأحجام مختلفة</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://claude.com/" target="_blank" rel="noopener noreferrer">claude.com</a>
+        </p>
+
+        <h2 id="gemini-3-1-pro">3. Gemini 3.1 Pro (Google)</h2>
+
+        <p>
+            نموذج Google الرائد، ويتميز تحديدًا بقدرات متعددة الوسائط
+            (Multimodal) قوية جدًا: نص، صورة، صوت، وفيديو ضمن نافذة سياق
+            واحدة. يحتل مراكز متقدمة في تفضيلات المستخدمين على منصات مثل
+            LMArena.
+        </p>
+
+        <ul>
+            <li>تكامل عميق مع بيئة Google ومنتجاتها (البحث، مستندات جوجل، الأندرويد)</li>
+            <li>أداء متميز في المهام متعددة الوسائط المعقدة</li>
+            <li>نافذة سياق كبيرة جدًا تناسب معالجة مستندات وملفات ضخمة</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">gemini.google.com</a>
+        </p>
+
+        <h2 id="grok-4-3">4. Grok 4.3 (xAI)</h2>
+
+        <p>
+            نموذج شركة xAI المملوكة لإيلون ماسك، ويتميز بتكامل وثيق مع
+            منصة X (تويتر سابقًا)، ما يمنحه وصولًا لمعلومات آنية ونقاشات
+            حديثة بشكل مباشر أكثر من بعض المنافسين.
+        </p>
+
+        <ul>
+            <li>تكامل مباشر مع بيانات منصة X للمعلومات الآنية</li>
+            <li>أسلوب استجابة أقل تحفظًا نسبيًا مقارنة ببعض المنافسين</li>
+            <li>تطور سريع الوتيرة في الإصدارات المتتالية</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://x.ai/" target="_blank" rel="noopener noreferrer">x.ai</a>
+        </p>
+
+        <h2 id="deepseek-v4-pro">5. DeepSeek V4 Pro (DeepSeek)</h2>
+
+        <p>
+            النموذج الصيني الذي أحدث ضجة عالمية بفضل أدائه القوي في
+            الاستدلال والرياضيات مقابل تكلفة أقل بكثير من النماذج المغلقة
+            المنافسة. يتوفر بوزن مفتوح جزئيًا، ما يتيح الاستضافة الذاتية
+            لمن يريد التحكم الكامل في بياناته.
+        </p>
+
+        <ul>
+            <li>أداء قوي جدًا في الاستدلال الرياضي والبرمجة التنافسية</li>
+            <li>تكلفة تشغيل أقل بشكل ملحوظ من النماذج المغلقة الكبرى</li>
+            <li>يوفر إصدارات Pro وFlash لتغطية احتياجات مختلفة من السرعة والعمق</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://www.deepseek.com/" target="_blank" rel="noopener noreferrer">deepseek.com</a>
+        </p>
+
+        <h2 id="qwen-3-8-max">6. Qwen3.8-Max (Alibaba)</h2>
+
+        <p>
+            النموذج الرائد من مختبر Qwen التابع لعلي بابا، ويعتمد بنية
+            خبراء مختلطة (Mixture of Experts) ضخمة. يتميز بتغطية لغوية
+            واسعة جدًا ونافذة سياق تصل لمليون رمز (Token)، ما يجعله خيارًا
+            قويًا للمهام متعددة اللغات والوكيلية.
+        </p>
+
+        <ul>
+            <li>دعم أكثر من مئة لغة ولهجة بجودة عالية</li>
+            <li>نافذة سياق ضخمة تصل لمليون رمز</li>
+            <li>تكامل قوي مع بروتوكول Model Context Protocol لبناء الوكلاء الذكية</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://qwen.ai/" target="_blank" rel="noopener noreferrer">qwen.ai</a>
+        </p>
+
+        <h2 id="kimi-k3">7. Kimi K3 (Moonshot AI)</h2>
+
+        <p>
+            نموذج مختبر Moonshot AI الصيني، ودخل مؤخرًا كأعلى نموذج مفتوح
+            المصدر ترتيبًا في عدة مؤشرات أداء. يتميز ببنية خبراء مختلطة ضخمة
+            جدًا (2.8 تريليون معامل) ونافذة سياق تتجاوز المليون رمز، ما
+            يجعله مناسبًا جدًا للمستندات الطويلة والأكواد الكبيرة.
+        </p>
+
+        <ul>
+            <li>من أقوى النماذج المفتوحة المصدر حاليًا في مؤشرات الأداء المستقلة</li>
+            <li>نافذة سياق تتجاوز المليون رمز، مثالية للمستندات والأكواد الطويلة</li>
+            <li>تكلفة تشغيل تنافسية جدًا مقارنة بالنماذج المغلقة المكافئة</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://www.moonshot.ai/" target="_blank" rel="noopener noreferrer">moonshot.ai</a>
+        </p>
+
+        <h2 id="llama-4">8. Llama 4 (Meta)</h2>
+
+        <p>
+            عائلة النماذج مفتوحة المصدر من Meta، وتضم إصدارات Scout
+            وMaverick بأحجام مختلفة تناسب من التشغيل على معدات محدودة إلى
+            المهام الأثقل. استراتيجية Meta في إتاحة الأوزان مجانًا جعلت
+            Llama الأساس الذي بُنيت عليه آلاف النماذج المشتقة حول العالم.
+        </p>
+
+        <ul>
+            <li>وزن مفتوح بالكامل، يتيح التشغيل الذاتي دون الاعتماد على واجهة برمجية خارجية</li>
+            <li>بنية خبراء مختلطة تحقق توازنًا جيدًا بين الأداء وتكلفة التشغيل</li>
+            <li>نظام بيئي ضخم من النماذج المشتقة والمحسّنة من المجتمع</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://www.llama.com/" target="_blank" rel="noopener noreferrer">llama.com</a>
+        </p>
+
+        <h2 id="glm-5-2">9. GLM-5.2 (Zhipu / Z.ai)</h2>
+
+        <p>
+            نموذج مختبر Zhipu الصيني (يُعرف عالميًا باسم Z.ai)، وأحد أبرز
+            النماذج مفتوحة المصدر حاليًا، مرخّص بالكامل تحت رخصة MIT
+            المرنة. يتميز بموثوقية عالية في المهام الوكيلية واستدعاء
+            الأدوات، وهو ما يجعله خيارًا قويًا لبناء أنظمة أتمتة متعددة
+            الخطوات.
+        </p>
+
+        <ul>
+            <li>مرخّص بالكامل تحت MIT، ما يتيح استخدامًا تجاريًا مرنًا جدًا</li>
+            <li>موثوقية عالية في استدعاء الأدوات والمخرجات المنظمة (Structured Output)</li>
+            <li>نافذة سياق تصل لمليون رمز</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://z.ai/" target="_blank" rel="noopener noreferrer">z.ai</a>
+        </p>
+
+        <h2 id="minimax-m3">10. MiniMax M3 (MiniMax)</h2>
+
+        <p>
+            نموذج مختبر MiniMax الصيني، ويراهن تحديدًا على الجمع بين نافذة
+            سياق كبيرة نسبيًا وقدرات متعددة الوسائط أصيلة، بتكلفة تشغيل
+            منخفضة تجعله خيارًا عمليًا للمشاريع التي تحتاج معالجة كميات
+            بيانات كبيرة دون تكلفة النماذج المغلقة الكبرى.
+        </p>
+
+        <ul>
+            <li>نافذة سياق تصل لمليون رمز بتكلفة تنافسية جدًا</li>
+            <li>دعم أصيل للوسائط المتعددة ضمن بنية النموذج نفسها</li>
+            <li>خيار عملي لمشاريع تحتاج معالجة نصوص وملفات ضخمة باستمرار</li>
+        </ul>
+
+        <p>
+            <strong>الرابط الرسمي:</strong>{" "}
+            <a href="https://www.minimax.io/" target="_blank" rel="noopener noreferrer">minimax.io</a>
+        </p>
+
+        <h2 id="comparison-table">جدول مقارنة شامل</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النموذج</th>
+                        <th class="px-4 py-2 font-semibold">الشركة</th>
+                        <th class="px-4 py-2 font-semibold">نوع المصدر</th>
+                        <th class="px-4 py-2 font-semibold">أبرز ميزة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">GPT-5.6</td>
+                        <td class="px-4 py-2">OpenAI</td>
+                        <td class="px-4 py-2">مغلق</td>
+                        <td class="px-4 py-2">قدرات وكيلية وتكامل واسع</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Claude Opus 5</td>
+                        <td class="px-4 py-2">Anthropic</td>
+                        <td class="px-4 py-2">مغلق</td>
+                        <td class="px-4 py-2">فهم أكواد طويلة وأمان عالٍ</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Gemini 3.1 Pro</td>
+                        <td class="px-4 py-2">Google</td>
+                        <td class="px-4 py-2">مغلق</td>
+                        <td class="px-4 py-2">تعدد وسائط قوي وتكامل Google</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Grok 4.3</td>
+                        <td class="px-4 py-2">xAI</td>
+                        <td class="px-4 py-2">مغلق</td>
+                        <td class="px-4 py-2">وصول آني لبيانات منصة X</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">DeepSeek V4 Pro</td>
+                        <td class="px-4 py-2">DeepSeek</td>
+                        <td class="px-4 py-2">مفتوح جزئيًا</td>
+                        <td class="px-4 py-2">استدلال رياضي بتكلفة منخفضة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Qwen3.8-Max</td>
+                        <td class="px-4 py-2">Alibaba</td>
+                        <td class="px-4 py-2">مغلق حاليًا</td>
+                        <td class="px-4 py-2">تغطية لغوية واسعة جدًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Kimi K3</td>
+                        <td class="px-4 py-2">Moonshot AI</td>
+                        <td class="px-4 py-2">مفتوح المصدر</td>
+                        <td class="px-4 py-2">أقوى نموذج مفتوح في الأداء العام</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Llama 4</td>
+                        <td class="px-4 py-2">Meta</td>
+                        <td class="px-4 py-2">مفتوح المصدر</td>
+                        <td class="px-4 py-2">نظام بيئي ضخم من المشتقات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">GLM-5.2</td>
+                        <td class="px-4 py-2">Zhipu / Z.ai</td>
+                        <td class="px-4 py-2">مفتوح (MIT)</td>
+                        <td class="px-4 py-2">موثوقية عالية في المهام الوكيلية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">MiniMax M3</td>
+                        <td class="px-4 py-2">MiniMax</td>
+                        <td class="px-4 py-2">مفتوح المصدر</td>
+                        <td class="px-4 py-2">سياق طويل بتكلفة منخفضة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-choose">كيف تختار النموذج المناسب لك؟</h2>
+
+        <ul>
+            <li><strong>للبرمجة وفهم أكواد كبيرة:</strong> Claude Opus 5 أو GPT-5.6</li>
+            <li><strong>للمهام متعددة الوسائط (نص، صورة، صوت، فيديو):</strong> Gemini 3.1 Pro</li>
+            <li><strong>لأقل تكلفة ممكنة مع أداء منافس:</strong> DeepSeek V4 Pro أو GLM-5.2</li>
+            <li><strong>للتشغيل الذاتي دون الاعتماد على واجهة برمجية خارجية:</strong> Llama 4 أو Kimi K3 أو GLM-5.2</li>
+            <li><strong>للمستندات والملفات الطويلة جدًا:</strong> Kimi K3 أو Qwen3.8-Max أو MiniMax M3</li>
+            <li><strong>للمعلومات الآنية والنقاشات الحديثة:</strong> Grok 4.3</li>
+        </ul>
+
+        <p>
+            لا يوجد نموذج "الأفضل مطلقًا" يناسب كل الاستخدامات. أفضل
+            استراتيجية عملية هي اختيار النموذج بناءً على المهمة تحديدًا،
+            لا بناءً على اسم الشركة أو الترتيب العام في لوحة صدارة واحدة.
+        </p>
+
+        <h2 id="conclusion">خلاصة عملية</h2>
+
+        <p>
+            المشهد في 2026 لم يعد ثنائيًا بين "GPT أو لا شيء". النماذج
+            الصينية مفتوحة المصدر مثل DeepSeek وKimi وGLM أثبتت قدرتها على
+            منافسة النماذج المغلقة الكبرى بأداء قريب جدًا وتكلفة أقل بكثير،
+            بينما تحافظ العائلات الأمريكية الكبرى (GPT وClaude وGemini) على
+            صدارتها في مجالات محددة مثل الأمان والتكامل المؤسسي والقدرات
+            متعددة الوسائط.
+        </p>
+
+        <p>
+            القرار الأذكى لأي مستخدم أو مطور ليس "الالتزام بنموذج واحد إلى
+            الأبد"، بل بناء سير عمل مرن يسمح بالتبديل بين عدة نماذج حسب
+            طبيعة المهمة، لأن لوحات الصدارة نفسها تتغير كل بضعة أسابيع مع
+            كل إصدار جديد.
+        </p>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>ما الفرق بين النماذج المغلقة والمفتوحة المصدر؟</strong><br />
+            النماذج المغلقة تُستخدم فقط عبر واجهة برمجية أو تطبيق الشركة
+            المطورة، بينما النماذج مفتوحة المصدر يمكن تحميلها وتشغيلها على
+            خوادمك الخاصة دون الاعتماد على أي طرف خارجي.
+        </p>
+
+        <p>
+            <strong>هل النماذج الصينية مفتوحة المصدر آمنة للاستخدام التجاري؟</strong><br />
+            تختلف الرخص من نموذج لآخر؛ بعضها (مثل GLM-5.2) مرخّص تحت MIT
+            المرنة جدًا، بينما البعض الآخر له شروط استخدام تجاري محددة يجب
+            مراجعتها قبل الاعتماد عليها في منتج تجاري.
+        </p>
+
+        <p>
+            <strong>هل يجب أن ألتزم بنموذج واحد فقط لكل مشاريعي؟</strong><br />
+            لا يُنصح بذلك. أفضل الممارسات الحالية تعتمد على توجيه كل مهمة
+            للنموذج الأنسب لها من ناحية الأداء والتكلفة، بدلاً من الاعتماد
+            الكامل على نموذج واحد لكل شيء.
+        </p>
+
+        <p>
+            <strong>كم مرة تتغير هذه الترتيبات؟</strong><br />
+            بوتيرة سريعة جدًا، أحيانًا شهريًا أو حتى أسبوعيًا مع كل إصدار
+            جديد من إحدى الشركات الكبرى، لذلك يُنصح دائمًا بمراجعة لوحات
+            الصدارة المستقلة المحدثة باستمرار قبل اتخاذ قرار نهائي.
+        </p>
+    </PostLayout>
+</BaseLayout>

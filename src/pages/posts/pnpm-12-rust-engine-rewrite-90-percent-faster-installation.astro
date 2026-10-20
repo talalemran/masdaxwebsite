@@ -1,0 +1,235 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "pnpm-12-rust-engine-rewrite-90-percent-faster-installation",
+    title: "pnpm 12: مدير حزم JavaScript أسرع 90% بمحرك Rust جديد",
+    metaTitle: "pnpm 12 يعيد كتابة المحرك بـ Rust: 90% أسرع",
+    description:
+        "pnpm 12 صدرت رسمياً — إعادة كتابة شاملة للمحرك الأساسي بلغة Rust بدلاً من JavaScript، تقطع أوقات تثبيت الحزم بنسبة 90% (5.19 ثانية بدلاً من 47.7 ثانية)، مع الحفاظ على التوافقية الكاملة مع الإصدار 11.",
+    keywords: [
+        "pnpm 12",
+        "مدير حزم",
+        "Rust",
+        "JavaScript",
+        "Installation times",
+        "pacquet engine",
+        "npm alternative",
+        "Node.js",
+        "برمجة",
+        "تطوير ويب",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "4 سبتمبر 2026",
+    pubDate: new Date("2026-09-04"),
+    tags: ["pnpm", "Rust", "برمجة", "مدير حزم", "JavaScript"],
+    thumbnail: "/images/pnpm-12-rust-engine-rewrite-90-percent-faster-installation.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            مدير الحزم الشهير 
+                <a href="https://pnpm.io/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>pnpm</strong>
+            </a>
+            أطلق <strong>الإصدار 12</strong> — تحديث ضخم يقطع
+            <strong>أوقات تثبيت الحزم بنسبة تصل إلى 90 بالمائة</strong>. المحرك الأساسي
+            تم إعادة كتابته بالكامل بلغة <strong>Rust</strong> بدلاً من الاعتماد على
+            <strong>JavaScript وعمليات Node.js الثقيلة</strong>.
+        </p>
+
+        <h2>تحويل هائل: من JavaScript إلى Rust</h2>
+
+        <p>
+            تاريخياً، <strong>pnpm فازت على npm بفضل المتجر القابل للعنونة والملفات المرتبطة بـ hard-links</strong>.
+            لكن السرعة بقيت محدودة بـ <strong>بطء تحميل Node.js والعمليات أحادية الخيط</strong>.
+        </p>
+
+        <p>
+            الحل، المُسمى <strong>"pacquet"</strong>، بدأ كـ
+            
+                <a href="https://github.com/pnpm/pacquet"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>مشروع تجريبي قبل دمجه في البنية الأساسية</strong>
+            </a>
+            . المحرك الجديد يتكون من:
+        </p>
+
+        <ul>
+            <li><strong>65.9 بالمائة Rust:</strong> العمليات الثقيلة والمتوازية</li>
+            <li>
+                <strong>33.5 بالمائة TypeScript:</strong> المنطق والتكامل
+            </li>
+        </ul>
+
+        <p>
+            بـ <strong>توجيه الجلب والفك والحل من خلال Rust الأصلي</strong>، البرنامج الآن
+            <strong>يستفيد من المعالجة متعددة الخيوط المستحيلة سابقاً في JavaScript</strong>.
+        </p>
+
+        <h2>الأرقام الصادمة: 90% أسرع</h2>
+
+        <p>
+            اختبارات التثبيت بدون ذاكرة تخزين مؤقت أظهرت:
+        </p>
+
+        <ul>
+            <li>
+                <strong>pnpm 12:</strong> 5.19 ثانية
+            </li>
+            <li>
+                <strong>pnpm 11:</strong> 8.22 ثانية
+            </li>
+            <li>
+                <strong>npm (الافتراضي):</strong> 47.7 ثانية
+            </li>
+        </ul>
+
+        <p>
+            بالإضافة إلى ذلك، 
+                <a href="https://github.com/pnpm/pnpr"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>خادم السجل الجديد pnpr</strong> المبني بـ Rust
+            </a>
+            <strong>يقطع الوقت إلى 3.37 ثانية فقط</strong> — تحسن مذهل.
+        </p>
+
+        <h2>التوافقية الكاملة المحفوظة</h2>
+
+        <p>
+            القلق الأكبر للفرق الهندسية هو <strong>كسر الأنابيب الآلية</strong>. لكن
+            
+                <a href="https://pnpm.io/blog/2026/08/26/pnpm-12"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Zoltan Kochan، قائد الصيانة</strong>
+            </a>
+            <strong>ضمن استمرارية بنيوية مطلقة</strong>:
+        </p>
+
+        <ul>
+            <li><strong>جميع الأوامر:</strong> تعمل بنفس الطريقة</li>
+            <li><strong>جميع الأعلام والإعدادات:</strong> لم تتغير</li>
+            <li>
+                <strong>ملف Lockfile (pnpm-lock.yaml):</strong> بدون تعديلات مطلوبة
+            </li>
+            <li><strong>واجهة سطر الأوامر:</strong> مطابقة بالكامل</li>
+        </ul>
+
+        <p>
+            هذا يعني <strong>ملايين من البرامج النصية البناء الآلية لا تحتاج لأي تعديل</strong>.
+            الترقية بسيطة جداً.
+        </p>
+
+        <h2>محركات JavaScript تتحول إلى Rust</h2>
+
+        <p>
+            هذا التحول يعكس <strong>اتجاهاً أوسع في الصناعة</strong>. أدوات البرمجة الأساسية في
+            JavaScript كـ:
+        </p>
+
+        <ul>
+            <li>
+                <a href="https://turbopack.dev/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>Turbopack</strong>
+                </a>
+                (Bundler)
+            </li>
+            <li>
+                <a href="https://oxc.rs/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>Oxc</strong>
+                </a>
+                (Linter)
+            </li>
+        </ul>
+
+        <p>
+            كل هذه تُستبدل بـ <strong>لغات مجمعة آمنة للذاكرة</strong> لمحاربة الكمون.
+        </p>
+
+        <h2>التأثير على الأسواق الناشئة</h2>
+
+        <p>
+            بالنسبة لفرق الهندسة في <strong>الأسواق الناشئة مثل كينيا ونيجيريا</strong>،
+            <strong>خفض أوقات التثبيت بـ 90% يؤثر مباشرة على القاع الخاص بـ الشركات</strong>. النطاق
+            المحدود وتكاليف خوادم CI/CD تشكل نفقات تشغيلية كبيرة. التثبيتات المحلية الأسرع
+            <strong>تحسّن جودة حياة المطورين على الأجهزة المحدودة الموارد</strong>.
+        </p>
+
+        <h2>المستقبل: نهاية انتظار دقائق</h2>
+
+        <p>
+            
+                <a href="https://streamlinefeed.co.ke/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>pnpm 12 متاحة الآن عبر وسم التوزيع next-12</strong>
+            </a>
+            ، ومن المتوقع أن تندمج حزم مثل
+            
+                <a href="https://brew.sh/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Homebrew
+            </a>
+            و
+            
+                <a href="https://learn.microsoft.com/en-us/windows/package-manager/winget/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                winget
+            </a>
+            <strong>الإصدار قريباً</strong>.
+        </p>
+
+        <p>
+            مع بدء فرق monorepo العالمية التبديل،
+            <strong>عصر الانتظار لدقائق لتهيئة مشروع JavaScript ينتهي بشكل نهائي</strong>.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://streamlinefeed.co.ke/news/javascript-package-manager-pnpm-rewrites-engine-rust"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Streamline Feed
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

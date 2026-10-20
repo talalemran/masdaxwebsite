@@ -1,0 +1,321 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "what-is-fhs", label: "ما هو معيار FHS؟" },
+  { id: "root-dir", label: "الجذر (root)" },
+  { id: "bin", label: "البرامج المشغّلة (/bin)" },
+  { id: "sbin", label: "أوامر النظام (/sbin)" },
+  { id: "etc", label: "ملفات الإعدادات (/etc)" },
+  { id: "home", label: "مجلدات المستخدمين (/home)" },
+  { id: "var", label: "الملفات المتغيرة (/var)" },
+  { id: "tmp", label: "الملفات المؤقتة (/tmp)" },
+  { id: "usr", label: "ملفات المستخدمين (/usr)" },
+  { id: "opt", label: "البرامج الإضافية (/opt)" },
+  { id: "dev", label: "الأجهزة (/dev)" },
+  { id: "proc", label: "معلومات العمليات (/proc)" },
+  { id: "mnt-media", label: "نقاط التثبيت (/mnt و /media)" },
+  { id: "boot", label: "ملفات الإقلاع (/boot)" },
+  { id: "lib", label: "المكتبات (/lib)" },
+  { id: "commands", label: "أوامر التنقل الأساسية" },
+  { id: "permissions", label: "الأذونات والصلاحيات" },
+  { id: "tips", label: "نصائح عملية" },
+  { id: "faq", label: "أسئلة شائعة" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "بنية نظام ملفات لينكس: دليل شامل",
+  description: "شرح تفصيلي لبنية نظام ملفات لينكس ومعيار FHS: كل مجلد وظيفته، كيف تتنقل في الأنظمة، وأوامر أساسية لكل مبتدئ.",
+  tags: ["نظام ملفات لينكس", "FHS", "Linux Filesystem", "هيكل لينكس", "Root Directory", "أوامر لينكس"],
+  category: ["لينكس", "موسوعة"],
+  thumbnail: "/images/linux-filesystem.webp",
+  parent: { title: "لينكس", href: "/wiki/linux-wiki/" },
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/linux-filesystem/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+
+  <section id="what-is-fhs" class="mb-12">
+    <h2 id="what-is-fhs" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ما هو معيار FHS؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      نظام ملفات لينكس يختلف اختلافًا جذريًا عن نظام ويندوز الذي اعتدت عليه. في ويندوز، كل قرص له حرفه الخاص مثل C و D،لكن لينكس لا توجد أحرف أقراص. بدلاً من ذلك، يوجد شجرة موحدة تبدأ من مجلد واحد يُسمى <strong>الجذر (root)</strong> ويرمز له بعلامة <code>/</code>.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      معيار <strong>FHS</strong> أو <strong>Filesystem Hierarchy Standard</strong> هو مجموعة من القواعد التي تحدد وظيفة كل مجلد في نظام لينكس. هذا المعيار يضمن أن جميع توزيعات لينكس تshare نفس البنية الأساسية، مما يسهل على المستخدمين التحول بين التوزيعات المختلفة دون أن يضيعوا في هيكل الملفات.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      فهم بنية نظام ملفات لينكس أمر أساسي لكل من يريد إتقان استخدام هذا النظام. سواء كنت مبتدئًا تريد تعلم أوامر التنقل، أو مدير نظام يريد إعداد خادم، فهذا الدليل سي يأخذك في جولة شاملة داخل شجرة ملفات لينكس.
+    </p>
+  </section>
+
+  <section id="root-dir" class="mb-12">
+    <h2 id="root-dir" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الجذر (root) — نقطة البداية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      كل شيء في نظام لينكس يبدأ من مجلد الجذر المرمز له بعلامة <code>/</code>. هذا المجلد يختلف تمامًا عن مجلد المستخدم الشخصي الذي يُسمى أيضًا home. الجذر هو الأب لكل المجلدات والملفات في النظام بالكامل.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      عند فتح Terminal أو الطرفية، ستكون عادةً في مجلد شخصي يُسمى home الخاص بك. يمكنك الوصول إلى الجذر بأمر <code>cd /</code> ثم الضغط على Enter. من الجذر، يمكنك الوصول إلى أي ملف أو مجلد في النظام بالكامل.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التصور الأفضل لفهم البنية هو أن الجذر مثل جذر شجرة ضخمة، وكل مجلد فرعي هو غصن من هذه الشجرة. المجلدات الرئيسية مثل bin و etc و home و var هي جميعها تابعة للجذر مباشرة.
+    </p>
+  </section>
+
+  <section id="bin" class="mb-12">
+    <h2 id="bin" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">البرامج المشغّلة (/bin)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/bin</code> يحتوي على جميع البرامج والأدوات الأساسية التي يحتاجها المستخدم للتشغيل اليومي. هذه البرامج تشمل أمر النسخ cp، أمر النقل mv، أمر حذف الملفات rm، أمر عرض محتويات المجلد ls، وأوامر أخرى لا يمكن للنظام العمل بدونها.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هذه المجلدات ضرورية لعمل النظام بشكل صحيح. حتى إذا لم يكن لدى المستخدم صلاحيات_superuser، يمكنه تشغيل هذه البرامج بشكل طبيعي. في بعض التوزيعات الحديثة، قد تجد مجلد <code>/bin</code> مرتبطًا بمجلد <code>/usr/bin</code>، لكن الوظيفة تبقى نفسها.
+    </p>
+  </section>
+
+  <section id="sbin" class="mb-12">
+    <h2 id="sbin" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أوامر النظام (/sbin)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/sbin</code> يحتوي على برامج مخصصة لإدارة النظام وصيانته. هذه البرامج عادةً تتطلب صلاحياتsuperuser لتنفيذها، لأنها تؤثر على تشغيل النظام بالكامل. من أبرز هذه البرامج إدارة الشبكة، وإعداد الأقراص، وإدارة خدمات النظام.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      السبب في فصل هذه البرامج عن مجلد bin هو أمان النظام. فمعظم المستخدمين العاديين لا يحتاجون إلى تشغيل هذه البرامج في حياتهم اليومية، وفصلها يقلل من احتمالية الخطأ أو الاستخدام الخاطئ.
+    </p>
+  </section>
+
+  <section id="etc" class="mb-12">
+    <h2 id="etc" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ملفات الإعدادات (/etc)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/etc</code> هو واحد من أهم المجلدات في نظام لينكس، لأنه يحتوي على جميع ملفات الإعدادات والنظام. كل إعداد في النظام سواء كان متعلقًا بالشبكة أو المستخدمين أو الخدمات_EXISTS في هذا المجلد أو أحد مجلداته الفرعية.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أبرز الملفات في هذا المجلد ملف إعدادات الشبكة، وملف إعدادات النظام الأساسي، وملفات كلمات المرور المشفرة للمستخدمين، وملفات إعدادات الخدمات المختلفة. التعديل على هذه الملفات يتطلب صلاحيات عالية وحذر شديد، لأن أي خطأ قد يوقف النظام بالكامل.
+    </p>
+  </section>
+
+  <section id="home" class="mb-12">
+    <h2 id="home" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">مجلدات المستخدمين (/home)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/home</code> يحتوي على المجلد الشخصي لكل مستخدم مسجل في النظام. كل مستخدم له مجلد خاص به يحتوي على ملفاته وإعداداتهوإyalها الشخصية. هذا المجلد هو المكان الوحيد الذي يمكن للمستخدم العادي التعديل فيه دون صلاحيات خاصة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      عند إنشاء مستخدم جديد في النظام، يتم إنشاء مجلد تلقائيًا داخل /home بنفس اسم المستخدم. هذا المجلد يحتوي على مجلدات فرعية مثل Documents و Downloads و Desktop وغيرها، حسب إعدادات النظام.
+    </p>
+  </section>
+
+  <section id="var" class="mb-12">
+    <h2 id="var" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الملفات المتغيرة (/var)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/var</code> يحتوي على ملفات تتغير باستمرار أثناء تشغيل النظام. هذا يشمل ملفات السجلات (logs) التي تسجل أحداث النظام والبرامج، وملفات التخزين المؤقت (cache) للبرامج المختلفة، وملفات البريد الإلكتروني، وقاعدة بيانات النظام.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      السجلات في مجلد var/logs هي أداة أساسية لتشخيص مشاكل النظام. عندما تواجه خطأ ما في أي برنامج أو خدمة، فإن أول مكان تبحث فيه هو سجلات الأحداث في هذا المجلد. كل خدمة لها سجل خاص بها يسجل جميع العمليات والأخطاء.
+    </p>
+  </section>
+
+  <section id="tmp" class="mb-12">
+    <h2 id="tmp" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الملفات المؤقتة (/tmp)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/tmp</code> مخصص لتخزين الملفات المؤقتة التي تحتاجها البرامج أثناء التشغيل. هذه الملفات عادةً يتم حذفها تلقائيًا عند إعادة تشغيل النظام أو عند انتهاء البرنامج الذي أنشأها.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      أي مستخدم يمكنه إنشاء ملفات في مجلد tmp، لكن لا يمكنه حذف ملفات مستخدمين آخرين. هذه الخاصية تجعله مثاليًا لتخزين البيانات المؤقتة دون القلق بشأن الأذونات.
+    </p>
+  </section>
+
+  <section id="usr" class="mb-12">
+    <h2 id="usr" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ملفات المستخدمين (/usr)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/usr</code> يحتوي على البرامج والملفات التي تُثبَّت بشكل دائم في النظام. هذا المجلد يحتوي على مجلدات فرعية كثيرة مثل <code>/usr/bin</code> للبرامج، و <code>/usr/lib</code> للمكتبات البرمجية، و <code>/usr/share</code> للملفات المشتركة بين البرامج.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      على الرغم من اسمه الذي قد يوحي بأنه خاص بالمستخدمين، إلا أنه في الواقع يحتوي على ملفات النظام والبرامج المثبتة. الفرق بينه وبين مجلد bin هو أن هذا المجلد يحتوي على برامج أقل أهمية أو برامج إضافية تُثبَّت لاحقًا.
+    </p>
+  </section>
+
+  <section id="opt" class="mb-12">
+    <h2 id="opt" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">البرامج الإضافية (/opt)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/opt</code> مخصص للبرامج الإضافية التي لا تأتي مع النظام الأساسي. هذه البرامج عادةً تكون برامج تجارية أو برامج كبيرة الحجم تحتاج إلى مجلد خاص بها. من أشهر الأمثلة على ذلك تطبيقات مثل Google Chrome و VMware و برامج أخرى.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      استخدام هذا المجلد يحافظ على نظافة المجلدات الأساسية للنظام ويمنع التداخل بين البرامج المثبتة مع النظام والبرامج الإضافية التي يضيفها المستخدم.
+    </p>
+  </section>
+
+  <section id="dev" class="mb-12">
+    <h2 id="dev" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الأجهزة (/dev)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/dev</code> يحتوي على ملفات تمثل الأجهزة المختلفة المتصلة بالنظام. في لينكس، كل شيء يُعامل كملف، بما في ذلك الأجهزة المادية مثل الأقراص الصلبة والطابعات والكيبورد والماوس.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هذه الملفات ليست ملفات حقيقية على القرص الصلب، بل هي واجهات تتيح للبرامج التفاعل مع الأجهزة المادية. على سبيل المثال، ملف <code>/dev/sda</code> يمثل القرص الصلب الأول في النظام.
+    </p>
+  </section>
+
+  <section id="proc" class="mb-12">
+    <h2 id="proc" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">معلومات العمليات (/proc)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/proc</code> هو مجلد خاص جدًا في لينكس. هذا المجلد لا يحتوي على ملفات حقيقية على القرص الصلب، بل هو واجهة تفاعلية توفر معلومات في الوقت الفعلي عن حالة النظام والعمليات الجارية.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يمكنك استخدام هذا المجلد لمعرفة معلومات عن المعالج والذاكرة وعمليات النظام الجارية. على سبيل المثال، يمكنك الاطلاع على استخدام المعالج الحالي أو معرفة العمليات التي تستهلك أكبر قدر من الموارد.
+    </p>
+  </section>
+
+  <section id="mnt-media" class="mb-12">
+    <h2 id="mnt-media" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">نقاط التثبيت (/mnt و /media)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/mnt</code> يُستخدم لتثبيت الأقراص الصلبة والأجهزة الخارجية يدويًا. هذا المجلد عادةً يكون فارغًا ويُستخدم كنقطة وصول مؤقتة للأجهزة المتصلة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/media</code> مخصص لتثبيت الأجهزة القابلة للإزالة تلقائيًا مثل الأقراص USB والأقراص المدمجة. عندما توصيل جهاز USB بالجهاز، عادةً يتم إنشاء مجلد فرعي تلقائيًا داخل media باسم الجهاز.
+    </p>
+  </section>
+
+  <section id="boot" class="mb-12">
+    <h2 id="boot" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ملفات الإقلاع (/boot)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/boot</code> يحتوي على جميع الملفات الضرورية لإقلاع النظام. هذا يشمل نواة Linux kernels وملفات الإعدادات الخاصة بالإقلاع وبرنامج الإقلاع GRUB. بدون هذا المجلد، لن يتمكن النظام من التشغيل.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الأهمية القصوى لهذا المجلد تجعله حساسًا للغاية. أي تعديل خاطئ على ملفاته قد يمنع النظام من الإقلاع بالكامل. لذلك، يُنصح بعدم التدخل في هذا المجلد إلا إذا كنت تعرف ما تفعله تمامًا.
+    </p>
+  </section>
+
+  <section id="lib" class="mb-12">
+    <h2 id="lib" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">المكتبات (/lib)</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      مجلد <code>/lib</code> يحتوي على المكتبات البرمجية التي تحتاجها البرامج الموجودة في bin و sbin للعمل بشكل صحيح. هذه المكتبات هي ملفات مشتركة بين عدة برامج لتوفير المساحة وتجنب التكرار.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      في بعض التوزيعات الحديثة، قد تجد مجلد lib مرتبطًا بمجلد usr/lib، لكن الوظيفة تبقى نفسها. هذه المكتبات ضرورية لعمل معظم البرامج في النظام.
+    </p>
+  </section>
+
+  <section id="commands" class="mb-12">
+    <h2 id="commands" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أوامر التنقل الأساسية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      للتنقل في بنية نظام ملفات لينكس، تحتاج إلى تعلم بضعة أوامر أساسية. هذه الأوامر هي أدواتك الأساسية لاستكشاف النظام وإدارة الملفات والمجلدات.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      أمر <code>pwd</code> يعرض المسار الحالي الذي أنت فيه. أمر <code>ls</code> يعرض محتويات المجلد الحالي. أمر <code>cd</code> يتيح لك الانتقال إلى مجلد آخر. أمر <code>mkdir</code> ينشئ مجلدًا جديدًا. أمر <code>rm</code> يحذف ملفات أو مجلدات.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      أمر <code>cp</code> ينسخ ملفات من مكان إلى آخر. أمر <code>mv</code> ينقل أو يُعيد تسمية ملفات. أمر <code>cat</code> يعرض محتوى ملف نصي. أمر <code>find</code> يبحث عن ملفات في شجرة المجلدات. أمر <code>grep</code> يبحث عن نصوص داخل الملفات.
+    </p>
+  </section>
+
+  <section id="permissions" class="mb-12">
+    <h2 id="permissions" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الأذونات والصلاحيات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      نظام لينكس يعتمد بشكل كبير على نظام الأذونات لحماية الملفات والمجلدات. كل ملف ومجلد له صاحب (owner) ومجموعة (group) ومستخدمون آخرون (others)، ولكل منهم صلاحيات مختلفة للقراءة والكتابة والتنفيذ.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      فهم نظام الأذونات أمر بالغ الأهمية للأمان. صلاحيات خاطئة قد تسمح لأي مستخدم بالوصول إلى ملفات حساسة أو العكس، منع المستخدمين من الوصول إلى ملفاتهم الخاصة. لذلك، يجب دائمًا التأكد من تعيين الأذونات المناسبة لكل ملف ومجلد.
+    </p>
+  </section>
+
+  <section id="tips" class="mb-12">
+    <h2 id="tips" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">نصائح عملية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لا تحاول حذف مجلدات النظام الأساسية إلا إذا كنت متأكدًا تمامًا مما تفعله. خطأ واحد قد يوقف النظام بالكامل ويطلب منك إعادة التثبيت من الصفر.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      استخدم أمر <code>sudo</code> بحذر شديد. هذا الأمر يمنحك صلاحياتsuperuser، مما يعني أن أي خطأ سيكون له تأثير مباشر على النظام بالكامل. لا تستخدم sudo إلا عند الضرورة القصوى.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      احتفظ بنسخ احتياطية من الملفات المهمة قبل إجراء أي تعديلات كبيرة على النظام. حتى المتخصصون يرتكبون أحيانًا أخطاء، والنسخ الاحتياطي هو حمايتك الأخيرة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تعلم قراءة السجلات في مجلد <code>/var/log</code>. هذه السجلات هي مفتاحك لتشخيص معظم المشاكل التي قد تواجهها في النظام. عادةً ما تحتوي على معلومات كافية لفهم سبب المشكلة وحلها.
+    </p>
+  </section>
+
+  <section id="faq" class="mb-12">
+    <h2 id="faq" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أسئلة شائعة عن بنية نظام ملفات لينكس</h2>
+
+    <div class="space-y-6">
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">لماذا لا توجد أحرف أقراص مثل C و D في لينكس؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">في لينكس، لا توجد أحرف أقراص لأن النظام يعتمد على شجرة موحدة تبدأ من الجذر. الأقراص الصلبة تُثبَّت في مجلدات فرعية داخل الشجرة بدلاً من الحصول على حرف خاص بها. هذا يسهل إدارة النظام ويمنع التداخل بين الأقراص المختلفة.</p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">كيف أعرف أي مجلد أستطيع حذفه بأمان؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">بصفة عامة، لا تحذف أي مجلد في النظام إلا إذا كنت تعرف وظيفته تمامًا. المجلدات الآمنة للمبتدئين هي home و tmp. المجلدات الأخرى تتطلب فهمًا عميقًا للنظام قبل التعديل معها.</p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يمكنني الوصول إلى ملفات ويندوز من لينكس؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">نعم، يمكنك تثبيت الأقراص الصلبة التي تحتوي على نظام ويندوز والوصول إلى ملفاتها من لينكس. غيير نظام الملفات NTFS المستخدم في ويندوز مدعوم بشكل جيد في لينكس الحديث.</p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">ما الفرق بين /home و /root؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">مجلد <code>/home</code> يحتوي على المجلدات الشخصية لجميع المستخدمين العاديين في النظام. مجلد <code>/root</code> هو المجلد الشخصي الخاص بالمستخدم superuser (root). الفرق الأساسي هو الصلاحيات: root يمكنه الوصول إلى كل شيء، بينما المستخدم العادي مقيد بمجلده الخاص.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 id="resources" class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+
+    <ul class="space-y-3">
+      <li><a href="/wiki/linux-wiki/">دليل لينكس الشامل</a> — مقدمة شاملة عن نظام لينكس ومكوناته الأساسية</li>
+      <li><a href="/wiki/linux-terminals/">أنواع الطرفيات في لينكس</a> — دليل شامل عن أنواع الطرفيات ومحاكيات الطرفية</li>
+      <li><a href="/posts/linux-command-line-complete-guide/">دليل سطر أوامر لينكس الشامل</a> — تعلم كيفية استخدام سطر أوامر لينكس بشكل احترافي</li>
+      <li><a href="/posts/common-linux-problems-beginners-guide/">المشاكل الشائعة في لينكس وحلولها</a> — حلول لأكثر المشاكل شيوعًا التي يواجهها المستخدمون</li>
+    </ul>
+  </section>
+
+</WikiLayout>
+</BaseLayout>

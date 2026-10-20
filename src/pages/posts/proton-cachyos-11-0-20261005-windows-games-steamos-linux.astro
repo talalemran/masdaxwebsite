@@ -1,0 +1,449 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "proton-cachyos-11-0-20261005-windows-games-steamos-linux",
+    title: "Proton-CachyOS 11.0-20261005: تحديث شامل لـ تشغيل ألعاب Windows على SteamOS و Linux",
+    metaTitle: "Proton-CachyOS 11.0: تحديثات Wine و DXVK و اصلاحات الألعاب",
+    description:
+        "Proton-CachyOS 11.0-20261005 أُطلقت في 5 أكتوبر 2026 بـ تحديثات شاملة لـ Wine و DXVK و VKD3D. التحديث يشمل اصلاحات لـ ألعاب متعددة و تحسينات الأداء و latency.",
+    keywords: [
+        "Proton-CachyOS",
+        "Windows Games",
+        "SteamOS",
+        "Linux Gaming",
+        "Wine",
+        "DXVK",
+        "Proton",
+        "Steam Deck",
+        "ألعاب",
+        "تشغيل",
+    ],
+    category: "ألعاب وترفيه",
+    author: "طلال عمران",
+    date: "05 أكتوبر 2026",
+    pubDate: new Date("2026-10-05"),
+    tags: ["Proton", "Gaming", "Linux", "Windows Games", "SteamOS"],
+    thumbnail: "/images/proton-cachyos-11-0-20261005-windows-games-steamos-linux.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            أطلقت فريق CachyOS في 5 أكتوبر 2026 
+            النسخة الجديدة من Proton-CachyOS رقم 11.0-20261005. 
+            Proton-CachyOS هو fork متخصص من Proton 
+            (أداة Valve الشهيرة لتشغيل الألعاب الـ Windows على Linux و SteamOS). 
+            هذا التحديث الجديد يحمل تحسينات شاملة جداً في عدة جوانب: 
+            تحديثات الـ Wine مع rebasing جديد، 
+            تحديثات DXVK و VKD3D و D7VK، 
+            اصلاحات مشاكل لعبة specific (مثل Witch on the Holy Night و GTA San Andreas)، 
+            و تحسينات الـ latency و الأداء. 
+            هذا التحديث بعد وقت من الأصدارة الأخيرة، 
+            و يعكس الالتزام المستمر من مجتمع CachyOS 
+            بـ تحسين تجربة تشغيل الألعاب على Linux.
+        </p>
+
+        <h2>السياق: Proton-CachyOS و الحاجة إليها</h2>
+
+        <h3>ما هو Proton-CachyOS؟</h3>
+
+        <p>
+            Proton هي أداة من Valve 
+            تسمح بتشغيل الألعاب المكتوبة لـ Windows 
+            على الأنظمة التي تعمل بـ Linux (أو SteamOS). 
+            تعتمد Proton على عدة مكونات: Wine (لـ Windows API emulation)، 
+            DXVK (لـ DirectX إلى Vulkan translation)، 
+            VKD3D (لـ Direct3D 12 إلى Vulkan)، 
+            و مكونات أخرى.
+
+            Proton-CachyOS هي نسخة متخصصة من Proton، 
+            لا تصنعها Valve مباشرة بل مجتمع CachyOS. 
+            الفرق: Proton-CachyOS تضيف patches إضافية و optimizations 
+            على top من Proton base، 
+            مثل:
+        </p>
+
+        <p>
+            <img
+                src="/images/articles/proton-cachyos-11-0-20261005-windows-games-steamos-linux/01.webp"
+                alt="Proton-CachyOS 11.0-20261005: تحديث شامل لـ تشغيل ألعاب Windows على SteamOS و Linux"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+
+        <ul>
+            <li>
+                Latency improvements (لـ responsiveness أفضل)
+            </li>
+            <li>
+                Fixes لـ game-specific issues
+            </li>
+            <li>
+                Optimizations مخصصة
+            </li>
+            <li>
+                Update أسرع لـ مكونات مثل DXVK و VKD3D
+            </li>
+        </ul>
+
+        <h3>لماذا توجد نسخ مختلفة من Proton؟</h3>
+
+        <p>
+            قد يبدو غريباً أن توجد versions متعددة من Proton: 
+            Proton الرسمية من Valve، 
+            Proton-EM (من مجتمع Lutris)، 
+            Proton-GE (من glorious eggroll)، 
+            Proton-CachyOS من CachyOS، 
+            و أخرى. 
+            السبب بسيط: 
+            كل مجموعة تركز على أولويات مختلفة 
+            أو توفر patches لـ issues مختلفة. 
+            المستخدمون يختارون النسخة التي تناسب احتياجاتهم.
+        </p>
+
+        <h2>التحديثات الرئيسية في النسخة 11.0</h2>
+
+        <h3>تحديث Proton Experimental</h3>
+
+        <p>
+            Proton-CachyOS 11.0 اعتمدت على Proton Experimental 11.0-20261001 
+            من Valve كـ base. 
+            هذا يعني أن كل التحسينات من Valve 
+            الآن متوفرة في Proton-CachyOS. 
+            Experimental versions من Proton 
+            تكون cutting-edge لكن قد لا تكون 100% مستقرة 
+            (لهذا تُسمى "Experimental").
+        </p>
+
+        <h3>Wine Rebasing و Architecture الجديدة</h3>
+
+        <p>
+            تحسين كبير جداً في هذا التحديث: 
+            Wine submodule الآن مبني على top من wine من Proton-EM 
+            بدلاً من picking individual patches. 
+            الفائدة:
+        </p>
+
+        <ul>
+            <li>
+                Rebasing أسهل (أقل work للـ maintainers)
+            </li>
+            <li>
+                Stability أفضل (لأن الـ base أقوى)
+            </li>
+            <li>
+                Patches الخاصة بـ CachyOS تُطبق على top
+            </li>
+            <li>
+                Upstream collaboration أفضل (شكر لـ BananaWorks07 و NelloKudo 
+                على upstreaming patches إلى Wine)
+            </li>
+        </ul>
+
+        <p>
+            هذا يعكس فلسفة مهمة في مجتمع open source: 
+            upstream أولاً، بدلاً من forking و keeping patches locally.
+        </p>
+
+        <h3>تحديثات المكونات الأساسية</h3>
+
+        <p>
+            التحديث يشمل تحديثات لـ عدد من مكونات Proton:
+        </p>
+
+        <ul>
+            <li>
+                winepipewire.drv: تحديث لـ اصلاح issues متعددة 
+                (شكر لـ @M0n7y5)
+            </li>
+            <li>
+                winewayland.drv: اصلاح مشاكل Brazilian ABNT keys 
+                (شكر لـ @bk304)
+            </li>
+            <li>
+                d7vk: تحديث إلى v2.3 (DirectX 7 support)
+            </li>
+            <li>
+                dxvk-sarek: تحديث إلى v1.13.0 (DirectX 10/11 support)
+            </li>
+            <li>
+                dxvk-low-latency: تحديث لـ low-latency-framepacing-3.1.1-2
+            </li>
+            <li>
+                vkd3d-low-latency: تحديث لـ low-latency-3.0.1-2
+            </li>
+            <li>
+                nvidia-libs: تحديث إلى آخر الإصدارات
+            </li>
+        </ul>
+
+        <h2>اصلاحات الألعاب Specific</h2>
+
+        <h3>الألعاب التي تم اصلاح مشاكلها</h3>
+
+        <p>
+            التحديث يتضمن اصلاحات مستهدفة لـ عدة ألعاب معروفة:
+        </p>
+
+        <p>
+            Witch on the Holy Night:
+        </p>
+
+        <ul>
+            <li>
+                المشكلة: الـ videos كانت missing/not playing
+            </li>
+            <li>
+                الاصلاح: تم إصلاحه (شكر لـ @NelloKudo)
+            </li>
+        </ul>
+
+        <p>
+            GTA San Andreas:
+        </p>
+
+        <ul>
+            <li>
+                المشكلة: الـ videos كانت missing
+            </li>
+            <li>
+                الاصلاح: تم إصلاحه (شكر لـ @NelloKudo)
+            </li>
+        </ul>
+
+        <p>
+            Wuthering Waves:
+        </p>
+
+        <ul>
+            <li>
+                المشكلة: بعض الـ cutscenes كانت missing بعد update 3.7
+            </li>
+            <li>
+                الاصلاح: تم إصلاحه (شكر لـ @NelloKudo)
+            </li>
+        </ul>
+
+        <p>
+            Albion Online:
+        </p>
+
+        <ul>
+            <li>
+                المشكلة: الـ launcher كان يتعطل (crash)
+            </li>
+            <li>
+                الاصلاح: imported icuuc.dll و icuin.dll من upstream Wine
+            </li>
+        </ul>
+
+        <h3>تحديثات Protonfixes</h3>
+
+        <p>
+            Protonfixes (أداة لـ game-specific fixes) تم تحديثها إلى 1.0.15-1853. 
+            تحديث خاص: patch لـ hide wine version من Witcher 3 
+            (لأن Witcher 3 قد ترفض تشغيل نسخ معينة من Wine).
+        </p>
+
+        <h2>التحسينات التقنية</h2>
+
+        <h3>Low-Latency و Performance</h3>
+
+        <p>
+            الـ latency مهم جداً في gaming. 
+            قليل من latency = responsive أسرع = تجربة أفضل. 
+            التحديث شمل تحديثات للـ low-latency variants من DXVK و VKD3D، 
+            اللتين تُركزان على تقليل الـ frame latency.
+
+            مثال: dxvk-low-latency 
+            تعمل على تقليل الفترة بين frame submission و frame display.
+        </p>
+
+        <h3>User Settings من Compatdata Directory</h3>
+
+        <p>
+            تحسين جديد: Proton-CachyOS يمكنها الآن أن تقرأ user_settings.py 
+            من compatdata directory الخاص باللعبة، 
+            ليس فقط من installation directory. 
+            الفائدة: users يمكنهم أن يوضعوا game-specific settings 
+            في folder اللعبة بدلاً من folder Proton globally.
+
+            مثال: 
+            if لديك مشكلة في لعبة معينة، 
+            يمكنك أن تضع user_settings.py في compatdata folder الخاص بها 
+            بدون التأثير على ألعاب أخرى.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            Proton-CachyOS النسخة 11.0 تعكس نضج مجتمع Linux gaming. 
+            الفكرة أن مجموعة من volunteers 
+            يمكنهم أن يأخذوا Valve's Proton 
+            و يحسنوها بـ patches و optimizations خاصة بهم، 
+            و ينشروا نسخة محسنة للمجتمع.
+
+            المميزات الإيجابية:
+        </p>
+
+        <ul>
+            <li>
+                Game-specific fixes (مثل Witcher 3 و GTA San Andreas)
+            </li>
+            <li>
+                Upstream collaboration (patches أرسلوها إلى Wine الأساسي)
+            </li>
+            <li>
+                Low-latency focus (مهم للـ competitive gaming)
+            </li>
+            <li>
+                Architecture improvements (Wine rebasing)
+            </li>
+            <li>
+                Regular updates (شوفنا update بعد وقت من الأصدارة السابقة)
+            </li>
+        </ul>
+
+        <p>
+            التحديات:
+        </p>
+
+        <ul>
+            <li>
+                Maintenance burden (volunteers فقط، وقت محدود)
+            </li>
+            <li>
+                Experimental base يعني قد تكون issues
+            </li>
+            <li>
+                Game-specific fixes قد لا تغطي كل ألعاب
+            </li>
+        </ul>
+
+        <p>
+            الجانب الأهم: 
+            أن هذا يُظهر أن Linux gaming ecosystem 
+            لا يعتمد فقط على Valve. 
+            مجتمع قوي يعمل على تحسينات.
+        </p>
+
+        <h2>كيفية الاستخدام</h2>
+
+        <h3>للمستخدمين على Steam Deck</h3>
+
+        <p>
+            Steam Deck يسمح بـ تغيير الـ Proton version المستخدمة. 
+            Users يمكنهم اختيار Proton-CachyOS 11.0 
+            من قائمة الـ Compatibility Tools.
+
+            التحديث:
+        </p>
+
+        <ul>
+            <li>
+                Download من GitHub repository
+            </li>
+            <li>
+                ضعه في ~/.steam/root/compatibilitytools.d/
+            </li>
+            <li>
+                اختره لـ لعبة specific أو global
+            </li>
+        </ul>
+
+        <h3>للمستخدمين على Linux Desktops</h3>
+
+        <p>
+            Users يمكنهم استخدام ProtonUp-QT أو أدوات أخرى 
+            لـ إدارة Proton versions. 
+            هذه الأدوات تحمّل Proton-CachyOS 
+            و تضعها في المكان الصحيح.
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: هل يجب أن أستخدم Proton-CachyOS أو Proton الرسمي؟</h3>
+        <p>
+            ج: يعتمد على لعبك. 
+            الرسمي أكثر stability. 
+            CachyOS أفضل لـ game-specific fixes و latency. 
+            جرّب كليهما، استخدم ما يعمل بأفضل حال.
+        </p>
+
+        <h3>س: هل Proton-CachyOS آمنة للاستخدام؟</h3>
+        <p>
+            ج: نعم، مكونة من community موثوقة. 
+            لكن لأنها مبنية على Experimental Proton، 
+            قد تواجه issues. 
+            استخدمها على لعبك الخاصة، ليس على production game servers.
+        </p>
+
+        <h3>س: لماذا توجد نسخ مختلفة من Low-Latency؟</h3>
+        <p>
+            ج: لأن مكونات مختلفة (DXVK و VKD3D) 
+            لديها latency characteristics مختلفة. 
+            بعض الألعاب تفضل DXVK، بعضها VKD3D. 
+            فريق CachyOS توفّر versions مختلفة.
+        </p>
+
+        <h3>س: هل هذا يعني أن Windows-only games الآن perfect على Linux؟</h3>
+        <p>
+            ج: لا، ليس perfect بعد. 
+            هناك ألعاب بـ anti-cheat نظام و ألعاب أخرى تفشل. 
+            لكن الوضع يحسن باستمرار.
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            Proton-CachyOS 11.0-20261005 
+            تمثل تطور طبيعي لمشروع يركز على 
+            game-specific optimizations و low-latency performance. 
+            التحديثات comprehensive: 
+            من Wine rebasing الذي يحسن maintainability، 
+            إلى game-specific fixes التي تجعل ألعاب معينة تعمل.
+
+            لـ Linux gamers على Steam Deck أو desktop، 
+            هذا خيار قوي جداً. 
+            المشروع يُظهر أن مجتمع open source 
+            يمكنه أن يقدم تحسينات فعلية على top من Valve's work.
+
+            النقطة المهمة الأخيرة: 
+            مع كل إصدار من Proton-CachyOS، 
+            الحاجز بين Windows gaming و Linux gaming يصبح أصغر. 
+            قد تأتي اليوم التي لا تكون فيها هناك حاجة للاختيار بينهما.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://github.com/CachyOS/proton-cachyos/releases/tag/cachyos-11.0-20261005-slr"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                GitHub: Proton-CachyOS cachyos-11.0-20261005-slr Release
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

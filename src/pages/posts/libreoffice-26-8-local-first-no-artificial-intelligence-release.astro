@@ -1,0 +1,244 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "libreoffice-26-8-local-first-no-artificial-intelligence-release",
+    title: "LibreOffice 26.8: مجموعة مكتبية حرة بدون ذكاء اصطناعي",
+    metaTitle: "LibreOffice 26.8: محلي أولاً وبدون AI",
+    description:
+        "LibreOffice 26.8 إصدار جديد من مجموعة مكتبية FOSS مفتوحة المصدر — تطبيق محلي بدون ذكاء اصطناعي، دعم 120 لغة، تحسينات طباعية عميقة، ودعم أفضل لأنظمة الكتابة المختلفة حول العالم.",
+    keywords: [
+        "LibreOffice 26.8",
+        "LibreOffice",
+        "مجموعة مكتبية",
+        "FOSS",
+        "مفتوح المصدر",
+        "Microsoft Office",
+        "محرر نصوص",
+        "جداول بيانات",
+        "عروض تقديمية",
+        "بدون AI",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "28 أغسطس 2026",
+    pubDate: new Date("2026-08-28"),
+    tags: ["LibreOffice", "مفتوح المصدر", "Office Suite", "FOSS", "محلي"],
+    thumbnail: "/images/libreoffice-26-8-local-first-no-artificial-intelligence-release.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت 
+                <a href="https://www.documentfoundation.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>The Document Foundation</strong>
+            </a>
+            رسمياً <strong>LibreOffice 26.8</strong> — إصدار جديد من
+            <strong>مجموعة المكتب الحرة والمفتوحة المصدر</strong> الموزعة على
+            <strong>Windows و Linux و macOS</strong>. والخبر الأهم في رسالة الإطلاق يأتي
+            في عنوان الصحافة نفسه:
+        </p>
+
+        <blockquote>
+            <p>
+                <strong>
+                    "LibreOffice 26.8 يجلب طباعة احترافية، دعم أعمق لأنظمة الكتابة حول
+                    العالم، وبدون ذكاء اصطناعي"
+                </strong>
+            </p>
+        </blockquote>
+
+        <h2>موقف قوي ضد الذكاء الاصطناعي</h2>
+
+        <p>
+            <strong>عدم وجود ذكاء اصطناعي</strong> — موقف جريء في 2026. بينما
+            
+                <a href="https://www.collaboraoffice.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Collabora Office</strong>
+            </a>
+            (المبني على أساس LibreOffice FOSS) تدمج AI بشكل مركزي،
+            <strong>LibreOffice تختار رفع لواء "محلي أولاً، بدون AI"</strong>.
+        </p>
+
+        <p>
+            LibreOffice <strong>تطبيق أصلي كامل</strong> يعمل
+            <strong>بالكامل على جهاز الكمبيوتر الخاص بك</strong>. لا محاولة لحفظ البيانات في
+            <strong>"التخزين السحابي"</strong> — بيانات الشركة الخاصة بك تبقى ملكك أنت وحدك.
+        </p>
+
+        <h2>ميزات LibreOffice 26.8</h2>
+
+        <p>
+            الإصدار الجديد يأتي مع تحسينات هامة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>طباعة احترافية:</strong> معالجة نصوص وأنماط متقدمة
+            </li>
+            <li>
+                <strong>دعم أنظمة كتابة عالمية:</strong>
+                
+                    <a href="https://www.documentfoundation.org/blog/2026/08/26/libreoffice-26-8/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    <strong>دعم أعمق لـ 120 لغة مختلفة</strong>
+                </a>
+            </li>
+            <li>
+                <strong>تحسينات الفقرات والتنسيق:</strong> معالجة أفضل للهياكل المعقدة
+            </li>
+            <li>
+                <strong>دعم ARIA:</strong> تحسين ملحوظ لدعم قارئات الشاشة والإمكانية
+            </li>
+            <li>
+                <strong>واجهات مختلفة:</strong> تدعم Ribbon (مثل Microsoft Word) أو الأشرطة
+                الكلاسيكية القابلة لإعادة الموضع
+            </li>
+        </ul>
+
+        <h2>موقف قوي ضد ملفات Microsoft</h2>
+
+        <p>
+            LibreOffice
+            
+                <a href="https://www.theregister.com/applications/2026/06/09/libreoffice-brands-euro-office-a-de-facto-ally-of-microsofts-lock-in-strategy/5252854"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>بقوة ضد استخدام تنسيقات ملفات Microsoft Office بشكل افتراضي</strong>
+            </a>
+            . الفنقطة معقولة — استخدام .DOCX يعني
+            <strong>الاعتماد على تنسيقات مملوكة لـ Microsoft</strong>. لكن بطريقة براغماتية،
+            
+                <a href="https://www.theregister.com/applications/2026/03/02/libreoffice-online-dragged-out-of-the-attic/4388766"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                LibreOffice تدعم قراءة والعمل مع ملفات Microsoft
+            </a>
+            .
+        </p>
+
+        <h2>البديل الحقيقي لـ Microsoft Office</h2>
+
+        <p>
+            LibreOffice <strong>الخيار الأفضل للمستخدمين الذين لا يريدون</strong>:
+        </p>
+
+        <ul>
+            <li><strong>الاشتراك الشهري:</strong> Microsoft 365 تكلف $22.99 شهرياً</li>
+            <li>
+                <strong>الاعتماد على السحابة:</strong> LibreOffice
+                
+                    <a href="https://www.libreoffice.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    تعمل بالكامل محلياً
+                </a>
+            </li>
+            <li>
+                <strong>بيانات بدون خصوصية:</strong> Microsoft تحلل بيانات المستخدم؛ LibreOffice لا
+            </li>
+            <li>
+                <strong>ذكاء اصطناعي بدون موافقة:</strong> LibreOffice
+                
+                    <a href="https://wiki.documentfoundation.org/ReleaseNotes/26.8"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    لا تضيف AI بدون طلب صريح من المستخدم
+                </a>
+            </li>
+        </ul>
+
+        <h2>بدائل أخرى</h2>
+
+        <p>
+            بينما يختار البعض بدائل مثل:
+        </p>
+
+        <ul>
+            <li><strong>OnlyOffice:</strong> تطبيق سحابي مع نسخة محلية</li>
+            <li><strong>Collabora Online:</strong> نسخة سحابية من LibreOffice</li>
+            <li><strong>WPS Office:</strong> تطبيق فريمويير (ليس مفتوح المصدر)</li>
+            <li><strong>Softmaker Office:</strong> بديل أوروبي مدفوع</li>
+        </ul>
+
+        <p>
+            <strong>LibreOffice تبقى الخيار الأفضل للحرية والخصوصية والاستقلالية</strong>.
+        </p>
+
+        <h2>صراع مع Collabora</h2>
+
+        <p>
+            هناك <strong>توتر بين The Document Foundation و Collabora</strong>. Collabora
+            توفر <strong>الكثير من مطوري LibreOffice</strong>، لكن TDF
+            
+                <a href="https://www.theregister.com/software/2026/03/02/libreoffice-online-dragged-out-of-the-attic/4388766"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>اختارت إعادة تطوير نسختها السحابية بدلاً من التعاون</strong>
+            </a>
+            . هذا
+            <strong>انقسام غير منطقي في مجتمع البرمجيات الحرة</strong> حيث يتنافس حلفاء طبيعيون.
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            <strong>LibreOffice 26.8 خيار قوي وموثوق لأي شخص يريد</strong>:
+        </p>
+
+        <ul>
+            <li>بديل مجاني بالكامل من Microsoft Office</li>
+            <li>تطبيق يعمل محلياً بدون اشتراك شهري</li>
+            <li>سهولة في استعادة ملفات Word المتضررة</li>
+            <li>دعم 120 لغة مختلفة</li>
+            <li>بدون تتبع أو ذكاء اصطناعي غير مرغوب</li>
+        </ul>
+
+        <p>
+            في عالم يحتضن "الذكاء الاصطناعي" و "السحابة"،
+            <strong>LibreOffice تبدو قديمة وبسيطة</strong>. لكنها
+            <strong>أداة حيوية تساعد إعادة استخدام الحواسيب القديمة</strong> بدلاً من شرائها من جديد.
+            العالم يحتاج LibreOffice الآن أكثر من أي وقت مضى.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.theregister.com/applications/2026/08/28/libreoffice-268-is-out-local-first-and-with-no-ai/5293301"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                The Register
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

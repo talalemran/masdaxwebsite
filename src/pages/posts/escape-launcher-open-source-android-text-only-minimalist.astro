@@ -1,0 +1,197 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "escape-launcher-open-source-android-text-only-minimalist",
+    title: "Escape Launcher: برنامج تشغيل أندرويد نصي مفتوح بدون أيقونات",
+    metaTitle: "Escape Launcher: برنامج تشغيل مفتوح مجاني نصي الآن",
+    description:
+        "Escape Launcher برنامج تشغيل أندرويد مفتوح المصدر نصي بالكامل — بدون أيقونات تطبيقات، تصميم جميل بخطوط محترفة، متاح على F-Droid مجاناً، بديل رائع لـ Niagara Launcher المدفوع.",
+    keywords: [
+        "Escape Launcher",
+        "Android Launcher",
+        "برنامج تشغيل أندرويد",
+        "مفتوح المصدر",
+        "F-Droid",
+        "Niagara Launcher",
+        "تطبيقات أندرويد",
+        "نصي",
+        "بدون أيقونات",
+        "تقليل استخدام الهاتف",
+    ],
+    category: "أندرويد",
+    author: "طلال عمران",
+    date: "31 أغسطس 2026",
+    pubDate: new Date("2026-08-31"),
+    tags: ["Escape Launcher", "Android", "مفتوح المصدر", "برنامج تشغيل", "F-Droid"],
+    thumbnail: "/images/escape-launcher-open-source-android-text-only-minimalist.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أحب 
+                <a href="https://niagara.kudzuapps.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Niagara Launcher</strong>
+            </a>
+            والعمل الرائع الذي قام به فريقه في صنع
+            <strong>شاشة رئيسية بسيطة وجميلة لأندرويد</strong> — لكنني أحبها أكثر لو كانت
+            <strong>مفتوحة المصدر</strong>. لهذا السبب، أبحث عن بديل عدة مرات كل سنة، و
+            
+                <a href="https://f-droid.org/packages/com.geecee.escapelauncher"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Escape Launcher</strong>
+            </a>
+            هي المفضلة لدي حتى الآن.
+        </p>
+
+        <h2>برنامج تشغيل نصي بدون أيقونات</h2>
+
+        <p>
+            <strong>الأيقونات الجميلة هي الطريقة التي تجعلك تنقر عليها</strong>. نحن نستخدم هواتفنا
+            أكثر مما نريد، وليس من المستغرب السبب. <strong>التطبيقات مصممة لجذب انتباهنا</strong>،
+            وكل شيء يبدأ بـ <strong>الأيقونات نفسها</strong>.
+        </p>
+
+        <p>
+            <strong>Escape Launcher</strong> تحل هذه المشكلة بـ
+            <strong>إخفاء الأيقونات بالكامل واستخدام النصوص فقط</strong>. التطبيقات المفضلة تظهر
+            في قائمة على شاشة الرئيسية، وتميل إلى اليسار عند السحب للكشف عن
+            <strong>قائمة كاملة بجميع التطبيقات المثبتة</strong>.
+        </p>
+
+        <p>
+            بخلاف Niagara Launcher، <strong>Escape Launcher مفتوحة المصدر تماماً</strong> وتتوفر
+            مجاناً على
+            
+                <a href="https://f-droid.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>F-Droid</strong>
+            </a>
+            . للأسف، <strong>غير متوفرة في Google Play Store</strong>.
+        </p>
+
+        <h2>الخطوط والمساحات: الفارق الحقيقي</h2>
+
+        <p>
+            <strong>Escape Launcher ليست أول برنامج تشغيل نصي مفتوح المصدر</strong>.
+            
+                <a href="https://www.f-droid.org/packages/me.jkuester.olauncher/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>OLauncher</strong>
+            </a>
+            موجودة منذ فترة طويلة وحتى ولدت عدة نسخ مشابهة. لكن لماذا تختار Escape Launcher على
+            <strong>OLauncher أو أي من الكلونات الأخرى</strong>؟
+        </p>
+
+        <p>
+            الإجابة بسيطة: <strong>الخطوط والمساحات</strong>. استخدمت Light Phone 2 سابقاً — هاتف
+            ذكي صغير بـ <strong>شاشة E Ink نصية بالكامل</strong>. كان التصميم جميلاً
+            <strong>لأن مطوري Light Phone يهتمون بـ اختيار الخطوط والتباعد</strong>.
+        </p>
+
+        <p>
+            بالمقارنة، <strong>OLauncher تبدو مثل محرر نصوص بخلفية شفافة</strong>. قد يكون هذا
+            ميزة لبعض الناس — الشاشة الرئيسية غير جاذبة قد تساعدك على استخدام الهاتف أقل.
+            <strong>لكن بالنسبة لي، هذا مزعج</strong>. في كل مرة أسحب الهاتف،
+            <strong>لا يمكنني إلا أن ألاحظ الأشياء التي تبدو سيئة بصرياً</strong>.
+        </p>
+
+        <p>
+            <strong>Escape Launcher لديها كمية مثالية من المساحات والحواشي</strong>. الاهتمام بهذه
+            التفاصيل يجعل برنامج التشغيل يشعر
+            <strong>بأنه لم يُصمم من قبل مهندس مرتاح لفعل كل شيء في VIM</strong>.
+        </p>
+
+        <p>
+            التطبيق ليس بدون شخصية، رغم غياب الصور.
+            <strong>يمكنك اختيار من بين خطوط مختلفة وموضوعات ملونة</strong>. وجدت هذه
+            <strong>جذابة بشكل خاص على هاتفي Fairphone 6 الأصفر</strong> حيث كانت الموضوع الأصفر
+            متناسبة مع الزر الأصفر على جانب الهاتف.
+        </p>
+
+        <h2>فتح التطبيقات أسرع بكثير</h2>
+
+        <p>
+            مثل Niagara Launcher، <strong>Escape Launcher تتيح لي فتح التطبيقات بسرعة</strong>.
+            من غير الشائع أن أفتح درج التطبيقات وأمرر الأيقونات لأعلى ولأسفل عدة مرات أثناء محاولة
+            <strong>تذكر لماذا سحبت هاتفي</strong>. لهذا السبب، أجد أنه مفيد جداً
+            <strong>تطوير عادة الكتابة لتشغيل التطبيقات</strong> بدلاً من النقر.
+        </p>
+
+        <p>
+            <strong>Escape Launcher تحافظ على ذاكرة العضلات هذه</strong>. لدي لوحة المفاتيح مضبوطة
+            <strong>على الظهور تلقائياً عندما أسحب إلى قائمة التطبيقات</strong>، و
+            <strong>نقلت شريط البحث إلى أسفل الشاشة</strong>. يمكنني بعد ذلك
+            <strong>كتابة بضعة أحرف و الضغط على Enter لتشغيل التطبيق</strong>. بعدم تشتت انتباهي
+            <strong>بالتطبيقات التي لا أريدها</strong>، من الأسرع بالنسبة لي
+            <strong>الوصول إلى التطبيقات التي أريدها</strong>.
+        </p>
+
+        <h2>خيارات التخصيص الأساسية</h2>
+
+        <p>
+            عدد خيارات التخصيص يغطي الأساسيات:
+        </p>
+
+        <ul>
+            <li><strong>تغيير نمط الساعة</strong></li>
+            <li><strong>اختيار عرض التاريخ والوقت</strong></li>
+            <li><strong>إضافة الطقس للموقع الحالي</strong></li>
+            <li><strong>دعم إضافة الـ Widgets</strong> (اخترت عدم استخدامها)</li>
+            <li><strong>إخفاء التطبيقات التي لا تريد رؤيتها</strong> في درج التطبيقات</li>
+        </ul>
+
+        <h2>لا تزال هناك مساحة للتحسن</h2>
+
+        <p>
+            <strong>Escape Launcher ليست برنامج تشغيل كامل الميزات مثل Niagara Launcher</strong>.
+            هي أصغر سناً وتبدو أنها
+            
+                <a href="https://github.com/geecee86/escape-launcher"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>مشروع شغف من مطور واحد بشكل أساسي</strong>
+            </a>
+            . هناك ميزات أنتظر إضافتها، مثل
+            <strong>القدرة على إعادة تسمية التطبيقات</strong>. لكنها مستقرة بدرجة كافية
+            <strong>لأصبح بالفعل برنامج تشغيل مفتوح المصدر المفضل لدي</strong> عندما أريد
+            <strong>الهروب من كل هذا الضجيج</strong>.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a href="https://www.howtogeek.com/this-open-source-android-launcher-is-my-new-niagara-launcher-replacement/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                How-To Geek
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

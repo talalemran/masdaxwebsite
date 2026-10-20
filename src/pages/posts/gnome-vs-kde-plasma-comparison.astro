@@ -1,0 +1,386 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "gnome-vs-kde-plasma-comparison",
+    title: "GNOME أم KDE Plasma: أيهما أفضل بيئة سطح مكتب للينكس؟",
+    metaTitle: "GNOME أم KDE Plasma: أيهما أفضل بيئة سطح مكتب للينكس؟",
+    description:
+        "مقارنة شاملة وموضوعية بين GNOME وKDE Plasma، أشهر بيئتي سطح مكتب في لينكس، من الفلسفة والتخصيص إلى الأداء واستهلاك الموارد، لمساعدتك على اختيار الأنسب لك.",
+    keywords: [
+        "GNOME أم KDE Plasma",
+        "جنوم أم بلازما",
+        "GNOME",
+        "KDE Plasma",
+        "بيئات سطح المكتب لينكس",
+        "مقارنة GNOME وKDE",
+        "Wayland",
+        "تخصيص لينكس",
+    ],
+    category: ["بيئة سطح المكتب", "مقالات"],
+    author: "طلال عمران",
+    date: "3 سبتمبر 2026",
+    pubDate: new Date("2026-09-03"),
+    tags: ["GNOME", "KDE Plasma", "بيئات سطح المكتب", "توزيعات لينكس"],
+    thumbnail: "/images/gnome-vs-kde-plasma-comparison.webp",
+};
+
+const tocItems = [
+    { id: "why-these-two", label: "لماذا هاتان البيئتان تحديدًا؟" },
+    { id: "philosophy", label: "الفلسفة: البساطة المقصودة مقابل الحرية الكاملة" },
+    { id: "customization", label: "التخصيص: من يفوز بوضوح؟" },
+    { id: "performance", label: "الأداء واستهلاك الموارد" },
+    { id: "default-apps", label: "التطبيقات الافتراضية المصاحبة" },
+    { id: "wayland-support", label: "دعم Wayland في كل بيئة" },
+    { id: "workflow", label: "أسلوب العمل اليومي: الأنشطة مقابل شريط المهام" },
+    { id: "who-uses-them", label: "من يستخدم كل بيئة كافتراضي؟" },
+    { id: "comparison-table", label: "جدول مقارنة مباشر" },
+    { id: "how-to-decide", label: "كيف تقرر فعليًا؟" },
+    { id: "external-resources", label: "الروابط الرسمية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            من بين عشرات بيئات سطح المكتب المتاحة في عالم لينكس، يبقى
+            الخيار الفعلي لأغلب المستخدمين محصورًا بين اسمين: GNOME وKDE
+            Plasma. كلتاهما ناضجتان تمامًا، مدعومتان رسميًا من أغلب
+            التوزيعات الكبرى، لكنهما تمثلان فلسفتين متعاكستين تقريبًا في
+            كل قرار تصميمي.
+        </p>
+
+        <p>
+            هذا المقال لا يعلن فائزًا مطلقًا، لأن السؤال الحقيقي ليس "أيهما
+            أفضل" بل "أيهما يناسب طريقة عملك أنت". سنقارن الفلسفة،
+            التخصيص، الأداء، والاستخدام اليومي الفعلي لكل منهما.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="why-these-two">لماذا هاتان البيئتان تحديدًا؟</h2>
+
+        <p>
+            GNOME وKDE Plasma هما البيئتان الوحيدتان اللتان تحظيان بدعم
+            "الطبعة الرسمية الكاملة" في أغلب التوزيعات الكبرى (فيدورا،
+            أوبونتو، openSUSE)، لا مجرد نسخة بديلة ثانوية. كلتاهما تطوّران
+            منذ التسعينيات، بمجتمعين ضخمين ومؤسستين تقنيتين خلفهما (GNOME
+            Foundation وKDE e.V.).
+        </p>
+
+        <h2 id="philosophy">الفلسفة: البساطة المقصودة مقابل الحرية الكاملة</h2>
+
+        <p>
+            هذا هو الفرق الجوهري الذي ينبع منه كل اختلاف آخر بين البيئتين.
+        </p>
+
+        <p>
+            <img
+                src="/images/gnome.webp"
+                alt="واجهة GNOME 50 على لينكس"
+                width="1024"
+                height="672"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>GNOME</strong> يتبنى فلسفة "الأقل هو الأكثر" بشكل
+            صارم. فريق التصميم يتخذ قرارات نيابة عنك عمدًا: قائمة "أنشطة"
+            موحدة بدلاً من شريط مهام تقليدي، عدد محدود من الإعدادات
+            المرئية، وواجهة تتجنب أي عنصر بصري لا يخدم وظيفة واضحة. الفكرة
+            أن معظم المستخدمين لا يريدون فعليًا "تخصيص كل شيء"، بل يريدون
+            نظامًا يعمل دون تفكير.
+        </p>
+
+        <p>
+            <img
+                src="/images/kde-plasma.webp"
+                alt="واجهة KDE Plasma على لينكس"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>KDE Plasma</strong> يسير في الاتجاه المعاكس تمامًا:
+            "امنح المستخدم كل الخيارات، ودعه يقرر". شعار المشروع القديم
+            كان حرفيًا "Simple by default, powerful when needed" (بسيط
+            افتراضيًا، قوي عند الحاجة). كل عنصر تقريبًا في الواجهة قابل
+            للتعديل: موضع شريط المهام، سلوك النوافذ، تأثيرات الانتقال،
+            حتى منطق القوائم نفسها.
+        </p>
+
+        <h2 id="customization">التخصيص: من يفوز بوضوح؟</h2>
+
+        <p>
+            في هذه النقطة تحديدًا، لا يوجد نقاش حقيقي: KDE Plasma يتفوق
+            بفارق كبير من ناحية عمق التخصيص المتاح افتراضيًا دون أي إضافات
+            خارجية.
+        </p>
+
+        <ul>
+            <li>
+                في Plasma، يمكنك تغيير كل شيء تقريبًا من قوائم الإعدادات
+                الرسمية مباشرة: الثيمات، تخطيط الأيقونات، سلوك النوافذ،
+                اختصارات لوحة المفاتيح بالكامل
+            </li>
+            <li>
+                في GNOME، التخصيص العميق (تغيير موضع الساعة، إضافة أيقونات
+                سطح المكتب، تعديل سلوك النوافذ) يتطلب غالبًا تثبيت إضافات
+                خارجية (GNOME Shell Extensions) من مصدر خارجي، وقد تتوقف
+                هذه الإضافات عن العمل بعد كل تحديث كبير للبيئة
+            </li>
+        </ul>
+
+        <p>
+            لكن هذا التفوق له ثمن: كثرة الخيارات في Plasma قد تُربك مستخدمًا
+            جديدًا تمامًا للينكس، بينما بساطة GNOME تعني أنك لن تضيع وقتًا
+            في ضبط إعدادات لم تكن تعرف أنها موجودة أصلاً.
+        </p>
+
+        <h2 id="performance">الأداء واستهلاك الموارد</h2>
+
+        <p>
+            سمعة KDE القديمة بأنه "بيئة ثقيلة" لم تعد دقيقة إطلاقًا. تحسّن
+            أداء Plasma بشكل جذري في السنوات الأخيرة، خصوصًا بعد الانتقال
+            الكامل للجيل السادس (Plasma 6)، وأصبح استهلاكه للذاكرة عند
+            الإقلاع قريبًا جدًا من GNOME في أغلب المقارنات الحديثة.
+        </p>
+
+        <p>
+            الفارق العملي اليوم صغير جدًا على الأجهزة الحديثة، لكن على
+            أجهزة أضعف، تميل بعض المقارنات المستقلة إلى تفضيل Plasma
+            طفيفًا في زمن الإقلاع، بينما يحافظ GNOME على سلاسة أكبر أثناء
+            الاستخدام المستمر بفضل بساطته البصرية.
+        </p>
+
+        <h2 id="default-apps">التطبيقات الافتراضية المصاحبة</h2>
+
+        <p>
+            كلتا البيئتين تأتيان بمجموعة تطبيقات مصاحبة مصممة لتتكامل بصريًا
+            مع الواجهة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>GNOME</strong>: مدير ملفات Nautilus (Files)، محرر
+                نصوص GNOME Text Editor، تطبيق الإعدادات الموحد — كلها
+                بسيطة جدًا، بخيارات محدودة عمدًا
+            </li>
+            <li>
+                <strong>KDE Plasma</strong>: مدير ملفات Dolphin (يُعتبر من
+                أقوى مديري الملفات في عالم لينكس بأكمله من ناحية الميزات)،
+                محرر Kate القوي، مركز إعدادات ضخم بعشرات الأقسام
+            </li>
+        </ul>
+
+        <p>
+            Dolphin تحديدًا نقطة تفوق حقيقية لصالح KDE: علامات تبويب،
+            تقسيم النافذة، معاينة الملفات، وتكامل عميق مع الشبكة، كلها
+            متوفرة افتراضيًا دون أي إضافة.
+        </p>
+
+        <h2 id="wayland-support">دعم Wayland في كل بيئة</h2>
+
+        <p>
+            كلتا البيئتين انتقلتا بالكامل تقريبًا لبروتوكول Wayland
+            كخيار افتراضي في إصداراتهما الحالية (GNOME 50 وKDE Plasma
+            6.x)، متجاوزتين X11 القديم في أغلب السيناريوهات. GNOME كان
+            سبّاقًا تاريخيًا في تبني Wayland مبكرًا، بينما لحق به KDE
+            لاحقًا لكنه أغلق الفجوة بالكامل تقريبًا في السنوات الأخيرة،
+            خصوصًا في دعم تعدد الشاشات وكروت الرسوميات من NVIDIA.
+        </p>
+
+        <h2 id="workflow">
+            أسلوب العمل اليومي: الأنشطة مقابل شريط المهام
+        </h2>
+
+        <p>
+            هنا يظهر الفرق الأكثر تأثيرًا على تجربتك اليومية الفعلية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>GNOME</strong> يعتمد مفهوم "الأنشطة" (Activities):
+                لا شريط مهام تقليدي يعرض النوافذ المفتوحة، بل شاشة عامة
+                تعرض كل النوافذ ومساحات العمل معًا، تصل إليها بزاوية
+                الشاشة أو زر خاص. هذا يناسب من يعمل بمساحات عمل متعددة
+                منظمة، لكنه يتطلب إعادة تعلم عادة قديمة لدى قادمين من
+                ويندوز
+            </li>
+            <li>
+                <strong>KDE Plasma</strong> يقدّم شريط مهام تقليديًا مألوفًا
+                جدًا لمستخدمي ويندوز: قائمة ابدأ، أيقونات النظام، نوافذ
+                مفتوحة تظهر مباشرة في الشريط السفلي — لا حاجة لتعلم أي
+                مفهوم جديد
+            </li>
+        </ul>
+
+        <h2 id="who-uses-them">من يستخدم كل بيئة كافتراضي؟</h2>
+
+        <ul>
+            <li>
+                <strong>GNOME كافتراضي في</strong>: Fedora Workstation،
+                Debian، Ubuntu (بنسخة معدّلة)، RHEL
+            </li>
+            <li>
+                <strong>KDE Plasma كافتراضي في</strong>: Kubuntu، فيدورا
+                KDE Spin (كطبعة رسمية كاملة)، openSUSE (تاريخيًا)، Manjaro
+                KDE، KDE Neon (التوزيعة المخصصة للبيئة نفسها)
+            </li>
+        </ul>
+
+        <h2 id="comparison-table">جدول مقارنة مباشر</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">GNOME</th>
+                        <th class="px-4 py-2 font-semibold">KDE Plasma</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">الفلسفة</td>
+                        <td class="px-4 py-2">بساطة مقصودة، خيارات محدودة</td>
+                        <td class="px-4 py-2">تحكم كامل، خيارات لا حصر لها</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التخصيص الافتراضي</td>
+                        <td class="px-4 py-2">محدود، يحتاج إضافات خارجية</td>
+                        <td class="px-4 py-2">شبه كامل دون أي إضافة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">شريط المهام</td>
+                        <td class="px-4 py-2">مفهوم "الأنشطة"، غير تقليدي</td>
+                        <td class="px-4 py-2">تقليدي، مألوف لمستخدمي ويندوز</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مدير الملفات</td>
+                        <td class="px-4 py-2">Nautilus، بسيط جدًا</td>
+                        <td class="px-4 py-2">Dolphin، غني بالميزات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأساس التقني</td>
+                        <td class="px-4 py-2">GTK4 / Mutter</td>
+                        <td class="px-4 py-2">Qt6 / KWin</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأنسب لـ</td>
+                        <td class="px-4 py-2">بساطة ونظافة بصرية بلا تشتت</td>
+                        <td class="px-4 py-2">تحكم دقيق وتخصيص عميق</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-decide">كيف تقرر فعليًا؟</h2>
+
+        <ul>
+            <li><strong>اختر GNOME إن كنت</strong>: تفضل واجهة نظيفة بلا قرارات تصميمية عليك اتخاذها، ولا يزعجك تعلم مفهوم "الأنشطة" الجديد</li>
+            <li><strong>اختر KDE Plasma إن كنت</strong>: قادمًا من ويندوز وتريد واجهة مألوفة فورًا، أو تحب ضبط كل تفصيل بصري في نظامك</li>
+            <li><strong>اختر Plasma إن كنت</strong>: تحتاج مدير ملفات قويًا حقًا لعملك اليومي (Dolphin يستحق وحده هذا الاختيار لكثيرين)</li>
+            <li><strong>اختر GNOME إن كنت</strong>: تريد أقل عدد ممكن من القرارات لاتخاذها بعد التثبيت مباشرة</li>
+        </ul>
+
+        <p>
+            أفضل نصيحة عملية: أغلب التوزيعات الكبرى تتيح تثبيت البيئتين
+            معًا والتبديل بينهما من شاشة تسجيل الدخول. جرّب كل واحدة
+            لأسبوع كامل قبل أي حكم نهائي، لأن الانطباع الأول (خصوصًا مع
+            GNOME) غالبًا يختلف عن الشعور الفعلي بعد التعوّد.
+        </p>
+
+        <h2 id="external-resources">الروابط الرسمية</h2>
+
+        <ul>
+            <li>
+                <strong>GNOME:</strong>{" "}
+                <a href="https://www.gnome.org/" target="_blank" rel="noopener noreferrer">gnome.org</a>
+            </li>
+            <li>
+                <strong>KDE Plasma:</strong>{" "}
+                <a href="https://kde.org/plasma-desktop/" target="_blank" rel="noopener noreferrer">kde.org/plasma-desktop</a>
+            </li>
+            <li>
+                <strong>KDE Neon (توزيعة مخصصة لأحدث Plasma دائمًا):</strong>{" "}
+                <a href="https://neon.kde.org/" target="_blank" rel="noopener noreferrer">neon.kde.org</a>
+            </li>
+            <li>
+                <strong>Fedora KDE Plasma Desktop (طبعة رسمية):</strong>{" "}
+                <a href="https://fedoraproject.org/spins/kde/" target="_blank" rel="noopener noreferrer">fedoraproject.org/spins/kde</a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل يمكنني تجربة كلتا البيئتين على نفس النظام؟</strong><br />
+            نعم، معظم التوزيعات تسمح بتثبيت الاثنتين معًا، مع الاختيار
+            بينهما من شاشة تسجيل الدخول قبل بدء كل جلسة.
+        </p>
+
+        <p>
+            <strong>أيهما أفضل للأجهزة الضعيفة؟</strong><br />
+            الفارق أصبح صغيرًا جدًا في الإصدارات الحديثة، لكن إن كان جهازك
+            ضعيفًا جدًا فعليًا، بيئات أخف مثل Xfce أو LXQt أنسب من كلتيهما.
+        </p>
+
+        <p>
+            <strong>هل التبديل بين GNOME وKDE يفقدني ملفاتي؟</strong><br />
+            لا، بيئة سطح المكتب طبقة رسومية فقط، وملفاتك تبقى سليمة تمامًا
+            بغض النظر عن أي بيئة تستخدمها لعرضها والوصول إليها.
+        </p>
+
+        <p>
+            <strong>أيهما تختاره أوبونتو كافتراضي؟</strong><br />
+            أوبونتو تعتمد GNOME افتراضيًا (بنسخة معدّلة بصريًا)، بينما
+            توفر نكهة Kubuntu الرسمية تجربة KDE Plasma الكاملة لمن يفضلها.
+        </p>
+    </PostLayout>
+</BaseLayout>

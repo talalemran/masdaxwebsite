@@ -1,0 +1,417 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-open-source-javascript-libraries",
+    title: "أهم مكتبات جافاسكريبت مفتوحة المصدر يجب أن يعرفها كل مطور",
+    metaTitle: "أهم مكتبات جافاسكريبت مفتوحة المصدر يجب معرفتها 2026",
+    description:
+        "دليل شامل لأهم مكتبات وأطر عمل JavaScript مفتوحة المصدر — React وVue وAngular وNode.js وExpress وSvelte وغيرها — مع الاستخدامات المثالية والروابط الرسمية لكل واحدة.",
+    keywords: [
+        "مكتبات جافاسكريبت مفتوحة المصدر",
+        "React",
+        "Vue.js",
+        "Angular",
+        "Node.js",
+        "Next.js",
+        "Express.js",
+        "Svelte",
+        "jQuery",
+        "D3.js",
+        "أطر عمل جافاسكريبت",
+    ],
+    category: ["برمجة", "مقالات"],
+    author: "طلال عمران",
+    date: "5 سبتمبر 2026",
+    pubDate: new Date("2026-09-05"),
+    tags: ["JavaScript", "React", "Vue", "Node.js", "مفتوح المصدر"],
+    thumbnail: "/images/best-open-source-javascript-libraries.webp",
+};
+
+const tocItems = [
+    { id: "library-vs-framework", label: "مكتبة أم إطار عمل؟ الفرق المهم أولاً" },
+    { id: "react", label: "1. React" },
+    { id: "vue", label: "2. Vue.js" },
+    { id: "angular", label: "3. Angular" },
+    { id: "nodejs", label: "4. Node.js" },
+    { id: "nextjs", label: "5. Next.js" },
+    { id: "express", label: "6. Express.js" },
+    { id: "svelte", label: "7. Svelte" },
+    { id: "jquery", label: "8. jQuery" },
+    { id: "d3js", label: "9. D3.js" },
+    { id: "lodash", label: "10. Lodash" },
+    { id: "comparison-table", label: "جدول مقارنة شامل" },
+    { id: "how-to-choose", label: "كيف تختار المكتبة المناسبة لمشروعك؟" },
+    { id: "external-resources", label: "الروابط الرسمية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            جافاسكريبت وحدها لغة، لكن ما يجعلها قادرة على بناء تطبيقات
+            ضخمة معقدة هو الطبقة الهائلة من المكتبات وأطر العمل المفتوحة
+            المصدر المبنية فوقها. كل موقع ويب حديث تقريبًا تستخدمه اليوم
+            يعتمد على واحدة أو أكثر من الأدوات المذكورة في هذا المقال.
+        </p>
+
+        <p>
+            هذا الدليل يستعرض أهم عشر مكتبات وأطر عمل جافاسكريبت مفتوحة
+            المصدر، الفرق الجوهري بينها، ومتى تختار كل واحدة لمشروعك.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="library-vs-framework">
+            مكتبة أم إطار عمل؟ الفرق المهم أولاً
+        </h2>
+
+        <p>
+            <strong>المكتبة (Library)</strong> أداة تستدعيها أنت عند
+            الحاجة لحل مشكلة محددة، والتحكم يبقى بيدك أنت. <strong
+                >إطار العمل (Framework)</strong
+            > يفرض بنية معينة على مشروعك بالكامل، وهو من يستدعي كودك لا
+            العكس. React تقنيًا مكتبة، بينما Angular إطار عمل متكامل، وهذا
+            الفرق يؤثر مباشرة على مرونة كل أداة وسرعة تعلمها.
+        </p>
+
+        <h2 id="react">1. React</h2>
+
+        <p>
+            <img
+                src="/images/react-code-interface.webp"
+                alt="كود React مع واجهة مستخدم تفاعلية"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            طورتها Meta (فيسبوك سابقًا)، ولا تزال المكتبة الأكثر هيمنة على
+            سوق العمل عالميًا، بإصدارها الحالي React 19.2. مرخّصة تحت MIT،
+            وتعتمد بنية قائمة على المكونات (Components) وDOM افتراضي
+            لتحديث الواجهة بكفاءة عالية.
+        </p>
+
+        <ul>
+            <li>أكبر نظام بيئي وسوق توظيف بين كل أدوات الواجهة الأمامية</li>
+            <li>React Server Components أصبحت مستقرة تمامًا، تحسّن الأداء عبر تنفيذ جزء من الكود على الخادم مباشرة</li>
+            <li>غالبًا تُستخدم عبر إطار عمل مصاحب مثل Next.js وليس بمفردها في مشاريع الإنتاج</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مشاريع تحتاج أكبر مجتمع دعم وفرص توظيف ممكنة.</p>
+
+        <h2 id="vue">2. Vue.js</h2>
+
+        <p>
+            طوّرها المبرمج إيفان يو (Evan You) بعد عمله السابق في فريق
+            جوجل على Angular، بهدف تقديم تجربة أبسط وأخف. مرخّصة تحت MIT،
+            وتتميز بمنحنى تعلم لطيف جدًا. الإصدار الحالي Vue 3 يضيف وضع
+            "Vapor" الجديد الذي يجمّع القوالب لكود جافاسكريبت محسّن مباشرة
+            دون الاعتماد على DOM افتراضي إطلاقًا.
+        </p>
+
+        <ul>
+            <li>توثيق رسمي يُعتبر من الأوضح بين كل أدوات جافاسكريبت</li>
+            <li>مكونات ملف واحد (Single-File Components) تجمع القالب والسكربت والتنسيق في ملف واحد منظم</li>
+            <li>إطار العمل المصاحب Nuxt.js يقدّم لـ Vue ما يقدّمه Next.js لـ React</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: فرق صغيرة إلى متوسطة تريد تجربة تطوير سلسة دون تعقيد زائد.</p>
+
+        <h2 id="angular">3. Angular</h2>
+
+        <p>
+            إطار عمل متكامل من جوجل، وليس مجرد مكتبة، وصل مؤخرًا لإصدار
+            Angular 21/22. على عكس React وVue، يأتي Angular بكل شيء مدمجًا
+            من الصندوق: التوجيه، إدارة الحالة، والاتصال بالخوادم، دون
+            الحاجة لتجميع أدوات منفصلة.
+        </p>
+
+        <ul>
+            <li>مبني على TypeScript أصلاً، ما يمنحه أمان أنواع قويًا منذ التصميم</li>
+            <li>نظام Signals الحديث يحسّن الأداء عبر تفاعلية دقيقة (Fine-Grained Reactivity)</li>
+            <li>الخيار المفضل في الشركات الكبرى التي تحتاج بنية صارمة وموحدة عبر فرق ضخمة</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: المؤسسات الكبرى والفرق الضخمة التي تحتاج بنية موحدة صارمة.</p>
+
+        <h2 id="nodejs">4. Node.js</h2>
+
+        <p>
+            بيئة تشغيل (وليست مكتبة أو إطار عمل بالمعنى الدقيق) تسمح
+            بتشغيل جافاسكريبت خارج المتصفح تمامًا، على الخادم مباشرة.
+            مبنية فوق محرك V8 نفسه المستخدم في متصفح كروم. هذا الابتكار
+            هو ما جعل جافاسكريبت لغة "شاملة" تُستخدم للواجهة والخلفية
+            معًا.
+        </p>
+
+        <ul>
+            <li>نموذج غير متزامن (Asynchronous) يتعامل بكفاءة عالية مع آلاف الاتصالات المتزامنة</li>
+            <li>مدير الحزم npm المرافق له يضم أضخم مكتبة حزم برمجية في العالم</li>
+            <li>أساس تشغيل تقريبًا كل أدوات بناء الواجهة الأمامية الحديثة نفسها</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: بناء خوادم ويب، واجهات برمجية (APIs)، وأدوات سطر أوامر.</p>
+
+        <h2 id="nextjs">5. Next.js</h2>
+
+        <p>
+            إطار عمل بناه Vercel فوق React مباشرة، وأصبح فعليًا الطريقة
+            القياسية لبناء تطبيقات React في بيئة الإنتاج، لدرجة أن توثيق
+            React الرسمي نفسه يوجّه المشاريع الجديدة نحوه.
+        </p>
+
+        <ul>
+            <li>عرض من جهة الخادم (SSR) وتوليد صفحات ثابتة (SSG) مدمجان جاهزان</li>
+            <li>توجيه قائم على نظام الملفات (File-based Routing) يبسّط تنظيم المشروع</li>
+            <li>تحسينات تلقائية للصور والخطوط تحسّن مؤشرات الأداء (Core Web Vitals) دون جهد إضافي</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أي مشروع React جاد موجه للإنتاج الفعلي، لا مجرد تجربة تعليمية.</p>
+
+        <h2 id="express">6. Express.js</h2>
+
+        <p>
+            إطار عمل خلفي (Backend) مبني فوق Node.js، وأحد أكثر مشاريع
+            جافاسكريبت استقرارًا وانتشارًا منذ سنوات طويلة. يشتهر ببساطته
+            الشديدة: طبقة رقيقة جدًا فوق Node.js تضيف فقط ما تحتاجه فعليًا
+            لبناء واجهة برمجية (API) دون فرض بنية معقدة.
+        </p>
+
+        <ul>
+            <li>بساطة النحو تجعله خيارًا ممتازًا لتعلم بناء الخوادم لأول مرة</li>
+            <li>نظام Middleware مرن يسمح بإضافة أي وظيفة (مصادقة، تسجيل، ضغط) بسهولة</li>
+            <li>لا يزال الخيار الافتراضي رغم ظهور بدائل أحدث مثل NestJS وFastify للمشاريع الأكبر</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: بناء واجهات برمجية (APIs) بسيطة إلى متوسطة التعقيد بسرعة.</p>
+
+        <h2 id="svelte">7. Svelte</h2>
+
+        <p>
+            نهج مختلف جذريًا عن بقية القائمة: بدلاً من تفسير الكود في
+            المتصفح، يحوّل Svelte الكود إلى جافاسكريبت خام محسّن أثناء
+            عملية البناء (Compile Time)، ما يعني عدم وجود مكتبة إطار عمل
+            تُحمَّل في متصفح المستخدم إطلاقًا تقريبًا.
+        </p>
+
+        <ul>
+            <li>أداء وقت تشغيل ممتاز بفضل غياب طبقة إطار العمل نفسها من الحزمة النهائية</li>
+            <li>نحو أقل تعقيدًا وأقرب لجافاسكريبت العادي مقارنة بـ React</li>
+            <li>إطار العمل المصاحب SvelteKit يوفر تجربة كاملة الحزمة (Full-Stack) مشابهة لـ Next.js</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مطورين يقدّرون تجربة تطوير سلسة وأداء نهائي عالٍ دون حزمة إطار عمل ثقيلة.</p>
+
+        <h2 id="jquery">8. jQuery</h2>
+
+        <p>
+            الجد الأكبر لكل هذه المكتبات، ظهر عام 2006 وغيّر طريقة كتابة
+            جافاسكريبت لعقد كامل، عبر تبسيط التعامل مع DOM والتوافق بين
+            المتصفحات المختلفة. رغم تراجع استخدامه الكبير في المشاريع
+            الجديدة لصالح React وVue، لا يزال يعمل خلف الكواليس في نسبة
+            ضخمة جدًا من مواقع الويب القائمة حول العالم، خصوصًا القديمة
+            منها والمبنية على ووردبريس.
+        </p>
+
+        <ul>
+            <li>لا يزال يشغّل جزءًا كبيرًا جدًا من الويب القائم فعليًا، حتى لو لم يعد خيار المشاريع الجديدة</li>
+            <li>بساطة شديدة في التعامل مع عناصر الصفحة دون أي بنية معقدة</li>
+            <li>مفيد للصيانة والعمل على مشاريع قديمة موجودة أصلاً</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: صيانة مشاريع قديمة قائمة، أو تعديلات بسيطة سريعة دون بناء مشروع كامل.</p>
+
+        <h2 id="d3js">9. D3.js</h2>
+
+        <p>
+            مكتبة متخصصة تمامًا في تصور البيانات (Data Visualization)،
+            وتمنحك تحكمًا كاملاً في كل بكسل من الرسوم البيانية التفاعلية،
+            على عكس مكتبات الرسوم البيانية الجاهزة الأبسط.
+        </p>
+
+        <ul>
+            <li>تحكم دقيق جدًا في كل تفصيل بصري، لا مثيل له بين مكتبات الرسوم البيانية الأخرى</li>
+            <li>تُستخدم في أشهر الرسوم البيانية التفاعلية الصحفية والتحليلية حول العالم</li>
+            <li>منحنى تعلم أصعب نسبيًا مقارنة بمكتبات رسوم بيانية جاهزة أبسط</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: مشاريع تصور بيانات مخصصة ومعقدة تتجاوز الرسوم البيانية القياسية.</p>
+
+        <h2 id="lodash">10. Lodash</h2>
+
+        <p>
+            مكتبة أدوات مساعدة (Utility Library) توفر مئات الدوال الجاهزة
+            للتعامل مع المصفوفات والكائنات والنصوص، بأداء محسّن واختبار
+            دقيق يغطي حالات حرجة قد يغفل عنها مطور يكتب نفس الوظيفة يدويًا.
+        </p>
+
+        <ul>
+            <li>يوفر وقتًا كبيرًا بتجنب إعادة كتابة دوال شائعة (مثل النسخ العميق للكائنات) من الصفر</li>
+            <li>موثوقية عالية جدًا بفضل اختبارات مكثفة عبر سنوات من الاستخدام الفعلي</li>
+            <li>لا يزال يُستخدم رغم أن جافاسكريبت الحديثة أضافت كثيرًا من وظائفه أصلاً للغة نفسها</li>
+        </ul>
+
+        <p><strong>الأنسب لـ</strong>: أي مشروع يحتاج معالجة بيانات متكررة دون إعادة اختراع العجلة.</p>
+
+        <h2 id="comparison-table">جدول مقارنة شامل</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الأداة</th>
+                        <th class="px-4 py-2 font-semibold">النوع</th>
+                        <th class="px-4 py-2 font-semibold">الاستخدام الأساسي</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">React</td>
+                        <td class="px-4 py-2">مكتبة واجهة</td>
+                        <td class="px-4 py-2">بناء واجهات مستخدم تفاعلية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Vue.js</td>
+                        <td class="px-4 py-2">إطار عمل تدريجي</td>
+                        <td class="px-4 py-2">واجهات بسيطة إلى متوسطة التعقيد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Angular</td>
+                        <td class="px-4 py-2">إطار عمل متكامل</td>
+                        <td class="px-4 py-2">تطبيقات مؤسسية ضخمة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Node.js</td>
+                        <td class="px-4 py-2">بيئة تشغيل</td>
+                        <td class="px-4 py-2">خوادم وواجهات برمجية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Next.js</td>
+                        <td class="px-4 py-2">إطار عمل فوق React</td>
+                        <td class="px-4 py-2">تطبيقات React جاهزة للإنتاج</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Express.js</td>
+                        <td class="px-4 py-2">إطار عمل خلفي خفيف</td>
+                        <td class="px-4 py-2">واجهات برمجية بسيطة سريعة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Svelte</td>
+                        <td class="px-4 py-2">مُجمِّع (Compiler)</td>
+                        <td class="px-4 py-2">أداء عالٍ بحزمة نهائية أخف</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">jQuery</td>
+                        <td class="px-4 py-2">مكتبة DOM</td>
+                        <td class="px-4 py-2">صيانة مواقع قديمة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">D3.js</td>
+                        <td class="px-4 py-2">مكتبة تصور بيانات</td>
+                        <td class="px-4 py-2">رسوم بيانية تفاعلية مخصصة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Lodash</td>
+                        <td class="px-4 py-2">مكتبة أدوات مساعدة</td>
+                        <td class="px-4 py-2">معالجة بيانات ومصفوفات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-choose">كيف تختار المكتبة المناسبة لمشروعك؟</h2>
+
+        <ul>
+            <li><strong>تريد أكبر فرص توظيف ممكنة:</strong> React + Next.js</li>
+            <li><strong>تريد منحنى تعلم سلسًا لفريق صغير:</strong> Vue.js</li>
+            <li><strong>تبني تطبيقًا مؤسسيًا ضخمًا لفريق كبير:</strong> Angular</li>
+            <li><strong>تبني خادمًا أو واجهة برمجية:</strong> Node.js مع Express.js</li>
+            <li><strong>تريد أعلى أداء ممكن في المتصفح مع أقل حزمة تحميل:</strong> Svelte</li>
+            <li><strong>تحتاج رسومًا بيانية تفاعلية معقدة ومخصصة تمامًا:</strong> D3.js</li>
+        </ul>
+
+        <h2 id="external-resources">الروابط الرسمية</h2>
+
+        <ul>
+            <li><strong>React:</strong> <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">react.dev</a></li>
+            <li><strong>Vue.js:</strong> <a href="https://vuejs.org/" target="_blank" rel="noopener noreferrer">vuejs.org</a></li>
+            <li><strong>Angular:</strong> <a href="https://angular.dev/" target="_blank" rel="noopener noreferrer">angular.dev</a></li>
+            <li><strong>Node.js:</strong> <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">nodejs.org</a></li>
+            <li><strong>Next.js:</strong> <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">nextjs.org</a></li>
+            <li><strong>Express.js:</strong> <a href="https://expressjs.com/" target="_blank" rel="noopener noreferrer">expressjs.com</a></li>
+            <li><strong>Svelte:</strong> <a href="https://svelte.dev/" target="_blank" rel="noopener noreferrer">svelte.dev</a></li>
+            <li><strong>jQuery:</strong> <a href="https://jquery.com/" target="_blank" rel="noopener noreferrer">jquery.com</a></li>
+            <li><strong>D3.js:</strong> <a href="https://d3js.org/" target="_blank" rel="noopener noreferrer">d3js.org</a></li>
+            <li><strong>Lodash:</strong> <a href="https://lodash.com/" target="_blank" rel="noopener noreferrer">lodash.com</a></li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل يجب أن أتعلم React أم Vue أولاً؟</strong><br />
+            إن كان هدفك فرص التوظيف، React أوسع سوقًا. إن كنت تريد منحنى
+            تعلم أسهل للبداية، Vue خيار ممتاز بنفس القدر تقريبًا لاحقًا.
+        </p>
+
+        <p>
+            <strong>هل React مجاني للاستخدام التجاري بالكامل؟</strong><br />
+            نعم تمامًا، مرخّص تحت MIT دون أي قيود على الاستخدام التجاري.
+        </p>
+
+        <p>
+            <strong>هل ما زال jQuery يستحق التعلم في 2026؟</strong><br />
+            ليس كخيار أول لمشروع جديد، لكن معرفته مفيدة لصيانة مشاريع قديمة
+            قائمة، ولا تزال نسبة ضخمة من الويب تعتمد عليه فعليًا.
+        </p>
+
+        <p>
+            <strong>هل يمكنني استخدام Node.js وExpress معًا دون React أو Vue؟</strong><br />
+            نعم تمامًا، Node.js وExpress خاصان بالخادم (Backend)، ويمكن
+            استخدامهما بشكل مستقل تمامًا عن أي مكتبة واجهة أمامية.
+        </p>
+    </PostLayout>
+</BaseLayout>

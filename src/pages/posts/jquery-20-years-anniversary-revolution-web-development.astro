@@ -1,0 +1,400 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "jquery-20-years-anniversary-revolution-web-development",
+    title: "jQuery في 20 سنة: كيف غيّرت مكتبة صغيرة تطوير الويب للأبد",
+    metaTitle: "jQuery 20 عام: من document.getElementById إلى $ - ثورة الويب",
+    description:
+        "jQuery أطلقت نسختها الأولى 1.0 في 26 أغسطس 2006 من قبل John Resig. المكتبة غيّرت تطوير الويب بـ تبسيط DOM manipulation و AJAX و animations. رغم تراجعها مع React و Angular، jQuery لا تزال توجد في 66% من مواقع الويب.",
+    keywords: [
+        "jQuery",
+        "JavaScript",
+        "Web Development",
+        "John Resig",
+        "DOM",
+        "AJAX",
+        "Frontend",
+        "20th Anniversary",
+        "برمجة",
+        "تطوير ويب",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "06 أكتوبر 2026",
+    pubDate: new Date("2026-10-06"),
+    tags: ["jQuery", "JavaScript", "Web Development", "History", "Frontend"],
+    thumbnail: "/images/jquery-20-years-anniversary-revolution-web-development.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            في 26 أغسطس 2006، أطلق John Resig النسخة الأولى المستقرة من jQuery 1.0.
+            في هذا الأسبوع، احتفلت jQuery بـ مرور 20 سنة على هذا الإطلاق التاريخي.
+            Resig نفسه وضع منشور في X يقول: "قبل 20 سنة بالضبط اليوم،
+            أطلقت الـ @jquery النسخة المشهورة 1.0."
+
+            jQuery كانت ليست مجرد مكتبة JavaScript عادية.
+            كانت ثورة. في عالم حيث تطوير الويب كان معقداً جداً،
+            و تحتاج إلى كتابة كود مختلف لكل متصفح،
+            جاءت jQuery و قالت: هناك طريقة أسهل.
+
+            بعد 20 سنة، jQuery لا تزال موجودة في 66% من كل مواقع الويب
+            (حسب W3Techs).
+            لكن قصتها هي أكثر من مجرد رقم. إنها قصة عن كيف
+            مكتبة واحدة غيّرت جيل كامل من المطورين.
+        </p>
+
+        <h2>السياق: ويب 2006 و الألم</h2>
+
+        <p>
+            <img
+                src="/images/articles/jquery-20-years-anniversary-revolution-web-development/01.webp"
+                alt="jQuery 20 عام: من document.getElementById إلى $ - ثورة الويب"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+
+        <h3>قبل jQuery: عصر الظلام</h3>
+
+        <p>
+            لكي نفهم أثر jQuery، يجب أن نتذكر كيف كان الويب قبل 20 سنة.
+            في 2006:
+        </p>
+
+        <ul>
+            <li>
+                DOM manipulation كان شنيعاً: document.getElementById("element").innerHTML = "...";
+            </li>
+            <li>
+                Internet Explorer 6 كان لا يزال ملك المتصفحات
+            </li>
+            <li>
+                كل متصفح كان يتعامل مع الـ APIs بطريقة مختلفة
+            </li>
+            <li>
+                AJAX كان حديث الساحة، لكن معقد جداً
+            </li>
+            <li>
+                حتى dropdown menu بسيطة تحتاج كود طويل و معقد
+            </li>
+            <li>
+                المطورون يقضون وقتاً طويلاً في browser workarounds
+            </li>
+        </ul>
+
+        <p>
+            Resig نفسه أطلق jQuery لأول مرة في BarCampNYC في يناير 2006
+            (قبل الـ 1.0 بـ شهور).
+            الشعار كان بسيطاً لكن قوي جداً:
+            "كتابة JavaScript يجب أن تكون ممتعة."
+
+            هذا كل شيء. في عالم حيث JavaScript كانت لغة إزعاج
+            يستخدمها مطورو الويب الذين يريدون شيء سريع،
+            جاءت jQuery و قالت: لا، هذه لغة ممتعة.
+        </p>
+
+        <h2>الثورة: jQuery و $() Selector</h2>
+
+        <h3>من document.getElementById إلى $()</h3>
+
+        <p>
+            ما فعلته jQuery بسيط بـ الفكرة لكن عميق في التأثير:
+            أخذت الألم من DOM manipulation و جعلته سهلاً.
+
+            بدلاً من:
+        </p>
+
+        <p>
+            document.getElementById("myDiv").style.display = "none";
+        </p>
+
+        <p>
+            يمكنك الآن أن تكتب:
+        </p>
+
+        <p>
+            $("#myDiv").hide();
+        </p>
+
+        <p>
+            هذا يبدو صغيراً، لكنه ثوري. لماذا؟
+        </p>
+
+        <ul>
+            <li>
+                Readability أفضل (يمكن حتى المصمم أن يفهمها)
+            </li>
+            <li>
+                Chaining (يمكنك أن تفعل عدة أشياء في سطر واحد)
+            </li>
+            <li>
+                Selectors CSS (بدلاً من اختراع syntax جديد)
+            </li>
+            <li>
+                الـ $.ajax لـ AJAX requests بدلاً من XMLHttpRequest المعقد
+            </li>
+            <li>
+                يعمل في كل المتصفحات (jQuery نفسها تتعامل مع الـ browser inconsistencies)
+            </li>
+        </ul>
+
+        <h3>أثر الفكرة: "Write Less, Do More"</h3>
+
+        <p>
+            شعار jQuery كان "Write Less, Do More".
+            هذا الشعار لم يكن مجرد marketing.
+            كان تعبيراً عن فلسفة: الكود الأقل قراءة و صيانة أسهل.
+
+            هذه الفلسفة انتشرت إلى كل المكتبات و الـ frameworks التي جاءت بعدها.
+            React، Angular، Vue — كلهم امتلكوا فكرة
+            أن قلة من الكود الجيد أفضل من الكثير من الكود الوسخ.
+        </p>
+
+        <h2>الديمقراطية: jQuery جعلت Frontend Accessible</h2>
+
+        <h3>لم تعد حاجة لـ "Front-End Wizards"</h3>
+
+        <p>
+            قبل jQuery، تطوير frontend كان حقل متخصص جداً.
+            كنت تحتاج إلى فهم عميق جداً لـ browser APIs و JavaScript quirks.
+            معظم المطورين كانوا يتجنبون frontend.
+
+            jQuery غيّرت هذا.
+            Designer يمكنه أن يكتب jQuery.
+            Backend developer يمكنه أن يضيف animation سريعة.
+            كنت لا تحتاج إلى أن تكون "expert" لتفعل شيء مفيد.
+
+            TechCrunch لاحظت في 2009 أن مكتبات مثل jQuery
+            "تخفض بشكل كبير barrier of entry لـ developers
+            لكي يبنوا rich web applications."
+
+            هذا ما يعني democratization.
+        </p>
+
+        <h3>المجتمع حول jQuery</h3>
+
+        <p>
+            jQuery لم تكن ناجحة فقط لأن الـ library جيدة.
+            كانت ناجحة لأن المجتمع قوي جداً.
+
+            في 2016، عندما احتفلت jQuery بـ 10 سنوات،
+            الفريق كتبوا: "الـ strong community من users و contributors
+            ساعدوا الـ newcomers."
+
+            هذا المجتمع خلقوا ecosystem من plugins و extensions.
+            jQuery UI، jQuery Mobile، jQuery Plugins Registry —
+            كل هذا كان communities من volunteers يبنون حول jQuery.
+
+            على Hacker News، في تلك الفترة، أحد المعلقين كتب:
+            "jQuery كانت مهمة ليس فقط لأن الـ feature set،
+            بل لأنها dominated الـ industry تماماً.
+            jQuery و ecosystem الخاص بها خلقوا community واحد لـ JavaScript developers.
+            الكثير من الـ work اللاحق ما كان بـ نجاح بدون هذا المجتمع القوي."
+        </p>
+
+        <h2>الانحدار: العصر الحديث</h2>
+
+        <h3>مع قدوم Frameworks الحديثة</h3>
+
+        <p>
+            في 2010s، شيء جديد حدث: frameworks حقيقية.
+            React من Facebook (2013)، Angular من Google (2010)، Vue (2014).
+
+            هذه frameworks بنيت على فكرة مختلفة تماماً عن jQuery:
+            بدلاً من "find element, update it" (procedural)،
+            قالوا: "declare state, framework takes care of UI" (declarative).
+
+            كما قال أحد المطورين:
+            "jQuery يتعلق بـ direct DOM manipulation
+            بـ طريقة procedural: update data، find element، give class، remove classes.
+            Modern frameworks قالوا: لا، declare الـ data و الـ UI،
+            و نحن نأخذ care من الـ updates."
+
+            فجأة، jQuery بدت قديمة. قديمة و low-level.
+        </p>
+
+        <h3>Browser APIs و "You Might Not Need jQuery"</h3>
+
+        <p>
+            شيء آخر حدث: المتصفحات تحسنت.
+            بدأوا يوفّروا APIs native بدلاً من الاعتماد على مكتبات.
+
+            قبل jQuery، كان عندك XMLHttpRequest (معقد جداً).
+            الآن عندك fetch API (سهلة).
+
+            قبل jQuery، كان عندك getElementById.
+            الآن عندك querySelectorAll (أفضل).
+
+            قبل jQuery، كان عندك className manipulation صعب.
+            الآن عندك classList API (سهلة).
+
+            في 2011، موقع باسم "You Might Not Need jQuery"
+            بدأ يعرّض كل ميزة jQuery بـ equivalent native API.
+            الرسالة كانت واضحة: jQuery ليست ضرورية بعد الآن.
+        </p>
+
+        <h2>الوضع الحالي: Legacy و Stability</h2>
+
+        <h3>66% من الويب</h3>
+
+        <p>
+            حسب W3Techs، jQuery لا تزال على 66% من كل مواقع الويب.
+            لكن هذا الرقم يخفي قصة أعمق:
+
+            المواقع التي تستخدم jQuery الآن:
+        </p>
+
+        <ul>
+            <li>
+                WordPress (تحتوي jQuery بـ افتراضي)
+            </li>
+            <li>
+                Drupal (نفس الشيء)
+            </li>
+            <li>
+                Bootstrap (استخدمت jQuery في النسخ القديمة)
+            </li>
+            <li>
+                Cypress (تختبر websites، تستخدم jQuery)
+            </li>
+        </ul>
+
+        <p>
+            معظم استخدام jQuery الآن legacy.
+            مواقع قديمة لم تُحدّث بعد. لا تحديثات.
+            بسيط because: jQuery استقرة، تعمل، لماذا تغيّر؟
+
+            لكن ليس كل الاستخدام وسخ.
+            بعض developers لا يزالوا يحبوا jQuery.
+            Docker's engineering blog نشرت مقالة: "Why I Still Use jQuery 2025".
+            Alex MacArthur كتب: "Let's Stop Making it Cool to Hate jQuery".
+            فكرة واحدة: "jQuery helped make the web, and you, what you are today."
+        </p>
+
+        <h3>أمان: CVEs القديمة</h3>
+
+        <p>
+            جانب أمني مهم: jQuery CVEs القديمة لا تزال موجودة.
+            HeroDevs لاحظوا أن ثغرات jQuery القديمة
+            تهيمن على real codebases.
+            السبب: jQuery عميقة و quiet داخل frameworks مثل WordPress.
+
+            مطورو security يقولوا: هذا مشكلة.
+            لكن إصلاحها = إعادة كتابة مواقع كاملة. expensive جداً.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            jQuery 20 سنة = قصة عن تطور technology و تغيير الأولويات.
+
+            من 2006 إلى 2026، رأينا:
+        </p>
+
+        <ul>
+            <li>
+                2006-2010: jQuery dominance (80%+ من المطورين)
+            </li>
+            <li>
+                2010-2015: Rise of frameworks (React، Angular)
+            </li>
+            <li>
+                2015-2020: jQuery decline ("jQuery is dead")
+            </li>
+            <li>
+                2020-2026: jQuery stability و legacy adoption
+            </li>
+        </ul>
+
+        <p>
+            الدرس الأهم: مكتبة أو framework لا تحكم الويب للأبد.
+            كل جيل من technology يخدم احتياجات الوقت.
+            jQuery كانت مثالية لـ 2006. حل النقاط الألم تماماً.
+
+            لكن الأولويات تغيّرت.
+            الآن الويب تحتاج scalability، maintainability، component architecture.
+            jQuery ما تقدم هذا. React و Vue توفره.
+
+            الشيء المثير: jQuery ما زالت مستخدمة، لكن في background.
+            المواقع الناشئة لا تبدأ بـ jQuery الآن.
+            لكن مليارات الناس تستخدم jQuery كل يوم،
+            حتى لو ما يعرفوا.
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: هل jQuery لا تزال مفيدة في 2026؟</h3>
+        <p>
+            ج: للمشاريع الجديدة؟ لا. للـ legacy websites و WordPress؟ نعم، مستقرة تماماً.
+        </p>
+
+        <h3>س: لماذا لا تزال 66% من المواقع تستخدم jQuery؟</h3>
+        <p>
+            ج: معظمها WordPress و Drupal (لأسباب تاريخية). إنها مكتبة مستقرة.
+        </p>
+
+        <h3>س: هل jQuery أفضل من React أو Vue؟</h3>
+        <p>
+            ج: مختلفة تماماً. jQuery لـ manipulation مباشر. React/Vue لـ component architecture.
+        </p>
+
+        <h3>س: هل jQuery آمنة من security flaws؟</h3>
+        <p>
+            ج: jQuery نفسها آمنة. لكن النسخ القديمة قد توجد CVEs عليها.
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            jQuery في 20 سنة = ثورة في تطوير الويب.
+            غيّرت الـ industry من "JavaScript معقدة و مخيفة"
+            إلى "JavaScript ممتعة و accessible".
+
+            حتى لو jQuery لم تعد الـ center of the universe،
+            تأثيرها لا يزال موجود كل يوم.
+            كل web framework حديثة امتلكت فكرة jQuery:
+            "اجعل الحياة أسهل للمطور".
+
+            الـ reunion في Dallas في يناير 2026
+            احتفلوا بـ 20 سنة من هذا الإرث.
+            و يستحق الاحتفال حقاً.
+
+            jQuery ما غيّرت فقط JavaScript.
+            غيّرت من يمكنه أن يكون web developer.
+            و هذا، في النهاية، تغيير الويب بـ كاملها.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://www.infoq.com/news/2026/09/jquery-20-years/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                InfoQ: Twenty Years of jQuery: How a Little Library Rewired Web Development
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

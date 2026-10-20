@@ -1,0 +1,174 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "go-1-27-generic-methods-type-parameters-runtime-improvements",
+    title: "Go 1.27: دعم Methods جديد وتحسينات Runtime وتشفير ما بعد الكم",
+    metaTitle: "Go 1.27 يدعم Generic Methods وتحسينات Runtime",
+    description:
+        "جوجل أطلقت Go 1.27 مع دعم methods جينيرية لتعريف معاملات النوع — تحسينات Runtime تقلل تكاليف تخصيص الذاكرة 30٪، دعم ML-DSA ما بعد الكم، وميزات tooling متقدمة.",
+    keywords: [
+        "Go 1.27",
+        "Generic Methods",
+        "Type Parameters",
+        "Go programming",
+        "Runtime improvements",
+        "Memory allocation",
+        "ML-DSA",
+        "post-quantum",
+        "Goroutine",
+        "برمجة",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "21 أغسطس 2026",
+    pubDate: new Date("2026-08-21"),
+    tags: ["Go 1.27", "برمجة", "Generic", "Runtime", "Google"],
+    thumbnail: "/images/go-1-27-generic-methods-type-parameters-runtime-improvements.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت <strong>جوجل</strong> رسمياً <strong>Go 1.27</strong> — إصدار جديد من
+            لغة البرمجة المفتوحة المصدر يجلب تحسينات شاملة
+            <strong>للغة والـ toolchain والـ runtime</strong>. الإصدار الجديد متاح للتحميل من
+            
+                <a href="https://go.dev/dl/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                صفحة التحميل الرسمية
+            </a>
+            للمشروع.
+        </p>
+
+        <h2>دعم Methods جينيرية: الميزة الأبرز</h2>
+
+        <p>
+            أهم تغيير في <strong>Go 1.27</strong> هو دعم <strong>generic methods</strong>. الآن
+            يمكن لأي method أن يُعرّف
+            <strong>معاملات النوع الخاصة به</strong> بدلاً من كونه محدوداً على معاملات النوع
+            الخاصة بـ receiver.
+        </p>
+
+        <p>
+            بجانب ذلك، مفتاح في struct literal يمكن أن يكون الآن
+            <strong>أي field selector صحيح</strong>. هذا يتيح تهيئة الحقول
+            <strong>في structs المدمجة أو المتداخلة مباشرة</strong>. كما تم تعميم
+            <strong>function type inference</strong> على جميع assignment contexts.
+            الآن الـ generic functions تعمل
+            <strong>بدون explicit type arguments</strong> في composite literals و type
+            conversions و channel sends.
+        </p>
+
+        <h2>تحسينات Runtime والأداء</h2>
+
+        <p>
+            <strong>Runtime</strong> الآن يستخدم
+            <strong>size-specialized memory allocation</strong> — تحسن جوهري يقلل
+            <strong>تكاليف allocation للـ objects الصغيرة (أقل من 80 بايت)</strong> بنسبة
+            تصل إلى <strong>30 في المائة</strong>. للبرامج التي تقوم بعمليات تخصيص كثيفة،
+            هذا يترجم إلى <strong>حسن في الأداء يتراوح حول 1 في المائة</strong>.
+        </p>
+
+        <p>
+            ميزة أخرى مهمة: <strong>goroutine leak profile</strong> في <strong>runtime/pprof</strong>
+            الآن
+            
+                <a href="https://go.dev/doc/diagnostics"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                متاح بشكل عام
+            </a>
+            و<strong>يكتشف تلقائياً الـ goroutines المحجوزة بشكل دائم</strong>.
+        </p>
+
+        <h2>تحسينات الـ Tooling</h2>
+
+        <p>
+            على جانب الأدوات، <strong>go fix</strong> يحصل على
+            <strong>modernizers جديدة</strong>:
+        </p>
+
+        <ul>
+            <li><strong>atomictypes</strong></li>
+            <li><strong>embedlit</strong></li>
+            <li><strong>slicesbackward</strong></li>
+            <li><strong>unsafefuncs</strong></li>
+        </ul>
+
+        <p>
+            بالإضافة إلى ذلك، 
+                <a href="https://pkg.go.dev/cmd/go"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>go doc</strong>
+            </a>
+            الآن يدعم
+            <strong>queries مع version numbers</strong>، مثل
+            <strong>`go doc example.com/pkg@v1.2.3`</strong>. و
+            
+                <a href="https://go.dev/ref/mod#go-mod-tidy"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>go mod tidy</strong>
+            </a>
+            <strong>يوحّد كتل require المتعددة</strong> في `go.mod` إلى هيكل
+            two-block قياسي.
+        </p>
+
+        <h2>تشفير ما بعد الكم: ML-DSA</h2>
+
+        <p>
+            <strong>Go 1.27</strong> يضيف دعماً لـ
+            <strong>ML-DSA (Module-Lattice-Based Digital Signature Algorithm)</strong>
+            — خطوة نحو تحضير البنية التحتية للحوسبة ما بعد الكمية.
+        </p>
+
+        <h2>encoding/json/v2 القادمة</h2>
+
+        <p>
+            الإصدار يشير إلى قرب
+            <strong>إطلاق encoding/json/v2</strong> — نسخة محسّنة من مكتبة JSON
+            مع أداء أفضل وواجهة محسّنة.
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            <strong>Go 1.27</strong> تحديث متوازن يركز على
+            <strong>المرونة في الـ generics والأداء في الـ runtime والأمان الحديث</strong>.
+            هذه التحسينات تجعل Go خياراً أقوى للمطورين الذين يبحثون عن لغة برمجة فعالة وآمنة.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.techzine.eu/news/devops/143751/go-1-27-introduces-generic-methods-for-own-type-parameters/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Techzine Global
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

@@ -1,0 +1,287 @@
+---
+import TagBadge from "./TagBadge.astro";
+import AdBanner from "./AdBanner.astro";
+import Adsterra300x250 from "./adsterra300x250.astro";
+
+export interface Props {
+  page: {
+    title: string;
+    description: string;
+    category: string | string[];
+    tags: string[];
+    thumbnail?: string;
+    parent?: { title: string; href: string };
+  };
+  tocItems?: { id: string; label: string }[];
+  breadcrumb?: { label: string; href?: string }[];
+}
+
+const { page, tocItems = [], breadcrumb = [] } = Astro.props;
+const { title, description, tags, thumbnail, parent } = page;
+const categories = Array.isArray(page.category) ? page.category : [page.category];
+const category = categories[0];
+
+const pageUrl = `https://www.masdarx.com${Astro.url.pathname}`;
+const shareLinks = {
+  x: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(pageUrl)}`,
+  reddit: `https://reddit.com/submit?url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(title)}`,
+  linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}`,
+  telegram: `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(title)}`,
+};
+---
+
+<script is:inline set:html={`
+  (function() {
+    if (!thumbnail) return;
+    var l = document.createElement('link');
+    l.rel = 'preload';
+    l.as = 'image';
+    l.href = '${thumbnail}';
+    l.fetchPriority = 'high';
+    document.head.appendChild(l);
+  })();
+`} />
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "الرئيسية",
+      "item": "https://www.masdarx.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "الموسوعة",
+      "item": "https://www.masdarx.com/wiki/"
+    },
+    ...categories.map((cat, i) => ({
+      "@type": "ListItem",
+      "position": i + 3,
+      "name": cat,
+      "item": `https://www.masdarx.com/category/${cat}/`
+    })),
+    {
+      "@type": "ListItem",
+      "position": categories.length + 3,
+      "name": title
+    }
+  ]
+})} />
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": title,
+  "description": description,
+  "url": pageUrl,
+  "image": thumbnail ? (thumbnail.startsWith("http") ? thumbnail : `https://www.masdarx.com${thumbnail}`) : undefined,
+  "publisher": {
+    "@type": "Organization",
+    "name": "مصدر إكس",
+    "url": "https://www.masdarx.com",
+    "logo": "https://www.masdarx.com/favicon.svg"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": pageUrl
+  },
+  "articleSection": categories,
+  "keywords": tags?.join(", "),
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": ["h1", ".article-content p:first-of-type"]
+  }
+})} />
+
+<article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-0">
+  <nav class="mb-6 text-sm font-body text-navy-400 dark:text-zinc-500">
+    <a href="/" class="hover:text-accent dark:hover:text-white transition-colors no-underline">الرئيسية</a>
+    <span class="mx-2">/</span>
+    <a href="/wiki/" class="hover:text-accent dark:hover:text-white transition-colors no-underline">الموسوعة</a>
+    {parent && (
+      <span class="mx-2">/</span>
+      <a href={parent.href} class="hover:text-accent dark:hover:text-white transition-colors no-underline">{parent.title}</a>
+    )}
+    <span class="mx-2">/</span>
+    <span class="text-navy dark:text-white">{title}</span>
+  </nav>
+
+  {
+    thumbnail && (
+      <div class="bg-navy-50 dark:bg-zinc-800 rounded-xl overflow-hidden mb-8">
+        <img
+          src={thumbnail}
+          alt={title}
+          width="720"
+          height="405"
+          class="w-full h-auto"
+          fetchpriority="high"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    )
+  }
+
+  <div class="flex flex-wrap items-center gap-3 text-sm font-body text-navy-400 dark:text-zinc-500 mb-4">
+    <span id="reading-time"></span>
+  </div>
+
+  <h1 class="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold text-navy dark:text-white mb-6 leading-snug">
+    {title}
+  </h1>
+
+  <p class="font-body text-navy-400 dark:text-zinc-500 mb-8">
+    {description}
+  </p>
+
+  {
+    tocItems.length > 0 && (
+      <nav
+        class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+        aria-label="جدول المحتويات"
+      >
+        <p class="font-bold text-lg mb-4 text-navy dark:text-white">محتويات المقال</p>
+        <ol class="list-decimal list-inside space-y-3 text-lg">
+          {tocItems.map((item) => (
+            <li>
+              <a
+                href={`#${item.id}`}
+                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
+
+  <div class="post-content font-body text-lg text-navy-700 dark:text-zinc-300 leading-relaxed">
+    <slot />
+  </div>
+
+  <div class="mt-8 pt-6 border-t border-navy-100 dark:border-zinc-800">
+    <p class="font-body text-sm font-medium text-navy dark:text-white mb-3">شارك المقال</p>
+    <div class="flex gap-3">
+      <a href={shareLinks.x} target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-navy-50 dark:bg-zinc-800 text-navy-400 dark:text-zinc-400 hover:bg-navy hover:text-white transition-colors no-underline"
+        aria-label="شارك على X">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href={shareLinks.reddit} target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-navy-50 dark:bg-zinc-800 text-navy-400 dark:text-zinc-400 hover:bg-navy hover:text-white transition-colors no-underline"
+        aria-label="شارك على Reddit">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+      </a>
+      <a href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-navy-50 dark:bg-zinc-800 text-navy-400 dark:text-zinc-400 hover:bg-navy hover:text-white transition-colors no-underline"
+        aria-label="شارك على LinkedIn">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-navy-50 dark:bg-zinc-800 text-navy-400 dark:text-zinc-400 hover:bg-navy hover:text-white transition-colors no-underline"
+        aria-label="شارك على تلغرام">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.492-1.302.48-.428-.013-1.252-.242-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/masdarx" target="_blank" rel="noopener noreferrer" class="block mt-8 p-6 bg-gradient-to-l from-navy to-navy-700 rounded-xl text-center no-underline group">
+    <p class="font-heading text-xl font-bold text-white mb-2 group-hover:scale-105 transition-transform">أعجبك المقال؟</p>
+    <p class="font-body text-base text-white/80">ادعم مصدر إكس لنستمر في تقديم محتوى عربي مميز</p>
+  </a>
+
+  <div class="mt-8">
+    <a
+      href="/wiki/"
+      class="inline-flex items-center gap-2 font-body text-sm font-medium text-navy dark:text-white hover:text-accent dark:hover:text-zinc-300 transition-colors no-underline"
+    >
+      &larr; العودة إلى الموسوعة
+    </a>
+  </div>
+</article>
+
+<div id="ad-slot" class="hidden my-8" aria-hidden="true">
+  <AdBanner />
+</div>
+<div id="adsterra-slot-1" class="hidden my-8 w-full justify-center" aria-hidden="true">
+  <Adsterra300x250 />
+</div>
+<div id="adsterra-slot-2" class="hidden my-8 w-full justify-center" aria-hidden="true">
+  <Adsterra300x250 />
+</div>
+
+<script>
+  function injectAd() {
+    const content = document.querySelector('.post-content');
+    const slot = document.getElementById('ad-slot');
+    if (!content || !slot) return;
+
+    const contentBlocks = Array.from(content.children);
+    if (contentBlocks.length === 0) return;
+
+    const adsterraSlots = [
+      document.getElementById('adsterra-slot-1'),
+      document.getElementById('adsterra-slot-2'),
+    ];
+    const positions = [
+      Math.floor(contentBlocks.length / 3),
+      Math.floor((contentBlocks.length * 2) / 3),
+    ];
+
+    adsterraSlots.forEach((adsterraSlot, index) => {
+      const insertAfter = contentBlocks[Math.min(positions[index], contentBlocks.length - 1)];
+      if (!adsterraSlot || !insertAfter) return;
+
+      insertAfter.after(adsterraSlot);
+
+      const revealWhenAdLoads = () => {
+        if (!adsterraSlot.querySelector('iframe')) return false;
+
+        adsterraSlot.classList.remove('hidden');
+        adsterraSlot.classList.add('flex');
+        adsterraSlot.removeAttribute('aria-hidden');
+        return true;
+      };
+
+      if (revealWhenAdLoads()) return;
+
+      const observer = new MutationObserver(() => {
+        if (revealWhenAdLoads()) observer.disconnect();
+      });
+      observer.observe(adsterraSlot, { childList: true, subtree: true });
+    });
+
+    const ad = slot.firstElementChild;
+    if (!ad) return;
+
+    const middleBlock = contentBlocks[Math.floor((contentBlocks.length - 1) / 2)];
+    if (!middleBlock) return;
+
+    slot.classList.remove('hidden');
+    slot.removeAttribute('aria-hidden');
+    middleBlock.after(slot);
+  }
+
+  function calculateReadingTime() {
+    const article = document.querySelector('.post-content');
+    const readingTimeEl = document.getElementById('reading-time');
+    if (!article || !readingTimeEl) return;
+
+    const text = article.textContent || '';
+    const wordCount = text.trim().split(/\s+/).length;
+    const wordsPerMinute = 160;
+    const minutes = Math.ceil(wordCount / wordsPerMinute);
+
+    readingTimeEl.textContent = `${minutes} دقيقة قراءة`;
+  }
+
+  injectAd();
+  calculateReadingTime();
+</script>

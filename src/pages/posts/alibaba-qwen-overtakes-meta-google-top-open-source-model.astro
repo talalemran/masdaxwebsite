@@ -1,0 +1,190 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "alibaba-qwen-overtakes-meta-google-top-open-source-model",
+    title: "علي بابا Qwen تتصدر: 3 مليارات تحميل تفوق Google و Meta",
+    metaTitle: "Qwen الصينية تصبح أكبر نموذج مفتوح عالميا",
+    description:
+        "نموذج Qwen المفتوح المصدر من علي بابا حقق 3 مليارات تحميل وتفوق على Google و Meta عالمياً — الصين تحتل المركز الأول برغم قيود التصدير الأمريكية، و DeepSeek و Moonshot AI تتوسع بسرعة.",
+    keywords: [
+        "Qwen",
+        "علي بابا",
+        "Alibaba",
+        "نماذج مفتوحة المصدر",
+        "ذكاء اصطناعي",
+        "Hugging Face",
+        "DeepSeek",
+        "Moonshot AI",
+        "Google",
+        "Meta",
+    ],
+    category: "ذكاء اصطناعي",
+    author: "طلال عمران",
+    date: "16 أغسطس 2026",
+    pubDate: new Date("2026-08-16"),
+    tags: ["Qwen", "علي بابا", "ذكاء اصطناعي", "مفتوح المصدر", "الصين"],
+    thumbnail: "/images/alibaba-qwen-overtakes-meta-google-top-open-source-model.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أصبحت نماذج الذكاء الاصطناعي الصينية أدوات لا غنى عنها لعدد متزايد
+            من المطورين في الخارج، وفقاً لما قاله ملاحظون الصناعة يوم الأحد.
+            <strong>رغم قيود التصدير الأمريكية</strong> والقيود المسيسة،
+            <strong>Qwen من علي بابا و DeepSeek و Moonshot AI و Zhipu AI و MiniMax</strong>
+            تتوسع بسرعة حول العالم.
+        </p>
+
+        <h2>Qwen تحقق 3 مليارات تحميل عالمياً</h2>
+
+        <p>
+            نموذج <strong>Qwen</strong> المفتوح المصدر من علي بابا تجاوز
+            <strong>3 مليارات تحميل عالمياً</strong> خلال الستة أشهر الماضية،
+            متفوقاً على Meta و Google لتحتل المركز الأول عالمياً، وفقاً لتقرير
+            صادر في 14 أغسطس من منصة مفتوحة المصدر
+            
+                <a href="https://huggingface.co/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Hugging Face
+            </a>
+            .
+        </p>
+
+        <p>
+            أظهر التقرير أن نماذج Google المفتوحة حققت 418 مليون تحميل، بينما
+            حققت نماذج Meta 227 مليون على المنصة في نفس الفترة.
+        </p>
+
+        <h2>أساس عملاق لنظام الذكاء الاصطناعي المفتوح</h2>
+
+        <p>
+            وصفت Hugging Face نموذج Qwen بأنه
+            <strong>"أحد أكبر أساسات النظام البيئي المفتوح للذكاء الاصطناعي"</strong>
+            ، مشيرة إلى أن "Qwen أصبح مدمجاً في سير العمل الافتراضي للمطورين الذين
+            يقررون أي نموذج يتم ضبطه وتطبيقه."
+        </p>
+
+        <p>
+            وفقاً لفريق Qwen، قامت علي بابا بفتح مصدر أكثر من 460 نموذجاً من
+            عائلة Qwen، والنماذج المشتقة المبنية على أساسها تتجاوز الآن 300,000.
+        </p>
+
+        <h2>الأداء الشهري: الصين تتفوق على الولايات المتحدة</h2>
+
+        <p>
+            وفقاً لتقرير Hugging Face، في ما يقرب من كل شهر من عام 2026، كان
+            أكبر وأفضل نموذج مفتوح تم إطلاقه بواسطة معمل صيني أكبر من أي شيء
+            أطلقته معامل أمريكية.
+        </p>
+
+        <ul>
+            <li>
+                <strong>السقف الشهري الصيني:</strong> تراوح من 754 مليار إلى 2.78
+                تريليون معامل
+            </li>
+            <li>
+                <strong>السقف الأمريكي:</strong> بقي أقل من 130 مليار في خمسة من
+                الأشهر السبعة التي يغطيها التقرير
+            </li>
+        </ul>
+
+        <h2>نماذج صينية متعددة تطلق أحدث إصداراتها</h2>
+
+        <p>
+            الشركات الصينية الأخرى لم تتخلف عن الركب:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Zhipu AI:</strong> أطلقت GLM-5.3 يوم الجمعة، وصفت بأنها
+                جعلت قدرات الدفاع الأمني مورداً عاماً يمكن للمطورين العالميين
+                تحسينه معاً
+            </li>
+            <li>
+                <strong>DeepSeek:</strong> أطلقت Harness يوم الخميس — أول إطار
+                عمل agent runtime تابع لها يسمح للنماذج بالتفاعل مباشرة مع
+                مستودعات الأكواد وتعديل الأكواد واختبارها
+            </li>
+            <li>
+                <strong>Moonshot AI:</strong> أعلنت عن فتح مصدر كامل Kimi K3 مع
+                2.8 تريليون معامل — حالياً أكبر نموذج مفتوح عالمياً من حيث عدد
+                المعاملات
+            </li>
+        </ul>
+
+        <h2>دعم عالمي من قادة التكنولوجيا</h2>
+
+        <p>
+            أصدرت شركات تكنولوجيا كبرى بما فيها
+            
+                <a href="https://www.nvidia.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Nvidia
+            </a>
+            و Microsoft و IBM و Meta و OpenAI و Cisco و Dell Technologies و GitHub و
+            Hugging Face بياناً مشتركاً مؤخراً دعوا فيه صانعي السياسة الأمريكيين
+            لدعم نماذج الذكاء الاصطناعي المفتوحة الأوزان وتجنب القيود.
+        </p>
+
+        <h2>نماذج صينية تحتل المركز الأول عالمياً</h2>
+
+        <p>
+            وصل استخدام نماذج الذكاء الاصطناعي العالمية إلى 69 تريليون توكن في
+            الأسبوع من 3-9 أغسطس، بارتفاع 21.48 في المائة أسبوعاً على أسبوع.
+        </p>
+
+        <p>
+            <strong>استخدام النماذج الصينية:</strong> 34.25 تريليون توكن في
+            الاستخدام الأسبوعي، بارتفاع 21.76 في المائة من الأسبوع السابق
+            <strong>وتفوقت على النماذج الأمريكية للأسبوع الـ 15 المتتالي</strong>
+            لتحتل المركز الأول عالمياً.
+        </p>
+
+        <h2>الدرس والآثار</h2>
+
+        <p>
+            يشير صعود Qwen إلى أن إستراتيجية تقديم نماذج رخيصة نسبياً وسهلة
+            التكيف يتم قبولها من قبل المطورين والمستخدمين. هذا يشير إلى أن صناعة
+            الذكاء الاصطناعي الصينية تجاوزت مرحلة اللحاق بالركب ودخلت مرحلة
+            تحديد معايير النظام البيئي المفتوح العالمي.
+        </p>
+
+        <p>
+            استخدام النماذج الصينية على نطاق واسع في العالم يساعد على تضييق
+            الفجوة الرقمية، وفائدتها في الزراعة والتعليم والرعاية الصحية جلبت
+            فوائد ملموسة للدول النامية عبر الجنوب العالمي.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.globaltimes.cn/page/202608/1368313.shtml"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Global Times
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

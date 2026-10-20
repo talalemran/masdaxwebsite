@@ -1,0 +1,153 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "android-system-updates-august-2026-wear-os-wallet-play-store",
+    title: "تحديثات نظام أندرويد أغسطس 2026: مسارات تدريب أدق وخيارات اكتشاف محسّنة",
+    metaTitle: "تحديثات أندرويد أغسطس 2026: مسارات تدريب أدق",
+    description:
+        "أندرويد أطلقت تحديثات نظام أغسطس 2026 عبر Play Services و Play Store — مسارات تدريب أكثر دقة على Wear OS، تحسينات محفظة، اكتشاف أفلام وعروض تلفزيونية في البحث، وميزات رياضية بثابت دوري جديد.",
+    keywords: [
+        "Android System Updates",
+        "تحديثات أندرويد",
+        "Google Play Services",
+        "Wear OS",
+        "Google Wallet",
+        "Play Store",
+        "أندرويد",
+        "أغسطس 2026",
+        "Health & Fitness",
+    ],
+    category: "أندرويد",
+    author: "طلال عمران",
+    date: "11 أغسطس 2026",
+    pubDate: new Date("2026-08-11"),
+    tags: ["Android", "Play Store", "تحديث", "Wear OS", "نظام أندرويد"],
+    thumbnail: "/images/android-system-updates-august-2026-wear-os-wallet-play-store.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلقت <strong>جوجل</strong> تحديثات نظام <strong>أندرويد</strong> جديدة
+            لـ <strong>أغسطس 2026</strong> عبر Google Play Services و Google Play
+            Store وأجزاء أخرى من نظام أندرويد الشامل. التحديثات توفر تحسينات في الصحة
+            والتمارين وتجربة المحفظة واكتشاف المحتوى على أندرويد و Wear OS و Google
+            TV و Android Auto والحواسيب.
+        </p>
+
+        <h2>Google Play Services v26.31: مسارات تدريب أدق على Wear OS</h2>
+
+        <p>
+            الميزة الأبرز في الإصدار الأحدث من Google Play Services هي <strong
+                >مسارات تدريب أكثر دقة على أجهزة Wear OS</strong
+            >. نظام أندرويد الآن يعالج قياسات الموقع الخام من جانب الخادم للحصول
+            على مسارات أكثر دقة عند تسجيل جلسات التدريب.
+        </p>
+
+        <p>الإصدار يحمل أيضاً:</p>
+
+        <ul>
+            <li>
+                <strong>ميزات مطورين جديدة للإدارة الحسابية:</strong> دعم عمليات Account
+                Management في التطبيقات من جوجل والمطورين الخارجيين
+            </li>
+            <li>
+                <strong>إصلاحات نظام الإدارة:</strong> تصحيحات لخدمات النظام والتشخيصات
+            </li>
+        </ul>
+
+        <h2>Google Play Store v52.7: فتح تفاصيل التطبيقات من Top Charts</h2>
+
+        <p>
+            يمكنك الآن فتح صفحات تفاصيل التطبيقات مباشرة من صفحة Top Charts على
+            الشاشات الكبيرة.
+        </p> هذا يجعل استكشاف التطبيقات الرائجة أسهل على الأجهزة اللوحية.
+
+        <h2>
+            Android System Intelligence B.28 / C.6: تحسينات Audio و Efficiency
+        </h2>
+
+        <p>
+            التحديث يشمل تفعيل وتحسين الميزات بما في ذلك بث الصوت وتحسينات
+            الكفاءة وتحسينات التشخيصات.
+        </p>
+
+        <h2>Private Compute Services B.28 / C.6: تغييرات صيانة</h2>
+
+        <p>
+            تحديث الخدمات الحسابية الخاصة يركز على تغييرات الصيانة والاستقرار.
+        </p>
+
+        <h2>Google Play Services v26.30: تحسينات محفظة جوجل</h2>
+
+        <p>ستحصل على تجربة مستخدم محسّنة لبطاقات المحفظة في Google Wallet.</p> جوجل
+        تستمر في تحسين أداة الدفع الرقمي وإدارة البطاقات.
+
+        <h2>Google Play Store v52.6: اكتشاف أفلام وعروض وألعاب</h2>
+
+        <p>التحديث الأقدم لـ Play Store يجلب عدة ميزات اكتشاف جديدة:</p>
+
+        <ul>
+            <li>
+                <strong>أفلام وعروض تلفزيونية في البحث:</strong> يمكنك الآن اكتشاف
+                واستكشاف الأفلام والعروض التلفزيونية الشهيرة مباشرة في نتائج بحث Google
+                Play للبحث الاستطلاعي الواسع.
+            </li>
+            <li>
+                <strong>ميزات رياضية جديدة:</strong> ميزة رياضية جديدة تقدّم دوارق
+                متخصصة بالدوري لأحداث رئيسية مثل كأس ICC للسيدات للكريكيت T20 العالمية،
+                تتيح للمستخدمين استكشاف المباريات القادمة والاتصال بمزودي البث المتخصصين.
+            </li>
+            <li>
+                <strong>اكتشاف محتوى التطبيقات على الأجهزة اللوحية:</strong> يمكنك
+                الآن البحث عن محتوى التطبيقات في Play Store من التطبيقات المثبتة لديك
+                على الأجهزة اللوحية.
+            </li>
+            <li>
+                <strong>تحسينات سجل البحث:</strong> تسجيل النقرات على توصيات الاستعلام
+                في سجل البحث، وتطبيع سجل البحث بأحرف صغيرة وحذف المسافات المتعددة
+            </li>
+        </ul>
+
+        <h2>متى تصل التحديثات؟</h2>
+
+        <p>
+            تحديثات نظام أندرويد تُطرح عادةً على موجات — لا تصل إلى جميع الأجهزة
+            في نفس الوقت. بعض الميزات قد تستغرق أسابيع أو حتى أشهر للوصول
+            الكامل. إذا كنت لا ترى الميزات الجديدة فوراً، فانتظر — ستصل قريباً.
+        </p>
+
+        <p>
+            تحديثات أغسطس 2026 تركز على التحسينات التدريجية بدلاً من الميزات
+            الرائدة — صيانة وتحسينات أداء وتوسع اكتشاف المحتوى لجعل تجربة
+            أندرويد أكثر سلاسة وسهولة استخدام.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://9to5google.com/2026/08/10/august-2026-google-system-updates/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                9to5Google
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

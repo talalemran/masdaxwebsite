@@ -1,0 +1,174 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "php-8-6-0-beta-1-released-testing-new-features",
+    title: "PHP 8.6.0 Beta 1: إصدار اختبار جديد جاهز للمطورين",
+    metaTitle: "PHP 8.6.0 Beta 1 متاح للاختبار الآن",
+    description:
+        "فريق PHP أطلق الإصدار البيتا الأول من PHP 8.6.0 — دعوة مفتوحة للمطورين لاختبار الميزات الجديدة والإبلاغ عن الأخطاء. الإصدار التالي Beta 2 مخطط لـ 27 أغسطس 2026.",
+    keywords: [
+        "PHP 8.6",
+        "PHP 8.6.0 Beta 1",
+        "PHP",
+        "برمجة",
+        "تطوير ويب",
+        "إصدار بيتا",
+        "اختبار",
+        "ميزات جديدة",
+        "مفتوح المصدر",
+        "تحديث",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "15 أغسطس 2026",
+    pubDate: new Date("2026-08-15"),
+    tags: ["PHP", "PHP 8.6", "برمجة", "تطوير ويب", "بيتا"],
+    thumbnail: "/images/php-8-6-0-beta-1-released-testing-new-features.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أعلن <strong>فريق PHP</strong> رسمياً عن إطلاق <strong
+                >الإصدار البيتا الأول من PHP 8.6.0</strong
+            > — استمرار دورة إطلاق PHP 8.6 التي يتم رسم تفاصيلها الخام في
+            
+                <a href="https://wiki.php.net/todo/php86"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                PHP Wiki</a
+            >. هذا الإصدار يأتي دعوة مفتوحة للمطورين لاختبار الميزات الجديدة
+            والإبلاغ عن أي مشاكل.
+        </p>
+
+        <h2>كيفية الحصول على الإصدار</h2>
+
+        <p>
+            تحميلات مصدر PHP 8.6.0 Beta 1 متاحة على
+            
+                <a href="https://downloads.php.net/~svpernova09/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                صفحة التحميل</a
+            >. يمكن للمطورين المهتمين الحصول على النسخة المجمعة مسبقاً أو بناء
+            المشروع من المصدر مباشرة.
+        </p>
+
+        <h2>اختبار شامل مطلوب</h2>
+
+        <p>
+            فريق PHP يطلب من المطورين اختبار هذا الإصدار بعناية شديدة والإبلاغ
+            عن أي مشاكل تم اكتشافها
+            
+                <a href="https://github.com/php/php-src/issues/new?template=bug_report.yml"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                على GitHub</a
+            >. تحسين الجودة يعتمد على تقارير المستخدمين الحقيقيين.
+        </p>
+
+        <p>
+            <strong>تحذير مهم:</strong> لا تستخدم هذا الإصدار في الإنتاج — إنه
+            إصدار اختبار مبكر وليس جاهزاً للاستخدام الفعلي بعد.
+        </p>
+
+        <h2>ما الجديد في PHP 8.6؟</h2>
+
+        <p>
+            لمعرفة المزيد عن الميزات الجديدة والتحسينات الأخرى، يمكن للمطورين
+            الاطلاع على:
+        </p>
+
+        <ul>
+            <li>
+                
+                    <a href="https://github.com/php/php-src/blob/php-8.6.0beta1/NEWS"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    ملف NEWS
+                </a>
+                — لملخص الميزات الجديدة
+            </li>
+            <li>
+                
+                    <a href="https://github.com/php/php-src/blob/php-8.6.0beta1/UPGRADING"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    ملف UPGRADING
+                </a>
+                — لقائمة كاملة بملاحظات الترقية
+            </li>
+            <li>ملفات تحميل الإصدار — تحتوي أيضاً على هذه الملفات</li>
+        </ul>
+
+        <h2>الجدول الزمني للإصدار</h2>
+
+        <p>
+            الإصدار التالي المخطط هو <strong>Beta 2</strong>، المقرر إطلاقه في
+            <strong>27 أغسطس 2026</strong>. هذا يعني للمطورين أسبوعين تقريباً
+            لاختبار هذه النسخة والإبلاغ عن الأخطاء قبل الإصدار التالي.
+        </p>
+
+        <h2>التوقيعات والتحقق</h2>
+
+        <p>
+            توقيعات الإصدار متاحة في
+            
+                <a href="https://gist.github.com/svpernova09/c79e500ff918fa7eccd31852bb59746b"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                البيان
+            </a>
+            أو على
+            
+                <a href="https://www.php.net/release-candidates.php"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                صفحة المرشحين للإصدار</a
+            >. المطورون يمكنهم التحقق من سلامة الملفات المحملة باستخدام
+            التوقيعات المرفقة.
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            PHP 8.6.0 Beta 1 خطوة مهمة نحو الإصدار النهائي المستقر. فريق PHP
+            يعتمد على المجتمع لاختبار شامل والإبلاغ عن الأخطاء لضمان جودة عالية
+            في الإصدار النهائي. شكراً لمساعدتكم في جعل PHP أفضل.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.php.net/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                PHP.net
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

@@ -1,0 +1,163 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "linux-7-3-prepares-famfs-file-system-nvdimm-dax-micron",
+    title: "لينكس 7.3 يستعد لنظام الملفات FAMFS الجديد: ذاكرة موزعة بـ 100 تيرابايت",
+    metaTitle: "لينكس 7.3 يستعد لـ FAMFS والذاكرة الموزعة CXL",
+    description:
+        "لينكس 7.3 يدمج تحسينات NVDIMM و DAX لتهيئة نظام ملفات FAMFS الجديد من Micron — نظام متخصص للذاكرة الموزعة على الهياكل الحديثة يدعم تطبيقات 100+ تيرابايت، مع 13 جولة مراجعة قيد الانتظار.",
+    keywords: [
+        "FAMFS",
+        "Linux 7.3",
+        "Micron",
+        "NVDIMM",
+        "DAX",
+        "Fabric-Attached Memory",
+        "CXL servers",
+        "نظام ملفات",
+        "لينكس",
+        "ذاكرة موزعة",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "23 أغسطس 2026",
+    pubDate: new Date("2026-08-23"),
+    tags: ["Linux 7.3", "FAMFS", "نظام ملفات", "Micron", "CXL"],
+    thumbnail: "/images/linux-7-3-prepares-famfs-file-system-nvdimm-dax-micron.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            تم دمج <strong>تصحيحات NVDIMM و DAX</strong> في دورة
+            <strong>لينكس 7.3</strong> — تحسينات جوهرية لتهيئة الطريق أمام إطلاق
+            <strong>نظام ملفات FAMFS</strong> المتخصص من شركة
+            
+                <a href="https://www.micron.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Micron</strong>
+            </a>
+            . معظم نشاط DAX/NVDIMM في هذه الدورة موجه نحو
+            <strong>تحضير الأرضية لإدخال نظام الملفات الجديد</strong>.
+        </p>
+
+        <h2>ما هو FAMFS؟</h2>
+
+        <p>
+            <strong>FAMFS</strong> (Fabric-Attached Memory File System) نظام ملفات
+            <strong>متخصص بدقة للذاكرة الموزعة على الأقمشة</strong> — وليس لاستخدام عام.
+            يُصمم خصيصاً للوصول المستند على الملفات وعلى مستوى البايت إلى
+            <strong>تطبيقات الذاكرة المشتركة/المفصولة الضخمة جداً</strong>، في نطاق
+            <strong>حوالي 100 تيرابايت فما فوق من الذاكرة</strong> — نطاق شائع.
+        </p>
+
+        <p>
+            بينما كانت هناك مخاوف حول <strong>تكاثر أنظمة الملفات في نواة لينكس</strong>،
+            FAMFS <strong>مصمم بدقة لهذا الاستخدام المحدد</strong>. مهندسو Micron اختبروا
+            نقل النظام إلى FUSE في user-space لكن
+            <strong>وجدوا أن بناء driver kernel مستقل هو الخيار الأفضل</strong>. Micron
+            التزمت أيضاً بصيانة FAMFS مع
+            
+                <a href="https://www.phoronix.com/news/Linux-RFC-FAMFS-File-System"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                وجود احتياج عميل واضح
+            </a>
+            له.
+        </p>
+
+        <h2>التقدم نحو الدمج الرسمي</h2>
+
+        <p>
+            <a href="https://www.phoronix.com/news/FamFS-2026-Upstream-Hopes"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Micron تأمل برؤية FAMFS مدمجاً في 2026</strong>
+            </a>
+            ورقع النظام نفسه خضعت الآن
+            <strong>لـ 13 جولة مراجعة من الحزم</strong>. لا يوجد مؤشر على أن
+            
+                <a href="https://lore.kernel.org/all/0100019fed5850ec-2bdfb17a-3086-44ea-8fdd-777d3ce12a33-000000@email.amazonses.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                نظام الملفات سيُرفع للدمج في نافذة v7.3
+            </a>
+            .
+        </p>
+
+        <h2>التحسينات المرفقة</h2>
+
+        <p>
+            كود DAX مع لينكس 7.3 شهد <strong>عدة إصلاحات وإعادة هيكلة للأكواد</strong>
+            وتحسينات أخرى لتحضير إدخال FAMFS. كل هذا يشير إلى
+            <strong>استعداد قريب للقبول النهائي</strong>.
+        </p>
+
+        <p>
+            <a href="https://lore.kernel.org/lkml/aoOPXFhuXrm0tQ6u@aschofie-mobl2.lan/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                طلب السحب هذا
+            </a>
+            دمج كل تغييرات NVDIMM و DAX لـ لينكس 7.3.
+        </p>
+
+        <h2>أهمية FAMFS للمستقبل</h2>
+
+        <p>
+            نظام ملفات الذاكرة الموزعة سيكون
+            <strong>مهماً جداً للخوادم الحديثة القائمة على CXL</strong> التي تسمح
+            بـ <strong>ربط ديناميكي للذاكرة المشتركة</strong>. FAMFS ليس للاستخدام العام
+            <strong>بل حل متخصص للتطبيقات الضخمة جداً</strong> التي تعمل مع مئات
+            التيرابايتات من الذاكرة.
+        </p>
+
+        <h2>الخطوات التالية</h2>
+
+        <p>
+            FAMFS لم يُرفع بعد للدمج الرسمي، لكن
+            <strong>يبدو أنه يقترب من مرحلة الاستعداد للقبول</strong>. من يريد
+            
+                <a href="https://lore.kernel.org/all/0100019fed5850ec-2bdfb17a-3086-44ea-8fdd-777d3ce12a33-000000@email.amazonses.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                الاطلاع على النسخة الحالية يمكنه مراجعة رقع v13
+            </a>
+            المتاحة الآن.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.phoronix.com/news/Linux-7.3-Preps-Toward-FAMFS"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Phoronix
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

@@ -1,0 +1,63 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+  .map((mod: any) => mod.post)
+  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+  slug: "minimax-raises-2b-funding-open-source-ai-minimax-m3",
+  title: "Minimax يرفع تمويلًا بقيمة 2 مليار دولار ويطلق نموذج M3 مفتوح المصدر",
+  metaTitle: "Minimax يرفع 2 مليار ويطلق نموذج M3 مفتوح المصدر",
+  description:
+    "تستمر Minimax في توسيع حضورها في مجال الذكاء الاصطناعي المفتوح المصدر مع تمويل جديد ونموذج M3 جديد يهدف إلى المنافسة في مجال النماذج المتعددة الوسائط.",
+  keywords: [
+    "Minimax",
+    "AI",
+    "Open Source",
+    "M3",
+    "مفتوح المصدر",
+    "ذكاء اصطناعي",
+    "نماذج لغوية",
+  ],
+  category: "ذكاء اصطناعي",
+  author: "طلال عمران",
+  date: "10 يوليو 2026",
+  pubDate: new Date("2026-07-10"),
+  tags: ["Minimax", "AI", "Open Source", "مفتوح المصدر"],
+  thumbnail: "/images/minimax-raises-2b-funding-open-source-ai-minimax-m3.webp",
+};
+---
+
+<BaseLayout
+  title={post.title}
+  metaTitle={post.metaTitle}
+  description={post.description}
+  keywords={post.keywords}
+  canonical={`/posts/${post.slug}/`}
+  ogImage={post.thumbnail}
+  ogType="article"
+>
+  <PostLayout {post} allPosts={allPosts}>
+
+    <p>أعلنت <strong>Minimax</strong> عن جمع تمويل جديد بقيمة <strong>2 مليار دولار</strong>، في خطوة تعزز من مكانتها كواحدة من الشركات الناشئة الأكثر نشاطًا في مجال الذكاء الاصطناعي المتقدم. وتزامنًا مع هذا الإعلان، كشفت الشركة عن نموذجها الجديد <strong>M3</strong> ضمن جهودها لتوسيع حضورها في مجال النماذج مفتوحة المصدر.</p>
+
+    <h2>ما الجديد في M3؟</h2>
+
+    <p>يُعد M3 محاولة من Minimax لتقديم نموذج أكثر قدرة على التعامل مع المهام المتعددة الوسائط، مع تركيز واضح على الأداء العملي وسهولة الاستخدام في التطبيقات الواقعية. ويأتي هذا التطوير في سياق المنافسة المتزايدة بين الشركات التي تسعى إلى توفير نماذج قوية مع الحفاظ على مرونة التطوير والدمج.</p>
+
+    <h2>لماذا يهم هذا الخبر؟</h2>
+
+    <p>يمثل هذا الإعلان علامة واضحة على أن شركات الذكاء الاصطناعي لا تكتفي بالاستثمار في نماذجها الداخلية، بل تتجه أيضًا إلى بناء أنظمة أقوى تتناسب مع الطلب المتنامي على الحلول الموجهة للتطبيقات العملية.</p>
+
+    <h3>المصدر:</h3>
+    <p>
+      <a href="https://www.example.com" target="_blank" rel="noopener noreferrer">
+        مثال مرجعي
+      </a>
+    </p>
+
+  </PostLayout>
+</BaseLayout>

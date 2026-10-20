@@ -1,0 +1,395 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "what-is-programming", label: "ما هي البرمجة؟" },
+  { id: "why-learn", label: "لماذا تتعلم البرمجة؟" },
+  { id: "how-think", label: "كيف يفكر المبرمج؟" },
+  { id: "variables", label: "المتغيرات وأنواع البيانات" },
+  { id: "conditions", label: "الشروط والقرارات" },
+  { id: "loops", label: "الحلقات والتكرار" },
+  { id: "functions", label: "الدوال والخدمات" },
+  { id: "arrays", label: "المصفوفات والقوائم" },
+  { id: "oop", label: "البرمجة الكائنية التوجيهية" },
+  { id: "errors", label: "معالجة الأخطاء" },
+  { id: "debugging", label: "اكتشاف الأخطاء وإصلاحها" },
+  { id: "file-io", label: "قراءة وكتابة الملفات" },
+  { id: "databases", label: "أساسيات قواعد البيانات" },
+  { id: "apis", label: "واجهات البرمجة التطبيقاتية" },
+  { id: "git", label: "أنظمة التحكم بالإصدارات" },
+  { id: "testing", label: "اختبار البرمجيات" },
+  { id: "tools", label: "الأدوات والبيئات" },
+  { id: "roadmap", label: "خريطة التعلم" },
+  { id: "tips", label: "نصائح للمبتدئين" },
+  { id: "faq", label: "أسئلة شائعة" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "أساسيات البرمجة: دليلك الشامل لبدء رحلتك",
+  description: "دليل شامل لمبتدئي البرمجة يشرح المفاهيم الأساسية من المتغيرات والشروط إلى البرمجة الكائنية وقواعد البيانات وأفضل الممارسات لتعلم البرمجة.",
+  tags: ["أساسيات البرمجة", "تعلم البرمجة", "مقدمة في البرمجة", "برمجة للمبتدئين", "Programming Basics", "Comprehensive Guide"],
+  category: ["برمجة", "موسوعة"],
+  thumbnail: "/images/programming-fundamentals.webp",
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/programming-fundamentals/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+
+  <section id="what-is-programming" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ما هي البرمجة؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      البرمجة هي عملية كتابة تعليمات وأوامر لجهاز الحاسوب لتنفيذ مهام محددة. هذه التعليمات تُكتب بلغات برمجة مختلفة مثل Python و JavaScript و Java وغيرها. المبرمج هو الشخص الذي يكتب هذه التعليمات ويحول الأفكار والحلول إلى أكواد يمكن للحاسوب تنفيذها.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تخيّل أنك تريد تعليم شخص كيفية استخدام آلة قهوة. ستحتاج إلى كتابة التعليمات خطوة بخطوة: اضغط الزر، وضع الكوب، اختر نوع القهوة، واضغط زر التأكيد. البرمجة تعمل بنفس الطريقة، لكن بدلاً من شخص، أنت تعلم الحاسوب كيفية القيام بالعمل.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لغات البرمجة هي الوسيط الذي تستخدمه للتحدث مع الحاسوب. كل لغة لها قواعدها و خصائصها، لكن جميعها تتشارك نفس المفاهيم الأساسية مثل المتغيرات والشروط والدوال. تعلم هذه المفاهيم يفتح لك الباب لأي لغة برمجة جديدة.
+    </p>
+  </section>
+
+  <section id="why-learn" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">لماذا تتعلم البرمجة؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تعلم البرمجة يفتح لك أبوابًا واسعة في عالم التقنية والوظائف. اليوم، البرمجة لم تعد مهنة مخصصة للمبرمجين فقط، بل أصبحت مهارة أساسية في كثير من المجالات مثل التسويق وتصميم المواقع وتحليل البيانات وحتى الطب والهندسة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من ناحية مهنية، البرمجة توفر فرص عمل متنوعة ورواتب مجزية. المبرمجون مطلوبون في جميع القطاعات من الشركات الناشئة إلى الشركات الكبرى. كما أنك يمكنك العمل بحرية عبر الإنترنت أو إنشاء مشاريعك الخاصة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من ناحية شخصية، البرمجة تعلمك التفكير المنطقي وحل المشكلات بطريقة منهجية. هذه مهارات مفيدة في كل جوانب الحياة، سواء كنت تعمل على مشروع أو تحاول حل مشكلة معقدة في حياتك اليومية.
+    </p>
+  </section>
+
+  <section id="how-think" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف يفكر المبرمج؟</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التفكير البرمجي هو أسلوب حل المشكلات الذي يستخدمه المبرمجون. بدلاً من محاولة حل المشكلة دفعة واحدة، يقوم المبرمج بتقسيمها إلى أجزاء أصغر وأسهل يمكن التعامل معها. هذه العملية تُسمى بالتحليل (Decomposition).
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الخطوة الأولى هي فهم المشكلة جيدًا. ماذا تريد أن تفعل بالضبط؟ ما هي المدخلات المتاحة؟ ما النتيجة المتوقعة؟ بعد فهم المشكلة، يمكنك تقسيمها إلى خطوات أصغر يمكن تنفيذها واحدًا تلو الآخر.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      المبرمجون يفكرون أيضًا في أنماط (Patterns). إذا واجهت مشكلة مشابهة لمشكلة سابقة، يمكنك إعادة استخدام الحل نفسه أو تعديله قليلاً. هذه الطريقة توفر الوقت والجهد وتحسن جودة الحل.
+    </p>
+  </section>
+
+  <section id="variables" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">المتغيرات وأنواع البيانات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      المتغيرات هي حاويات تتخزين فيها البيانات. تخيّل أنك تملك صندوقًا يمكنك وضع أشياء مختلفة فيه. المتغير هو هذا الصندوق الرقمي الذي يمكنك وضع أنواع مختلفة من البيانات فيه.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أنواع البيانات الأساسية: النصوص (Strings) مثل الأسماء والعبارات، والأرقام (Numbers) سواء كانت صحيحة أو عشرية، والقيم المنطقية (Booleans) التي تمثل صواب أو خطأ فقط.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      عند إنشاء متغير، يجب أن تعطيه اسمًا واضحًا يدل على محتواه. على سبيل المثال، اسم متغير مثل userName يدل على أنه يحتوي على اسم المستخدم، بينما المتغير totalPrice يدل على السعر الإجمالي. اختيار الأسماء الواضحة يسهل قراءة الكود وفهمه.
+    </p>
+  </section>
+
+  <section id="conditions" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الشروط والقرارات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الشروط هي أساس اتخاذ القرارات في البرمجة. تخيّل أنك تسوق في متجر وتحتاج إلى اتخاذ قرار: إذا كان لديك مبلغ كافٍ، اشترِ المنتج، وإلا ابحث عن بديل أرخص. هذه هي الشروط في البرمجة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      بنية الشرط الأساسية تبدأ بكلمة if ثم الشرط بين قوسين، ثم الكود الذي يتم تنفيذه إذا تحقق الشرط. يمكنك أيضًا إضافة else if لتنفيذ كود آخر إذا لم يتحقق الشرط.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يمكنك تسلسل الشروط باستخدام else if لاختبار شروط متعددة. كما يمكنك استخدام and و or لتعدد الشروط في نفس الوقت. مثلاً: إذا كان المستخدم مسجل الدخول AND لديه صلاحيات كافية، اسمح له بالدخول.
+    </p>
+  </section>
+
+  <section id="loops" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الحلقات والتكرار</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الحلقات تُستخدم لتكرار نفس العملية عدة مرات. بدلاً من كتابة نفس الكود عشر مرات، يمكنك كتابة حلقة تقوم بالعمل نفسه عشر مرات بشكل آلي. هذا يوفر الوقت ويقلل من الأخطاء.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هناك نوعان رئيسيان من الحلقات: الحلقة المعرفة مسبقًا (for loop) تُستخدم عندما تعرف عدد مرات التكرار مسبقًا، والحلقة غير المعرفة (while loop) تُستخدم عندما لا تعرف عدد مرات التكرار مسبقًا وتستمر حتى تحقق شرط معين.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يجب أن تكون حذرًا مع الحلقات. إذا لم تضع شرط توقف صحيحًا، قد تتقع في حلقة لا نهائية (infinite loop) تستمر في التشغيل إلى أبد وتسبب توقف النظام. لذلك، تأكد دائمًا من أن لديك شرط توقف واضح وصحيح.
+    </p>
+  </section>
+
+  <section id="functions" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الدوال والخدمات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الدوال هي كتل من الكود تقوم بعمل معين ويمكن استخدامها عدة مرات في البرنامج. تخيّل أنك تملك آلة قهوة: تحتاج إلى وضع المكونات والضغط على الزر كل مرة تريد فيها قهوة. الدالة تعمل بنفس الطريقة: تأخذ مدخلات وتعيد ناتجًا.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      استخدام الدوال يجعل الكود أنظف وأسهل في القراءة والصيانة. بدلاً من كتابة نفس الكود عشر مرات في أماكن مختلفة، يمكنك كتابة دالة واحدة واستدعائها كلما احتجت إليها. كما أنه يسهّل إصلاح الأخطاء، لأنك تحتاج إلى إصلاح الكود في مكان واحد فقط.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الدوال يمكن أن تأخذ مدخلات (parameters) وتعيد قيمة (return value). بعض الدوال تفعل عملًا فقط دون إعادة قيمة، بينما أخرى تُعيد بيانات معينة. فهم الفرق بينهما مهم لاستخدام الدوال بشكل صحيح.
+    </p>
+  </section>
+
+  <section id="arrays" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">المصفوفات والقوائم</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      المصفوفات (Arrays) هي هياكل بيانات تتخزين فيها مجموعة من العناصر في متغير واحد. تخيّل أنك تريد تخزين أسماء عشرة طلاب. بدلاً من إنشاء عشر متغيرات منفصلة، يمكنك إنشاء مصفوفة واحدة تحتوي على جميع الأسماء.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      كل عنصر في المصفوفة له فهرس (index) يحدد موقعه. الفهرس يبدأ من الصفر في معظم لغات البرمجة، أي أن العنصر الأول له فهرس 0 والثاني له فهرس 1 وهكذا. هذا قد يبدو غريبًا في البداية، لكنه معيار عالمي في البرمجة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      يمكنك التعامل مع المصفوفات باستخدام حلقات for للوصول إلى كل عنصر، أو باستخدام دوال مخصصة للإضافة والحذف والبحث. المصفوفات هي من أكثر هياكل البيانات استخدامًا في البرمجة.
+    </p>
+  </section>
+
+  <section id="oop" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">البرمجة الكائنية التوجيهية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      البرمجة الكائنية التوجيهية (Object-Oriented Programming أو OOP) هي نمط من أنماط البرمجة يعتمد على مفهوم الكائنات (Objects). الكائن هو entity يجمع بين البيانات والوظائف في مكان واحد.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الفكرة الأساسية هي تمثيل الأشياء الحقيقية في البرمجيات. على سبيل المثال، إذا كنت تبني نظام مكتبة، يمكنك إنشاء كائن "كتاب" يحتوي على خصائص مثل العنوان والمؤلف والسعر، ووظائف مثل عرض المعلومات والتحقق من التوفر.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من مبادئ OOP الأساسية: الت encapsulation (تغليف البيانات والوظائف معًا)، والوراثة (إنشاء كائنات جديدة من كائنات موجودة)، والتعددية (استخدام نفس الوظيفة بطرق مختلفة). هذه المبادئ تجعل الكود أكثر تنظيمًا وقابلية للصيانة.
+    </p>
+  </section>
+
+  <section id="errors" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">معالجة الأخطاء</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الأخطاء جزء لا يتجزأ من البرمجة. لا يوجد مبرمج لم يواجه أخطاء في كوده. الأهم هو كيفية التعامل مع هذه الأخطاء وإصلاحها. من أنواع الأخطاء الأساسية: أخطاء بنية (Syntax Errors) وأخطاء منطقية (Logic Errors) وأخطاء تشغيلية (Runtime Errors).
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      أخطاء البنية هي الأسهل في اكتشافها، لأن المترجم (Compiler) يكتشفها لك قبل التشغيل. أخطاء المنطق هي الأصعب، لأن البرنامج يعمل بشكل صحيح لكن النتيجة غير المتوقعة. أخطاء التشغيل تحدث أثناء تنفيذ البرنامج وتسبب توقفه.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      معالجة الأخطاء (Error Handling) هي مهارة أساسية لكل مبرمج. يجب أن تتعلم كيف تكتب كودًا يتعامل مع الأخطاء المحتملة بدلًا من السماح للبرنامج بالتوقف بشكل مفاجئ. هذا يجعل البرمجيات أكثر استقرارًا وموثوقية.
+    </p>
+  </section>
+
+  <section id="debugging" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">اكتشاف الأخطاء وإصلاحها</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      اكتشاف الأخطاء (Debugging) هو عملية البحث عن وإصلاح الأخطاء في الكود. هذه عملية تستغرق وقتًا قد يكون أطول من كتابة الكود نفسه. لذلك، من المهم تعلم تقنيات Debugging الفعّالة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أهم تقنيات Debugging: استخدام نقاط التوقف (Breakpoints) لإيقاف البرنامج في أماكن محددة وفحص المتغيرات، وطباعة القيم في وحدة الإخراج (Print Debugging)، واستخدام أدوات التصحيح المدمجة في بيئات التطوير.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      نصيحة مهمة: إذا واجهت خطأ، حاول فهم السبب قبل محاولة الإصلاح. لا تتسرع في تغيير الأكواد عشوائيًا. اقرأ رسالة الخطأ بعناية، وحدد الجزء الذي يسبب المشكلة، ثم ابحث عن الحل المناسب.
+    </p>
+  </section>
+
+  <section id="file-io" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">قراءة وكتابة الملفات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      معظم البرمجيات تحتاج إلى التعامل مع الملفات. سواء كانت ملفات نصية أو صور أو بيانات، القراءة والكتابة من وإلى الملفات مهارة أساسية لكل مبرمج.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      عند التعامل مع الملفات، يجب أن تتعلم كيف تفتح الملف وتقراه وتكتب فيه وتغلقه. كما يجب أن تتعلم كيفية التعامل مع الأخطاء المحتملة مثل عدم وجود الملف أو عدم وجود صلاحيات كافية للقراءة أو الكتابة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+     _yaml أفضل الممارسات في التعامل مع الملفات: استخدم دائمًا سياق (context) لفتح الملفات لضمان إغلاقها تلقائيًا، وتعامل مع الأخطاء المحتملة بحذر، واستخدم التنسيقات المناسبة حسب نوع البيانات.
+    </p>
+  </section>
+
+  <section id="databases" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أساسيات قواعد البيانات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      قواعد البيانات هي أنظمة لتخزين البيانات بشكل منظم وفعال. معظم البرمجيات تحتاج إلى تخزين البيانات واسترجاعها، وقواعد البيانات توفر الحل الأمثل لهذه الحاجة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أنواع قواعد البيانات الشائعة: قواعد البيانات العلائقية (Relational Databases) مثل MySQL و PostgreSQL التي تعتمد على الجداول، وقواعد البيانات غير العلائقية (NoSQL) مثل MongoDB التي تعتمد على المستندات.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تعلم SQL (Structured Query Language) هو الخطوة الأولى في التعامل مع قواعد البيانات العلائقية. هذه اللغة تتيح لك إنشاء الجداول وإدراج البيانات واسترجاعها وتحديثها وحذفها. SQL من أكثر اللغات استخدامًا في العالم.
+    </p>
+  </section>
+
+  <section id="apis" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">واجهات البرمجة التطبيقاتية</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      واجهات البرمجة التطبيقاتية (APIs) هي الطرق التي تواصل بها البرامج المختلفة مع بعضها. تخيّل أنك تريد استخدام بيانات الطقس في تطبيقك. بدلاً من إنشاء نظام طقس كامل، يمكنك استخدام API خدمة الطقس للحصول على البيانات الجاهزة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      APIs الحالية تعتمد بشكل كبير على REST و GraphQL. REST هو نمط شائع لبناء APIs يستخدم HTTP كبروتوكول أساسي. GraphQL هو بديل حديث يتيح لك طلب البيانات التي تحتاجها بالضبط بدلاً من تلقي كل البيانات المتاحة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      التعامل مع APIs يتطلب فهم كيفية إرسال الطلبات واستقبال الردود. كما يجب أن تتعلم كيفية التعامل مع أخطاء API المختلفة مثل عدم الاتصال أو عدم الصلاحية أو انتهاء الصلاحية.
+    </p>
+  </section>
+
+  <section id="git" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أنظمة التحكم بالإصدارات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      Git هو نظام التحكم بالإصدارات الأكثر استخدامًا في العالم. هذا النظام يتيح لك تتبع التغييرات في الكود عبر الوقت، والعودة لإصدارات سابقة، والعمل مع فريق بشكل فعّال.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من المفاهيم الأساسية في Git: المستودع (Repository) هو مكان تخزين الكود والتاريخ، وال Commit هو لحظة حفظ التغييرات، والفصل (Branch) هو نسخة من الكود تعمل عليها بشكل مستقل.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تعلم Git ضروري لكل مبرمج. حتى إذا كنت تعمل وحيدًا، Git يحفظ لك تاريخ تغييرات الكود ويساعدك على العودة لأي نقطة سابقة إذا لزم الأمر. كما أنه أساسي للعمل الجماعي ومشاركة الكود مع الآخرين.
+    </p>
+  </section>
+
+  <section id="testing" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">اختبار البرمجيات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      اختبار البرمجيات هو عملية التحقق من أن البرنامج يعمل بشكل صحيح ويحقق النتائج المتوقعة. الاختبار الجيد يكشف الأخطاءمبكرًا قبل وصول البرمجيات إلى المستخدمين.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      من أنواع الاختبارات الأساسية: اختبار الوحدة (Unit Tests) يختبر أجزاء صغيرة من الكود، واختبار التكامل (Integration Tests) يختبر كيف تعمل الأجزاء المختلفة معًا، واختبار النظام (System Tests) يختبر النظام بالكامل.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      كتابة الاختبارات الجيدة مهارة أساسية لكل مبرمج. الاختبارات تضمن لك أن الكود يعمل بشكل صحيح حتى بعد إجراء تغييرات جديدة. كما أنها توثّق سلوك البرنامج بطريقة واضحة ومفصلة.
+    </p>
+  </section>
+
+  <section id="tools" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الأدوات والبيئات</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      بيئة التطوير المتكاملة (IDE) هي أداة أساسية لكل مبرمج. هذه البيئات توفر لك محرر أكواد ذكي مع اقتراحات وتصحيح أخطاء وأدوات تصحيح مدمجة. من أشهرها VS Code و IntelliJ IDEA و PyCharm.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      Terminal أو الطرفية هي أداة أخرى أساسية. هذه الأداة تتيح لك تنفيذ أوامر مباشرة من سطر الأوامر. معظم المبرمجين يستخدمون Terminal بشكل يومي للتعامل مع Git وتثبيت الحزم وتشغيل البرامج.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      كما تحتاج إلى تعلم إدارة الحزم (Package Managers) مثل npm و pip. هذه الأدوات تتيح لك تثبيت مكتبات وأدوات جاهزة بدلاً من كتابتها من الصفر. إدارة الحزم توفر الوقت والجهد وتقلل من الأخطاء.
+    </p>
+  </section>
+
+  <section id="roadmap" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">خريطة التعلم</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      إذا كنت مبتدئًا في البرمجة، فمن الأفضل أن تبدأ بلغة واحدة وتتعلم أساسياتها جيدًا قبل الانتقال إلى لغة أخرى. Python هي خيار ممتاز للمبتدئين بسبب بساطتها ووضوح قواعدها.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الخطوة الأولى هي تعلم المتغيرات وأنواع البيانات والشروط والحلقات والدوال. هذه المفاهيم الأساسية مشتركة بين جميع لغات البرمجة. بعد إتقانها، يمكنك التعمق في مفاهيم متقدمة مثل البرمجة الكائنية وقواعد البيانات وواجهات البرمجة.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لا تحاول تعلم كل شيء في وقت واحد. ركّز على المفاهيم الأساسية وطبّقها في مشاريع صغيرة. المشاريع العملية هي أفضل طريقة لتعلم البرمجة. ابدأ بمشاريع بسيطة مثل آلة حاسبة أو تطبيق مهام ثم زد التعقيد تدريجيًا.
+    </p>
+  </section>
+
+  <section id="tips" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">نصائح للمبتدئين</h2>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لا تخجل من الأخطاء. كل مبرمج، حتى الأكثر خبرة، يرتكب أخطاء يوميًا. الأخطاء هي جزء أساسي من عملية التعلم. المهم هو أن تتعلم منها ولا تكررها.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+     مارس البرمجة بشكل يومي حتى لو لمدة قصيرة. الاستمرارية أهم من المدة. 30 دقيقة يوميًا أفضل من 5 ساعات مرة واحدة في الأسبوع. التكرار والتطبيق هما مفتاح الإتقان.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      لا تحاول حفظ الأكواد. البرمجة ليست مثل الامتحان في المدرسة حيث تحتاج إلى الحفظ. الأهم هو فهم المفاهيم وتطبيقها. مع الوقت والخبرة، ستتذكّر القواعد والأنماط تلقائيًا.
+    </p>
+
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      ابحث عن مجتمعات الدعم. هناك مجتمعات مفتوحة عبر الإنترنت يمكنها مساعدتك عند العقبات. لا تتراجع عن طلب المساعدة. المبرمجون الناجحون يعرفون متى يطلبون المساعدة من الآخرين.
+    </p>
+  </section>
+
+  <section id="faq" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أسئلة شائعة عن أساسيات البرمجة</h2>
+
+    <div class="space-y-6">
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">ما هي أفضل لغة برمجة للمبتدئين؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">Python هي الخيار الأفضل للمبتدئين بسبب بساطتها ووضوح قواعدها والمجتمع الداعم الكبير. كما أنها تُستخدم في مجالات متعددة مثل تحليل البيانات والذكاء الاصطناعي وتطوير الويب.</p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">كم من الوقت يستغرق تعلم البرمجة؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">لا يوجد جواب محدد لأن ذلك يعتمد على هدفك ووقتك المخصص. للأساسيات، قد تحتاج إلى بضعة أسابيع. لإتقان لغة معينة، قد تحتاج إلى بضعة أشهر. للعمل بشكل احترافي، قد تحتاج إلى سنة أو أكثر من الممارسة المستمرة.</p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يمكنني تعلم البرمجة بدون خلفية تقنية؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">بالتأكيد! كثير من المبرمجين الناجحون بدأوا بدون أي خلفية تقنية. المهم هو التزامك و تفانيك في التعلم. هناك موارد كثيرة متاحة للمبتدئين تبدأ من الصفر تمامًا.</p>
+      </div>
+
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل البرمجة صعبة؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">البرمجة تبدو صعبة في البداية بسبب المفاهيم الجديدة والتعقيد الأولي. لكن مع الممارسة المستمرة والتطبيق العملي، تصبح الأشياء أسهل وأكثر وضوحًا. الصعوبة هي جزء من عملية التعلم.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+
+    <ul class="space-y-3">
+      <li><a href="/posts/best-10-open-source-programming-languages/">أفضل 10 لغات برمجة مفتوحة المصدر</a> — دليل شامل لأفضل لغات البرمجة المفتوحة المصدر</li>
+      <li><a href="/posts/best-open-source-javascript-libraries/">أفضل مكتبات JavaScript المفتوحة</a> — أقوى المكتبات والأطر المفتوحة في عالم JavaScript</li>
+      <li><a href="/posts/python-open-source-complete-guide/">دليل Python الشامل</a> — دليل مفصّل عن لغة Python من الأساسيات إلى المتقدم</li>
+      <li><a href="/posts/rust-continues-to-grow-software-development-javascript/">Rust تستمر في النمو</a> — لماذا تتزايد شعبية لغة Rust في عالم البرمجة</li>
+      <li><a href="/posts/typescript-7-released-native-go-rewrite-10x-faster/">TypeScript 7 صدرت</a> — أحدث إصدار من TypeScript مع تحسينات أداء كبيرة</li>
+      <li><a href="/wiki/open-source-libraries/">أشهر مكتبات المصادر المفتوحة</a> — قائمة شاملة بأهم المكتبات والمكتبات المفتوحة المصدر</li>
+    </ul>
+  </section>
+
+</WikiLayout>
+</BaseLayout>

@@ -1,0 +1,131 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "vlc-media-player-surpasses-7-billion-downloads-videolan",
+    title: "VLC تتجاوز 7 مليارات تحميل: مليار جديد في 18 شهراً فقط",
+    metaTitle: "VLC تتجاوز 7 مليارات تحميل برنامج تشغيل الوسائط",
+    description:
+        "VLC Media Player تجاوزت الـ 7 مليارات تحميل — برنامج تشغيل وسائط مفتوح مجاني تم إطلاقه قبل 20 سنة، حققت مليار تحميل جديد في حوالي 18 شهراً، وتتوسع على Netflix و YouTube بفضل البساطة والدعم الشامل للصيغ.",
+    keywords: [
+        "VLC Media Player",
+        "VLC",
+        "VideoLAN",
+        "برنامج تشغيل وسائط",
+        "مفتوح المصدر",
+        "مجاني",
+        "تحميلات",
+        "Windows",
+        "Linux",
+        "macOS",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "2 سبتمبر 2026",
+    pubDate: new Date("2026-09-02"),
+    tags: ["VLC", "MediaPlayer", "مفتوح المصدر", "VideoLAN", "برنامج تشغيل"],
+    thumbnail: "/images/vlc-media-player-surpasses-7-billion-downloads-videolan.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            
+                <a href="https://techcrunch.com/2026/08/31/vlc-crosses-7-billion-downloads/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>VLC Media Player تجاوزت الـ 7 مليارات تحميل</strong>
+            </a>
+            . برنامج التشغيل مفتوح المصدر المجاني، الذي تم إطلاقه قبل أكثر من عقدين، يستمر
+            في النمو بسرعة —
+            <strong>آخر مليار تحميل تم الوصول إليها في حوالي سنة ونصف</strong>. هذا
+            
+                <a href="https://techcrunch.com/2026/08/31/vlc-crosses-7-billion-downloads/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                يُبلغ عنه TechCrunch
+            </a>
+            ، نقلاً عن منظمة VideoLAN غير الربحية التي طورت البرنامج.
+        </p>
+
+        <h2>النجاح رغم خدمات البث</h2>
+
+        <p>
+            على الرغم من شهرة Netflix و YouTube وخدمات البث الأخرى،
+            <strong>VLC تستمر في الطلب العالي بفضل مبدأ بسيط</strong>:
+            <strong>مجانية، تعمل دون اتصال بالإنترنت، وتدعم عدداً ضخماً من الصيغ</strong>، وخالية من
+            الإعلانات والبرامج الضارة.
+        </p>
+
+        <p>
+            
+                <a href="https://mezha.ua/en/2025/01/09/vlc-player-exceeds-6-billion-downloads-and-will-add-ai-based-subtitles/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>في يناير 2025، تجاوزت البرنامج 6 مليارات تحميل</strong>
+            </a>
+            ، و<strong>بعد 18 شهراً فقط، وصلت إلى علامة 7 مليارات</strong>.
+        </p>
+
+        <h2>دعم منصات متعددة</h2>
+
+        <p>
+            VLC تعمل على Windows و macOS و Linux و Unix و iOS و Android،
+            <strong>بينما الفريق يستمر في توسيع الدعم للمنصات الجديدة</strong>. تم تكييف البرنامج
+            مؤخراً لـ <strong>Vega OS — نظام تشغيل أمازون لأجهزة التلفاز</strong>.
+        </p>
+
+        <h2>VLC 4 قريباً</h2>
+
+        <p>
+            <strong>يُتوقع أن يكون التحديث الرئيسي التالي هو VLC 4</strong>، على الرغم من أن
+            تطويره تأخر. <strong>VideoLAN عرضت مسبقاً ميزات لإنشاء وترجمة نصوص تلقائية</strong>
+            باستخدام نماذج ذكاء اصطناعي محلية، لكن لا يُعرف بعد متى ستظهر هذه الميزات في الإصدار المستقر.
+        </p>
+
+        <h2>الخلاصة</h2>
+
+        <p>
+            <strong>VLC تظل أحد أكثر برامج التشغيل استخداماً في العالم</strong>. سهولتها
+            
+                <a href="https://www.videolan.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                وقوتها
+            </a>
+            وطبيعتها المفتوحة المصدر جعلتها خياراً لا غنى عنه للملايين. مع الاستمرار في
+            <strong>إضافة ميزات ذكاء اصطناعي وتوسيع الدعم للمنصات الجديدة</strong>، من المحتمل أن
+            تستمر VLC في نموها السريع.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://mezha.ua/en/news/vlc-surpasses-7-billion-downloads-314737/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Mezha
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

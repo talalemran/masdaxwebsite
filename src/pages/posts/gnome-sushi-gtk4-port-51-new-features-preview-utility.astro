@@ -1,0 +1,263 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "gnome-sushi-gtk4-port-51-new-features-preview-utility",
+    title: "جنوم Sushi: إعادة بناء GTK4 بميزات جديدة لمعاينة الملفات",
+    metaTitle: "Sushi GTK4: معاين الملفات لـ Nautilus بميزات جديدة",
+    description:
+        "Sushi v51 تم نقلها إلى GTK4 — أداة معاينة الملفات لـ Nautilus الآن بواجهة حديثة، اختصارات لوحة مفاتيح جديدة، دعم GIF و TIFF متحركة، تغيير حجم نافذة ديناميكي، ودعم تشغيل صوت وفيديو مع مجموعة من الميزات الأخرى.",
+    keywords: [
+        "GNOME Sushi",
+        "GTK4",
+        "GNOME 51",
+        "معاين ملفات",
+        "Nautilus",
+        "Quick Look",
+        "لينكس",
+        "Glycin",
+        "معاينة فيديو",
+        "Ubuntu 26.10",
+    ],
+    category: "بيئة سطح المكتب",
+    author: "طلال عمران",
+    date: "6 سبتمبر 2026",
+    pubDate: new Date("2026-09-06"),
+    tags: ["Sushi", "GNOME 51", "GTK4", "Nautilus", "لينكس"],
+    thumbnail: "/images/gnome-sushi-gtk4-port-51-new-features-preview-utility.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            
+                <a href="https://gitlab.gnome.org/GNOME/sushi"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Sushi</strong>
+            </a>
+            — أداة معاينة الملفات السريعة لـ مدير الملفات
+            
+                <a href="https://wiki.gnome.org/Apps/Nautilus"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Nautilus</strong>
+            </a>
+            — تم نقلها إلى <strong>GTK4 لـ GNOME 51</strong>. أداة بسيطة لكن قوية: اضغط
+            <strong>مفتاح المسافة</strong> على ملف (صورة أو موسيقى أو فيديو أو مستند) و
+            <strong>معاينة فورية تظهر</strong> — تماماً مثل
+            
+                <a href="https://support.apple.com/en-us/guide/mac-help/mchlp2304/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Quick Look</strong>
+            </a>
+            على macOS.
+        </p>
+
+        <h2>إعادة بناء حديثة بـ GTK4</h2>
+
+        <p>
+            الإصدار 51 من Sushi يأتي بـ <strong>عديد من التحسينات البصرية</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>شريط عنوان مسطح:</strong> واجهة حديثة توافق جنوم 51
+            </li>
+            <li>
+                <strong>عناصر تحكم متراكبة:</strong> على أنواع الملفات مثل الوسائط
+            </li>
+            <li>
+                <strong>دعم الوضع الفاتح والداكن:</strong> يحترم تفضيلات النظام
+            </li>
+            <li>
+                <strong>قياس العرض محسّن:</strong> للشاشات عالية الدقة
+            </li>
+        </ul>
+
+        <h2>تغيير حجم نافذة ديناميكي</h2>
+
+        <p>
+            <strong>المشكلة القديمة:</strong> عند التنقل بين الملفات بأحجام مختلفة باستخدام
+            <strong>مفاتيح الأسهم</strong>، كانت نافذة المعاينة تبقى بنفس حجم الملف الأول.
+            <strong>الآن تم حلها بالكامل</strong> — النافذة تتغير بسلاسة
+            <strong>حسب حجم الملف الجديد</strong>.
+        </p>
+
+        <h2>اختصارات لوحة مفاتيح جديدة</h2>
+
+        <p>
+            تم إضافة اختصارات قوية للتحكم السريع:
+        </p>
+
+        <ul>
+            <li><strong>F2:</strong> إعادة تسمية الملف أثناء المعاينة</li>
+            <li><strong>Del:</strong> حذف الملف (نقله للسلة)</li>
+            <li><strong>O:</strong> فتح الملف بالتطبيق الافتراضي</li>
+            <li>
+                <strong>P:</strong>
+                <a href="https://github.com/GNOME/sushi/releases"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    إيقاف/استئناف تشغيل الفيديو والصوت
+                </a>
+            </li>
+        </ul>
+
+        <h2>ميزات وسائط محسّنة</h2>
+
+        <p>
+            تم إضافة عدة ميزات للوسائط:
+        </p>
+
+        <ul>
+            <li>
+                <strong>دعم GIF و TIFF المتحركة:</strong> بدلاً من عرض إطار ثابت فقط
+            </li>
+            <li>
+                <strong>تشغيل الفيديو بالنقر:</strong> يمكن إيقافه واستئناف التشغيل
+            </li>
+            <li>
+                <strong>عرض الصور المدمجة للملفات الصوتية:</strong> الألبومات الفنية تظهر الآن
+            </li>
+            <li>
+                <strong>مؤشر دوار:</strong> عند تحميل المعاينات التي تستغرق وقتاً طويلاً
+            </li>
+        </ul>
+
+        <h2>تحسينات HTML و المستندات</h2>
+
+        <p>
+            <strong>معاينات HTML الآن تحجب المحتوى البعيد تلقائياً</strong> — شريط معلومات
+            يخبرك عند حدوث ذلك مع خيار السماح بالتحميل. بالإضافة إلى ذلك:
+        </p>
+
+        <ul>
+            <li>
+                <strong>انقر بزر الماوس الأيمن على الروابط:</strong> لفتحها في متصفح الويب
+                الافتراضي
+            </li>
+            <li>
+                <strong>دعم XHTML وملفات مكتبية إضافية:</strong> أنواع MIME جديدة
+            </li>
+            <li>
+                <strong>عارض نصي يلتف النصوص:</strong> يجعل قراءة الملفات النصية أسهل
+            </li>
+        </ul>
+
+        <h2>استخدام Glycin لتحميل الصور</h2>
+
+        <p>
+            <strong>محرك تحميل الصور Gdkpixbuf القديم تم استبداله بـ
+            
+                <a href="https://gitlab.gnome.org/GNOME/glycin"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Glycin
+            </a>
+            </strong> — مكتبة مفك ترميز مَعْزُولة مبنية بلغة Rust.
+            
+                <a href="https://gitlab.gnome.org/GNOME/loupe"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                تطبيقات جنوم أخرى مثل Loupe
+            </a>
+            تستخدم Glycin أيضاً — معيار جديد للأمان والأداء.
+        </p>
+
+        <h2>ملاحظات إضافية</h2>
+
+        <ul>
+            <li>
+                <strong>نقرة مزدوجة على منطقة المعاينة:</strong> للدخول/الخروج من ملء الشاشة
+            </li>
+            <li>
+                <strong>أيقونة ملء الشاشة:</strong> مضافة إلى شريط العنوان
+            </li>
+            <li>
+                <strong>فتح مجلد معاين:</strong> يفتح المجلد الأب بدلاً من المجلد نفسه
+            </li>
+        </ul>
+
+        <h2>الصيانة والمطورون</h2>
+
+        <p>
+            <strong>Sushi انتقلت إلى عهدة
+            
+                <a href="https://github.com/peisnan"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Peter Eisenmann
+            </a>
+            </strong> — مطور Nautilus. مع
+            
+                <a href="https://gitlab.gnome.org/GNOME/sushi/-/contributors"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Lorenzo Ubaldi و Tau Gärtli
+            </a>
+            ، قاموا بعمل رائع في إضافة ميزات وحديثة الأكواد. نقل GTK4 تم من قبل Corey Berla.
+        </p>
+
+        <h2>متى يتوفر الإصدار 51؟</h2>
+
+        <p>
+            <strong>Sushi v51 ستُطلق في سبتمبر 2026</strong> — في نفس الوقت مع إطلاق
+            
+                <a href="https://www.gnome.org/news/2026/09/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                جنوم 51
+            </a>
+            . نأمل أن تأتي في مستودعات Ubuntu 26.10 لكن حالياً تحتوي فقط على v50.
+        </p>
+
+        <p>
+            إذا أردت اختبار نسخة التطوير الآن، يمكنك تثبيتها من
+            
+                <a href="https://wiki.gnome.org/Apps/Nightly"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                GNOME Nightly Flatpak repository
+            </a>
+            ، لكن ستحتاج إلى تشغيل GNOME 51 و Nautilus 51 أيضاً.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.omgubuntu.co.uk/2026/09/gnome-sushi-gtk4-port"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                OMG! Ubuntu
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

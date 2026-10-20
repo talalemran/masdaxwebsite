@@ -1,0 +1,98 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+  .map((mod: any) => mod.post)
+  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+  slug: "opensuse-tumbleweed-unsung-rolling-distro",
+  title:"openSUSE Tumbleweed: أفضل توزيعة رولينغ لا تعرفها",
+  metaTitle: "openSUSE Tumbleweed: أفضل توزيعة رولينغ لا تعرفها",
+  description:
+    "تعرّف على أسباب اعتبار openSUSE Tumbleweed واحدة من أفضل توزيعات لينكس بنظام Rolling Release، مع أحدث التحديثات واستقرار قوي وأدوات متقدمة للمطورين ومحترفي لينكس.",
+  keywords: [
+    "openSUSE Tumbleweed",
+    "توزيعة لينكس",
+    "لينكس",
+    "Rolling Release",
+    "نظام تشغيل مفتوح المصدر",
+    "Btrfs",
+    "Snapper",
+    "YaST",
+  ],
+  category: "لينكس",
+  author: "طلال عمران",
+  date: "22 يونيو 2026 ",
+  pubDate: new Date("2026-06-22"),
+  tags: ["openSUSE Tumbleweed", "توزيعة لينكس", "Rolling Release", "لينكس"],
+  thumbnail: "/images/opensuse-tumbleweed.webp",
+};
+---
+
+<BaseLayout
+  title={post.title}
+  metaTitle={post.metaTitle}
+  description={post.description}
+  keywords={post.keywords}
+  canonical={`/posts/${post.slug}/`}
+  ogImage={post.thumbnail}
+  ogType="article"
+>
+  <PostLayout {post} allPosts={allPosts}>
+    <article>
+        <p>
+          رغم هيمنة أسماء مثل Arch Linux وFedora في نقاشات مجتمع لينكس، يرى
+          تقرير جديد أن
+          <a href="https://www.masdarx.com/posts/opensuse-tumbleweed-unsung-rolling-distro/"><strong>openSUSE Tumbleweed</strong></a> تستحق اهتمامًا أكبر مما تحصل عليه اليوم.
+        </p>
+
+        <ul>
+          <li>
+            <strong>نموذج Rolling Release</strong> يمنح المستخدم أحدث الإصدارات بشكل
+            مستمر دون الحاجة لإعادة تثبيت النظام.
+          </li>
+          <li>
+            تمر التحديثات عبر منصة <strong>openQA</strong> لاختبارات آلية مكثفة قبل
+            وصولها للمستخدمين، ما يعزز الاستقرار مقارنةً بالعديد من التوزيعات المنافسة.
+          </li>
+          <li>
+            تعتمد افتراضيًا على <strong>Btrfs + Snapper</strong> لإنشاء لقطات Snapshot
+            للنظام واستعادة الحالة السابقة بسهولة عند حدوث أي مشكلة.
+          </li>
+          <li>
+            تحصل باستمرار على أحدث إصدارات <strong><a href="https://www.masdarx.com/category/%D9%84%D9%8A%D9%86%D9%83%D8%B3/">نواة لينكس</a></strong> وKDE Plasma
+            وGNOME وMesa، مع تحديثات أمنية متكررة ودعم سريع للعتاد الجديد.
+          </li>
+          <li>
+            تتضمن أدوات إدارة قوية مثل <strong>YaST</strong>، ما يجعل إدارة
+            النظام أسهل من كثير من التوزيعات الموجهة للمستخدمين المتقدمين فقط.
+          </li>
+        </ul>
+
+        <p>
+          وتشير تجارب العديد من مستخدمي لينكس إلى أن Tumbleweed تحقق توازنًا
+          نادرًا بين حداثة الحزم واستقرار النظام، وهو ما يجعلها خيارًا جذابًا
+          للمطورين ومحترفي لينكس.
+        </p>
+
+        <h2>الخلاصة:</h2>
+
+        <p>
+          إذا كنت تبحث عن أحدث التقنيات في لينكس دون التضحية
+          بالاستقرار، فقد تكون openSUSE Tumbleweed واحدة من أكثر التوزيعات التي تستحق
+          التجربة اليوم.
+        </p>
+    </article>
+    <p>
+      المصدر: <a
+        href="https://www.xda-developers.com/opensuse-tumbleweed-unsung-rolling-distro/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >openSUSE Tumbleweed is the unsung rolling distro for people afraid of rolling distros
+      </a>
+    </p>
+  </PostLayout>
+</BaseLayout>

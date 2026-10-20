@@ -1,0 +1,491 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "arch-linux-complete-guide",
+    title: "توزيعة آرتش لينكس: دليل شامل للتوزيعة الأقوى في التحكم والتخصيص",
+    metaTitle: "آرتش لينكس: دليل شامل لتوزيعة التحكم الكامل والتخصيص",
+    description:
+        "دليل شامل لتوزيعة Arch Linux، من فلسفتها ومبادئها الأساسية، إلى مدير الحزم pacman وAUR وأداة archinstall، ولمن تناسب فعليًا هذه التوزيعة المخصصة للمتقدمين.",
+    keywords: [
+        "آرتش لينكس",
+        "Arch Linux",
+        "pacman",
+        "AUR",
+        "archinstall",
+        "توزيعات لينكس",
+        "Rolling Release",
+        "Arch Wiki",
+        "لينكس للمتقدمين",
+        "EndeavourOS",
+    ],
+    category: ["لينكس", "مقالات"],
+    author: "طلال عمران",
+    date: "27 أغسطس 2026",
+    pubDate: new Date("2026-08-27"),
+    tags: ["Arch Linux", "آرتش لينكس", "pacman", "AUR", "توزيعات لينكس"],
+    thumbnail: "/images/arch-linux-complete-guide.webp",
+};
+
+const tocItems = [
+    { id: "history", label: "نبذة تاريخية سريعة" },
+    { id: "philosophy", label: "فلسفة آرتش: مبادئ KISS الأربعة" },
+    { id: "installation", label: "التثبيت: من الطريقة اليدوية إلى archinstall" },
+    { id: "package-management", label: "إدارة الحزم: pacman وAUR" },
+    { id: "arch-wiki", label: "ويكي آرتش: أفضل توثيق في عالم لينكس بأكمله" },
+    { id: "rolling-release", label: "التحديث المستمر (Rolling Release): مزايا ومخاطر" },
+    { id: "desktop-environments", label: "بيئات سطح المكتب: لا افتراضي، أنت من يقرر" },
+    { id: "arch-based-distros", label: "توزيعات مبنية على آرتش: بديل أسهل للمبتدئين" },
+    { id: "comparison-table", label: "جدول مقارنة سريع" },
+    { id: "why-choose", label: "لماذا يختار المستخدمون آرتش تحديدًا؟" },
+    { id: "challenges", label: "التحديات والمخاطر الحقيقية" },
+    { id: "who-fits", label: "لمن تناسب آرتش فعليًا؟" },
+    { id: "external-resources", label: "الروابط الرسمية ومصادر خارجية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            لا توزيعة أخرى في عالم لينكس تثير نقاشًا محتدمًا بين "أفضل
+            تجربة يمكن أن يحصل عليها مستخدم لينكس" و"كابوس غير ضروري
+            للمبتدئين" مثل آرتش لينكس. كلا الرأيين له وجاهته، والفارق
+            الحقيقي بينهما هو فهم ما تحصل عليه فعليًا حين تختار هذه
+            التوزيعة تحديدًا.
+        </p>
+
+        <p>
+            هذا الدليل يشرح فلسفة آرتش، طريقة تثبيتها وإدارة حزمها،
+            توثيقها الأسطوري، ولمن تناسب فعليًا مقارنة بتوزيعات أبسط.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {
+                    tocItems.map((item) => (
+                        <li>
+                            <a
+                                href={`#${item.id}`}
+                                class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <h2 id="history">نبذة تاريخية سريعة</h2>
+
+        <p>
+            <img
+                src="/images/arch-linux-kde.webp"
+                alt="نظام آرتش لينكس بعد التثبيت الأساسي عبر الطرفية"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            أسس المبرمج الكندي جَد فينيت (Judd Vinet) توزيعة آرتش لينكس
+            عام 2002، متأثرًا بتوزيعات مثل CRUX وSlackware، لكنه أراد نظامًا
+            أكثر مرونة وحداثة. الاسم "Arch" مستوحى من "archetype"
+            (النموذج الأصلي)، في إشارة لفلسفته: نظام أساسي بسيط يبني عليه
+            المستخدم بنفسه بدلاً من نظام جاهز مثقل بخيارات لم يطلبها.
+        </p>
+
+        <p>
+            منذ 2007 يديره فريق من المتطوعين، وأصبح لاحقًا الأساس الذي
+            بُنيت عليه عشرات التوزيعات الأخرى، أشهرها Manjaro وEndeavourOS
+            وGarudaLinux، التي تحاول تقديم تجربة آرتش بسهولة تثبيت أكبر.
+        </p>
+
+        <h2 id="philosophy">فلسفة آرتش: مبادئ KISS الأربعة</h2>
+
+        <p>
+            آرتش تلتزم بفلسفة "KISS" (Keep It Simple, Stupid)، لكن
+            "البساطة" هنا تعني بساطة التصميم الداخلي للنظام، لا سهولة
+            الاستخدام للمستخدم النهائي. المبادئ الرسمية الأربعة للمشروع:
+        </p>
+
+        <ul>
+            <li>
+                <strong>البساطة (Simplicity)</strong>: النظام يبقى بأقرب
+                صورة ممكنة لما ينشره المطور الأصلي للبرنامج، دون تعديلات
+                أو "تحسينات" من فريق التوزيعة تُبعده عن الأصل
+            </li>
+            <li>
+                <strong>الحداثة (Modernity)</strong>: أحدث إصدارات
+                البرمجيات تصل بأسرع وقت ممكن، دون انتظار دورة إصدار طويلة
+            </li>
+            <li>
+                <strong>البراغماتية (Pragmatism)</strong>: قرارات عملية
+                تخدم المستخدم المتقدم، لا التزام أيديولوجي صارم بمبادئ
+                معينة على حساب الوظيفة
+            </li>
+            <li>
+                <strong>مركزية المستخدم (User Centrality)</strong>: النظام
+                مصمم ليخدم مطوري ومستخدمي آرتش أنفسهم، لا الجمهور العريض
+                بالضرورة
+            </li>
+        </ul>
+
+        <p>
+            النتيجة العملية لهذه الفلسفة: آرتش لا تثبّت أي برنامج لم
+            تطلبه صراحة، ولا تتخذ قرارات نيابة عنك حول كيفية إعداد نظامك.
+            أنت من يبني كل شيء، من صوت الجهاز إلى واجهة سطح المكتب.
+        </p>
+
+        <h2 id="installation">التثبيت: من الطريقة اليدوية إلى archinstall</h2>
+
+        <p>
+            تاريخيًا، اشتهرت آرتش بعملية تثبيت يدوية بالكامل عبر الطرفية:
+            تقسيم الأقراص، تثبيت النواة، إعداد الشبكة، وضبط أداة الإقلاع،
+            كل ذلك بأوامر منفصلة دون أي معالج رسومي. هذه الطريقة لا تزال
+            متاحة وموثقة بالكامل، وهي ما اكتسب آرتش سمعتها الصعبة.
+        </p>
+
+        <p>
+            لكن هذا تغيّر جزئيًا مع أداة <strong>archinstall</strong>
+            الرسمية، وهي مثبّت شبه تفاعلي يُشغَّل من نفس بيئة التثبيت
+            الحية، ويرشدك عبر خطوات الإعداد الأساسية (التقسيم، المستخدم،
+            بيئة سطح المكتب) دون التخلي عن المرونة الكاملة. الإصدار
+            الحالي يعتمد واجهة نصية تفاعلية (Textual UI) محدثة تسهّل
+            التنقل بين الخيارات.
+        </p>
+
+        <p>
+            رغم ذلك، الفلسفة الرسمية للمشروع تشجع على الأقل تجربة التثبيت
+            اليدوي مرة واحدة، لأنها الطريقة الحقيقية لفهم كيف يعمل نظام
+            لينكس من الداخل، وهذا الفهم نفسه هو ما يميز مستخدم آرتش
+            المتمرس لاحقًا.
+        </p>
+
+        <h2 id="package-management">إدارة الحزم: pacman وAUR</h2>
+
+        <p>
+            <strong>pacman</strong> هو مدير الحزم الأصلي لآرتش، وواحد من
+            أسرع مديري الحزم بين كل توزيعات لينكس من ناحية الأداء الخام.
+            بُني ليكون بسيطًا وسريعًا: تثبيت حزمة، حل تبعياتها، وتحديث
+            النظام بالكامل، كل ذلك عبر أوامر مختصرة جدًا.
+        </p>
+
+        <p>
+            لكن الميزة الأكثر تفردًا هي <strong>AUR</strong> (Arch User
+            Repository): مستودع يديره المجتمع بالكامل، يحتوي على عشرات
+            الآلاف من الحزم غير الموجودة في المستودعات الرسمية، من برامج
+            نادرة إلى أدوات تطوير حديثة جدًا، يساهم بها المستخدمون أنفسهم
+            عبر ملفات إعداد بسيطة تسمى PKGBUILD.
+        </p>
+
+        <ul>
+            <li>تقريبًا أي برنامج مفتوح المصدر موجود، ستجد له حزمة جاهزة على AUR</li>
+            <li>أدوات مساعدة (AUR Helpers) مثل yay تجعل التعامل مع AUR بنفس سهولة pacman تقريبًا</li>
+            <li>تحذير مهم: حزم AUR غير مُراجَعة رسميًا من فريق آرتش، لذا يُنصح بمراجعة ملف PKGBUILD قبل التثبيت من مصدر غير مألوف</li>
+        </ul>
+
+        <h2 id="arch-wiki">ويكي آرتش: أفضل توثيق في عالم لينكس بأكمله</h2>
+
+        <p>
+            حتى مستخدمو توزيعات أخرى غير آرتش يلجؤون لويكي آرتش
+            (ArchWiki) بشكل متكرر، لأنه ببساطة أفضل مصدر توثيق تقني للينكس
+            بشكل عام، لا لآرتش فقط. يغطي كل شيء تقريبًا: من إعداد كرت
+            الرسوميات إلى ضبط دقيق لأداء النظام، بتفصيل تقني عميق ومحدث
+            باستمرار من مجتمع ضخم من المساهمين.
+        </p>
+
+        <p>
+            هذا التوثيق الاستثنائي يعوّض جزئيًا صعوبة التوزيعة نفسها: أي
+            مشكلة تقريبًا واجهتها موثقة بحل مفصّل خطوة بخطوة، حتى لو كنت
+            تستخدم توزيعة أخرى غير آرتش أصلاً.
+        </p>
+
+        <h2 id="rolling-release">
+            التحديث المستمر (Rolling Release): مزايا ومخاطر
+        </h2>
+
+        <p>
+            آرتش توزيعة Rolling Release بامتياز: لا توجد "إصدارات" بالمعنى
+            التقليدي (مثل "آرتش 44")، فقط تحديثات مستمرة تصل فور جاهزيتها.
+            الإصدار الشهري الذي تراه على الموقع الرسمي (مثل
+            2026.08.01) هو فقط صورة تثبيت جديدة (ISO)، لا "نسخة" منفصلة من
+            النظام نفسه.
+        </p>
+
+        <ul>
+            <li><strong>الميزة</strong>: أحدث نواة لينكس، وأحدث إصدارات كل البرامج تقريبًا، دون انتظار دورة إصدار طويلة</li>
+            <li><strong>المخاطرة</strong>: تحديث كبير قد يكسر شيئًا أحيانًا، خصوصًا إن أهملت متابعة إعلانات الأخبار الرسمية قبل التحديث</li>
+        </ul>
+
+        <p>
+            القاعدة الذهبية لمستخدمي آرتش المتمرسين: اقرأ صفحة الأخبار
+            الرسمية قبل كل تحديث كبير، لأن الفريق يعلن مسبقًا عن أي تغيير
+            يتطلب تدخلاً يدويًا منك قبل المتابعة.
+        </p>
+
+        <h2 id="desktop-environments">
+            بيئات سطح المكتب: لا افتراضي، أنت من يقرر
+        </h2>
+
+        <p>
+            على عكس أغلب التوزيعات، آرتش لا تأتي بأي بيئة سطح مكتب مثبتة
+            افتراضيًا بعد التثبيت الأساسي. النظام الذي تحصل عليه بعد
+            التثبيت اليدوي التقليدي هو طرفية سوداء فقط، دون أي واجهة
+            رسومية على الإطلاق.
+        </p>
+
+        <p>
+            أنت من يختار ويثبّت GNOME أو KDE Plasma أو Xfce أو حتى مدير
+            نوافذ بسيط بلا بيئة كاملة مثل i3 أو Hyprland، ثم تضبط كل تفصيل
+            بنفسك: شريط المهام، الخطوط، الاختصارات. هذا يعني أن نظامك
+            النهائي لن يشبه نظام أي شخص آخر إلا إن اخترت نفس الإعدادات
+            بالضبط.
+        </p>
+
+        <h2 id="arch-based-distros">
+            توزيعات مبنية على آرتش: بديل أسهل للمبتدئين
+        </h2>
+
+        <p>
+            إن كنت تريد مزايا آرتش (أحدث البرمجيات، pacman، AUR) دون
+            صعوبة التثبيت اليدوي، توجد توزيعات مبنية على آرتش بمثبّت
+            رسومي جاهز:
+        </p>
+
+        <ul>
+            <li><strong>EndeavourOS</strong>: أقرب توزيعة لتجربة آرتش الأصلية لكن بمثبّت رسومي بسيط، ويدعم عدة بيئات سطح مكتب منذ البداية</li>
+            <li><strong>Manjaro</strong>: تضيف طبقة استقرار إضافية عبر تأخير وصول التحديثات لفترة اختبار قبل نشرها للمستخدمين</li>
+            <li><strong>CachyOS</strong>: تركز على تحسينات أداء إضافية فوق قاعدة آرتش القياسية</li>
+        </ul>
+
+        <p>
+            هذه التوزيعات خيار ممتاز لمن يريد "روح آرتش" دون المرور بتجربة
+            التثبيت اليدوي الكاملة أولاً.
+        </p>
+
+        <h2 id="comparison-table">جدول مقارنة سريع</h2>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">Arch Linux</th>
+                        <th class="px-4 py-2 font-semibold">EndeavourOS</th>
+                        <th class="px-4 py-2 font-semibold">Ubuntu</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">التثبيت</td>
+                        <td class="px-4 py-2">يدوي أو archinstall</td>
+                        <td class="px-4 py-2">رسومي بسيط</td>
+                        <td class="px-4 py-2">رسومي بسيط</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">بيئة سطح المكتب الافتراضية</td>
+                        <td class="px-4 py-2">لا توجد، أنت تختار</td>
+                        <td class="px-4 py-2">اختيار من عدة بيئات عند التثبيت</td>
+                        <td class="px-4 py-2">GNOME مثبتة مسبقًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">حداثة البرمجيات</td>
+                        <td class="px-4 py-2">الأعلى دائمًا</td>
+                        <td class="px-4 py-2">نفس مستودعات آرتش</td>
+                        <td class="px-4 py-2">متوسطة حسب نوع الإصدار</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مستودع إضافي مجتمعي</td>
+                        <td class="px-4 py-2">AUR (ضخم جدًا)</td>
+                        <td class="px-4 py-2">AUR (نفسه)</td>
+                        <td class="px-4 py-2">PPA (أصغر نطاقًا)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأنسب لـ</td>
+                        <td class="px-4 py-2">متقدمين يريدون فهمًا كاملاً للنظام</td>
+                        <td class="px-4 py-2">من يريد تجربة آرتش بسهولة أكبر</td>
+                        <td class="px-4 py-2">المبتدئين والاستخدام العام</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-choose">لماذا يختار المستخدمون آرتش تحديدًا؟</h2>
+
+        <ul>
+            <li>
+                <strong>تحكم كامل بلا استثناء</strong>: لا برنامج واحد
+                مثبّت لم تطلبه صراحة، ولا قرار اتُخذ نيابة عنك
+            </li>
+            <li>
+                <strong>أحدث كل شيء دائمًا</strong>: من نواة لينكس إلى أحدث
+                إصدارات كل أداة تطوير تقريبًا
+            </li>
+            <li>
+                <strong>AUR كنز حقيقي</strong>: نادرًا ما تحتاج تثبيت
+                برنامج يدويًا من الصفر، لأن أحدًا في المجتمع غالبًا سبقك
+                لإعداد حزمة جاهزة
+            </li>
+            <li>
+                <strong>فهم عميق حقيقي للنظام</strong>: تثبيت آرتش يدويًا
+                مرة واحدة يعلّمك عن لينكس أكثر من سنوات من استخدام توزيعات
+                جاهزة
+            </li>
+            <li>
+                <strong>توثيق لا مثيل له</strong>: ويكي آرتش وحده سبب كافٍ
+                يجعل كثيرين يقدّرون المشروع حتى لو لم يستخدموه فعليًا
+            </li>
+        </ul>
+
+        <h2 id="challenges">التحديات والمخاطر الحقيقية</h2>
+
+        <p>بصدق تام، آرتش ليست الخيار المناسب للجميع:</p>
+
+        <ul>
+            <li>
+                <strong>منحنى تعلم حاد جدًا</strong>: التثبيت اليدوي وحده
+                قد يستغرق ساعات في أول محاولة، ويتطلب فهمًا لمفاهيم لم
+                يحتج المستخدم العادي التعامل معها من قبل
+            </li>
+            <li>
+                <strong>أنت المسؤول عن كل شيء</strong>: لا "شبكة أمان" من
+                إعدادات افتراضية ذكية، أي خطأ في الإعداد يبقى خطأك أنت
+                تحديدًا
+            </li>
+            <li>
+                <strong>صيانة مستمرة مطلوبة</strong>: تحديثات Rolling
+                Release المتكررة تتطلب انتباهًا دوريًا، ليست نظامًا
+                "تُثبّته وتنساه"
+            </li>
+            <li>
+                <strong>مخاطر AUR</strong>: حزم غير مُراجَعة رسميًا، تتطلب
+                حذرًا ووعيًا قبل تثبيت أي شيء من مصدر غير معروف
+            </li>
+        </ul>
+
+        <h2 id="who-fits">لمن تناسب آرتش فعليًا؟</h2>
+
+        <ul>
+            <li>
+                <strong>لمن جرّب لينكس فترة كافية</strong> ويريد فهمًا أعمق
+                من مجرد "الاستخدام" السطحي للنظام
+            </li>
+            <li>
+                <strong>للمطورين</strong> الذين يحتاجون أحدث أدوات وإصدارات
+                لغات البرمجة باستمرار
+            </li>
+            <li>
+                <strong>لمحبي التخصيص الكامل</strong>، خصوصًا مع مديري
+                نوافذ حديثة مثل Hyprland المبنية على Wayland
+            </li>
+            <li>
+                <strong>لمن يتعلم لينكس بجدية</strong> ويريد تجربة تعليمية
+                عميقة، لا فقط نظام تشغيل جاهز للاستخدام
+            </li>
+            <li>
+                <strong>أقل ملاءمة</strong>: للمبتدئين المطلقين في لينكس،
+                أو من يريد نظامًا "يعمل فقط" دون أي صيانة أو تعلم إضافي —
+                توزيعات مثل Linux Mint أو أوبونتو أنسب بكثير لهذه الحالة
+            </li>
+        </ul>
+
+        <h2 id="external-resources">الروابط الرسمية ومصادر خارجية</h2>
+
+        <p>
+            للتحميل أو التعمق أكثر فيما ذُكر في هذا المقال، هذه مصادر
+            رسمية وموثوقة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الموقع الرسمي لآرتش لينكس:</strong>{" "}
+                <a href="https://archlinux.org/" target="_blank" rel="noopener noreferrer">archlinux.org</a>
+            </li>
+            <li>
+                <strong>صفحة التحميل الرسمية:</strong>{" "}
+                <a href="https://archlinux.org/download/" target="_blank" rel="noopener noreferrer">archlinux.org/download</a>
+            </li>
+            <li>
+                <strong>ويكي آرتش (ArchWiki):</strong>{" "}
+                <a href="https://wiki.archlinux.org/" target="_blank" rel="noopener noreferrer">wiki.archlinux.org</a>
+            </li>
+            <li>
+                <strong>دليل التثبيت الرسمي التفصيلي:</strong>{" "}
+                <a href="https://wiki.archlinux.org/title/Installation_guide" target="_blank" rel="noopener noreferrer">wiki.archlinux.org/title/Installation_guide</a>
+            </li>
+            <li>
+                <strong>Arch User Repository (AUR):</strong>{" "}
+                <a href="https://aur.archlinux.org/" target="_blank" rel="noopener noreferrer">aur.archlinux.org</a>
+            </li>
+            <li>
+                <strong>أداة archinstall على GitHub:</strong>{" "}
+                <a href="https://github.com/archlinux/archinstall" target="_blank" rel="noopener noreferrer">github.com/archlinux/archinstall</a>
+            </li>
+            <li>
+                <strong>منتديات آرتش الرسمية:</strong>{" "}
+                <a href="https://bbs.archlinux.org/" target="_blank" rel="noopener noreferrer">bbs.archlinux.org</a>
+            </li>
+            <li>
+                <strong>EndeavourOS (بديل أسهل للتثبيت):</strong>{" "}
+                <a href="https://endeavouros.com/" target="_blank" rel="noopener noreferrer">endeavouros.com</a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <p>
+            <strong>هل آرتش لينكس مناسبة كأول توزيعة لينكس أجربها؟</strong><br />
+            غير مُنصح بها عمومًا كأول تجربة. الأفضل البدء بتوزيعة أبسط مثل
+            Linux Mint، ثم الانتقال لآرتش لاحقًا بعد اكتساب فهم أساسي
+            بمفاهيم لينكس.
+        </p>
+
+        <p>
+            <strong>هل يجب أن أثبّت آرتش يدويًا أم أستخدم archinstall؟</strong><br />
+            كلاهما صحيح تمامًا. archinstall أسرع وأسهل، لكن التثبيت اليدوي
+            مرة واحدة على الأقل يمنحك فهمًا أعمق يستحق تجربته لاحقًا.
+        </p>
+
+        <p>
+            <strong>هل حزم AUR آمنة تمامًا؟</strong><br />
+            ليست مُراجَعة رسميًا من فريق آرتش، لذا يُنصح دائمًا بمراجعة ملف
+            PKGBUILD قبل التثبيت من مصدر غير معروف، خصوصًا للحزم الأقل
+            شهرة.
+        </p>
+
+        <p>
+            <strong>ما الفرق بين آرتش وEndeavourOS عمليًا؟</strong><br />
+            EndeavourOS هي فعليًا آرتش نفسها مع مثبّت رسومي جاهز وبعض
+            الإعدادات المسبقة المريحة، لكنها تستخدم نفس مستودعات آرتش
+            الأساسية وAUR بالكامل.
+        </p>
+    </PostLayout>
+</BaseLayout>

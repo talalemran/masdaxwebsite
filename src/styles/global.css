@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply font-body text-navy-700 bg-white leading-relaxed;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+  }
+
+  p, li {
+    @apply mb-4;
+    @apply text-xl;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold leading-tight;
+    @apply mb-4;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+  
+  h3 {
+    @apply text-2xl;
+  }
+  
+  main ul {
+    list-style-type: square;
+    padding-right: 1.25rem;
+  }
+
+  main li {
+    @apply mb-2;
+  }
+
+  code {
+    @apply bg-zinc-100 text-zinc-800 px-1.5 py-0.5 rounded text-[0.9em] font-mono;
+  }
+
+  pre {
+    @apply bg-zinc-900 text-zinc-100 rounded-xl p-5 my-6 overflow-x-auto;
+  }
+
+  pre code {
+    @apply bg-transparent text-inherit p-0 text-sm leading-relaxed;
+  }
+
+  a {
+    @apply transition-all duration-200;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .post-content a {
+    @apply text-navy underline font-medium;
+  }
+  .dark .post-content a {
+    @apply text-zinc-300;
+  }
+}
+
+@layer components {
+  .btn-navy {
+    @apply bg-navy text-white px-6 py-3 rounded-lg font-heading font-bold transition-all duration-300;
+  }
+  .btn-navy:hover {
+    @apply shadow-glow -translate-y-0.5;
+  }
+  .btn-accent {
+    @apply bg-accent text-navy px-6 py-3 rounded-lg font-heading font-bold transition-all duration-300;
+  }
+  .btn-accent:hover {
+    @apply shadow-glow-accent -translate-y-0.5;
+  }
+  .card-fancy {
+    @apply bg-white rounded-xl border border-navy-100 shadow-sm transition-all duration-300;
+  }
+  .card-fancy:hover {
+    @apply shadow-glow border-accent/50 -translate-y-1;
+  }
+  .gradient-navy {
+    @apply bg-gradient-to-br from-navy via-navy to-[#021a4a];
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-navy to-accent;
+  }
+}
+
+.dark body {
+  @apply bg-[#0C0C0C] text-zinc-200;
+}
+
+.dark code {
+  @apply bg-transparent text-zinc-200;
+}
+
+html, body {
+  overflow-x: hidden !important;
+}
+
+.post-content p,
+.post-content h2,
+.post-content h3,
+.post-content ul,
+.post-content ol {
+  margin: 0 0 1.5rem 0 !important;
+}
+
+.post-content > :last-child {
+  margin-bottom: 0 !important;
+}
+
+.post-content ul,
+.post-content ol {
+  padding-right: 1.5rem;
+}
+
+.post-content li {
+  margin-bottom: 0.5rem;
+}
+
+.post-content a {
+  color: #01102f;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.post-content a:hover {
+  color: #ffbb03;
+}
+
+.dark .post-content a {
+  color: #e4e4e7;
+}
+
+.dark .post-content a:hover {
+  color: #ffbb03;
+}

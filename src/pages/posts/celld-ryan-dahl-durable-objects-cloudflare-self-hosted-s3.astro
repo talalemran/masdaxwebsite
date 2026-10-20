@@ -1,0 +1,162 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "celld-ryan-dahl-durable-objects-cloudflare-self-hosted-s3",
+    title: "مؤسس Node.js يحرر Durable Objects: celld — بديل مفتوح وأرخص بـ 8 مرات",
+    metaTitle: "مؤسس Node.js يحرر Durable Objects: celld بديل أرخص",
+    description:
+        "Ryan Dahl أطلق celld — نسخة مفتوحة المصدر من Durable Objects توصل إلى S3 بدلاً من Cloudflare — بسعر $49 شهرياً بدلاً من $415، وتوافق كامل مع Workers API، مكتوبة بـ Rust و JavaScript.",
+    keywords: [
+        "celld",
+        "Durable Objects",
+        "Ryan Dahl",
+        "Cloudflare Workers",
+        "مفتوح المصدر",
+        "S3",
+        "Rust",
+        "JavaScript",
+        "serverless",
+        "تطوير",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "13 أغسطس 2026",
+    pubDate: new Date("2026-08-13"),
+    tags: ["celld", "Node.js", "Durable Objects", "مفتوح المصدر", "Cloudflare"],
+    thumbnail: "/images/celld-ryan-dahl-durable-objects-cloudflare-self-hosted-s3.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            أطلق <strong>Ryan Dahl</strong>، مؤسس Node.js الشهير، مشروعاً جديداً
+            يُغيّر قواعب الـ serverless العملية: <strong>celld</strong> — نسخة مفتوحة
+            المصدر وقابلة للاستضافة الذاتية من <strong>Durable Objects</strong> الخاصة
+            بـ Cloudflare. المشروع متوافق بالكامل مع Cloudflare Workers و Durable
+            Objects JavaScript APIs، لكنه أرخص بكثير.
+        </p>
+
+        <h2>السعر الفارق: 8 مرات أقل التكلفة</h2>
+
+        <p>
+            حسب حساب Dahl الخاص: 100 خلية Durable Object نشطة باستمرار تكلف <strong
+                >$415 شهرياً</strong
+            > على Cloudflare، بينما celld على نفس الحجم يكلف فقط حوالي <strong
+                >$49 شهرياً</strong
+            > عند استخدام DigitalOcean S3-compatible bucket على droplet 8 جيجابايت.
+        </p> التوفير يتسع أكثر كلما زادت السعة.
+
+        <p>
+            Cloudflare ردّت بأن الرقم $415 افتراض خاطئ — إذا ترك Durable Objects
+            في وضع السبات، التكلفة ستكون فقط $20.65 شهرياً. لكن الفكرة الأساسية
+            واضحة: celld أرخص بكثير على المدى الطويل.
+        </p>
+
+        <h2>ما هي Durable Objects؟</h2>
+
+        <p>
+            Durable Objects نموذج من Cloudflare يجمع البيانات والحساب في نفس
+            المكان — شيء نادر جداً في عالم serverless التقليدي. كل object يملك
+            معرف فريد عالمي وملفه الخاص من SQLite، يعمل على Cloudflare Workers
+            runtime.
+        </p>
+
+        <p>
+            النموذج اخترعه Kenton Varda و Cloudflare في 2020، وأصبح مثالياً
+            لتطبيقات التعاون اللحظي مثل الألعاب متعددة اللاعبين وتطبيقات
+            الإنتاجية الجماعية ووكلاء الذكاء الاصطناعي. WebSocket Hibernate mode
+            يسمح بنوم الـ object لتجنب الرسوم عند عدم الاستخدام.
+        </p>
+
+        <h2>celld: ترجمة بـ Rust و S3</h2>
+
+        <p>celld يكتب من جديد النموذج الأصلي بلغة Rust، مستخدماً:</p>
+
+        <ul>
+            <li>
+                <strong>Amazon S3 أو ما يعادله:</strong> بدلاً من بنية Cloudflare
+                الملكية
+            </li>
+            <li>
+                <strong>Tokio Rust async runtime:</strong> لمعالجة غير متزامنة قوية
+                وفعالة
+            </li>
+            <li>
+                <strong>SQLite لكل object:</strong> نفس النموذج تماماً كـ Cloudflare
+            </li>
+            <li>
+                <strong>WebAssembly support:</strong> يدعم Rust وC/C++ و Go و Zig
+                عبر WebAssembly
+            </li>
+            <li><strong>رخصة Apache 2:</strong> مفتوحة المصدر بالكامل</li>
+        </ul>
+
+        <h2>توافق كامل مع Workers</h2>
+
+        <p>
+            celld يدعم بنسبة 100% JavaScript APIs من Cloudflare Workers و
+            Durable Objects — لا حاجة لإعادة كتابة الكود. يمكن أخذ تطبيق مبني
+            على Cloudflare وتشغيله على celld دون تعديلات.
+        </p>
+
+        <h2>لماذا "رسالة حب"؟</h2>
+
+        <p>
+            Dahl ووفريقه وصفوا celld كـ "رسالة حب" لـ Durable Objects — لأن
+            النموذج نفسه براقٌ جداً. Durable Objects، وفق الفريق، هي "واحدة من
+            أفضل أدوات الأنظمة الموزعة المُعطاة للعالم." المشكلة؟ كانت حبيسة
+            داخل Cloudflare فقط. celld تحررها.
+        </p>
+
+        <h2>قيد أساسي: لا مساهمات AI</h2>
+
+        <p>
+            على صفحة GitHub لـ celld، الفريق وضع تنبيهاً واضحاً: <strong
+                >الـ coding agents ممنوعة</strong
+            >. السبب؟ "وكلاء التكويد تجعل من السهل جداً إرسال تغييرات كبيرة
+            منخفضة السياق تكلف المطورين وقتاً أكثر من الذي توفره." المساهمات
+            البشرية مرحب بها — طالما تفهم ما تفعله.
+        </p>
+
+        <h2>السياق الأوسع</h2>
+
+        <p>
+            celld ليست الوحيدة في سعيها لتقريب البيانات من الحساب. Neon، شركة
+            Postgres، أطلقت مؤخراً Neon Functions بنفس الرسالة: co-locate data
+            and compute للعمليات طويلة الأمد.
+        </p>
+
+        <p>
+            المشهد يتحول: الشركات تدرك أن serverless التقليدي — الحساب المنفصل
+            عن البيانات — تكلفة خفية ضخمة. celld من Ryan Dahl يقول بوضوح: هذا
+            النموذج يستحق أن يعمل في أي مكان.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://www.theregister.com/devops/2026/08/12/nodejs-creator-liberates-durable-objects-from-cloudflare-with-celld/5286954"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                The Register
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

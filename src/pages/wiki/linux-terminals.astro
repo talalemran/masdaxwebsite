@@ -1,0 +1,451 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WikiLayout from "@/components/WikiLayout.astro";
+
+const tocItems = [
+  { id: "what-is-terminal", label: "ما هي الطرفيات؟" },
+  { id: "why-different", label: "لماذا هناك أنواع مختلفة؟" },
+  { id: "terminal-emulators", label: "محاكيات الطرفية (Terminal Emulators)" },
+  { id: "gnome-terminal", label: "GNOME Terminal" },
+  { id: "konsole", label: "Konsole" },
+  { id: "alacritty", label: "Alacritty" },
+  { id: "kitty", label: "Kitty" },
+  { id: "wezterm", label: "WezTerm" },
+  { id: "foot", label: "Foot" },
+  { id: "xterm", label: "xterm" },
+  { id: "tilix", label: "Tilix" },
+  { id: "terminator", label: "Terminator" },
+  { id: "virtual-consoles", label: "الطرفيات الافتراضية (Virtual Consoles)" },
+  { id: "ssh", label: "الوصول عن بُعد: SSH" },
+  { id: "tmux", label: "ت multiplexing: tmux وscreen" },
+  { id: "shell-types", label: "أنواع الأ shells" },
+  { id: "how-to-choose", label: "كيف تختار الطرفية المناسبة؟" },
+  { id: "faq", label: "أسئلة شائعة" },
+  { id: "resources", label: "موارد ومقالات ذات صلة" },
+];
+
+const page = {
+  title: "أنواع الطرفيات في لينكس",
+  description: "دليل شامل عن أنواع الطرفيات في لينكس: محاكيات الطرفية، الطرفيات الافتراضية، SSH، tmux، وأكثر، مع مقارنة بين أفضل الخيارات.",
+  tags: ["طرفيات لينكس", "Terminal", "GNOME Terminal", "Konsole", "Alacritty", "Kitty", "tmux", "SSH"],
+  category: ["لينكس", "موسوعة"],
+  thumbnail: "/images/linux-terminals-wiki.webp",
+  parent: { title: "لينكس", href: "/wiki/linux-wiki/" },
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  keywords={page.tags}
+  canonical="/wiki/linux-terminals/"
+  ogImage={page.thumbnail || undefined}
+>
+<WikiLayout {page} {tocItems}>
+  <section id="what-is-terminal" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">ما هي الطرفيات؟</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الطرفية (Terminal) هي واجهة نصية تسمح للمستخدم بالتفاعل مع نظام التشغيل عبر كتابة أوامر نصية بدلاً من استخدام الواجهة الرسومية. في عالم لينكس، الطرفية هي الأداة الأساسية التي يستخدمها المطورون وadministrators لإدارة النظام والشبكات والبرامج.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      تختلف الطرفيات في لينكس من حيث الميزات والأداء والمظهر. بعضها مصمم للسرعة المطلقة، وبعضها يركز على التخصيص والراحة، وبعضها مصمم للعمل عن بُعد عبر الشبكات.
+    </p>
+  </section>
+
+  <section id="why-different" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">لماذا هناك أنواع مختلفة من الطرفيات؟</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      كل مطور أو مدير نظام له احتياجات مختلفة. بعضهم يحتاج سرعة فائقة في عرض النصوص الكبيرة، وبعضهم يحتاج دعمًا متعدد النوافذ، وبعضهم يحتاج ميزات متقدمة مثل شفافية الشاشة أو دعم Unicode الكامل.
+    </p>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الاختلافات الرئيسية بين الطرفيات تشمل:
+    </p>
+    <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4 space-y-2">
+      <li><strong>الأداء:</strong> سرعة عرض النصوص والتمرير</li>
+      <li><strong>التخصيص:</strong> درجة حرية تعديل المظهر والسلوك</li>
+      <li><strong>التكامل:</strong> دعم التكامل مع أدوات أخرى مثل tmux وSSH</li>
+      <li><strong>استهلاك الموارد:</strong> استهلاك الذاكرة والمعالج</li>
+      <li><strong>سهولة الاستخدام:</strong> واجهة المستخدم وميزات الإنتاجية</li>
+    </ul>
+  </section>
+
+  <section id="terminal-emulators" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">محاكيات الطرفية (Terminal Emulators)</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      محاكي الطرفية هو برنامج يعمل على واجهة سطح المكتب ويحاكي وظيفة الطرفية الحقيقية. هو الوسيلة الأكثر شيوعًا للتفاعل مع لينكس اليوم. إليك أشهر محاكيات الطرفية:
+    </p>
+  </section>
+
+  <section id="gnome-terminal" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">GNOME Terminal</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي الطرفية الافتراضية في بيئة GNOME سطح المكتب. يأتي مثبتًا بشكل افتراضي في معظم توزيعات لينكس التي تستخدم GNOME مثل Ubuntu وFedora.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>سهل الاستخدام ومباشر</li>
+        <li>دعم التبويبات (Tabs)</li>
+        <li>تخصيص الألوان والخطوط</li>
+        <li>تكامل مع نظام GNOME</li>
+        <li>بحث النصوص داخل الطرفية</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>sudo apt install gnome-terminal   # Ubuntu/Debian
+sudo dnf install gnome-terminal   # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="konsole" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Konsole</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي الطرفية الافتراضية في بيئة KDE Plasma. تتميز بميزات متقدمة وقابلية تخصيص عالية جدًا.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>تخصيص شامل للمظهر والسلوك</li>
+        <li>دعم تبديل بين ملفات التعريف (Profiles)</li>
+        <li>مشاركة الطرفية عبر الشبكة</li>
+        <li>دعم الت splitting (تقسيم النافذة)</li>
+        <li>بحث متقدم مع دعم التعبيرات النمطية</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>sudo apt install konsole          # Ubuntu/Debian
+sudo dnf install konsole          # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="alacritty" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Alacritty</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي طرفية حديثة وسريعة جدًا مكتوبة بلغة Rust. تركز على الأداء والبساطة، وتستخدم GPU لرسم النصوص مما يجعلها من أسرع الطرفيات المتاحة.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>أداء فائق بفضل استخدام GPU</li>
+        <li>استهلاك منخفض جدًا للموارد</li>
+        <li>تخصيص عبر ملف YAML</li>
+        <li>دعم Unicode وemoji</li>
+        <li>مدعومة بلغة Rust (أمان وثبات)</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># عبر Cargo (مدير حزم Rust)
+cargo install alacritty
+
+# أو عبر مدير الحزم
+sudo apt install alacritty        # Ubuntu/Debian
+sudo dnf install alacritty        # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="kitty" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Kitty</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي طرفية حديثة وقوية مكتوبة بلغة C وPython. تتميز بميزات متقدمة مثل عرض الصور داخل الطرفية ودعم GPU.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>عرض الصور مباشرة في الطرفية</li>
+        <li>دعم GPU للرسم السريع</li>
+        <li>تبويبات متعددة وتقسيم النوافذ</li>
+        <li>تخصيص شامل عبر ملف الإعدادات</li>
+        <li>دعم kittens (إضافات قابلة للبرمجة)</li>
+        <li>نسخ النصوص عبر الحافظة بشكل متزامن</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># عبر pip
+pip install kitty
+
+# أو عبر مدير الحزم
+sudo apt install kitty            # Ubuntu/Debian
+sudo dnf install kitty            # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="wezterm" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">WezTerm</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي طرفية حديثة ومفتوحة المصدر مكتوبة بلغة Rust. تتميز بميزات متقدمة وقابلية تخصيص عالية عبر Lua.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>تخصيص شامل عبر ملف Lua</li>
+        <li>دعم GPU للرسم</li>
+        <li>تبويبات متعددة وتقسيم النوافذ</li>
+        <li>التكامل مع tmux</li>
+        <li>دعم Unicode الكامل</li>
+        <li>دعم شامل (لينكس، macOS، ويندوز)</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># عبر Cargo
+cargo install wezterm
+
+# أو تحميل من الموقع الرسمي
+# https://wezfurlong.org/wezterm/</code></pre>
+    </div>
+  </section>
+
+  <section id="foot" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Foot</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي طرفية خفيفة وسريعة مصممة خصيصًا لبيئة Wayland. تتميز باستهلاك منخفض جدًا للموارد.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>خفيفة وسريعة جدًا</li>
+        <li>مصممة لبيئة Wayland</li>
+        <li>استهلاك منخفض للموارد</li>
+        <li>تخصيص عبر ملف الإعدادات</li>
+        <li>دعم Unicode وemoji</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>sudo apt install foot             # Ubuntu/Debian
+sudo dnf install foot             # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="xterm" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">xterm</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي أقدم محاكيات الطرفية في نظام X Window System. تعتبر المعيار الأساسي لمحاكيات الطرفية، وهي مثبتة بشكل افتراضي في معظم أنظمة لينكس.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>مثبتة بشكل افتراضي</li>
+        <li>خفيفة وسريعة</li>
+        <li>compatibility عالية مع التطبيقات القديمة</li>
+        <li>تخصيص عبر X resources</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>sudo apt install xterm            # Ubuntu/Debian
+sudo dnf install xterm            # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="tilix" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Tilix</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي طرفية متعددة النوافذ (tiling terminal emulator) تعمل على GTK. تتميز بقدرة تقسيم الشاشة إلى عدة نوافذ جانبية بجانب بعضها البعض.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>تقسيم الشاشة إلى عدة نوافذ</li>
+        <li>تبويبات متعددة</li>
+        <li>تخصيص شامل للمظهر</li>
+        <li>مشاركة الطرفية بين النوافذ</li>
+        <li>دعم sync (مزامنة الأوامر)</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>sudo apt install tilix            # Ubuntu/Debian
+sudo dnf install tilix            # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="terminator" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">Terminator</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      هي طرفية متعددة النوافذ تهدف إلى سهولة إدارة عدة منافذ طرفية في مساحة عمل واحدة.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">المميزات:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li>تقسيم الشاشة أفقيًا وعموديًا</li>
+        <li>تبويبات ونوافذ متعددة</li>
+        <li>تخصيص اختصارات لوحة المفاتيح</li>
+        <li>مشاركة الطرفية بين النوافذ</li>
+      </ul>
+    </div>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">التثبيت:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>sudo apt install terminator       # Ubuntu/Debian
+sudo dnf install terminator       # Fedora</code></pre>
+    </div>
+  </section>
+
+  <section id="virtual-consoles" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الطرفيات الافتراضية (Virtual Consoles)</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الطرفيات الافتراضية هي واجهات نصية تعمل مباشرة في نظام التشغيل بدون واجهة سطح المكتب. يمكنك الوصول إليها عبر اختصارات لوحة المفاتيح.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">الوصول:</h3>
+      <ul class="list-disc list-inside font-body text-navy-600 dark:text-zinc-300 space-y-1">
+        <li><strong>Ctrl + Alt + F1:</strong> الطرفية الافتراضية الأولى</li>
+        <li><strong>Ctrl + Alt + F2:</strong> الطرفية الافتراضية الثانية</li>
+        <li><strong>Ctrl + Alt + F3:</strong> الطرفية الافتراضية الثالثة</li>
+        <li><strong>Ctrl + Alt + F6:</strong> الطرفية الافتراضية السادسة</li>
+        <li><strong>Ctrl + Alt + F7:</strong> العودة لواجهة سطح المكتب</li>
+      </ul>
+    </div>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الطرفيات الافتراضية مفيدة جدًا عندما تتوقف واجهة سطح المكتب عن العمل أو تحتاج للوصول السريع للنظام.
+    </p>
+  </section>
+
+  <section id="ssh" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">الوصول عن بُعد: SSH</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      SSH (Secure Shell) هو بروتوكول يسمح بالوصول الآمن لطرفية جهاز آخر عبر الشبكة. إنه الأداة الأساسية للوصول عن بُعد إلى خوادم لينكس.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">مثال على استخدام SSH:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># الاتصال بخادم بعيد
+ssh user@192.168.1.100
+
+# الاتصال عبر البورت المخصص
+ssh -p 2222 user@server.com
+
+# نسخ ملف عبر SCP
+scp file.txt user@server:/path/to/destination/</code></pre>
+    </div>
+  </section>
+
+  <section id="tmux" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">tmux و GNU screen</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      tmux و screen هما أدوات terminal multiplexing تسمح بتقسيم الطرفية إلى عدة نوافذ وتبويبات، بالإضافة إلى الحفظ على الجلسات عند انقطاع الاتصال.
+    </p>
+    <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg mb-4">
+      <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">أهم أوامر tmux:</h3>
+      <pre class="bg-zinc-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code># بدء جلسة جديدة
+tmux
+
+# تقسيم الشاشة أفقيًا
+Ctrl+b %
+
+# تقسيم الشاشة عموديًا
+Ctrl+b "
+
+# التنقل بين النوافذ
+Ctrl+b o
+
+# فصل الجلسة
+Ctrl+b d
+
+# إعادة الاتصال بجلسة
+tmux attach</code></pre>
+    </div>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      ميزته الرئيسية هي الحفظ على الجلسات — حتى لو انقطع اتصالك بالخادم، يمكنك إعادة الاتصال بالجلسة السابقة بأوامرها ونافذاتها كما كانت.
+    </p>
+  </section>
+
+  <section id="shell-types" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أنواع الأ shells</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">
+      الطرفية تعمل مع shell (صدفة) هي البرنامج الذي يinterpret أوامرك. هناك عدة أنواع shells شائعة:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-navy-100 dark:border-zinc-700">
+        <thead>
+          <tr class="bg-navy-50 dark:bg-zinc-800/50">
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">الـ Shell</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">الملف</th>
+            <th class="border border-navy-100 dark:border-zinc-700 px-4 py-2 text-right font-heading text-navy dark:text-white">المميزات</th>
+          </tr>
+        </thead>
+        <tbody class="font-body text-navy-600 dark:text-zinc-300">
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Bash</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-mono text-sm">~/.bashrc</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">الافتراضي في معظم التوزيعات، متوافق عاليًا</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Zsh</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-mono text-sm">~/.zshrc</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">تحسينات للـ Bash، م UInt completions، plugins متعددة</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">Fish</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-mono text-sm">~/.config/fish/config.fish</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">سهل الاستخدام، autocomplete ذكي، syntax highlighting</td>
+          </tr>
+          <tr>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">PowerShell</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2 font-mono text-sm">~/.config/powershell/</td>
+            <td class="border border-navy-100 dark:border-zinc-700 px-4 py-2">متوفر على لينكس، جيد لإدارة الأنظمة السحابية</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="how-to-choose" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">كيف تختار الطرفية المناسبة؟</h2>
+    <p class="font-body text-navy-600 dark:text-zinc-300 leading-relaxed mb-4">الاختيار يعتمد على احتياجاتك:</p>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">للمبتدئين:</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300"><strong>GNOME Terminal</strong> أو <strong>Konsole</strong> — سهلة الاستخدام ومثبتة بشكل افتراضي.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">للسرعة:</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300"><strong>Alacritty</strong> أو <strong>Foot</strong> — أداء فائق باستهلاك منخفض.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">للمطورين:</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300"><strong>Kitty</strong> أو <strong>WezTerm</strong> — ميزات متقدمة وقابلية تخصيص عالية.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">للمهام المتعددة:</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300"><strong>Tilix</strong> أو <strong>Terminator</strong> — تقسيم الشاشة وإدارة عدة نوافذ.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">أسئلة شائعة عن الطرفيات في لينكس</h2>
+    <div class="space-y-6">
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">ما هي أفضل طرفية للمبتدئين؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">GNOME Terminal هي أفضل خيار للمبتدئين لأنها مثبتة بشكل افتراضي في معظم التوزيعات وسهلة الاستخدام مباشرة.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">هل يمكن استخدام أكثر من طرفية في نفس الوقت؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">نعم، يمكنك استخدام tmux أو screen لإدارة عدة جلسات طرفية في نفس الوقت، أو استخدام محاكيات الطرفية التي تدعم التبويبات والتقسيم.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">ما الفرق بين الطرفية والـ shell؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">الطرفية هي البرنامج الذي يعرض النصوص ويقبل إدخال المستخدم، بينما الـ shell هو البرنامج الذي يinterpret الأوامر. يمكنك استخدام shell مختلف مع نفس الطرفية.</p>
+      </div>
+      <div class="p-4 bg-navy-50 dark:bg-zinc-800/50 border border-navy-100 dark:border-zinc-700 rounded-lg">
+        <h3 class="font-heading text-lg font-bold text-navy dark:text-white mb-2">كيف أغير الطرفية الافتراضية؟</h3>
+        <p class="font-body text-navy-600 dark:text-zinc-300">يمكنك تغيير الطرفية الافتراضية عبر إعدادات بيئة سطح المكتب أو عبر أمر update-alternatives في Ubuntu/Debian.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" class="mb-12">
+    <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-4">موارد ومقالات ذات صلة</h2>
+    <ul class="space-y-3">
+      <li><a href="/wiki/linux-command-line-complete-guide/" class="underline">دليل سطر الأوامر في لينكس</a> — دليل شامل لتعلم أوامر لينكس الأساسية والمتقدمة</li>
+      <li><a href="/wiki/linux-wiki/" class="underline">دليل لينكس الشامل</a> — كل ما تحتاج معرفته عن نظام تشغيل لينكس</li>
+      <li><a href="/wiki/linux-distributions/" class="underline">أشهر توزيعات لينكس</a> — قائمة شاملة بأشهر توزيعات لينكس مع شرح مميزات كل واحدة</li>
+      <li><a href="/posts/wayland-vs-x11-linux-future-2026/" class="underline">Wayland مقابل X11</a> — شرح الفرق بين بروتوكولين العرض في لينكس</li>
+    </ul>
+  </section>
+</WikiLayout>
+</BaseLayout>

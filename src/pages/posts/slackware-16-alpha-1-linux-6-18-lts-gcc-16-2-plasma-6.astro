@@ -1,0 +1,370 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "slackware-16-alpha-1-linux-6-18-lts-gcc-16-2-plasma-6",
+    title: "Slackware 16 Alpha 1: توزيعة عملاقة بـ Linux 6.18 و KDE Plasma 6",
+    metaTitle: "Slackware 16 Alpha 1 بـ GCC 16.2 و Plasma 6",
+    description:
+        "Slackware 16 Alpha 1 صدرت في 5 سبتمبر 2026 — أقدم توزيعات لينكس بعد 4+ سنة من الإصدار 15، مع إعادة بناء شاملة بـ GCC 16.2، Linux 6.18 LTS، KDE Plasma 6.7.4، glibc 2.44، و Wayland 1.26 مع الحفاظ على فلسفة Slackware التقليدية.",
+    keywords: [
+        "Slackware 16",
+        "Alpha 1",
+        "Linux 6.18 LTS",
+        "GCC 16.2",
+        "KDE Plasma 6",
+        "توزيعة لينكس",
+        "pkgtools",
+        "glibc 2.44",
+        "Wayland",
+        "لينكس",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "9 سبتمبر 2026",
+    pubDate: new Date("2026-09-09"),
+    tags: ["Slackware", "لينكس", "توزيعة", "Alpha", "GCC"],
+    thumbnail: "/images/slackware-16-alpha-1-linux-6-18-lts-gcc-16-2-plasma-6.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            
+                <a href="https://www.slackware.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Slackware</strong>
+            </a>
+            — <strong>أحد أقدم توزيعات لينكس الباقية</strong> — أطلقت
+            <strong>Slackware 16 Alpha 1 في 5 سبتمبر 2026</strong>. هذا الإصدار يمثل
+            <strong>أول حد بارز رسمي على طريق الإصدار المستقر</strong>، وذلك بعد
+            <strong>أكثر من 4 سنوات ونصف من Slackware 15.0</strong> التي أطلقت في فبراير
+            2022.
+        </p>
+
+        <h2>إعادة بناء شاملة بـ GCC 16.2</h2>
+
+        <p>
+            أهم تغيير في <strong>Alpha 1 هو إعادة بناء توزيع Slackware بالكامل</strong> مع
+            <strong>سلسلة GNU أدوات جديدة بشكل جوهري</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>GCC 16.2.0:</strong>
+                
+                    <a href="https://gcc.gnu.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    مترجم GNU جديد بسنوات من التحسينات
+                </a>
+            </li>
+            <li>
+                <strong>glibc 2.44:</strong> مكتبة C نظامية محدثة
+            </li>
+            <li>
+                <strong>GNU Binutils 2.47:</strong> أدوات تطوير أساسية جديدة
+            </li>
+        </ul>
+
+        <p>
+            <strong>هذا ليس مجرد استبدال ثلاث حزم</strong> — بل إعادة بناء شاملة للتوزيع
+            بالكامل ضد هذه المكونات. كل هذا يعني أساس أحدث بكثير من Slackware 15.
+        </p>
+
+        <h2>Linux 6.18 LTS كأساس نواة</h2>
+
+        <p>
+            <strong>Slackware 16 Alpha 1 تستخدم Linux Kernel 6.18 LTS كنواتها الأساسية</strong>.
+            هذا اختيار حكيم لتوزيعة مثل Slackware حيث الإصدارات المستقرة تبقى ذات صلة
+            <strong>لفترة أطول بكثير من الإصدارات المعتادة</strong>.
+        </p>
+
+        <p>
+            بالمقارنة مع <strong>Linux 5.15 من Slackware 15.0</strong>، يوفر 6.18
+            <strong>دعماً أوسع للأجهزة الحديثة</strong>:
+        </p>
+
+        <ul>
+            <li>معالجات AMD و Intel حديثة</li>
+            <li>أجهزة الرسوميات الجديدة</li>
+            <li>أجهزة التشبيك</li>
+            <li>تخزين NVMe</li>
+            <li>منصات الحواسيب المحمولة</li>
+        </ul>
+
+        <h2>KDE Plasma 6 الأهم للمستخدمين</h2>
+
+        <p>
+            ربما <strong>التغيير الأبرز للمستخدمين هو KDE Plasma 6</strong>.
+            
+                <a href="https://kde.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Slackware تحولت إلى Plasma 6 في يونيو 2026</strong>
+            </a>
+            بعد تطوير واختبار مكثف. بحلول Alpha 1،
+            <strong>وصلت Slackware إلى KDE Plasma 6.7.4</strong>.
+        </p>
+
+        <p>
+            هذا يمثل <strong>أكبر تغيير على سطح المكتب بين Slackware 15 و 16</strong>.
+            Slackware 15 أطلقت مع Plasma 5، بينما Plasma 6 يجلب
+            
+                <a href="https://www.qt.io/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>نظام Qt 6 الحديث و KDE Frameworks 6</strong>
+            </a>
+            .
+        </p>
+
+        <h2>Plasma 6 استغرق سنوات في الإعداد</h2>
+
+        <p>
+            انتقال Slackware إلى Plasma 6 لم يكن بسيطاً.
+            <strong>تم تطوير واختبار العمل بشكل منفصل قبل دخوله Slackware-current</strong>.
+            
+                <a href="https://www.slackware.com/~alienBOB/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Eric Hameleers (alienBOB) و LuckyCyborg</strong>
+            </a>
+            <strong>قاما بعمل جوهري في تجهيز البنية التحتية</strong>.
+        </p>
+
+        <p>
+            يشرح هذا <strong>لماذا اعتمدت Slackware Plasma 6 متأخراً أكثر من التوزيعات الأخرى</strong>
+            — Slackware تفضل الحذر والاختبار الشامل.
+        </p>
+
+        <h2>Xfce لا تزال متاحة</h2>
+
+        <p>
+            <strong>Slackware ليست بيئة سطح مكتب KDE فقط</strong>.
+            
+                <a href="https://xfce.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>بيئة Xfce تبقى خياراً خفيفاً</strong>
+            </a>
+            جنباً إلى جنب مع Plasma. هذا يعكس
+            <strong>نهج Slackware التاريخي بتوفير خيارات متعددة</strong> للمستخدمين.
+        </p>
+
+        <h2>مكدس رسوميات وملتيميديا حديث</h2>
+
+        <p>
+            تحديث سطح المكتب يتعدى Plasma نفسه. Slackware 16 دمج تحديثات رئيسية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>X.Org Server 21.1.24:</strong>
+                
+                    <a href="https://www.x.org/"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                >
+                    خادم العرض الحديث
+                </a>
+            </li>
+            <li>
+                <strong>Wayland 1.26.0:</strong>
+                
+                    <a href="https://wayland.freedesktop.org/"
+                    target="_blank"
+                    rel="noopener noreferrier nofollow"
+                >
+                    بروتوكول العرض الحديث
+                </a>
+            </li>
+            <li>
+                <strong>FFmpeg 9.0.1:</strong> معالج الوسائط المتقدم
+            </li>
+        </ul>
+
+        <p>
+            حضور Wayland أهم خاصة مع Plasma 6 حيث أصبح البروتوكول
+            <strong>مركزياً للغاية في تجربة سطح المكتب الحديثة</strong>.
+        </p>
+
+        <h2>Firefox و Thunderbird محدثان</h2>
+
+        <p>
+            <strong>Alpha 1 لم تقتصر على المترجم وسطح المكتب</strong>.
+            
+                <a href="https://www.mozilla.org/firefox/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Slackware حدّثت Firefox</strong>
+            </a>
+            و
+            
+                <a href="https://www.thunderbird.net/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Thunderbird</strong>
+            </a>
+            مع تحديثات أمنية وإصلاحات. Slackware تفضل
+            <strong>شحن مجموعة برمجيات جاهزة للاستخدام</strong> بدلاً من إجبار المستخدمين
+            على تجميع كل شيء بعد التثبيت.
+        </p>
+
+        <h2>LILO لا تزال هنا</h2>
+
+        <p>
+            رغم كل التحديث، <strong>قطعة قديمة الطراز من Slackware تبقى: LILO</strong>.
+            
+                <a href="https://en.wikipedia.org/wiki/LILO_(boot_loader)"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Linux Loader اختفت من معظم التوزيعات الحديثة</strong>
+            </a>
+            لصالح GRUB و حلول UEFI الأحدث.
+        </p>
+
+        <p>
+            <strong>Slackware توفر LILO على أي حال</strong> — مثال مثالي على توازن Slackware
+            <strong>بين القديم والجديد</strong>. نظام Slackware يمكن أن يشغل
+            <strong>Linux 6.18، GCC 16، Wayland، Qt 6، و Plasma 6 بينما يحتفظ بأدوات إدارة قديمة</strong>.
+        </p>
+
+        <h2>نظام إدارة الحزم يبقى pkgtools</h2>
+
+        <p>
+            <strong>Slackware تستمر استخدام نظام pkgtools التقليدي</strong> بدلاً من
+            
+                <a href="https://www.rpm.org/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>RPM</strong>
+            </a>
+            أو
+            
+                <a href="https://wiki.debian.org/Apt"
+                target="_blank"
+                rel="noopener noreferrier nofollow"
+            >
+                <strong>APT</strong>
+            </a>
+            أو غيرها. حزم Slackware بسيطة بقصد، والإدارة تضع
+            <strong>مسؤولية أكبر على المستخدم</strong>.
+        </p>
+
+        <p>
+            للقادمين من Ubuntu أو Fedora، هذا قد يبدو غريباً.
+            <strong>للقاعدة المكرسة لـ Slackware، هذا الشفافية هي جاذبية رئيسية للتوزيعة</strong>.
+        </p>
+
+        <h2>واحدة من أقدم توزيعات لينكس</h2>
+
+        <p>
+            <strong>تاريخ Slackware يعود إلى 1993</strong> — مما يجعلها من
+            
+                <a href="https://distrowatch.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>أقدم التوزيعات والأسبق من Debian و Red Hat و Ubuntu</strong>
+            </a>
+            . مع ذلك، تبقى تحت صيانة نشطة بعد أكثر من ثلاثة عقود.
+        </p>
+
+        <p>
+            <strong>الفلسفة بقيت ثابتة: توفر بيئة Unix-like بقليل من التجريد</strong>
+            بين المسؤول والنظام الأساسي. هذا يجعل Slackware
+            <strong>مختلفة جداً عن التوزيعات الحديثة ذات أدوات الواجهة الرسومية الواسعة</strong>.
+        </p>
+
+        <h2>Alpha تعني Alpha</h2>
+
+        <p>
+            رغم الإنجاز، <strong>يجب على المستخدمين الاهتمام بكلمة Alpha</strong>.
+            
+                <a href="https://en.wikipedia.org/wiki/Software_release_life_cycle"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Slackware 16 Alpha 1 ليست الإصدار النهائي</strong>
+            </a>
+            — بل لقطة تطوير للاختبار.
+        </p>
+
+        <p>
+            <strong>الإعادة البناء ضد GCC 16.2 وglibc 2.44 و Binutils 2.47 وحدها توفر فرصاً
+            لظهور مشاكل جديدة</strong>. المستخدمون الذين يعتمدون على Slackware للإنتاج
+            يجب أن يستمروا <strong>معاملة Slackware 15.0 كالفرع المستقر</strong>.
+        </p>
+
+        <h2>Slackware-current ستستمر التغير</h2>
+
+        <p>
+            <strong>Alpha 1 لا توقف إصدارات البرامج في Slackware</strong>.
+            Slackware-current تبقى فرع تطوير — الحزم ستستمر التغير
+            <strong>بينما يعمل Patrick Volkerding والمساهمون نحو الإصدار المستقر</strong>.
+        </p>
+
+        <p>
+            <strong>النسخ الدقيقة من النواة و KDE و المكتبات الأخرى في Slackware 16.0 النهائية
+            قد تختلف عن Alpha 1</strong>.
+        </p>
+
+        <h2>لا يوجد تاريخ إصدار نهائي بعد</h2>
+
+        <p>
+            <strong>Slackware لم تعلن تاريخاً نهائياً لـ Slackware 16.0</strong>.
+            
+                <a href="https://www.slackware.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                <strong>Slackware تاريخياً تطلق عندما تكون جاهزة</strong>
+            </a>
+            بدلاً من الالتزام بتاريخ صارم.
+        </p>
+
+        <p>
+            <strong>وصول Alpha 1 مهم على أي حال</strong> — يمثل تقدماً ملموساً.
+            <strong>السلسلة الأساسية تم تحديثها، التوزيع خضع لإعادة بناء شاملة،
+            Plasma 6 دخلت، و Linux 6.18 LTS توفر أساس نواة مستقر</strong>.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            
+                <a href="https://www.linuxjournal.com/content/slackware-16-alpha-1-released-linux-618-lts-gcc-162-and-plasma-6"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Linux Journal
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>

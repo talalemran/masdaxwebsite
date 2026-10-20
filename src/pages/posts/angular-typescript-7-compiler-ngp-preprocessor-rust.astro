@@ -1,0 +1,475 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "angular-typescript-7-compiler-ngp-preprocessor-rust",
+    title: "Angular و TypeScript 7: معالج جديد بـ Rust وـ Oxc لـ الأداء الأفضل",
+    metaTitle: "Angular TypeScript 7 Compiler: معالج جديد بـ Rust و Oxc",
+    description:
+        "Angular تعيد كتابة معالج الـ Compiler خاصتها بـ استخدام Rust و Oxc library لـ الاستفادة من أداء TypeScript 7. معمارية هجينة جديدة تعرّف بـ Angular Preprocessor (ngp) بـ فصل الـ compilation عن type-checking.",
+    keywords: [
+        "Angular",
+        "TypeScript 7",
+        "Compiler",
+        "Rust",
+        "Oxc",
+        "ngp",
+        "Preprocessor",
+        "برمجة",
+        "ويب",
+        "أداء",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "3 أكتوبر 2026",
+    pubDate: new Date("2026-10-03"),
+    tags: ["Angular", "TypeScript", "Compiler", "Rust", "Performance"],
+    thumbnail: "/images/angular-typescript-7-compiler-ngp-preprocessor-rust.webp",
+};
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+
+        <p>
+            أعلنت فريق Angular من Google في سبتمبر 2026 عن خطة طموحة 
+            لإعادة كتابة معالج TypeScript الخاص بـ Angular (الـ Compiler) 
+            باستخدام Rust و مكتبة Oxc بدلاً من TypeScript الخالص. 
+            السبب الرئيسي: استفادة Angular من الأداء الهائل الذي جلبته TypeScript 7، 
+            التي أُعيدت كتابتها بـ Go وحققت تحسّن في الأداء يصل إلى 10 مرات. 
+            لكن، Angular لا يمكنها استخدام TypeScript 7 مباشرة لأن معالجها 
+            يحتاج إلى تكامل عميق جداً مع TypeScript APIs التي لا تتوفر في النسخة من Go. 
+            الحل: بناء معالج جديد يُدعى Angular Preprocessor (ngp) 
+            بـ معمارية هجينة تجمع بين Rust و TypeScript. 
+            النسخة التجريبية متوقعة في نهاية 2026.
+        </p>
+
+        <h2>السياق: TypeScript 7 والمشكلة</h2>
+
+        <h3>TypeScript 7 و الأداء الجديد</h3>
+
+        <p>
+            في سبتمبر 2026، أطلقت Microsoft TypeScript 7 بـ بنية جديدة تماماً. 
+            TypeScript 7 أُعيدت كتابتها بـ Go بدلاً من TypeScript نفسها. 
+            النتيجة: تحسّن أداء يصل إلى 10 مرات في الـ compilation. 
+            هذا تحسّن هائل جداً.
+
+            لكن مع هذا التحسّن جاءت مشكلة: 
+            TypeScript 7 مكتوبة بـ Go، وهذا يعني أنها compiler منفصل تماماً. 
+            الـ APIs الداخلية لـ TypeScript (ts.Transformer وغيرها) 
+            لا توجد في النسخة من Go، لأن Go عالم مختلف تماماً عن JavaScript/TypeScript.
+        </p>
+
+        <h3>مشكلة Angular الخاصة</h3>
+
+        <p>
+            <img
+                src="/images/articles/angular-typescript-7-compiler-ngp-preprocessor-rust/01.webp"
+                alt="Angular TypeScript 7 Compiler Architecture"
+                width="720"
+                height="507"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Angular لديها معالج معقد جداً يعتمد على تكامل عميق مع TypeScript APIs. 
+            معالج Angular لا يفقط يقرأ الكود، بل يفعل أشياء متقدمة جداً:
+        </p>
+
+        <ul>
+            <li>
+                يعثر على Angular decorators (@Component, @Pipe, @Injectable، إلخ)
+            </li>
+            <li>
+                يترجم templates الـ HTML إلى JavaScript optimized للـ runtime
+            </li>
+            <li>
+                يعمل type-checking للـ expressions داخل الـ templates
+            </li>
+            <li>
+                يستخدم ts.Transformer API للـ code transformation
+            </li>
+            <li>
+                يفعل cross-file optimizations
+            </li>
+        </ul>
+
+        <p>
+            هذا التكامل العميق لا يمكنه أن يعمل مع TypeScript 7 (النسخة من Go) 
+            لأن الـ APIs المطلوبة لا توجد في Go بشكل public. 
+            Microsoft في البداية لم توفر طريقة لـ interop مع TypeScript 7 
+            بالطريقة التي تحتاجها Angular.
+        </p>
+
+        <h2>الحل: إعادة كتابة المعالج</h2>
+
+        <h3>المعمارية الجديدة: ngp (Angular Preprocessor)</h3>
+
+        <p>
+            بدلاً من محاولة تعديل TypeScript 7 أو استخدام interop APIs، 
+            فريق Angular قررت: دعونا نبني معالج جديد تماماً. 
+            هذا الحل بسيط من ناحية المبدأ:
+        </p>
+
+        <p>
+            فصل العمل إلى قسمين:
+        </p>
+
+        <ul>
+            <li>
+                Compilation: تحويل Angular decorators إلى كود optimized
+            </li>
+            <li>
+                Type-checking: استخدام TypeScript للتحقق من الأنواع والـ diagnostics
+            </li>
+        </ul>
+
+        <p>
+            بدلاً من أن يفعل معالج واحد كل شيء، 
+            ngp سيولد ملفين من كل ملف input:
+        </p>
+
+        <ul>
+            <li>
+                dashboard.ng.ts: الكود الأصلي لكن بـ decorators مترجمة وـ templates compiled
+            </li>
+            <li>
+                dashboard.ngtypecheck.ts: نسخة مترجمة من الـ templates بـ صيغة تفهمها TypeScript type-checker
+            </li>
+        </ul>
+
+        <p>
+            بعدها، TypeScript 7 يمكنها أن تعمل على هذه الملفات المحضّرة. 
+            لا حاجة للـ deep integration مع TypeScript APIs.
+        </p>
+
+        <h3>المعمارية الهجينة: Rust + TypeScript</h3>
+
+        <p>
+            ngp نفسها معمارية هجينة:
+        </p>
+
+        <p>
+            Frontend (الجزء الأمامي) — مكتوب بـ Rust:
+        </p>
+
+        <ul>
+            <li>
+                مكتبة Rust تُدعى الـ "analyzer"
+            </li>
+            <li>
+                تستخدم Oxc library (محرك JavaScript/TypeScript من Rust)
+            </li>
+            <li>
+                تقرأ الكود بـ سرعة (Rust أسرع من JavaScript)
+            </li>
+            <li>
+                تجد Angular-decorated classes و تعيّن العلاقات بينها
+            </li>
+            <li>
+                تستخرج معلومات الـ dependencies
+            </li>
+            <li>
+                تولّد قائمة من compilation tasks لـ الـ backend
+            </li>
+            <li>
+                لأن Rust لديها دعم قوي للـ multithreading، تقرأ الكود بـ parallelism
+            </li>
+        </ul>
+
+        <p>
+            Backend (الجزء الخلفي) — مكتوب بـ TypeScript:
+        </p>
+
+        <ul>
+            <li>
+                يأخذ compilation tasks من الـ analyzer (Rust)
+            </li>
+            <li>
+                يستخدم Angular's existing template compiler (مكتوب بـ TypeScript)
+            </li>
+            <li>
+                يولّد الملفات الـ output (dashboard.ng.ts و dashboard.ngtypecheck.ts)
+            </li>
+        </ul>
+
+        <p>
+            الـ Rust و TypeScript يتحدثان مع بعضهما عبر napi-rs، 
+            مكتبة تسمح لـ Rust code أن يُحمّل كـ native plugin في Node.js 
+            أو كـ WebAssembly bundle.
+        </p>
+
+        <h2>التفاصيل التقنية</h2>
+
+        <h3>الـ Analyzer (Rust Frontend)</h3>
+
+        <p>
+            الـ analyzer هو المحرك الرئيسي في ngp:
+        </p>
+
+        <ul>
+            <li>
+                يستخدم Oxc للـ parsing الكود TypeScript/JavaScript
+            </li>
+            <li>
+                يبني AST (Abstract Syntax Tree)
+            </li>
+            <li>
+                يفعل semantic analysis (دون type-checking مكتمل)
+            </li>
+            <li>
+                يعرّف Angular-decorated classes
+            </li>
+            <li>
+                يعرّف العلاقات بين NgModules و components
+            </li>
+            <li>
+                يستخرج dependency information من Angular Package Format libraries
+            </li>
+            <li>
+                يولّد compilation tasks
+            </li>
+            <li>
+                يقرأ ملايين الـ source files بـ parallelism فعّال
+            </li>
+        </ul>
+
+        <p>
+            الـ analyzer يُخرج stream من compilation tasks 
+            يُرسل إلى الـ TypeScript backend.
+        </p>
+
+        <h3>الـ Backend (TypeScript)</h3>
+
+        <p>
+            الـ backend يأخذ tasks من الـ analyzer ويفعل:
+        </p>
+
+        <ul>
+            <li>
+                يستخدم Angular's existing template compiler
+            </li>
+            <li>
+                يترجم templates إلى TypeScript code
+            </li>
+            <li>
+                يولّد source maps
+            </li>
+            <li>
+                يكتب output files (أو يحفظها في الذاكرة للأداء)
+            </li>
+        </ul>
+
+        <p>
+            الـ source maps مهمة جداً: عندما TypeScript 7 تقرر errors، 
+            الـ errors تُرجع إلى الملفات الأصلية، ليس الملفات الـ generated.
+        </p>
+
+        <h3>الـ Oxc Library</h3>
+
+        <p>
+            Oxc (Oxidation Compiler) محرك JavaScript parsing و compilation 
+            مكتوب بـ Rust. تطوره شركة Void Zero. 
+            Oxc هو المحرك الذي يعمل خلف Vite (build tool شهير جداً). 
+            مميزات Oxc:
+        </p>
+
+        <ul>
+            <li>
+                Parsing سريع جداً
+            </li>
+            <li>
+                AST stable وـ mature
+            </li>
+            <li>
+                دعم semantic analysis
+            </li>
+            <li>
+                APIs للـ code transformations
+            </li>
+            <li>
+                يستخدم بـ كفاءة من قبل أدوات أخرى
+            </li>
+        </ul>
+
+        <h2>الأثر المستقبلي والفوائد</h2>
+
+        <h3>الأداء المتوقع</h3>
+
+        <p>
+            فريق Angular لم تؤكد بعد أن ngp ستحصل على نفس الـ 10x speedup من TypeScript 7. 
+            السبب: TypeScript compilation فقط جزء من العملية الكاملة. 
+            هناك transpilation و minification و bundling أيضاً.
+
+            لكن الاختبارات الأولية تشير إلى:
+        </p>
+
+        <ul>
+            <li>
+                Rust analyzer سيقرأ الكود أسرع
+            </li>
+            <li>
+                Multithreading في Rust سيعطي parallelism أفضل
+            </li>
+            <li>
+                Incremental builds قد تكون أسرع
+            </li>
+        </ul>
+
+        <h3>الـ Language Service</h3>
+
+        <p>
+            ngp أيضاً سيقدّم engine جديد للـ language service 
+            (الأداة التي توفر autocompletion و error checking في الـ IDE). 
+            فريق Angular لديها prototype يعمل بالفعل.
+        </p>
+
+        <h3>دعم WASM</h3>
+
+        <p>
+            لأن ngp تستخدم napi-rs، 
+            الـ Rust analyzer يمكنها أن تُحمّل كـ WebAssembly bundle. 
+            هذا يعني: Angular compilation في الـ browser ممكن الآن. 
+            أدوات online coding (زي StackBlitz) يمكنها أن تستخدم ngp.
+        </p>
+
+        <h2>قراءة تحليلية مستقلة</h2>
+
+        <p>
+            هذا الحل يعكس نضج Angular كـ framework وـ اهتمامها بـ الأداء. 
+            بدلاً من الانتظار بـ آمل أن Microsoft توفر APIs كافية في TypeScript 7، 
+            Angular بنت حلاً مستقلاً.
+
+            المعمارية الهجينة (Rust + TypeScript) عملية ذكية جداً:
+        </p>
+
+        <ul>
+            <li>
+                تستفيد من سرعة Rust للـ parsing والـ analysis الثقيل
+            </li>
+            <li>
+                تحتفظ بـ Angular's existing template compiler (مختبر جيداً، مستقر)
+            </li>
+            <li>
+                لا حاجة لإعادة كتابة كل شيء من الصفر
+            </li>
+            <li>
+                Hybrid approach أقل خطورة من rewrite كامل
+            </li>
+        </ul>
+
+        <p>
+            الاختيار بـ Oxc بدلاً من Go (الذي اختارته Microsoft):
+        </p>
+
+        <ul>
+            <li>
+                Angular لا تحتاج لإعادة كتابة parser كامل
+            </li>
+            <li>
+                Oxc موجودة وـ mature
+            </li>
+            <li>
+                Rust multithreading أقوى من Go
+            </li>
+            <li>
+                Rust WASM support أفضل
+            </li>
+        </ul>
+
+        <p>
+            هناك حالياً compiler آخر من Void Zero مكتوب بـ Rust و Oxc 
+            لـ Angular (oxc-angular-compiler)، 
+            لكنه لا يفعل template type-checking أو cross-file optimizations. 
+            ngp يفعل كل هذا.
+        </p>
+
+        <h2>الأسئلة الشائعة</h2>
+
+        <h3>س: هل ngp ستكون متاحة قريباً؟</h3>
+        <p>
+            ج: نسخة تجريبية متوقعة في نهاية 2026 (الآن في وقت المقالة: سبتمبر 2026، 
+            فقد تكون available بالفعل في يونيو 2027 أو بعده).
+        </p>
+
+        <h3>س: هل سيكون هناك breaking changes؟</h3>
+        <p>
+            ج: فريق Angular تختبرها ضد Google's entire codebase. 
+            الأغلب: لا breaking changes. 
+            قد تكون بعض edge cases حيث type-checking يختلف قليلاً، 
+            لكن هذا نادر جداً.
+        </p>
+
+        <h3>س: لماذا لم تستخدم Angular interop APIs من TypeScript 7.1؟</h3>
+        <p>
+            ج: Angular ستستخدم TS 7.1 interop APIs للـ type-checking والـ diagnostics. 
+            لكن للأداء، معالجة في native code أفضل. 
+            Angular يفعل AST walking معقد جداً، 
+            والـ native code أسرع.
+        </p>
+
+        <h3>س: هل oxc-angular-compiler من Void Zero ستختفي؟</h3>
+        <p>
+            ج: لا، Angular مهتمة بـ التعاون مع Void Zero. 
+            قد تستخدم Angular أجزاء من oxc-angular-compiler 
+            في ngp مستقبلاً.
+        </p>
+
+        <h3>س: لماذا Rust و ليس Go؟</h3>
+        <p>
+            ج: Go جيدة للـ porting من لغة garbage-collected آخرى. 
+            Angular اختارت Rust لأنها تحتاج JavaScript/TypeScript toolchain (parser, AST, transformer)، 
+            وـ Oxc (في Rust) هي الأفضل والأنضج.
+        </p>
+
+        <h2>الخاتمة</h2>
+
+        <p>
+            Angular TypeScript 7-powered Compiler (ngp) 
+            يمثل قفزة كبيرة في استراتيجية الأداء. 
+            المعمارية الهجينة (Rust frontend + TypeScript backend) 
+            حل ذكي لـ مشكلة حقيقية: 
+            TypeScript 7 سريعة جداً لكن لا توفر APIs كافية للـ frameworks معقدة.
+
+            ngp لن توفر فقط أداء أفضل، 
+            بل أيضاً فرصة لـ Angular online tools و browser-based compilation. 
+            هذا يفتح إمكانيات جديدة للـ developers و الـ tools builders.
+
+            لـ developers الذين يستخدمون Angular الآن: 
+            لا شيء سيتغير في الكود الخاص بك. 
+            ngp شفافة تماماً. 
+            الفائدة الوحيدة: builds أسرع و diagnostics أفضل.
+
+            هذا مثال على كيف framework maturity يعني 
+            الاستثمار في الأداء و الأدوات الأساسية، 
+            وليس فقط الميزات الجديدة اللامعة.
+        </p>
+
+        <h3>المصدر:</h3>
+        <p>
+            <a
+                href="https://blog.angular.dev/an-update-on-angulars-typescript-7-powered-compiler-9619a35e2b0a"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                Angular Blog: An update on Angular's TypeScript 7-powered Compiler
+            </a>
+        </p>
+    </PostLayout>
+</BaseLayout>
