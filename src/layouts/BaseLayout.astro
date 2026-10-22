@@ -32,17 +32,64 @@ const {
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
+    <!-- Google & General Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Fallback for modern browsers -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://cloud.umami.is" crossorigin />
-    <link rel="preload" href="/fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/cairo-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/tajawal-400-arabic.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/tajawal-400-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/fonts/fonts.css" media="print" onload="this.media='all'" />
+    <link
+      rel="preload"
+      href="/fonts/cairo-arabic.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/cairo-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/tajawal-400-arabic.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/tajawal-400-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="stylesheet"
+      href="/fonts/fonts.css"
+      media="print"
+      onload="this.media='all'"
+    />
     <noscript><link rel="stylesheet" href="/fonts/fonts.css" /></noscript>
-    <link rel="stylesheet" href="/fontawesome/css/all.min.css" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="/fontawesome/css/all.min.css" /></noscript>
-    <link rel="alternate" type="application/rss+xml" title="مصدر إكس" href="/rss.xml" />
+    <link
+      rel="stylesheet"
+      href="/fontawesome/css/all.min.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript
+      ><link rel="stylesheet" href="/fontawesome/css/all.min.css" /></noscript
+    >
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="مصدر إكس"
+      href="/rss.xml"
+    />
     <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
     <link rel="me" href="https://mastodon.social/@masdarx" />
     <script type="application/ld+json">
@@ -55,10 +102,7 @@ const {
         "logo": "https://www.masdarx.com/images/masdarx.webp",
         "description": "منصة عربية متخصصة في أخبار البرمجيات مفتوحة المصدر والتقنيات الحديثة",
         "inLanguage": "ar",
-        "sameAs": [
-          "https://t.me/masdarx",
-          "https://mastodon.social/@masdarx"
-        ],
+        "sameAs": ["https://t.me/masdarx", "https://mastodon.social/@masdarx"],
         "contactPoint": {
           "@type": "ContactPoint",
           "contactType": "customer service",
@@ -69,12 +113,18 @@ const {
     <script is:inline>
       (function () {
         var theme = localStorage.getItem("theme");
-        if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        if (
+          theme === "dark" ||
+          (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
           document.documentElement.classList.add("dark");
         }
       })();
     </script>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="69a36a5f-9ab7-4623-948e-243261cd98a3"></script>
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="69a36a5f-9ab7-4623-948e-243261cd98a3"></script>
     <MetaTags
       title={title}
       metaTitle={metaTitle}
@@ -85,8 +135,17 @@ const {
       {ogType}
       {noIndex}
     />
-    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
-    <meta name="google-adsense-account" content="ca-pub-1941765735229703">
+    {
+      preloadImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={preloadImage}
+          fetchpriority="high"
+        />
+      )
+    }
+    <meta name="google-adsense-account" content="ca-pub-1941765735229703" />
     <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col overflow-x-hidden">
@@ -102,14 +161,23 @@ const {
       aria-label="العودة للأعلى"
       type="button"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M5 15l7-7 7 7"></path>
       </svg>
     </button>
 
     <script>
       (function () {
-        var btn = document.getElementById("back-to-top");
+        const btn = document.getElementById("back-to-top");
         if (!btn) return;
 
         window.addEventListener("scroll", function () {
