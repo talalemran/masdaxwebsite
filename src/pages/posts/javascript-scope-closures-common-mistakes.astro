@@ -1,0 +1,981 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "javascript-scope-closures-common-mistakes",
+    title: "فهم مشكلة الـ Scope والـ Closures في جافاسكريبت وتجنب أخطائها الشائعة",
+    metaTitle: "الـ Scope والـ Closures في جافاسكريبت: دليل عملي لتجنب الأخطاء",
+    description:
+        "دليل معمق لفهم الـ Scope والـ Closures في جافاسكريبت: الأنواع، سلسلة النطاق، Hoisting، Temporal Dead Zone، var مقابل let وconst، الأخطاء الشائعة في الحلقات، تسريب الذاكرة، this والـ closures، وأنماط عملية مع أمثلة كود وجداول وأسئلة شائعة.",
+    keywords: [
+        "JavaScript Scope",
+        "JavaScript Closures",
+        "Lexical Scope",
+        "Hoisting in JavaScript",
+        "Temporal Dead Zone",
+        "var vs let vs const",
+        "JavaScript loop closures",
+        "Memory leaks JavaScript",
+        "IIFE JavaScript",
+        "JavaScript module pattern",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "24 أكتوبر 2026",
+    pubDate: new Date("2026-10-24"),
+    tags: ["جافاسكريبت", "تطوير الويب", "Scope", "Closures", "أخطاء شائعة"],
+    thumbnail: "/images/javascript-scope-closures-common-mistakes.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة الـ Scope في جافاسكريبت" },
+    { id: "what-is-scope", label: "ما هو الـ Scope؟ ولماذا هو مشكلة أصلًا؟" },
+    { id: "types-of-scope", label: "أنواع الـ Scope: Global وFunction وBlock وModule" },
+    { id: "lexical-scope", label: "Lexical Scope: النطاق يُحدد وقت الكتابة لا وقت التنفيذ" },
+    { id: "var-let-const", label: "var مقابل let وconst: الفروق التي تصنع الأخطاء" },
+    { id: "hoisting", label: "Hoisting وTemporal Dead Zone: لماذا يرمي let خطأ؟" },
+    { id: "scope-chain", label: "سلسلة النطاق (Scope Chain): كيف تبحث جافاسكريبت عن المتغير؟" },
+    { id: "what-is-closure", label: "ما هو الـ Closure تحديدًا؟" },
+    { id: "closure-use-cases", label: "استخدامات عملية للـ Closures" },
+    { id: "loop-closure-mistake", label: "الخطأ الأشهر: Closures داخل الحلقات" },
+    { id: "this-closure", label: "this والـ Closures: الخطأ الذي يطارد المبتدئين" },
+    { id: "memory-leaks", label: "تسريب الذاكرة: كيف تسبب الـ Closures مشكلة حقيقية؟" },
+    { id: "iife-module", label: "IIFE ونمط الوحدة (Module Pattern)" },
+    { id: "async-closures", label: "الـ Closures والعمليات غير المتزامنة" },
+    { id: "best-practices", label: "ممارسات عملية لتجنب أخطاء الـ Scope والـ Closures" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            الـ <strong>Scope</strong> والـ <strong>Closures</strong> من
+            أكثر المفاهيم التي تُدرَّس في جافاسكريبت، وأكثرها يُساء فهمًا
+            في الوقت نفسه. ليس لأنها معقدة، بل لأن معظم الشروحات تقدم
+            تعريفًا نظريًا صحيحًا ثم تنتقل مباشرة إلى الأمثلة دون شرح
+            <strong>آلية التنفيذ الفعلية</strong> التي تجعل الأخطاء
+            تحدث. النتيجة أن المطور يحفظ القاعدة، ثم يقع في الخطأ نفسه
+            في الإنتاج.
+        </p>
+
+        <p>
+            هذا الدليل يفكك المفهومين من الداخل: كيف يبني محرك
+            جافاسكريبت البيئة المعجمية، وكيف تُربط المتغيرات بالنطاقات،
+            ولماذا تنتج الحلقات والعمليات غير المتزامنة وthis
+            أخطاءً متكررة. ثم يربط كل ذلك بمشكلات حقيقية: تسريب الذاكرة،
+            وأداء الصفحة، وسلوك مستمعي الأحداث. الهدف ليس أن تعرف
+            التعريف، بل أن تتوقف عن الوقوع في <strong>الأخطاء الستة
+            الشائعة</strong> التي يقع فيها معظم المطورين.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة الـ Scope في جافاسكريبت</h2>
+
+        <p>
+            الجدول التالي يلخص أنواع النطاقات في جافاسكريبت، والمكان الذي
+            ينشئها، والكلمات التي تعمل داخلها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النوع</th>
+                        <th class="px-4 py-2 font-semibold">يُنشأ بواسطة</th>
+                        <th class="px-4 py-2 font-semibold">الكلمات العاملة</th>
+                        <th class="px-4 py-2 font-semibold">مثال</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">Global Scope</td>
+                        <td class="px-4 py-2">الملف أو النافذة</td>
+                        <td class="px-4 py-2">var، let، const، function</td>
+                        <td class="px-4 py-2">متغير خارج أي دالة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Function Scope</td>
+                        <td class="px-4 py-2">دالة عادية أو سهم</td>
+                        <td class="px-4 py-2">var، let، const، function</td>
+                        <td class="px-4 py-2">متغير داخل function</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Block Scope</td>
+                        <td class="px-4 py-2">أقواس معقوفة {}</td>
+                        <td class="px-4 py-2">let، const (var لا)</td>
+                        <td class="px-4 py-2">داخل if أو for أو try</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Module Scope</td>
+                        <td class="px-4 py-2">ملف ES Module</td>
+                        <td class="px-4 py-2">كل المتغيرات</td>
+                        <td class="px-4 py-2">var داخل ملف module</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Lexical / Closure</td>
+                        <td class="px-4 py-2">دالة داخل دالة</td>
+                        <td class="px-4 py-2">ما تصل إليه الدالة الداخلية</td>
+                        <td class="px-4 py-2">الدالة الداخلية + بيئتها</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="what-is-scope">ما هو الـ Scope؟ ولماذا هو مشكلة أصلًا؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/javascript-scope-closures-common-mistakes/01.webp"
+                alt="فهم مشكلة الـ Scope والـ Closures في جافاسكريبت وتجنب أخطائها الشائعة"
+                width="1200"
+                height="800"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الـ Scope هو القاعدة التي تحدد <strong>أين يمكن الوصول إلى
+            متغير</strong>. عند تنفيذ سطر مثل
+            <code>console.log(user.name)</code>، لا يبحث المحرك عن
+            <code>user</code> في كل مكان. يبحث في نطاق محدد، وفق سلسلة
+            مرتبة، ويتوقف عند أول تطابق. هذه السلسلة هي ما يحدد ما إذا
+            كان الكود سينجح أم يرمي <code>ReferenceError</code>.
+        </p>
+
+        <p>
+            المشكلة أن جافاسكريبت لا تُخبرك بصريًا بنطاق كل متغير. أنت
+            ترى المتغير، لكنك لا ترى الحدود التي يعيش داخلها. في لغة
+            مثل Python، المسافات البادئة ترسم النطاق أمام عينيك. في
+            جافاسكريبت، عليك أن تعرف القواعد ذهنيًا. وعندما تكون هذه
+            القواعد غائبة عن الذهن، تظهر الأخطاء في وقت التشغيل، لا في
+            وقت الكتابة.
+        </p>
+
+        <p>
+            ثم يأتي الـ <strong>Closure</strong> ليزيد الأمر تعقيدًا:
+            الدالة الداخلية لا تحتفظ فقط بالمكان الذي كُتبت فيه، بل
+            تحتفظ بـ<strong>البيئة كاملة</strong> التي كانت موجودة
+            وقت تعريفها، حتى لو اختفى النطاق الخارجي من التنفيذ.
+            هذا يعني أن المتغيرات قد تبقى حية في الذاكرة سنوات بعد
+            انتهاء الدالة التي أنشأتها، وهذا في حد ذاته أرضية خصبة
+            للأخطاء.
+        </p>
+
+        <h2 id="types-of-scope">أنواع الـ Scope: Global وFunction وBlock وModule</h2>
+
+        <h3>Global Scope</h3>
+
+        <p>
+            المتغيرات التي تُعرَّف خارج أي دالة متاحة في كل مكان. في
+            المتصفح تُربط بـ<code>window</code> إذا استُخدم
+            <code>var</code>، لكنها في ES Modules تكون معزولة في نطاق
+            الملف. هذه العزلة أحد أسباب تحول المشاريع الحديثة إلى
+            الوحدات بدل الملفات المتسلسلة.
+        </p>
+
+        <h3>Function Scope</h3>
+
+        <p>
+            كل دالة تُنشئ نطاقًا خاصًا. المتغيرات المعرفة داخلها
+            لا تُرى من الخارج. لكن المهم هنا: <code>var</code> يتصرف
+            كما لو كان داخل النطاق الوظيفي بأكمله، حتى لو كُتب داخل
+            كتلة <code>if</code>. هذا هو أول مصدر للأخطاء.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function test() {
+    if (true) {
+        var hidden = "I leak out of the block";
+        let confined = "I stay inside the block";
+    }
+    console.log(hidden);   // "I leak out of the block"
+    console.log(confined); // ReferenceError
+}`}</code></pre>
+
+        <h3>Block Scope</h3>
+
+        <p>
+            الكتل (<code>{}</code>) بعد ES6 تُنشئ نطاقًا عند استخدام
+            <code>let</code> و<code>const</code>. هذا يعني أن المتغير
+            يختفي بمجرد إغلاق القوس. القاعدة بسيطة، لكن أثرها على
+            الحلقات والclosures هائل، كما سنرى.
+        </p>
+
+        <h3>Module Scope</h3>
+
+        <p>
+            كل ملف ES Module له نطاق خاص به، لا يُشارك فيه إلا ما
+            تصدّره صراحة بـ<code>export</code>. هذا يحل جزئيًا مشكلة
+            التلوث العالمي، لكنه يخلق مشكلة جديدة: بعض المطورين
+            يعتقدون أن المتغيرات مشتركة بين الوحدات، ثم يتفاجأون
+            بأن كل وحدة معزولة.
+        </p>
+
+        <h2 id="lexical-scope">Lexical Scope: النطاق يُحدد وقت الكتابة لا وقت التنفيذ</h2>
+
+        <p>
+            جافاسكريبت تتبع <strong>Lexical Scoping</strong>، أي أن
+            النطاق يُحدد حسب <strong>مكان كتابة الدالة في الملف</strong>،
+            لا حسب المكان الذي تُستدعى فيه. هذا التمييز يبدو أكاديميًا
+            حتى ترى أثره:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const value = "outer";
+
+function outer() {
+    const value = "inner";
+    return function inner() {
+        console.log(value);
+    };
+}
+
+const fn = outer();
+fn(); // "inner" — لأن inner كُتبت داخل outer، لا لأنها استُدعيت منه`}</code></pre>
+
+        <p>
+            لو كانت جافاسكريبت تتبع Dynamic Scoping (كما في بعض لغات
+            Lisp القديمة)، لكان السلوك مختلفًا تمامًا. لكن لأنها
+            Lexical، فإن البيئة التي تحملها الدالة معها تُحدد من
+            <strong>سطر الكتابة</strong>. هذه الحقيقة هي أساس فهم
+            الـ Closures كلها.
+        </p>
+
+        <h2 id="var-let-const">var مقابل let وconst: الفروق التي تصنع الأخطاء</h2>
+
+        <p>
+            كثير من المطورين يعرفون أن <code>let</code> و<code>const</code>
+            بديلان حديثان، لكن قليلين يعرفون أن الفروق بينها وبين
+            <code>var</code> ليست تجميلية، بل <strong>سلوكية</strong>.
+            الجدول التالي يوضح الفروق التي تسبب الأخطاء فعلًا:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">السلوك</th>
+                        <th class="px-4 py-2 font-semibold">var</th>
+                        <th class="px-4 py-2 font-semibold">let</th>
+                        <th class="px-4 py-2 font-semibold">const</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">النطاق</td>
+                        <td class="px-4 py-2">دالة</td>
+                        <td class="px-4 py-2">كتلة</td>
+                        <td class="px-4 py-2">كتلة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Hoisting</td>
+                        <td class="px-4 py-2">نعم، بقيمة undefined</td>
+                        <td class="px-4 py-2">نعم، لكن غير مهيأ (TDZ)</td>
+                        <td class="px-4 py-2">نعم، لكن غير مهيأ (TDZ)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إعادة التعيين</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إعادة التعريف في نفس النطاق</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">لا</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الالتقاط في الـ Closure</td>
+                        <td class="px-4 py-2">قيمة واحدة مشتركة</td>
+                        <td class="px-4 py-2">قيمة لكل تكرار</td>
+                        <td class="px-4 py-2">قيمة لكل تكرار</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            السطر الأخير هو أخطر ما في الجدول. عند استخدام
+            <code>var</code> في حلقة مع closures، تُلتقط
+            <strong>نفس</strong> المتغير في كل التكرارات، وتكون قيمته
+            النهائية هي آخر قيمة بعد انتهاء الحلقة. مع
+            <code>let</code>، تُنشأ بيئة جديدة لكل تكرار، فيلتقط كل
+            closure قيمته الخاصة.
+        </p>
+
+        <h2 id="hoisting">Hoisting وTemporal Dead Zone: لماذا يرمي let خطأ؟</h2>
+
+        <p>
+            الـ Hoisting ليس نقلًا فعليًا للكود إلى الأعلى. إنه سلوك
+            مكافئ: تصريحات المتغيرات والدوال تُعالج قبل تنفيذ الكود.
+            لكن المعالجة نفسها تختلف حسب الكلمة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>var:</strong> يُرفع ويُهيأ بقيمة
+                <code>undefined</code>. يمكنك قراءته قبل التصريح
+                وستحصل على <code>undefined</code>، لا خطأ.
+            </li>
+            <li>
+                <strong>let وconst:</strong> يُرفعان لكن
+                <strong>دون تهيئة</strong>. الفترة بين بداية النطاق
+                وسطر التصريح تُسمى <strong>Temporal Dead Zone
+                (TDZ)</strong>. أي محاولة للوصول إلى المتغير فيها
+                ترمي <code>ReferenceError</code>.
+            </li>
+            <li>
+                <strong>function declarations:</strong> تُرفع بالكامل،
+                فتصبح قابلة للاستدعاء قبل تعريفها في الكود.
+            </li>
+            <li>
+                <strong>function expressions وarrow functions:</strong>
+                تُعامل كمتغيرات const، فتدخل TDZ إذا استُدعيت قبل
+                تعريفها.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// var: يعمل بلا خطأ
+console.log(a); // undefined
+var a = 10;
+
+// let: يرمي خطأ داخل TDZ
+console.log(b); // ReferenceError: Cannot access 'b' before initialization
+let b = 10;
+
+// function declaration: تعمل حتى قبل تعريفها
+sayHi(); // "hi"
+function sayHi() { console.log("hi"); }`}</code></pre>
+
+        <p>
+            كثير من أخطاء الإنتاج تأتي من الاعتقاد بأن <code>let</code>
+            «مجرد var أحدث». الفرق في TDZ يعني أن إعادة ترتيب
+            الكود قد تنجح مع <code>var</code> وتفشل مع
+            <code>let</code>، وهذا يجعل الانتقال بينهما غير آمن إذا
+            لم تفهم السبب.
+        </p>
+
+        <h2 id="scope-chain">سلسلة النطاق (Scope Chain): كيف تبحث جافاسكريبت عن المتغير؟</h2>
+
+        <p>
+            عند قراءة متغير، يبحث المحرك في <strong>النطاق الحالي
+            أولًا</strong>. إن لم يجده، ينتقل إلى النطاق الأب، ثم
+            الأب الأعلى، حتى يصل إلى النطاق العالمي. هذه هي سلسلة
+            النطاق. إن لم يجد شيئًا، يرمي <code>ReferenceError</code>
+            (إذا كان القراءة) أو ينشئ متغيرًا عالميًا (إذا كان
+            الكتابة بـ<code>var</code> في الوضع غير الصارم).
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const global = "G";
+
+function outer() {
+    const outerVar = "O";
+    function inner() {
+        const innerVar = "I";
+        console.log(innerVar, outerVar, global); // "I O G"
+    }
+    inner();
+}
+outer();`}</code></pre>
+
+        <p>
+            المهم هنا: البحث يحدث <strong>وقت التنفيذ</strong>، لكن
+            السلسلة نفسها تُحدد <strong>وقت الكتابة</strong>. أي أن
+            الدالة الداخلية لا تبحث في النطاق الذي استُدعيت منه، بل في
+            النطاق الذي عُرِّفت فيه. هذا فرق جوهري بين فهم نظري وفهم
+            عملي: من لا يفهمه سيقع في الخطأ التالي.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const x = "global";
+function a() {
+    console.log(x);
+}
+function b() {
+    const x = "local";
+    a(); // تطبع "global" لا "local"
+}
+b();`}</code></pre>
+
+        <h2 id="what-is-closure">ما هو الـ Closure تحديدًا؟</h2>
+
+        <p>
+            الـ Closure ليس ميزة في اللغة تُستدعى بكلمة مفتاحية. إنه
+            <strong>سلوك ناتج عن الجمع بين الدالة والنطاق</strong>.
+            عندما تُعرّف دالة داخل دالة، فإن الدالة الداخلية
+            <strong>تحتفظ بمرجع إلى بيئتها المعجمية</strong>، حتى لو
+            انتهى تنفيذ الدالة الخارجية. هذه البيئة المحفوظة
+            هي الـ Closure.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function createCounter() {
+    let count = 0;
+    return function increment() {
+        count++;
+        return count;
+    };
+}
+
+const counter = createCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2
+console.log(counter()); // 3
+
+// count لا يمكن الوصول إليه من الخارج
+console.log(typeof count); // "undefined"`}</code></pre>
+
+        <p>
+            ما حدث هنا أن <code>increment</code> احتفظت بـ
+            <code>count</code> بعد أن انتهى تنفيذ
+            <code>createCounter</code>. المتغير <code>count</code>
+            لم يعد جزءًا من نطاق التنفيذ، لكنه لم يُحذف من الذاكرة،
+            لأن الدالة الداخلية ما زالت تشير إليه.
+        </p>
+
+        <p>
+            هذا هو الفرق بين <strong>النطاق</strong> و<strong>الـ
+            Closure</strong>: النطاق هو مكان المتغير. الـ Closure هو
+            ما يحدث عندما يبقى المتغير حيًا بعد انتهاء النطاق، لأن
+            دالة أخرى تحتاجه. كل closure يحتوي على نطاق، لكن ليس كل
+            نطاق ينتج closure.
+        </p>
+
+        <h2 id="closure-use-cases">استخدامات عملية للـ Closures</h2>
+
+        <p>
+            الـ Closures ليست مفهومًا أكاديميًا. إنها موجودة في كل
+            مكان في كود جافاسكريبت الحديث:
+        </p>
+
+        <h3>1. البيانات الخاصة (Private State)</h3>
+
+        <p>
+            قبل أن تصل حقول الفئات الخاصة (<code>#field</code>) في
+            ES2022، كان الـ Closure هو الطريقة الوحيدة لإنشاء بيانات
+            خاصة فعلًا في جافاسكريبت. وما زال خيارًا خفيفًا.
+        </p>
+
+        <h3>2. دوال المصنع (Factory Functions)</h3>
+
+        <p>
+            كل استدعاء لدالة المصنع يُنشئ closure مستقلًا. هذه
+            الآلية تُستخدم في مكتبات مثل Redux لإنشاء
+            action creators، وفي React لبناء custom hooks.
+        </p>
+
+        <h3>3. التخزين المؤقت (Memoization)</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function memoize(fn) {
+    const cache = new Map();
+    return function (...args) {
+        const key = JSON.stringify(args);
+        if (cache.has(key)) return cache.get(key);
+        const result = fn(...args);
+        cache.set(key, result);
+        return result;
+    };
+}`}</code></pre>
+
+        <h3>4. معالجة الأحداث وإلغاء التهيئة</h3>
+
+        <p>
+            عندما تحتاج إلى تمرير بيانات إضافية إلى مستمع حدث، تُنشئ
+            closure يلتقط تلك البيانات. هذه الآلية نفسها قد تصبح
+            مصدرًا لتسريب الذاكرة إن لم يُزل المستمع عند الحاجة.
+        </p>
+
+        <h2 id="loop-closure-mistake">الخطأ الأشهر: Closures داخل الحلقات</h2>
+
+        <p>
+            هذا هو الخطأ الذي يسأل عنه كل مقابلة عمل، ويرتكبه كل مطور
+            مرة على الأقل. الكود التالي يفشل للسبب الذي شرحناه في جدول
+            <code>var</code> مقابل <code>let</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// الخطأ
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 0);
+}
+// النتيجة: 3, 3, 3 — لا 0, 1, 2`}</code></pre>
+
+        <p>
+            السبب أن <code>var</code> ينتج متغيرًا واحدًا مشتركًا في
+            نطاق الدالة. الحلقة تنتهي وقيمة <code>i</code> أصبحت 3،
+            ثم تنفذ المؤقتات الثلاثة وتقرأ نفس المتغير، فتطبع 3.
+        </p>
+
+        <p>
+            الإصلاح الأول هو استخدام <code>let</code>، لأن كل تكرار
+            يُنشئ نسخة جديدة من <code>i</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// الإصلاح 1: let
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 0);
+}
+// النتيجة: 0, 1, 2`}</code></pre>
+
+        <p>
+            الإصلاح الثاني هو إنشاء IIFE لكل تكرار، وهي الطريقة القديمة
+            قبل ES6:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// الإصلاح 2: IIFE
+for (var i = 0; i < 3; i++) {
+    (function (j) {
+        setTimeout(() => console.log(j), 0);
+    })(i);
+}`}</code></pre>
+
+        <p>
+            المشكلة أن كثيرًا من المطورين يحفظون «استخدم let»، ثم
+            يقعون في الخطأ نفسه بصيغة مختلفة حين يستخدمون
+            <code>forEach</code> أو <code>map</code> مع closure
+            يعتمد على متغير خارجي يتغير لاحقًا. القاعدة العامة:
+            <strong>أي closure يعتمد على متغير يُعدَّل لاحقًا قد
+            يلتقط القيمة الخاطئة</strong>.
+        </p>
+
+        <h2 id="this-closure">this والـ Closures: الخطأ الذي يطارد المبتدئين</h2>
+
+        <p>
+            <code>this</code> في جافاسكريبت يُحدد <strong>وقت
+            الاستدعاء</strong>، لا وقت التعريف. لكن الـ Closures
+            تحتفظ بالبيئة المعجمية للمتغيرات، <strong>لا بـ
+            this</strong>. وهذا هو مصدر الالتباس الأكبر:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const user = {
+    name: "Ali",
+    greetLater() {
+        setTimeout(function () {
+            console.log(this.name); // undefined
+        }, 100);
+    }
+};
+user.greetLater();`}</code></pre>
+
+        <p>
+            الدالة العادية داخل <code>setTimeout</code> لها
+            <code>this</code> خاص بها (في المتصفح هو
+            <code>window</code> أو <code>undefined</code> في الوضع
+            الصارم)، ولا ترث <code>this</code> من
+            <code>greetLater</code>. الـ Closure التقطت
+            <code>name</code> كمرجع للنطاق، لكنها لم تلتقط
+            <code>this</code>.
+        </p>
+
+        <p>
+            الحلول ثلاثة، ولكل منها سياقه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الدالة السهمية:</strong> ترث <code>this</code>
+                من النطاق الخارجي، فتصبح الأبسط في معظم الحالات.
+            </li>
+            <li>
+                <strong>ربط this يدويًا:</strong> باستخدام
+                <code>.bind(this)</code> أو متغير مثل
+                <code>const self = this</code>.
+            </li>
+            <li>
+                <strong>استخدام معامل صريح:</strong> تمرير
+                الكائن كوسيط بدل الاعتماد على <code>this</code>.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const user = {
+    name: "Ali",
+    greetLater() {
+        setTimeout(() => {
+            console.log(this.name); // "Ali"
+        }, 100);
+    }
+};`}</code></pre>
+
+        <h2 id="memory-leaks">تسريب الذاكرة: كيف تسبب الـ Closures مشكلة حقيقية؟</h2>
+
+        <p>
+            الـ Closure يُبقي المتغيرات حية ما دامت الدالة حية. هذا
+            يعني أن <strong>كل متغير يشير إليه closure يبقى في
+            الذاكرة</strong>، حتى لو لم يعد هناك من يحتاجه فعليًا. إذا
+            نُسي المستمع أو المؤقت أو الـ closure نفسه، تبقى الذاكرة
+            محتجزة، وهذا هو التسريب.
+        </p>
+
+        <p>الأنماط الثلاثة الأكثر شيوعًا للتسريب:</p>
+
+        <h3>1. مستمعو الأحداث الذين لا يُزالون</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function attach(element, data) {
+    element.addEventListener("click", () => {
+        console.log(data);
+    });
+    // لا يوجد removeEventListener
+}`}</code></pre>
+
+        <p>
+            كل استدعاء لـ<code>attach</code> يُنشئ closure جديدًا
+            يحتفظ بـ<code>data</code>. إذا نُسي العنصر أو لم يُزل
+            المستمع، يبقى <code>data</code> في الذاكرة. الحل هو
+            الاحتفاظ بمرجع الدالة وإزالتها عند التدمير.
+        </p>
+
+        <h3>2. المؤقتات التي لا تُلغى</h3>
+
+        <p>
+            <code>setInterval</code> مع closure يحتفظ بمتغيرات كثيرة
+            هو تسريب كلاسيكي. كل مؤقت يعمل ويحتفظ ببيئته، حتى لو
+            اختفى العنصر من الصفحة. الحل: <code>clearInterval</code>
+            دائمًا عند إخفاء المكوّن أو إزالته.
+        </p>
+
+        <h3>3. الـ Closures في بنى البيانات</h3>
+
+        <p>
+            تخزين دوال في مصفوفات أو كائنات مع closure يشير إلى نطاق
+            كبير (مثل كائن DOM ضخم) يبقي الكائن كله حيًا. الحل هو فصل
+            البيانات عن الدالة، أو استخدام
+            <code>WeakMap</code> و<code>WeakRef</code> للبيانات التي
+            يجب ألا تعيق جمع القمامة.
+        </p>
+
+        <h2 id="iife-module">IIFE ونمط الوحدة (Module Pattern)</h2>
+
+        <p>
+            قبل ظهور ES Modules، كان الـ IIFE (Immediately Invoked
+            Function Expression) هو الأداة الأساسية لعزل الكود.
+            الفكرة بسيطة: دالة تُعرَّف وتُستدعى فورًا، فتنشئ نطاقًا
+            خاصًا يختفي بعد التنفيذ.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const Counter = (function () {
+    let count = 0;
+    return {
+        increment: () => ++count,
+        reset: () => (count = 0),
+        get: () => count,
+    };
+})();
+
+Counter.increment();
+Counter.increment();
+console.log(Counter.get()); // 2`}</code></pre>
+
+        <p>
+            هذا النمط هو الأساس الذي قامت عليه معظم مكتبات
+            جافاسكريبت في العقد الأول من الألفية. ES Modules حلّت
+            محل IIFE في المشاريع الحديثة، لكن فهم IIFE يبقى ضروريًا
+            لأنك ستقابله في كود قديم كثير، ولأنه يوضح فكرة أن النطاق
+            يمكن أن يُنشأ صناعيًا بلا دالة ظاهرة.
+        </p>
+
+        <h2 id="async-closures">الـ Closures والعمليات غير المتزامنة</h2>
+
+        <p>
+            أكثر مكان تظهر فيه مشاكل الـ Closure اليوم ليس الحلقات
+            التقليدية، بل الكود غير المتزامن. المشكلة أن الـ closure
+            يحتفظ بالبيئة، لكن البيئة قد تتغير قبل أن ينفَّذ
+            callback. مثال:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`let userId = null;
+
+async function load() {
+    userId = 1;
+    await fetchUser(userId);
+    userId = 2;
+    await fetchUser(userId);
+    // أي طلب انتهى متأخرًا قد يقرأ userId مختلفًا عما توقعت
+}`}</code></pre>
+
+        <p>
+            الحل ليس استخدام <code>let</code> أو <code>const</code>.
+            الحل هو <strong>تمرير القيمة المطلوبة كوسيط</strong>
+            بدلًا من قراءتها من نطاق خارجي مشترك. هذا هو الفرق بين
+            closure «يقرأ متغيرًا» وclosure «يحمل قيمة»:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`async function load() {
+    await fetchUser(1);
+    await fetchUser(2);
+}
+
+// أو، إذا كان لا بد من closure:
+function makeFetcher(id) {
+    return () => fetchUser(id); // كل closure يحمل id الخاص به
+}`}</code></pre>
+
+        <p>
+            نفس المبدأ ينطبق على Promises و<code>async/await</code>
+            داخل الحلقات: إذا كنت تقرأ متغيرًا من الحلقة داخل
+            <code>await</code>، تأكد أن المتغير لا يُعاد تعيينه قبل
+            أن يقرأه الـ closure.
+        </p>
+
+        <h2 id="best-practices">ممارسات عملية لتجنب أخطاء الـ Scope والـ Closures</h2>
+
+        <ul>
+            <li>
+                <strong>استخدم const افتراضيًا.</strong> لا تستخدم
+                <code>let</code> إلا عندما تحتاج إعادة التعيين،
+                ولا تستخدم <code>var</code> إلا في كود قديم لا
+                يمكنك تغييره.
+            </li>
+            <li>
+                <strong>مرّر القيم بدل قراءتها من نطاق خارجي.</strong>
+                الدوال التي تعتمد على متغيرات خارجية تصبح هشة مع
+                تغير الزمن. الدوال التي تستقبل كل ما تحتاجه
+                كوسائط تصبح قابلة للاختبار والتنبؤ.
+            </li>
+            <li>
+                <strong>تجنب الـ closures في الحلقات إن أمكن.</strong>
+                إذا كنت تحتاج إلى ربط بيانات بكل تكرار، استخدم
+                <code>for...of</code> مع <code>let</code>، أو
+                دوال مصنع تُعيد closure جديدًا لكل قيمة.
+            </li>
+            <li>
+                <strong>أزل مستمعي الأحداث والمؤقتات.</strong>
+                كل <code>addEventListener</code> يحتاج
+                <code>removeEventListener</code> عند التدمير.
+                كل <code>setInterval</code> يحتاج
+                <code>clearInterval</code>.
+            </li>
+            <li>
+                <strong>افهم this قبل استخدام closures.</strong>
+                إذا كنت داخل دالة عادية، <code>this</code> ليس
+                ما في الخارج. استخدم arrow functions عندما تريد
+                وراثة <code>this</code>، وتجنبها عندما تحتاج
+                <code>this</code> ديناميكيًا.
+            </li>
+            <li>
+                <strong>استخدم أدوات تحليل ثابت.</strong> أدوات
+                مثل ESLint مع قواعد مثل
+                <code>no-loop-func</code> و<code>no-var</code>
+                و<code>prefer-const</code> تكشف كثيرًا من هذه
+                الأخطاء قبل التشغيل.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تستخدم <code>var</code> في كود جديد؟ ←
+                <strong>استبدله بـlet أو const</strong>
+            </li>
+            <li>
+                هل لديك closure داخل حلقة يقرأ متغير الحلقة؟ ←
+                <strong>استخدم let أو دالة مصنع</strong>
+            </li>
+            <li>
+                هل تستدعي متغيرًا قبل تعريفه بـlet؟ ←
+                <strong>ستقع في TDZ، أعد ترتيب الكود</strong>
+            </li>
+            <li>
+                هل تستخدم دالة عادية داخل setTimeout مع this؟ ←
+                <strong>استخدم arrow function أو bind</strong>
+            </li>
+            <li>
+                هل لديك مستمعو أحداث لا يُزالون؟ ←
+                <strong>أضف removeEventListener في التنظيف</strong>
+            </li>
+            <li>
+                هل لديك setInterval بلا clearInterval؟ ←
+                <strong>أضف إلغاءً عند إخفاء المكوّن</strong>
+            </li>
+            <li>
+                هل تقرأ متغيرًا خارجيًا داخل await؟ ←
+                <strong>مرّر القيمة كوسيط</strong>
+            </li>
+            <li>
+                هل تخلط بين النطاق والـ closure؟ ←
+                <strong>النطاق مكان المتغير، الـ closure ما يبقيه حيًا</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع موثوقة يمكنك الرجوع إليها
+            لتعميق فهمك:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — JavaScript Guide: Grammar and types (Scope)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Closures
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Glossary/Hoisting"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Hoisting
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://262.ecma-international.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ECMAScript Language Specification
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://exploringjs.com/deep-js/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Exploring JavaScript — Deep JavaScript
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://eslint.org/docs/latest/rules/no-loop-func"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ESLint — no-loop-func Rule
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://eslint.org/docs/latest/rules/prefer-const"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ESLint — prefer-const Rule
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/getify/You-Dont-Know-JS"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    You Don't Know JS — Scope & Closures
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل let أفضل من var دائمًا؟</h3>
+        <p>
+            في الكود الجديد، نعم في الغالب. <code>let</code> يحدد
+            النطاق بدقة ويمنع تسرب الكتلة. لكن <code>var</code>
+            ليس «سيئًا» بطبيعته؛ إنه مختلف. المشكلة تأتي من استخدامه
+            في سياقات تتوقع فيها نطاق كتلة. في الكود القديم، قد
+            تكون إعادة كتابته إلى <code>let</code> خطرة إذا لم
+            تفهم أين يعتمد الكود على تسرب النطاق.
+        </p>
+
+        <h3>هل الـ Closure نفسه يسبب تسريب الذاكرة؟</h3>
+        <p>
+            لا. الـ Closure أداة طبيعية في اللغة. التسريب يحدث
+            عندما يُحتفظ بالـ closure أكثر مما يجب، أو عندما يشير
+            إلى بيانات كبيرة لا تُستخدم. الحل ليس تجنب الـ
+            closures، بل إدارة دورة حياته: إزالة المستمعين،
+            وإلغاء المؤقتات، وعدم تخزين مراجع غير ضرورية.
+        </p>
+
+        <h3>لماذا تطبع الحلقة 3, 3, 3 مع var؟</h3>
+        <p>
+            لأن <code>var</code> يُنشئ متغيرًا واحدًا على مستوى
+            الدالة، لا متغيرًا لكل تكرار. الـ closures الثلاثة
+            تشير إلى نفس المتغير، وقيمته عند التنفيذ هي 3. استخدام
+            <code>let</code> يُنشئ متغيرًا جديدًا لكل تكرار، فتحمل
+            كل closure قيمتها.
+        </p>
+
+        <h3>هل يمكن أن يحدث TDZ مع var؟</h3>
+        <p>
+            لا. <code>var</code> يُرفع ويُهيأ بـ
+            <code>undefined</code>، فلا يوجد نطاق ميت. الوصول إليه
+            قبل التصريح يعطيك <code>undefined</code> لا خطأ.
+            TDZ خاص بـ<code>let</code> و<code>const</code>
+            و<code>class</code>.
+        </p>
+
+        <h3>ما الفرق بين Function Scope وLexical Scope؟</h3>
+        <p>
+            Function Scope هو نطاق الدالة نفسها. Lexical Scope هو
+            القاعدة التي تحدد أن الدالة الداخلية تصل إلى متغيرات
+            النطاق الذي كُتبت فيه، لا النطاق الذي استُدعيت منه.
+            الأولى نوع نطاق، والثانية آلية تحديده.
+        </p>
+
+        <h3>هل arrow functions تغني عن bind دائمًا؟</h3>
+        <p>
+            لا. Arrow functions ترث <code>this</code> من النطاق
+            الخارجي، وهذا ما تريده غالبًا. لكن إذا كنت تحتاج إلى
+            <code>this</code> ديناميكي (مثل طريقة في كائن تُستدعى
+            بطرق مختلفة)، فالدالة العادية أنسب. الاختيار يعتمد على
+            ما تريده من <code>this</code>، لا على ما إذا كانت
+            السهمية «أحدث».
+        </p>
+    </PostLayout>
+</BaseLayout>
