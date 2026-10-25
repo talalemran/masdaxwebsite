@@ -246,7 +246,7 @@ const relatedPosts = allPosts
     </div>
   </div>
 
-  <div id="content-ad-slot" class="my-8">
+  <div id="content-ad-slot" class="my-8 hidden" aria-hidden="true">
     <AdBanner />
   </div>
 
@@ -266,6 +266,23 @@ const relatedPosts = allPosts
 </article>
 
 <script>
+  function injectMiddleAd() {
+    const content = document.querySelector('.post-content');
+    const slot = document.getElementById('content-ad-slot');
+    if (!content || !slot) return;
+
+    const blocks = Array.from(content.children);
+    if (blocks.length === 0) return;
+
+    const targetIndex = Math.max(0, Math.floor(blocks.length / 2));
+    const target = blocks[targetIndex] || blocks[blocks.length - 1];
+    if (!target) return;
+
+    slot.classList.remove('hidden');
+    slot.removeAttribute('aria-hidden');
+    target.after(slot);
+  }
+
   function calculateReadingTime() {
     const article = document.querySelector('.post-content');
     const readingTimeEl = document.getElementById('reading-time');
@@ -279,5 +296,6 @@ const relatedPosts = allPosts
     readingTimeEl.textContent = `${minutes} دقيقة قراءة`;
   }
 
+  injectMiddleAd();
   calculateReadingTime();
 </script>
