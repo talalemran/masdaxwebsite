@@ -1,7 +1,6 @@
 ---
 import TagBadge from "./TagBadge.astro";
 import AdBanner from "./AdBanner.astro";
-import Adsterra300x250 from "./adsterra300x250.astro";
 
 export interface Props {
   post: {
@@ -265,62 +264,8 @@ const relatedPosts = allPosts
 <div id="content-ad-slot" class="hidden my-8" aria-hidden="true">
   <AdBanner />
 </div>
-<div id="adsterra-slot-1" class="hidden my-8 w-full justify-center" aria-hidden="true">
-  <Adsterra300x250 />
-</div>
-<div id="adsterra-slot-2" class="hidden my-8 w-full justify-center" aria-hidden="true">
-  <Adsterra300x250 />
-</div>
 
 <script>
-  function injectAds() {
-    const content = document.querySelector('.post-content');
-    if (!content) return;
-
-    const paragraphs = Array.from(content.querySelectorAll(':scope > p'));
-    if (paragraphs.length < 2) return;
-
-    const slots = [
-      document.getElementById('adsterra-slot-1'),
-      document.getElementById('adsterra-slot-2'),
-    ];
-    const positions = [
-      Math.floor(paragraphs.length / 3),
-      Math.floor((paragraphs.length * 2) / 3),
-    ];
-
-    slots.forEach((slot, index) => {
-      const insertAfter = paragraphs[Math.min(positions[index], paragraphs.length - 1)];
-      if (!slot || !insertAfter) return;
-
-      insertAfter.after(slot);
-
-      const revealWhenAdLoads = () => {
-        if (!slot.querySelector('iframe')) return false;
-
-        slot.classList.remove('hidden');
-        slot.classList.add('flex');
-        slot.removeAttribute('aria-hidden');
-        return true;
-      };
-
-      if (revealWhenAdLoads()) return;
-
-      const observer = new MutationObserver(() => {
-        if (revealWhenAdLoads()) observer.disconnect();
-      });
-      observer.observe(slot, { childList: true, subtree: true });
-    });
-
-    const contentAdSlot = document.getElementById('content-ad-slot');
-    const middleParagraph = paragraphs[Math.floor((paragraphs.length - 1) / 2)];
-    if (contentAdSlot && middleParagraph) {
-      contentAdSlot.classList.remove('hidden');
-      contentAdSlot.removeAttribute('aria-hidden');
-      middleParagraph.after(contentAdSlot);
-    }
-  }
-
   function calculateReadingTime() {
     const article = document.querySelector('.post-content');
     const readingTimeEl = document.getElementById('reading-time');
@@ -334,6 +279,5 @@ const relatedPosts = allPosts
     readingTimeEl.textContent = `${minutes} دقيقة قراءة`;
   }
 
-  injectAds();
   calculateReadingTime();
 </script>

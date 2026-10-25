@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import AdBanner from "@/components/AdBanner.astro";
-import Adsterra300x250 from "@/components/adsterra300x250.astro";
 import { projects } from "@/data/projects";
 
 export async function getStaticPaths() {
@@ -114,32 +113,6 @@ const projectUrl = `https://www.masdarx.com/projects/${project.slug}/`;
         ))}
       </div>
     )}
-
-    <div id="project-ad-slot" class="hidden my-8 w-full justify-center" aria-hidden="true">
-      <Adsterra300x250 />
-    </div>
-
-    <script>
-      const projectAdSlot = document.getElementById("project-ad-slot");
-
-      if (projectAdSlot) {
-        const revealProjectAd = () => {
-          if (!projectAdSlot.querySelector("iframe")) return false;
-
-          projectAdSlot.classList.remove("hidden");
-          projectAdSlot.classList.add("flex");
-          projectAdSlot.removeAttribute("aria-hidden");
-          return true;
-        };
-
-        if (!revealProjectAd()) {
-          const projectAdObserver = new MutationObserver(() => {
-            if (revealProjectAd()) projectAdObserver.disconnect();
-          });
-          projectAdObserver.observe(projectAdSlot, { childList: true, subtree: true });
-        }
-      }
-    </script>
 
     <div class="flex gap-3 mb-8">
       <a

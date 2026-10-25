@@ -1,7 +1,6 @@
 ---
 import TagBadge from "./TagBadge.astro";
 import AdBanner from "./AdBanner.astro";
-import Adsterra300x250 from "./adsterra300x250.astro";
 
 export interface Props {
   page: {
@@ -210,65 +209,8 @@ const shareLinks = {
 <div id="ad-slot" class="hidden my-8" aria-hidden="true">
   <AdBanner />
 </div>
-<div id="adsterra-slot-1" class="hidden my-8 w-full justify-center" aria-hidden="true">
-  <Adsterra300x250 />
-</div>
-<div id="adsterra-slot-2" class="hidden my-8 w-full justify-center" aria-hidden="true">
-  <Adsterra300x250 />
-</div>
 
 <script>
-  function injectAd() {
-    const content = document.querySelector('.post-content');
-    const slot = document.getElementById('ad-slot');
-    if (!content || !slot) return;
-
-    const contentBlocks = Array.from(content.children);
-    if (contentBlocks.length === 0) return;
-
-    const adsterraSlots = [
-      document.getElementById('adsterra-slot-1'),
-      document.getElementById('adsterra-slot-2'),
-    ];
-    const positions = [
-      Math.floor(contentBlocks.length / 3),
-      Math.floor((contentBlocks.length * 2) / 3),
-    ];
-
-    adsterraSlots.forEach((adsterraSlot, index) => {
-      const insertAfter = contentBlocks[Math.min(positions[index], contentBlocks.length - 1)];
-      if (!adsterraSlot || !insertAfter) return;
-
-      insertAfter.after(adsterraSlot);
-
-      const revealWhenAdLoads = () => {
-        if (!adsterraSlot.querySelector('iframe')) return false;
-
-        adsterraSlot.classList.remove('hidden');
-        adsterraSlot.classList.add('flex');
-        adsterraSlot.removeAttribute('aria-hidden');
-        return true;
-      };
-
-      if (revealWhenAdLoads()) return;
-
-      const observer = new MutationObserver(() => {
-        if (revealWhenAdLoads()) observer.disconnect();
-      });
-      observer.observe(adsterraSlot, { childList: true, subtree: true });
-    });
-
-    const ad = slot.firstElementChild;
-    if (!ad) return;
-
-    const middleBlock = contentBlocks[Math.floor((contentBlocks.length - 1) / 2)];
-    if (!middleBlock) return;
-
-    slot.classList.remove('hidden');
-    slot.removeAttribute('aria-hidden');
-    middleBlock.after(slot);
-  }
-
   function calculateReadingTime() {
     const article = document.querySelector('.post-content');
     const readingTimeEl = document.getElementById('reading-time');
@@ -282,6 +224,5 @@ const shareLinks = {
     readingTimeEl.textContent = `${minutes} دقيقة قراءة`;
   }
 
-  injectAd();
   calculateReadingTime();
 </script>

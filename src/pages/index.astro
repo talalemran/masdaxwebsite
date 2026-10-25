@@ -2,7 +2,6 @@
 
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ArticleCard from "@/components/ArticleCard.astro";
-import Adsterra728x90 from "@/components/adsterra728x90.astro";
 import Pagination from "@/components/Pagination.astro";
 import { projects } from "@/data/projects";
 
@@ -135,32 +134,6 @@ const categories: CategoryItem[] = [
       </div>
     </div>
   </section>
-
-  <div id="homepage-ad-slot" class="hidden my-6 w-full justify-center px-4" aria-hidden="true">
-    <Adsterra728x90 />
-  </div>
-
-  <script>
-    const homepageAdSlot = document.getElementById("homepage-ad-slot");
-
-    if (homepageAdSlot) {
-      const revealHomepageAd = () => {
-        if (!homepageAdSlot.querySelector("iframe")) return false;
-
-        homepageAdSlot.classList.remove("hidden");
-        homepageAdSlot.classList.add("flex");
-        homepageAdSlot.removeAttribute("aria-hidden");
-        return true;
-      };
-
-      if (!revealHomepageAd()) {
-        const homepageAdObserver = new MutationObserver(() => {
-          if (revealHomepageAd()) homepageAdObserver.disconnect();
-        });
-        homepageAdObserver.observe(homepageAdSlot, { childList: true, subtree: true });
-      }
-    }
-  </script>
 
   {featured ? (
       <section class="bg-white dark:bg-[#0C0C0C] pb-10 sm:pb-14 pt-10">
