@@ -1,0 +1,869 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "linux-bash-scripting-first-script",
+    title: "برمجة سكريبتات لينكس باش: كتابة السكريبت الأول لك",
+    metaTitle: "تعلم Bash Scripting: دليلك العملي لكتابة أول سكريبت لينكس",
+    description:
+        "دليل شامل لتعلم كتابة سكريبتات Bash على لينكس من الصفر: المتغيرات والاقتباسات، الشروط والحلقات والدوال، معالجة الأخطاء بـ set -euo pipefail، المصفوفات، وأدوات مثل ShellCheck. مع أمثلة كود وأخطاء شائعة وقائمة تحقق.",
+    keywords: [
+        "Bash scripting",
+        "سكريبتات لينكس",
+        "تعلم Bash",
+        "Shell scripting",
+        "set -euo pipefail",
+        "ShellCheck",
+        "Bash arrays",
+        "Bash functions",
+        "أوامر لينكس",
+        "أتمتة المهام",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "25 أكتوبر 2026",
+    pubDate: new Date("2026-10-25"),
+    tags: ["لينكس", "Bash", "سكريبتات", "أتمتة", "ShellCheck"],
+    thumbnail: "/images/linux-bash-scripting-first-script.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة مفاهيم Bash الأساسية" },
+    { id: "why-bash", label: "لماذا Bash؟ ومتى لا تكون الخيار الصحيح؟" },
+    { id: "first-script", label: "الخطوة 1: إنشاء أول سكريبت وتشغيله" },
+    { id: "variables-quoting", label: "المتغيرات والاقتباسات: مصدر معظم الأخطاء" },
+    { id: "input-output", label: "المدخلات والمخرجات: printf والوسائط وقراءة المستخدم" },
+    { id: "conditionals", label: "الشروط: if و[[ ]] وcase" },
+    { id: "loops", label: "الحلقات: for وwhile وuntil" },
+    { id: "functions", label: "الدوال: تنظيم الكود وإعادة استخدامه" },
+    { id: "error-handling", label: "معالجة الأخطاء: set -euo pipefail وtrap" },
+    { id: "arrays", label: "المصفوفات: التعامل الآمن مع القوائم" },
+    { id: "common-mistakes", label: "الأخطاء الشائعة التي توقع المبتدئين" },
+    { id: "tooling", label: "أدوات لا غنى عنها: ShellCheck وshfmt وBats" },
+    { id: "practical-example", label: "مثال عملي: سكريبت نسخ احتياطي كامل" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            كل مستخدم لينكس وصل إلى مرحلة معينة وجد نفسه يكتب الأوامر
+            نفسها كل يوم: نسخ ملف، ضغط مجلد، فحص قرص، تشغيل نسخة
+            احتياطية. في البداية يكررها يدويًا. ثم يكتبها في ملف
+            نصي. ثم ينسى أمرًا أو يخطئ في ترتيب الوسائط، فيقرر أن
+            يتعلم <strong>Bash scripting</strong> بشكل صحيح.
+        </p>
+
+        <p>
+            المشكلة أن معظم أدلة Bash إما تبدأ من الصفر المطلق فتُطيل
+            في الأساسيات دون الوصول إلى شيء عملي، أو تفترض خبرة سابقة
+            فتقفز مباشرة إلى أنماط إنتاجية معقدة. هذا الدليل يتبع
+            مسارًا ثالثًا: يبني سكريبتك الأول خطوة بخطوة، ويشرح
+            <strong>لماذا</strong> كل سطر يُكتب كما هو، ثم يعرض
+            الأخطاء التي يقع فيها المبتدئون فعلًا، وكيف تتجنبها
+            بأدوات بسيطة مثل <strong>ShellCheck</strong> و
+            <strong>set -euo pipefail</strong>. الهدف ليس أن تحفظ
+            الصياغة، بل أن تكتب سكريبتًا يمكنك الاعتماد عليه بعد
+            شهر من الآن.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة مفاهيم Bash الأساسية</h2>
+
+        <p>
+            الجدول التالي يلخص المفاهيم التي سيغطيها الدليل، مع مثال
+            سريع لكل منها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المفهوم</th>
+                        <th class="px-4 py-2 font-semibold">الوظيفة</th>
+                        <th class="px-4 py-2 font-semibold">مثال</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">Shebang</td>
+                        <td class="px-4 py-2">تحديد المفسّر</td>
+                        <td class="px-4 py-2"><code>#!/usr/bin/env bash</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Strict Mode</td>
+                        <td class="px-4 py-2">إيقاف التنفيذ عند أي خطأ</td>
+                        <td class="px-4 py-2"><code>set -euo pipefail</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الاقتباسات</td>
+                        <td class="px-4 py-2">منع تقسيم الكلمات</td>
+                        <td class="px-4 py-2"><code>"$var"</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الشروط</td>
+                        <td class="px-4 py-2">اتخاذ قرارات</td>
+                        <td class="px-4 py-2"><code>if [[ -f "$file" ]]</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الحلقات</td>
+                        <td class="px-4 py-2">تكرار العمليات</td>
+                        <td class="px-4 py-2"><code>for f in *.log</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الدوال</td>
+                        <td class="px-4 py-2">إعادة استخدام الكود</td>
+                        <td class="px-4 py-2"><code>my_func() &#123; ... &#125;</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">المصفوفات</td>
+                        <td class="px-4 py-2">قوائم آمنة</td>
+                        <td class="px-4 py-2"><code>files=(a b c)</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التحقق الساكن</td>
+                        <td class="px-4 py-2">اكتشاف الأخطاء قبل التشغيل</td>
+                        <td class="px-4 py-2"><code>shellcheck script.sh</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-bash">لماذا Bash؟ ومتى لا تكون الخيار الصحيح؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/linux-bash-scripting-first-script/01.webp"
+                alt="لينكس باش"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+
+        <p>
+            Bash موجودة على كل نظام لينكس تقريبًا، وعلى macOS افتراضيًا،
+            وحتى على ويندوز عبر WSL. هذا يعني أن السكريبت الذي تكتبه
+            اليوم سيعمل على خادمك، وعلى حاسوبك المحمول، وعلى خادم
+            زميلك، دون تثبيت أي شيء إضافي. هذه <strong>الجاهزية
+            الفورية</strong> هي الميزة الأولى.
+        </p>
+
+        <p>
+            الميزة الثانية هي أن Bash ليست لغة منفصلة عن بيئة العمل.
+            كل أمر تستخدمه في الطرفية يمكن أن يصبح سطرًا في سكريبت.
+            لا تحتاج إلى جسر بين ما تفعله يدويًا وما يفعله الكود.
+            وهذا يجعلها الأداة الطبيعية لـ<strong>أتمتة المهام
+            اليومية</strong>: الملفات، والعمليات، والنسخ الاحتياطي،
+            وجدولة المهام.
+        </p>
+
+        <p>
+            لكن Bash ليست لغة عامة الغرض، ولا تحاول أن تكون. إذا
+            كنت تبني تطبيقًا منطقيًا معقدًا، أو تحتاج إلى هياكل بيانات
+            متقدمة، أو اختبارات كثيفة، فـPython أو Go أنسب. القاعدة
+            العملية: <strong>استخدم Bash للأتمتة والربط بين الأدوات،
+            لا لبناء التطبيقات</strong>. المشكلة أن كثيرًا من المبتدئين
+            يبدأون بسكريبت صغير، ثم ينتهي بهم الأمر إلى بناء نظام
+            كامل بلغة لم تُصمم لذلك.
+        </p>
+
+        <h2 id="first-script">الخطوة 1: إنشاء أول سكريبت وتشغيله</h2>
+
+        <p>
+            أنشئ ملفًا باسم <code>hello.sh</code>، وضع فيه الأسطر
+            التالية:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Hello from Bash!"
+</code></pre>
+
+        <p>
+            السطر الأول هو <strong>Shebang</strong>. يخبر النظام أي
+            مفسّر يستخدم لتشغيل الملف. استخدام
+            <code>/usr/bin/env bash</code> أفضل من
+            <code>/bin/bash</code> المباشر، لأنه يبحث عن Bash في
+            <code>PATH</code> ويعمل على أنظمة تضع Bash في مواقع
+            مختلفة.
+        </p>
+
+        <p>
+            السطر الثاني هو <strong>Strict Mode</strong>. سنشرحه
+            بالتفصيل لاحقًا، لكنه باختصار يجعل السكريبت يتوقف عند
+            أول خطأ بدلًا من المتابعة بصمت.
+        </p>
+
+        <p>
+            لتشغيل السكريبت، تحتاج إلى صلاحية التنفيذ:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>chmod +x hello.sh
+./hello.sh</code></pre>
+
+        <p>
+            إذا لم تضع <code>./</code> قبل الاسم، فلن يجد النظام
+            الملف، لأن المجلد الحالي ليس ضمن <code>PATH</code>
+            افتراضيًا. هذه أول نقطة يتعثر فيها المبتدئ.
+        </p>
+
+        <h2 id="variables-quoting">المتغيرات والاقتباسات: مصدر معظم الأخطاء</h2>
+
+        <p>
+            المتغيرات في Bash لا تحتاج إلى نوع. تُعرَّف بالإسناد
+            المباشر، دون مسافات حول علامة يساوي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>name="Ahmed"
+age=30
+
+# خطأ شائع: المسافات حول = تجعل Bash تحاول تنفيذ أمر باسم name
+# name = "Ahmed"   # هذا خطأ</code></pre>
+
+        <p>
+            للوصول إلى قيمة المتغير، استخدم <code>$</code> أو
+            <code>$&#123;&#125;</code>. الشكل الثاني أفضل عندما تلتصق
+            المتغيرات بنص آخر:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>greeting="مرحبا"
+echo "$greeting بالعالم"
+echo "$&#123;greeting&#125;بك"   # بدون {} قد تبحث Bash عن متغير باسم greetingبك</code></pre>
+
+        <h3>الاقتباسات: الفرق الذي يحدد صحة السكريبت</h3>
+
+        <p>
+            هذا هو الموضوع الذي يفسر معظم أخطاء Bash الخفية. الجدول
+            التالي يوضح الفروق:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النوع</th>
+                        <th class="px-4 py-2 font-semibold">السلوك</th>
+                        <th class="px-4 py-2 font-semibold">مثال</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">بدون اقتباس</td>
+                        <td class="px-4 py-2">تقسيم الكلمات وتوسيع النطاقات</td>
+                        <td class="px-4 py-2"><code>$file</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">اقتباس مزدوج <code>"..."</code></td>
+                        <td class="px-4 py-2">يمنع التقسيم، يسمح بتوسيع المتغيرات</td>
+                        <td class="px-4 py-2"><code>"$file"</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">اقتباس مفرد <code>'...'</code></td>
+                        <td class="px-4 py-2">يمنع كل التوسيع، نص حرفي</td>
+                        <td class="px-4 py-2"><code>'$file'</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Backticks <code>`...`</code></td>
+                        <td class="px-4 py-2">تنفيذ أمر (قديم، غير مفضل)</td>
+                        <td class="px-4 py-2"><code>`date`</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Command Substitution <code>$(...)</code></td>
+                        <td class="px-4 py-2">تنفيذ أمر (حديث، مفضل)</td>
+                        <td class="px-4 py-2"><code>$(date)</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            القاعدة الذهبية التي تختصر كل شيء: <strong>اقتبس كل
+            متغير ما لم يكن لديك سبب واضح لعدم اقتباسه</strong>.
+            الملف الذي يحتوي على مسافة في اسمه سيكسر السكريبت إذا لم
+            تقتبس. والنطاق <code>*</code> قد يتوسع إلى قائمة ملفات
+            غير متوقعة. معظم أخطاء Bash الدقيقة مصدرها اقتباس ناقص.
+        </p>
+
+        <h2 id="input-output">المدخلات والمخرجات: printf والوسائط وقراءة المستخدم</h2>
+
+        <h3>printf بدلًا من echo</h3>
+
+        <p>
+            <code>echo</code> مريح، لكن سلوكه يختلف بين الأنظمة،
+            خصوصًا مع الخيارات والسلاسل التي تبدأ بشرطة. للتنسيق
+            المتوقع، استخدم <code>printf</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>printf "%-10s %s\n" "الاسم:" "$name"
+printf "خطأ: لم يتم العثور على الملف\n" >&2</code></pre>
+
+        <p>
+            لاحظ <code>>&2</code>: يرسل الرسالة إلى
+            <strong>stderr</strong> بدل stdout. هذا يسمح للمستخدم
+            بفصل رسائل الخطأ عن المخرجات العادية عند التوجيه أو
+            الأنابيب.
+        </p>
+
+        <h3>الوسائط (Arguments)</h3>
+
+        <p>
+            السكريبت يستقبل قيمًا من سطر الأوامر عبر
+            <code>$1</code> و<code>$2</code> وهكذا.
+            <code>$0</code> هو اسم السكريبت نفسه، و
+            <code>$#</code> عدد الوسائط، و<code>$@</code> قائمة
+            الوسائط جميعها.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+    printf "الاستخدام: %s &lt;اسم الملف&gt;\n" "$0" >&2
+    exit 1
+fi
+
+file="$1"
+printf "الملف المطلوب: %s\n" "$file"</code></pre>
+
+        <h3>قراءة مدخلات المستخدم</h3>
+
+        <p>
+            <code>read</code> تقرأ سطرًا من الإدخال القياسي. استخدم
+            دائمًا <code>-r</code> لمنع معالجة الشرطة العكسية، و
+            <code>-p</code> لعرض رسالة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>read -r -p "أدخل اسم المجلد: " dir
+printf "سأعمل على: %s\n" "$dir"</code></pre>
+
+        <h2 id="conditionals">الشروط: if و[[ ]] وcase</h2>
+
+        <p>
+            الشروط في Bash تُبنى على <strong>حالة الخروج</strong>
+            للأوامر: 0 يعني نجاح، وأي رقم آخر يعني فشلًا. هذا يعني
+            أن أي أمر يمكن أن يكون شرطًا.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>if [[ -f "$file" ]]; then
+    printf "الملف موجود\n"
+elif [[ -d "$file" ]]; then
+    printf "هذا مجلد\n"
+else
+    printf "غير موجود\n" >&2
+    exit 1
+fi</code></pre>
+
+        <p>
+            <code>[[ ]]</code> هي الصيغة الحديثة، وتتفوق على
+            <code>[ ]</code> لأنها تمنع تقسيم الكلمات وتوسيع
+            النطاقات داخل الاختبار. بعض الاختبارات الشائعة:
+        </p>
+
+        <ul>
+            <li><code>-f "$path"</code>: ملف عادي موجود</li>
+            <li><code>-d "$path"</code>: مجلد موجود</li>
+            <li><code>-z "$var"</code>: سلسلة فارغة</li>
+            <li><code>-n "$var"</code>: سلسلة غير فارغة</li>
+            <li><code>-v var</code>: متغير معرّف (حتى لو فارغًا)</li>
+        </ul>
+
+        <p>
+            للاختيار بين قيم متعددة، <code>case</code> أوضح من سلسلة
+            طويلة من <code>elif</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>case "$1" in
+    start)   printf "بدء التشغيل\n" ;;
+    stop)    printf "إيقاف\n" ;;
+    restart) printf "إعادة تشغيل\n" ;;
+    *)       printf "أمر غير معروف\n" >&2; exit 1 ;;
+esac</code></pre>
+
+        <h2 id="loops">الحلقات: for وwhile وuntil</h2>
+
+        <p>
+            <code>for</code> هي الأكثر استخدامًا للمرور على الملفات
+            أو القوائم:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>for file in *.log; do
+    printf "معالجة: %s\n" "$file"
+done</code></pre>
+
+        <p>
+            لكن الحلقة الأكثر أمانًا للملفات التي قد تحتوي على مسافات
+            أو أحرف خاصة هي استخدام <code>find</code> مع
+            <code>-print0</code> و<code>read -d ''</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>while IFS= read -r -d '' file; do
+    printf "معالجة: %s\n" "$file"
+done &lt; &lt;(find . -type f -name '*.log' -print0)</code></pre>
+
+        <p>
+            <code>while</code> تُستخدم عندما تعتمد الحلقة على شرط
+            يتغير. <code>until</code> عكسها: تستمر حتى يصبح الشرط
+            صحيحًا.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>count=0
+while [[ $count -lt 3 ]]; do
+    printf "العدد: %d\n" "$count"
+    ((count++))
+done</code></pre>
+
+        <h2 id="functions">الدوال: تنظيم الكود وإعادة استخدامه</h2>
+
+        <p>
+            الدوال في Bash ليست مثل الدوال في اللغات الأخرى. لا
+            تُرجع قيمًا عبر <code>return</code> (فهي تُرجع حالة
+            خروج فقط). لإرجاع نص، استخدم <code>echo</code> مع
+            command substitution. ولعزل المتغيرات، استخدم
+            <code>local</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>log_info() &#123;
+    printf "[INFO] %s\n" "$*"
+&#125;
+
+get_name() &#123;
+    echo "Ahmed"
+&#125;
+
+name="$(get_name)"
+log_info "الاسم: $name"</code></pre>
+
+        <p>
+            بدون <code>local</code>، كل متغير تعرّفه داخل الدالة
+            يصبح متاحًا في النطاق العام، وقد يلوث متغيرات أخرى
+            تحمل الاسم نفسه. هذا خطأ شائع عندما يكبر السكريبت.
+        </p>
+
+        <h2 id="error-handling">معالجة الأخطاء: set -euo pipefail وtrap</h2>
+
+        <p>
+            هذا هو الجزء الذي يفصل السكريبت الهاوي عن السكريبت
+            الإنتاجي. افتراضيًا، Bash <strong>تتجاهل الأخطاء</strong>
+            وتكمل التنفيذ. إذا فشل أمر، تستمر إلى السطر التالي وكأن
+            شيئًا لم يكن. هذا خطير في سكريبت نسخ احتياطي أو نشر.
+        </p>
+
+        <p>
+            <strong>Strict Mode</strong> يغير هذا السلوك:
+        </p>
+
+        <ul>
+            <li>
+                <code>set -e</code>: إيقاف التنفيذ عند أول أمر يفشل.
+            </li>
+            <li>
+                <code>set -u</code>: اعتبار استخدام متغير غير معرّف
+                خطأً. هذا يكتشف الأخطاء المطبعية في أسماء المتغيرات.
+            </li>
+            <li>
+                <code>set -o pipefail</code>: فشل الأنبوب إذا فشل
+                أي أمر داخله، لا آخر أمر فقط. بدونها،
+                <code>false | true</code> ينجح لأن آخر أمر نجح.
+            </li>
+            <li>
+                <code>set -E</code>: نقل معالج ERR إلى الدوال
+                والعمليات الفرعية.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>set -Eeuo pipefail
+
+trap 'printf "فشل في السطر %d\n" "$LINENO" >&2' ERR</code></pre>
+
+        <p>
+            <code>trap ... ERR</code> يسمح لك بتسجيل سياق الخطأ
+            (السطر، الأمر، أحيانًا دالة) بدلًا من خروج صامت. هذا
+            يختصر وقت التصحيح كثيرًا.
+        </p>
+
+        <p>
+            تحفظ مهم: <code>set -e</code> له استثناءات. الأوامر
+            داخل <code>if</code> أو <code>while</code> أو بعد
+            <code>||</code> لا توقف السكريبت، لأن فشلها متوقع ضمن
+            التحقق من الشرط. هذا مقصود، لكنه يفاجئ من لا يعرفه.
+        </p>
+
+        <h2 id="arrays">المصفوفات: التعامل الآمن مع القوائم</h2>
+
+        <p>
+            المصفوفات في Bash تحل مشكلة تقسيم الكلمات التي تسببها
+            المتغيرات العادية. لتعريف مصفوفة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>files=("report 2026.txt" "backup.zip" "notes.md")</code></pre>
+
+        <p>
+            للوصول إلى عنصر واحد، استخدم الفهرس:
+            <code>"$&#123;files[0]&#125;"</code>. للمرور على كل العناصر،
+            استخدم <code>"$&#123;files[@]&#125;"</code> مع الاقتباس. وبدون
+            الاقتباس، ستنقسم العناصر التي تحتوي على مسافات:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>for f in "$&#123;files[@]&#125;"; do
+    printf "العنصر: %s\n" "$f"
+done</code></pre>
+
+        <p>
+            لمعرفة عدد العناصر: <code>"$&#123;#files[@]&#125;"</code>. لإضافة
+            عنصر: <code>files+=("new.txt")</code>. المصفوفات
+            الترابطية (associative arrays) تحتاج
+            <code>declare -A</code>، وتُستخدم عندما تريد مفاتيح
+            نصية بدل أرقام.
+        </p>
+
+        <h2 id="common-mistakes">الأخطاء الشائعة التي توقع المبتدئين</h2>
+
+        <p>
+            هذه الأخطاء لا تأتي من قلة الذكاء، بل من افتراضات خاطئة
+            عن كيفية عمل Bash. الجدول التالي يلخص أكثرها شيوعًا:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الخطأ</th>
+                        <th class="px-4 py-2 font-semibold">لماذا يفشل</th>
+                        <th class="px-4 py-2 font-semibold">الإصلاح</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">عدم اقتباس <code>$file</code></td>
+                        <td class="px-4 py-2">تقسيم الكلمات عند وجود مسافات</td>
+                        <td class="px-4 py-2"><code>"$file"</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>for f in $(ls)</code></td>
+                        <td class="px-4 py-2">يفشل مع المسافات والأحرف الخاصة</td>
+                        <td class="px-4 py-2">استخدم <code>*.ext</code> أو <code>find -print0</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">كتابة <code>name = "x"</code></td>
+                        <td class="px-4 py-2">المسافات حول <code>=</code> تفسد الإسناد</td>
+                        <td class="px-4 py-2"><code>name="x"</code></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">عدم التحقق من الوسائط</td>
+                        <td class="px-4 py-2"><code>$1</code> فارغ يسبب خطأ في الاختبار</td>
+                        <td class="px-4 py-2">تحقق من <code>$#</code> قبل الاستخدام</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">استخدام متغير داخل دالة بدون <code>local</code></td>
+                        <td class="px-4 py-2">تلوث النطاق العام</td>
+                        <td class="px-4 py-2">أضف <code>local</code> لكل متغير داخلي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مقارنة نصية بـ<code>-eq</code></td>
+                        <td class="px-4 py-2"><code>-eq</code> للأرقام فقط</td>
+                        <td class="px-4 py-2">استخدم <code>==</code> للنصوص</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الاعتماد على <code>echo</code> لتنسيق حساس</td>
+                        <td class="px-4 py-2">سلوكه يختلف بين الأنظمة</td>
+                        <td class="px-4 py-2">استخدم <code>printf</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="tooling">أدوات لا غنى عنها: ShellCheck وshfmt وBats</h2>
+
+        <p>
+            <strong>ShellCheck</strong> هو أهم أداة لمن يكتب Bash. إنه
+            محلل ساكن يقرأ السكريبت ويشير إلى الأخطاء والممارسات
+            السيئة قبل التشغيل، مع رابط شرح لكل تحذير. يمكنك
+            تشغيله من الطرفية أو استخدامه عبر الإنترنت:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>shellcheck hello.sh</code></pre>
+
+        <p>
+            <strong>shfmt</strong> ينسق السكريبت تلقائيًا، فيجعل
+            المسافات البادئة موحدة ويقلل فروق المراجعة.
+            <strong>Bats</strong> إطار اختبار لسكريبتات Bash، وليس
+            ضروريًا للمبتدئ، لكنه يصبح مهمًا عندما يبدأ السكريبت
+            بالقيام بمنطق يحتاج تحققًا.
+        </p>
+
+        <p>
+            أضف هذه الأدوات إلى سير عملك مبكرًا. تصحيح عادة سيئة
+            أسهل من تصحيح سكريبت يعمل “بالخطأ” لشهور.
+        </p>
+
+        <h2 id="practical-example">مثال عملي: سكريبت نسخ احتياطي كامل</h2>
+
+        <p>
+            يجمع المثال التالي معظم ما سبق: Strict Mode، والتحقق من
+            الوسائط، والدوال، والاقتباسات، و<code>trap</code>
+            للتنظيف:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>#!/usr/bin/env bash
+set -Eeuo pipefail
+
+usage() &#123;
+    printf "الاستخدام: %s &lt;المجلد المصدر&gt; &lt;مجلد النسخ&gt;\\n" "$0" >&2
+&#125;
+
+cleanup() &#123;
+    if [[ -n "$&#123;tmp_file:-&#125;" && -f "$tmp_file" ]]; then
+        rm -f -- "$tmp_file"
+    fi
+&#125;
+trap cleanup EXIT
+
+if [[ $# -ne 2 ]]; then
+    usage
+    exit 64
+fi
+
+src="$1"
+dest="$2"
+
+if [[ ! -d "$src" ]]; then
+    printf "المصدر ليس مجلدًا: %s\\n" "$src" >&2
+    exit 1
+fi
+
+mkdir -p -- "$dest"
+tmp_file="$(mktemp)"
+stamp="$(date +%Y%m%d-%H%M%S)"
+archive="$dest/backup-$stamp.tar.gz"
+
+tar -czf "$tmp_file" -C "$src" .
+mv -- "$tmp_file" "$archive"
+
+printf "تم إنشاء النسخة: %s\\n" "$archive"</code></pre>
+
+        <p>
+            لاحظ <code>--</code> قبل المسارات في الأوامر. هذه
+            العادة تمنع معاملة اسم يبدأ بشرطة كخيار. ولاحظ
+            <code>trap cleanup EXIT</code>، الذي يضمن حذف الملف
+            المؤقت حتى لو فشل السكريبت.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل يبدأ السكريبت بـ<code>#!/usr/bin/env bash</code>؟ ←
+                <strong>أضفه دائمًا</strong>
+            </li>
+            <li>
+                هل يستخدم <code>set -Eeuo pipefail</code>؟ ←
+                <strong>أضفه في أول عشرة أسطر</strong>
+            </li>
+            <li>
+                هل كل متغير مقتبس بـ<code>"$var"</code>؟ ←
+                <strong>اقتبس ما لم يكن لديك سبب</strong>
+            </li>
+            <li>
+                هل تتحقق من <code>$#</code> قبل استخدام <code>$1</code>؟ ←
+                <strong>أضف تحققًا واضحًا</strong>
+            </li>
+            <li>
+                هل تستخدم <code>local</code> داخل الدوال؟ ←
+                <strong>أضفه لكل متغير محلي</strong>
+            </li>
+            <li>
+                هل تستخدم <code>printf</code> بدل <code>echo</code> في التنسيق؟ ←
+                <strong>نعم إن كنت تحتاج تحكمًا</strong>
+            </li>
+            <li>
+                هل تمر على الملفات بطريقة آمنة؟ ←
+                <strong>تجنب <code>for f in $(ls)</code></strong>
+            </li>
+            <li>
+                هل شغّلت <code>shellcheck</code>؟ ←
+                <strong>شغّله قبل كل التزام</strong>
+            </li>
+            <li>
+                هل لديك <code>trap</code> لتنظيف الموارد؟ ←
+                <strong>خاصة مع الملفات المؤقتة</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية وأدوات يمكنك الرجوع إليها لتعميق
+            فهمك:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.gnu.org/software/bash/manual/bash.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    GNU Bash Reference Manual — المرجع الرسمي الكامل
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://mywiki.wooledge.org/BashGuide"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Greg's Wiki (BashGuide) — دليل عملي للممارسات الآمنة
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://tldp.org/LDP/abs/html/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Advanced Bash-Scripting Guide (TLDP) — مرجع موسع بالأمثلة
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.shellcheck.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ShellCheck — محلل ساكن لسكريبتات Bash
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/mvdan/sh"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    shfmt — منسق سكريبتات shell
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://bats-core.readthedocs.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Bats — إطار اختبار سكريبتات Bash
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://devhints.io/bash"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Devhints Bash Cheatsheet — مرجع سريع للصياغة
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://mywiki.wooledge.org/BashPitfalls"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    BashPitfalls — كتالوج الأخطاء الشائعة
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل يجب أن أتعلم Bash قبل Python؟</h3>
+        <p>
+            إذا كنت تعمل على لينكس، فـBash أساسية لفهم الطرفية
+            والملفات والعمليات. يمكنك تعلمها بالتوازي مع Python:
+            Bash للمهام القصيرة والربط بين الأدوات، وPython
+            للمنطق الأكثر تعقيدًا.
+        </p>
+
+        <h3>هل <code>set -e</code> كافٍ لمعالجة الأخطاء؟</h3>
+        <p>
+            لا. <code>set -e</code> وحده لا يوقف التنفيذ في كل
+            السياقات (مثل الأوامر داخل <code>if</code>). الأفضل
+            استخدام <code>set -Eeuo pipefail</code> مع
+            <code>trap</code>، وفهم الاستثناءات.
+        </p>
+
+        <h3>ما الفرق بين <code>[ ]</code> و<code>[[ ]]</code>؟</h3>
+        <p>
+            <code>[ ]</code> متوافق مع POSIX لكنه أكثر عرضة
+            لتقسيم الكلمات. <code>[[ ]]</code> خاص بـBash،
+            وأكثر أمانًا (يمنع التقسيم والتوسيع)،ويدعم أنماطًا
+            مثل <code>&&</code> و<code>||</code> داخل الأقواس.
+        </p>
+
+        <h3>لماذا لا تعمل المتغيرات المعدلة داخل <code>while</code> بعد الأنبوب؟</h3>
+        <p>
+            لأن كل جزء من الأنبوب يعمل في عملية فرعية (subshell)،
+            والمتغيرات المعدلة في العملية الفرعية لا تعود إلى
+            الأب. استخدم process substitution:
+            <code>while ...; done &lt; &lt;(command)</code>.
+        </p>
+
+        <h3>هل يمكنني استخدام Bash على ويندوز؟</h3>
+        <p>
+            نعم، عبر WSL (Windows Subsystem for Linux) أو Git
+            Bash. لكن السكريبتات التي تعتمد على أدوات لينكس
+            (مثل <code>sed</code> و<code>grep</code>) قد
+            تختلف في السلوك.
+        </p>
+    </PostLayout>
+</BaseLayout>
