@@ -1,0 +1,775 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-open-source-adobe-alternatives",
+    title: "أفضل بدائل أدوبي مفتوحة المصدر في 2026: دليل شامل بالفئات",
+    metaTitle: "أفضل بدائل أدوبي مفتوحة المصدر في 2026: دليل شامل بالفئات",
+    description:
+        "دليل عملي لأفضل بدائل Adobe مفتوحة المصدر في 2026: تحرير الصور والتصوير RAW، الرسوم المتجهية والنشر المكتبي، تحرير الفيديو والصوت، المؤثرات البصرية والرسوم المتحركة، وتصميم الواجهات. مع جداول مقارنة وأدوات ناشئة وقائمة تحقق.",
+    keywords: [
+        "بدائل Adobe مفتوحة المصدر",
+        "بديل Photoshop مفتوح المصدر",
+        "GIMP 2026",
+        "Krita",
+        "Inkscape",
+        "Darktable",
+        "Kdenlive",
+        "بديل Illustrator",
+        "بديل Lightroom",
+        "Open source Adobe alternatives",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "26 أكتوبر 2026",
+    pubDate: new Date("2026-10-26"),
+    tags: ["مفتوح المصدر", "بدائل أدوبي", "تصميم", "فيديو", "صور"],
+    thumbnail: "/images/best-open-source-adobe-alternatives.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة البدائل حسب تطبيق Adobe" },
+    { id: "why-leave-adobe", label: "لماذا يبحث الناس عن بدائل أدوبي أصلًا؟" },
+    { id: "photoshop-alternatives", label: "بدائل Photoshop: GIMP وKrita وPhotopea" },
+    { id: "lightroom-alternatives", label: "بدائل Lightroom: Darktable وRawTherapee" },
+    { id: "illustrator-alternatives", label: "بدائل Illustrator: Inkscape والرسوم المتجهية" },
+    { id: "indesign-alternatives", label: "بدائل InDesign: Scribus والنشر المكتبي" },
+    { id: "premiere-alternatives", label: "بدائل Premiere Pro: Kdenlive وShotcut وOpenShot" },
+    { id: "after-effects-alternatives", label: "بدائل After Effects: Blender وNatron" },
+    { id: "audition-alternatives", label: "بدائل Audition: Audacity وArdour وTenacity" },
+    { id: "animate-alternatives", label: "بدائل Animate: OpenToonz وSynfig وPencil2D" },
+    { id: "xd-alternatives", label: "بدائل XD وFigma: Penpot" },
+    { id: "artcraft", label: "ArtCraft: موجة البدائل المولّدة بالذكاء الاصطناعي" },
+    { id: "how-to-choose", label: "كيف تختار البديل المناسب لسير عملك؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            الاشتراك في Adobe Creative Cloud أصبح عبئًا ماليًا متزايدًا:
+            خطة الأفراد في 2026 تقترب من <strong>50 يورو شهريًا</strong>
+            ، أي ما يقارب 600 يورو سنويًا لمجموعة أدوات قد لا تستخدم
+            نصفها[reference:0]. وإذا توقفت عن الدفع، لا تفقد الوصول
+            إلى التحديثات فقط، بل تفقد القدرة على فتح ملفاتك القديمة
+            وتعديلها في بعض التطبيقات.
+        </p>
+
+        <p>
+            البدائل المفتوحة المصدر لم تعد “خيارًا للهواة”. في 2026،
+            أصبحت <strong>GIMP 3.2</strong> يدعم التحرير غير المدمر،
+            و<strong>Inkscape</strong> يتعامل مع SVG كمحرر أصلي لا
+            كصيغة تصدير، و<strong>Darktable</strong> يقدم سير عمل
+            RAW ناضجًا، و<strong>Kdenlive</strong> و<strong>Shotcut</strong>
+            يغطيان معظم احتياجات تحرير الفيديو. هذا الدليل يرتب
+            البدائل حسب تطبيق Adobe الذي تريد استبداله، ويشرح حدود
+            كل بديل بصراحة، حتى تعرف متى يكفي ومتى تحتاج إلى مزيج
+            من أداتين.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة البدائل حسب تطبيق Adobe</h2>
+
+        <p>
+            الجدول التالي يلخص البديل الأساسي لكل تطبيق Adobe، مع
+            البديل الاحتياطي والحالة العملية:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">تطبيق Adobe</th>
+                        <th class="px-4 py-2 font-semibold">البديل المفتوح الأساسي</th>
+                        <th class="px-4 py-2 font-semibold">بديل إضافي</th>
+                        <th class="px-4 py-2 font-semibold">مستوى النضج</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">Photoshop</td>
+                        <td class="px-4 py-2"><strong>GIMP 3.2</strong></td>
+                        <td class="px-4 py-2">Krita (للرسم)، Photopea (ويب)</td>
+                        <td class="px-4 py-2">ناضج، مع فجوات في CMYK والذكاء الاصطناعي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Lightroom</td>
+                        <td class="px-4 py-2"><strong>Darktable</strong></td>
+                        <td class="px-4 py-2">RawTherapee، RapidRAW</td>
+                        <td class="px-4 py-2">ناضج جدًا لمعالجة RAW</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Illustrator</td>
+                        <td class="px-4 py-2"><strong>Inkscape</strong></td>
+                        <td class="px-4 py-2">Krita (للمتجهات الخفيفة)، Penpot</td>
+                        <td class="px-4 py-2">ناضج، مع اختلاف في سير العمل</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">InDesign</td>
+                        <td class="px-4 py-2"><strong>Scribus</strong></td>
+                        <td class="px-4 py-2">LaTeX (للمستندات التقنية)</td>
+                        <td class="px-4 py-2">وظيفي، لكن منحنى التعلم حاد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Premiere Pro</td>
+                        <td class="px-4 py-2"><strong>Kdenlive</strong></td>
+                        <td class="px-4 py-2">Shotcut، OpenShot، Olive</td>
+                        <td class="px-4 py-2">ناضج للمشاريع الصغيرة والمتوسطة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">After Effects</td>
+                        <td class="px-4 py-2"><strong>Blender</strong></td>
+                        <td class="px-4 py-2">Natron، HitFilm (ليس مفتوحًا)</td>
+                        <td class="px-4 py-2">قوي لكنه مختلف جذريًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Audition</td>
+                        <td class="px-4 py-2"><strong>Audacity</strong></td>
+                        <td class="px-4 py-2">Ardour، Tenacity، Audionaut</td>
+                        <td class="px-4 py-2">ناضج للتحرير، أقل للـ DAW</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Animate</td>
+                        <td class="px-4 py-2"><strong>OpenToonz</strong></td>
+                        <td class="px-4 py-2">Synfig، Pencil2D، Krita (للرسوم)</td>
+                        <td class="px-4 py-2">متخصص، يحتاج تعلمًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">XD / Figma</td>
+                        <td class="px-4 py-2"><strong>Penpot</strong></td>
+                        <td class="px-4 py-2">Excalidraw، Pencil</td>
+                        <td class="px-4 py-2">واعد، ويب أولًا</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-leave-adobe">لماذا يبحث الناس عن بدائل أدوبي أصلًا؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-adobe-alternatives/01.webp"
+                alt="واجهة برنامج جمب"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الأسباب لم تعد مالية فقط. ثلاثة تحولات دفعت المهنيين إلى
+            البحث الجدي:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الاشتراك الإجباري.</strong> لا يوجد خيار
+                لشراء نسخة دائمة. وإذا توقفت عن الدفع، تفقد الوصول
+                إلى أدوات التحرير الأساسية، لا التحديثات فقط.
+                هذا يعني أن <strong>أرشيفك الإبداعي</strong> مرهون
+                باستمرار الدفع
+            </li>
+            <li>
+                <strong>الاعتماد على السحابة.</strong> كثير من
+                الميزات الحديثة مرتبطة بالتخزين السحابي والمزامنة.
+                من يريد الاحتفاظ بملفاته محليًا يجد نفسه في مسار
+                غير مباشر.
+            </li>
+            <li>
+                <strong>غياب النسخ الأصلية على لينكس.</strong>
+                Photoshop وIllustrator وInDesign لا تعمل أصليًا
+                على لينكس. مستخدمو لينكس مضطرون إلى البدائل
+                المفتوحة أو إلى الحلول الافتراضية، وهذا دفع
+                تطوير تلك البدائل.
+            </li>
+        </ul>
+
+        <h2 id="photoshop-alternatives">بدائل Photoshop: GIMP وKrita وPhotopea</h2>
+
+        <h3>GIMP 3.2: البديل الأشهر</h3>
+
+        <p>
+            <strong>GIMP</strong> هو أقدم وأشهر بديل مفتوح لـPhotoshop.
+            في إصداره 3.2 (أكتوبر 2026)، دخلت تحسينات جوهرية:
+            الفلاتر أصبحت <strong>غير مدمرة</strong> (يمكن تعديلها
+            لاحقًا أو تعطيلها أو حذفها)، وأُضيفت
+            <strong>طبقات مرتبطة</strong> تتحدث تلقائيًا عند تغير
+            الملف الأصلي، و<strong>طبقات متجهية قابلة للتحرير</strong>
+            .
+        </p>
+
+        <p>
+            GIMP يتعامل مع الطبقات والأقنعة والمنحنيات ويستورد
+            ويصدّر PSD، لكنه ليس نسخة طبق الأصل من Photoshop.
+            حدوده الرئيسية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>لا يوجد وضع CMYK أصلي.</strong> العمل
+                الطباعي يحتاج إلى مسار إضافي أو أداة مساندة
+                .
+            </li>
+            <li>
+                <strong>لا توجد طبقات ضبط حقيقية.</strong> هناك
+                بدائل غير مباشرة (مجموعة طبقات فارغة بوضع
+                Pass-through)، لكنها ليست بنفس السلاسة
+                .
+            </li>
+            <li>
+                <strong>لا ذكاء اصطناعي توليدي مدمج.</strong>
+                التعبئة التوليدية والقص الذكي يحتاجان إلى أدوات
+                خارجية.
+            </li>
+            <li>
+                <strong>واجهة مختلفة عن Photoshop.</strong>
+                الانتقال يحتاج إلى إعادة تعلم قصيرة، رغم وجود
+                إضافات تجعلها أقرب.
+            </li>
+        </ul>
+
+        <h3>Krita: للرسم الرقمي لا لتحرير الصور</h3>
+
+        <p>
+            <strong>Krita</strong> ليس بديلًا مباشرًا لـPhotoshop.
+            إنه أداة <strong>رسم رقمي ورسوم توضيحية</strong>،
+            ويستبدل Adobe Fresco وCorel Painter أكثر مما يستبدل
+            Photoshop. يأتي مع أكثر من <strong>100 فرشاة</strong>
+            عالية الجودة، ويدعم الرسوم المتحركة ثنائية الأبعاد،
+            ويعمل على Windows وmacOS وLinux.
+            إذا كان عملك يعتمد على الرسم والرسم التوضيحي، فهو
+            الخيار الأول. أما إذا كان عملك تحرير صور فوتوغرافية،
+            فـGIMP أنسب.
+        </p>
+
+        <h3>Photopea: بديل ويب لا يحتاج تثبيت</h3>
+
+        <p>
+            <strong>Photopea</strong> ليس مفتوح المصدر بالكامل،
+            لكنه مجاني ويعمل في المتصفح، ويفتح PSD وXCF وSketch
+            وFigma. هو أقرب إلى “Photoshop في المتصفح” من أي
+            بديل آخر. قد يكون خيارًا انتقاليًا جيدًا لمن يريد
+            فتح ملفات PSD دون تثبيت GIMP، لكنه لا يمنحك ملكية
+            الكود ولا يعمل دون اتصال.
+        </p>
+
+        <h2 id="lightroom-alternatives">بدائل Lightroom: Darktable وRawTherapee</h2>
+
+        <p>
+            <strong>Darktable</strong> هو البديل المفتوح الأكثر
+            نضجًا لـLightroom. يعمل محليًا بالكامل، ويعالج RAW
+            دون اشتراك، ويقدم سير عمل غير مدمر يحافظ على الملفات
+            الأصلية سليمة. ميزاته:
+        </p>
+
+        <ul>
+            <li>
+                <strong>AgX tone mapping</strong> و<strong>معالجة
+                ألوان متقدمة</strong>، مع استعادة ظلال وأضواء
+                طبيعية أكثر في الصور عالية التباين.
+            </li>
+            <li>
+                <strong>إدارة مكتبة</strong> (digital asset
+                management) مع وسوم وتقييمات، ما يجعله أقرب إلى
+                Lightroom الكلاسيكي.
+            </li>
+            <li>
+                <strong>استيراد جانبي XMP</strong> من Lightroom،
+                فلا تفقد كل تعديلاتك عند الانتقال
+                .
+            </li>
+        </ul>
+
+        <p>
+            حدوده: <strong>منحنى تعلم حاد</strong>، وواجهة أقل
+            صقلًا من Lightroom، وغياب المزامنة السحابية التلقائية
+            (وهذا في نظر كثيرين ميزة لا عيب).
+        </p>
+
+        <p>
+            <strong>RawTherapee</strong> بديل آخر، أقرب إلى
+            “مختبر RAW” منه إلى مدير مكتبة. يناسب من يريد تحكمًا
+            دقيقًا في المعالجة دون طبقات إدارة. و<strong>RapidRAW</strong>
+            مشروع أحدث يستخدم تسريع GPU وواجهة مستوحاة من
+            Lightroom، لكنه ما زال قيد التطوير.
+        </p>
+
+        <h2 id="illustrator-alternatives">بدائل Illustrator: Inkscape والرسوم المتجهية</h2>
+
+        <p>
+            <strong>Inkscape</strong> هو البديل المفتوح الأقوى
+            لـIllustrator، والأكثر تميزًا بمعمارية مختلفة:
+            بينما يعامل Illustrator صيغة SVG كهدف تصدير،
+            <strong>Inkscape مبني أصلًا كمحرر SVG قياسي</strong>
+            . هذا يعني أن ملفاتك تبقى مفتوحة
+            وقابلة للتعديل في أي أداة، وأن الكود الناتج نظيف
+            وجاهز للويب.
+        </p>
+
+        <p>
+            على مستوى الأدوات، يقدم Inkscape مكافئات مباشرة
+            لمعظم ميزات Illustrator الشائعة: عمليات المسار
+            (اتحاد، فرق، تقاطع، استبعاد، تقسيم، قطع)، وأداة
+            Shape Builder، وتحرير العقد بدقة، وتأثيرات المسار
+            . كما يدعم إضافات متخصصة ومجتمعًا
+            نشطًا.
+        </p>
+
+        <p>
+            حدوده: الواجهة أقل صقلًا من Illustrator، وسير العمل
+            الإنتاجي (prepress، أنظمة الألوان المتقدمة) أقل
+            نضجًا. للمشاريع المعتمدة على SVG والويب والأيقونات،
+            فهو ممتاز. للطباعة الاحترافية المعقدة، قد تحتاج
+            إلى أدوات مساندة.
+        </p>
+
+        <h2 id="indesign-alternatives">بدائل InDesign: Scribus والنشر المكتبي</h2>
+
+        <p>
+            <strong>Scribus</strong> هو البديل المفتوح الرئيسي
+            لـInDesign. يدعم تخطيط الصفحات، والأنماط، والهوامش،
+            والعلامات الطباعية، ويصدّر PDF جاهزًا للطباعة
+            . لكنه ليس بديلًا سلسًا:
+            منحنى التعلم حاد، وسير العمل مختلف عن InDesign،
+            ودعم الصيغ الأصلية لـInDesign محدود. للمشاريع
+            الصغيرة والمتوسطة، والمجلات والكتب البسيطة، فهو
+            كافٍ. للمشاريع المعقدة متعددة اللغات والأنماط
+            المتقدمة، قد تحتاج إلى مزيج مع أدوات أخرى.
+        </p>
+
+        <h2 id="premiere-alternatives">بدائل Premiere Pro: Kdenlive وShotcut وOpenShot</h2>
+
+        <p>
+            <strong>Kdenlive</strong> هو الخيار المفتوح الأكثر
+            اكتمالًا لتحرير الفيديو. يدعم التحرير متعدد
+            المسارات، وتركيب الكروما، وتصحيح الألوان، وتصدير 4K،
+            والرسوم المتحركة بالمفاتيح، ومساحات عمل قابلة
+            للتخصيص، مع تسريع عتادي. يعمل على
+            Linux وWindows وmacOS.
+        </p>
+
+        <p>
+            <strong>Shotcut</strong> بديل آخر قوي، يدعم صيغًا
+            كثيرة ويقدم تحريرًا أصليًا دون إعادة ترميز، مع
+            دعم 4K والتقاط الشاشة. <strong>OpenShot</strong>
+            أبسط وأقل نضجًا، لكنه مناسب للمبتدئين. أما
+            <strong>Olive</strong> فمشروع طموح يهدف إلى بديل
+            احترافي كامل، لكنه ما زال في مرحلة تطوير.
+        </p>
+
+        <p>
+            حدود هذه الأدوات تظهر في المشاريع الكبيرة: تدفق
+            العمل، وأداء الملفات الضخمة، والتكامل مع أدوات
+            المؤثرات. لمعظم مشاريع يوتيوب والإعلانات القصيرة
+            والتحرير المستقل، Kdenlive وShotcut كافيان.
+        </p>
+
+        <h2 id="after-effects-alternatives">بدائل After Effects: Blender وNatron</h2>
+
+        <p>
+            هذا هو أصعب استبدال، لأن After Effects ليس أداة
+            واحدة، بل بيئة كاملة للمؤثرات والرسوم المتحركة
+            والتركيب. الخيار المفتوح الأقوى هو
+            <strong>Blender</strong>، لكنه في جوهره أداة 3D.
+            ومع ذلك، فإن نظام العُقد (Geometry Nodes وCompositor)
+            والرسوم المتحركة والرندر يجعله قادرًا على كثير من
+            مهام After Effects، خاصة في المشاريع ثلاثية
+            الأبعاد.
+        </p>
+
+        <p>
+            <strong>Natron</strong> بديل مفتوح متخصص في
+            التركيب القائم على العُقد، ويشبه Nuke أكثر من
+            After Effects. يناسب من يعمل على تركيب المشاهد
+            والمؤثرات البصرية، لكنه ليس بديلًا كاملًا
+            للرسوم المتحركة ثنائية الأبعاد.
+        </p>
+
+        <h2 id="audition-alternatives">بدائل Audition: Audacity وArdour وTenacity</h2>
+
+        <p>
+            <strong>Audacity</strong> هو البديل الأشهر لتحرير
+            الصوت. يدعم التحرير متعدد المسارات، والتسجيل،
+            والمؤثرات، والإضافات، ويعمل على كل المنصات
+            . لكنه ليس محطة عمل صوتية رقمية
+            (DAW) كاملة، ولا يقدم مixing متقدمًا مثل Ardour.
+        </p>
+
+        <p>
+            <strong>Ardour</strong> هو DAW مفتوح المصدر، مناسب
+            للتسجيل والمزج الاحترافي، ويعمل على Linux وmacOS
+            وWindows. <strong>Tenacity</strong> هو تفرع من
+            Audacity يركز على الخصوصية والاستقرار
+            . <strong>Audionaut</strong> مشروع
+            أحدث يدمج أدوات ذكاء اصطناعي للتحرير، لكنه ما زال
+            ناشئًا.
+        </p>
+
+        <h2 id="animate-alternatives">بدائل Animate: OpenToonz وSynfig وPencil2D</h2>
+
+        <p>
+            <strong>OpenToonz</strong> هو أداة رسوم متحركة
+            احترافية مفتوحة المصدر، استُخدمت في إنتاجات
+            تجارية. يدعم الرسوم ثنائية الأبعاد والتحريك
+            والتلوين والتركيب. <strong>Synfig</strong> يركز
+            على الرسوم المتحركة المتجهية، و<strong>Pencil2D</strong>
+            بسيط ومناسب للرسوم المتحركة التقليدية
+            (frame-by-frame). <strong>Krita</strong> يقدم
+            أيضًا دعمًا للرسوم المتحركة، ما يجعله خيارًا
+            لمن يعمل بالرسم الرقمي.
+        </p>
+
+        <h2 id="xd-alternatives">بدائل XD وFigma: Penpot</h2>
+
+        <p>
+            <strong>Penpot</strong> هو بديل مفتوح لـFigma وXD،
+            ويعمل في المتصفح، ويدعم التصميم التعاوني، والمكونات،
+            والنماذج الأولية. يستخدم SVG كصيغة أساسية، ويمكن
+            استضافته ذاتيًا. هو الأقرب إلى “Figma
+            مفتوح المصدر”، لكنه لم يصل بعد إلى نضج Figma في
+            نظام الإضافات والأداء للمشاريع الضخمة.
+        </p>
+
+        <h2 id="artcraft">ArtCraft: موجة البدائل المولّدة بالذكاء الاصطناعي</h2>
+
+        <p>
+            في 2026 ظهرت موجة جديدة من البدائل المولّدة بالذكاء
+            الاصطناعي، أبرزها مشروع <strong>ArtCraft</strong>
+            الذي يقدم سبعة تطبيقات تقابل سبعة من تطبيقات Adobe:
+            <strong>PhotoCraft</strong> (بديل Photoshop)،
+            <strong>VectorCraft</strong> (Illustrator)،
+            <strong>FilmCraft</strong> (Premiere)،
+            <strong>LightCraft</strong> (Lightroom)،
+            <strong>EffectCraft</strong> (After Effects)،
+            <strong>DesignCraft</strong> (InDesign)،
+            و<strong>PdfCraft</strong> (Acrobat)
+            [reference:29][reference:30].
+        </p>
+
+        <p>
+            هذه المشاريع وليدة، ولا تُنافس بعد نضج GIMP أو
+            Kdenlive أو Inkscape. لكنها تشير إلى اتجاه مهم:
+            <strong>الذكاء الاصطناعي يخفض حاجز الدخول</strong>
+            لبناء أدوات إبداعية، وقد نرى خلال سنوات قليلة
+            بدائل مفتوحة لا تقل عن أدوات Adobe في الميزات
+            الأساسية. في الوقت الحالي، تعامل معها كتجربة
+            مبكرة لا كبديل إنتاجي كامل.
+        </p>
+
+        <h2 id="how-to-choose">كيف تختار البديل المناسب لسير عملك؟</h2>
+
+        <p>
+            لا يوجد “أفضل بديل” واحد. القرار يعتمد على أربعة
+            أسئلة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>ما نوع العمل الذي تؤديه معظم الوقت؟</strong>
+                تحرير صور فوتوغرافية ← GIMP + Darktable. رسم
+                رقمي ← Krita. رسوم متجهية ← Inkscape.
+                فيديو ← Kdenlive أو Shotcut.
+            </li>
+            <li>
+                <strong>هل تحتاج إلى تبادل ملفات مع مستخدمي
+                Adobe؟</strong> إذا كان الجواب نعم، فاختبر
+                التوافق مبكرًا: GIMP يفتح PSD لكن قد يفقد
+                بعض الميزات المتقدمة. Inkscape يفتح بعض ملفات
+                AI لكن قابلية التعديل تختلف. Kdenlive يصدّر
+                XML قابلًا للاستيراد في Premiere بدرجات
+                متفاوتة.
+            </li>
+            <li>
+                <strong>هل تعمل على Linux؟</strong> إذا كان
+                الجواب نعم، فالبدائل المفتوحة هي الخيار
+                الطبيعي، لأن Adobe لا يقدم نسخًا أصلية.
+            </li>
+            <li>
+                <strong>هل تحتاج إلى ميزات ذكاء اصطناعي
+                متقدمة؟</strong> إذا كان الجواب نعم، فمعظم
+                البدائل المفتوحة لا تقدمها بعد. يمكنك دمج
+                النماذج المفتوحة محليًا، لكنها ليست مدمجة
+                بنفس السهولة.
+            </li>
+        </ul>
+
+        <p>
+            القاعدة العملية: <strong>لا تحاول استبدال كل شيء
+            دفعة واحدة</strong>. ابدأ بتطبيق واحد، واستخدم
+            البديل لمدة أسبوعين على مشروع حقيقي، ثم قرر.
+            وإذا احتجت، استخدم مزيجًا: GIMP لتحرير الصور،
+            وKrita للرسم، وInkscape للمتجهات، وScribus للنشر.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تحتاج بديل Photoshop؟ ←
+                <strong>GIMP 3.2</strong> (وKrita للرسم)
+            </li>
+            <li>
+                هل تحتاج بديل Lightroom؟ ←
+                <strong>Darktable</strong> (وRawTherapee للتحكم الدقيق)
+            </li>
+            <li>
+                هل تحتاج بديل Illustrator؟ ←
+                <strong>Inkscape</strong>
+            </li>
+            <li>
+                هل تحتاج بديل InDesign؟ ←
+                <strong>Scribus</strong> (مع توقع منحنى تعلم)
+            </li>
+            <li>
+                هل تحتاج بديل Premiere Pro؟ ←
+                <strong>Kdenlive أو Shotcut</strong>
+            </li>
+            <li>
+                هل تحتاج بديل After Effects؟ ←
+                <strong>Blender أو Natron</strong>
+            </li>
+            <li>
+                هل تحتاج بديل Audition؟ ←
+                <strong>Audacity أو Ardour</strong>
+            </li>
+            <li>
+                هل تحتاج بديل Animate؟ ←
+                <strong>OpenToonz أو Synfig</strong>
+            </li>
+            <li>
+                هل تحتاج بديل Figma/XD؟ ←
+                <strong>Penpot</strong>
+            </li>
+            <li>
+                هل تحتاج ميزات ذكاء اصطناعي مدمجة؟ ←
+                <strong>البدائل المفتوحة ما زالت متأخرة هنا</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية للبدائل المذكورة في المقال:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.gimp.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    GIMP — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://krita.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Krita — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.darktable.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Darktable — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.rawtherapee.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    RawTherapee — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://inkscape.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Inkscape — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.scribus.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Scribus — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://kdenlive.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Kdenlive — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://shotcut.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Shotcut — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.blender.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Blender — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://natrongithub.github.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Natron — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.audacityteam.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Audacity — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://ardour.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Ardour — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://opentoonz.github.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    OpenToonz — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://penpot.app/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Penpot — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.photopea.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Photopea — محرر ويب متوافق مع PSD
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل يمكن لـGIMP أن يفتح ملفات PSD دون مشاكل؟</h3>
+        <p>
+            يستورد ويصدّر PSD، لكن الميزات المتقدمة مثل الكائنات
+            الذكية وطبقات الضبط وأنماط الطبقات قد لا تُعاد
+            بنفس الشكل[reference:31]. اختبر ملفاتك الحقيقية قبل
+            الاعتماد عليه في تبادل مع مستخدمي Photoshop.
+        </p>
+
+        <h3>هل Darktable بديل كامل لـLightroom؟</h3>
+        <p>
+            لمعالجة RAW وإدارة المكتبة، نعم بدرجة عالية. لكنه
+            لا يقدم المزامنة السحابية التلقائية، وواجهته أقل
+            صقلًا، ومنحنى تعلمه حاد[reference:32]. إذا كنت
+            تعمل محليًا ولا تحتاج السحابة، فهو خيار ممتاز.
+        </p>
+
+        <h3>هل Kdenlive كافٍ للمشاريع الاحترافية؟</h3>
+        <p>
+            للمشاريع الصغيرة والمتوسطة، نعم. للمشاريع
+            الاحترافية الكبيرة التي تحتاج تدفق عمل معقدًا
+            وتكاملًا مع أدوات مؤثرات متقدمة، قد تحتاج إلى
+            أدوات إضافية أو إلى برامج ليست مفتوحة المصدر
+            بالكامل.
+        </p>
+
+        <h3>هل ArtCraft بديل جاهز للاستخدام الآن؟</h3>
+        <p>
+            لا. هو مشروع واعد لكنه وليد، ولا ينافس نضج GIMP
+            أو Kdenlive. تعامل معه كتجربة مبكرة، وراقب تطوره.
+        </p>
+
+        <h3>هل يمكنني استخدام هذه البدائل في العمل التجاري؟</h3>
+        <p>
+            نعم، معظمها برخص GPL أو MIT أو Apache تسمح
+            بالاستخدام التجاري. راجع ترخيص كل أداة، خصوصًا
+            إذا كنت تعيد توزيعها أو تعدلها.
+        </p>
+    </PostLayout>
+</BaseLayout>
