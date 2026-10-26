@@ -33,23 +33,24 @@ export const post = {
     thumbnail: "/images/best-open-source-adobe-alternatives.webp",
 };
 
+// تم تعديل هيكل جدول المحتويات لحماية النصوص المزدوجة (BiDi) من التداخل
 const tocItems = [
-    { id: "at-a-glance", label: "نظرة سريعة: خريطة البدائل حسب تطبيق Adobe" },
-    { id: "why-leave-adobe", label: "لماذا يبحث الناس عن بدائل أدوبي أصلًا؟" },
-    { id: "photoshop-alternatives", label: "بدائل Photoshop: GIMP وKrita وPhotopea" },
-    { id: "lightroom-alternatives", label: "بدائل Lightroom: Darktable وRawTherapee" },
-    { id: "illustrator-alternatives", label: "بدائل Illustrator: Inkscape والرسوم المتجهية" },
-    { id: "indesign-alternatives", label: "بدائل InDesign: Scribus والنشر المكتبي" },
-    { id: "premiere-alternatives", label: "بدائل Premiere Pro: Kdenlive وShotcut وOpenShot" },
-    { id: "after-effects-alternatives", label: "بدائل After Effects: Blender وNatron" },
-    { id: "audition-alternatives", label: "بدائل Audition: Audacity وArdour وTenacity" },
-    { id: "animate-alternatives", label: "بدائل Animate: OpenToonz وSynfig وPencil2D" },
-    { id: "xd-alternatives", label: "بدائل XD وFigma: Penpot" },
-    { id: "artcraft", label: "ArtCraft: موجة البدائل المولّدة بالذكاء الاصطناعي" },
-    { id: "how-to-choose", label: "كيف تختار البديل المناسب لسير عملك؟" },
-    { id: "final-checklist", label: "قائمة تحقق نهائية" },
-    { id: "useful-links", label: "روابط ومصادر مفيدة" },
-    { id: "faq", label: "أسئلة شائعة" },
+    { id: "at-a-glance", arPrefix: "نظرة سريعة:", enText: "خريطة البدائل حسب تطبيق Adobe", arSuffix: "" },
+    { id: "why-leave-adobe", arPrefix: "لماذا يبحث الناس عن بدائل أدوبي أصلًا؟", enText: "", arSuffix: "" },
+    { id: "photoshop-alternatives", arPrefix: "بدائل Photoshop:", enText: "GIMP و Krita و Photopea", arSuffix: "" },
+    { id: "lightroom-alternatives", arPrefix: "بدائل Lightroom:", enText: "Darktable و RawTherapee", arSuffix: "" },
+    { id: "illustrator-alternatives", arPrefix: "بدائل Illustrator:", enText: "Inkscape", arSuffix: "والرسوم المتجهية" },
+    { id: "indesign-alternatives", arPrefix: "بدائل InDesign:", enText: "Scribus", arSuffix: "والنشر المكتبي" },
+    { id: "premiere-alternatives", arPrefix: "بدائل Premiere Pro:", enText: "Kdenlive و Shotcut و OpenShot", arSuffix: "" },
+    { id: "after-effects-alternatives", arPrefix: "بدائل After Effects:", enText: "Blender و Natron", arSuffix: "" },
+    { id: "audition-alternatives", arPrefix: "بدائل Audition:", enText: "Audacity و Ardour و Tenacity", arSuffix: "" },
+    { id: "animate-alternatives", arPrefix: "بدائل Animate:", enText: "OpenToonz و Synfig و Pencil2D", arSuffix: "" },
+    { id: "xd-alternatives", arPrefix: "بدائل XD و Figma:", enText: "Penpot", arSuffix: "" },
+    { id: "artcraft", arPrefix: "", enText: "ArtCraft:", arSuffix: "موجة البدائل المولّدة بالذكاء الاصطناعي" },
+    { id: "how-to-choose", arPrefix: "كيف تختار البديل المناسب لسير عملك؟", enText: "", arSuffix: "" },
+    { id: "final-checklist", arPrefix: "قائمة تحقق نهائية", enText: "", arSuffix: "" },
+    { id: "useful-links", arPrefix: "روابط ومصادر مفيدة", enText: "", arSuffix: "" },
+    { id: "faq", arPrefix: "أسئلة شائعة", enText: "", arSuffix: "" },
 ];
 ---
 
@@ -84,9 +85,11 @@ const tocItems = [
             من أداتين.
         </p>
 
+        <!-- مكون جدول المحتويات المحمي من مشاكل BiDi -->
         <nav
             class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
             aria-label="جدول المحتويات"
+            dir="rtl"
         >
             <p class="font-bold text-lg mb-4 text-navy dark:text-white">
                 محتويات المقال
@@ -96,16 +99,20 @@ const tocItems = [
                     <li>
                         <a
                             href={`#${item.id}`}
-                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline inline-block"
                         >
-                            {item.label}
+                            {item.arPrefix && <span>{item.arPrefix} </span>}
+                            {item.enText && <span dir="ltr" class="inline-block">{item.enText}</span>}
+                            {item.arSuffix && <span> {item.arSuffix}</span>}
                         </a>
                     </li>
                 ))}
             </ol>
         </nav>
 
-        <h2 id="at-a-glance">نظرة سريعة: خريطة البدائل حسب تطبيق Adobe</h2>
+        <h2 id="at-a-glance" dir="rtl">
+            <span>نظرة سريعة:</span> <span dir="ltr">خريطة البدائل حسب تطبيق Adobe</span>
+        </h2>
 
         <p>
             الجدول التالي يلخص البديل الأساسي لكل تطبيق Adobe، مع
@@ -148,7 +155,7 @@ const tocItems = [
                     <tr>
                         <td class="px-4 py-2">InDesign</td>
                         <td class="px-4 py-2"><strong>Scribus</strong></td>
-                        <td class="px-4 py-2">LaTeX (للمستندات التقنية)</td>
+                        <td class="px-4 py-2">LaTeX (ل للمستندات التقنية)</td>
                         <td class="px-4 py-2">وظيفي، لكن منحنى التعلم حاد</td>
                     </tr>
                     <tr>
