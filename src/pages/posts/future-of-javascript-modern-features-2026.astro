@@ -1,0 +1,807 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "future-of-javascript-modern-features-2026",
+    title: "مستقبل الجافاسكريبت: أهم الميزات والتقنيات الحديثة التي يجب أن تعرفها",
+    metaTitle: "مستقبل الجافاسكريبت: أهم الميزات والتقنيات الحديثة التي يجب أن تعرفها",
+    description:
+        "دليل شامل لأهم ميزات وتقنيات JavaScript الحديثة في 2026: ES2026، Temporal API، using وawait using، Iterator Helpers، Promise.withResolvers، Rolldown وVite 8، TypeScript 7، React 19 وSvelte 5 وAstro وQwik، وتأثير الذكاء الاصطناعي وWebAssembly.",
+    keywords: [
+        "مستقبل جافاسكريبت",
+        "JavaScript 2026",
+        "ES2026",
+        "Temporal API",
+        "JavaScript using await using",
+        "Iterator Helpers",
+        "Vite 8 Rolldown",
+        "TypeScript 7",
+        "Svelte 5 Runes",
+        "Astro 5",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "27 أكتوبر 2026",
+    pubDate: new Date("2026-10-27"),
+    tags: ["جافاسكريبت", "تطوير الويب", "ES2026", "أدوات البناء", "أطر العمل"],
+    thumbnail: "/images/future-of-javascript-modern-features-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة تحديثات 2026" },
+    { id: "es2026", label: "ES2026: الميزات التي وصلت رسميًا" },
+    { id: "temporal", label: "Temporal API: نهاية عصر Date" },
+    { id: "resource-management", label: "using وawait using: إدارة الموارد بشكل حتمي" },
+    { id: "iterator-helpers", label: "Iterator Helpers: برمجة وظيفية للـ iterables" },
+    { id: "small-but-powerful", label: "ميزات صغيرة بأثر كبير" },
+    { id: "toolchain", label: "ثورة أدوات البناء: Rolldown وVite 8 وTypeScript 7" },
+    { id: "runtimes", label: "بيئات التشغيل: Bun وDeno 2 وNode.js" },
+    { id: "frameworks", label: "أطر العمل: React 19 وSvelte 5 وAstro 5 وQwik" },
+    { id: "ai-impact", label: "الذكاء الاصطناعي يعيد تشكيل كتابة الكود" },
+    { id: "wasm", label: "WebAssembly: الجافاسكريبت تتجاوز حدودها" },
+    { id: "how-to-adapt", label: "كيف تستعد لهذه التحولات عمليًا؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            جافاسكريبت لم تعد اللغة التي تتعلمها مرة واحدة ثم تنساها.
+            في 2026، تغيرت اللغة نفسها، وتغيرت الأدوات التي تحيط بها،
+            وتغيرت طريقة كتابة الكود نفسها. <strong>ES2026</strong>
+            وصل رسميًا، و<strong>Temporal API</strong> أنهى عصر
+            <code>Date</code>، و<strong>Vite 8</strong> انتقل إلى
+            <strong>Rolldown</strong> المكتوب بلغة Rust،
+            و<strong>TypeScript 7</strong> أصبح أسرع بعشر مرات
+            بفضل مترجم Go أصلي.
+        </p>
+
+        <p>
+            هذه ليست تحديثات تجميلية. إنها تغييرات في <strong>طريقة
+            التفكير</strong>: كيف تتعامل مع الزمن، وكيف تدير الموارد،
+            وكيف تكتب حلقات على البيانات، وكيف تبني المشاريع. من
+            يتجاهلها سيجد نفسه يكتب كود 2020 في بيئة 2026. هذا
+            الدليل يلخص أهم ما يجب أن تعرفه، مع أمثلة عملية، ولا
+            يكتفي بقائمة أسماء.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة تحديثات 2026</h2>
+
+        <p>
+            الجدول التالي يلخص المجالات الرئيسية وما تغير فيها فعليًا:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المجال</th>
+                        <th class="px-4 py-2 font-semibold">التحديث الأبرز</th>
+                        <th class="px-4 py-2 font-semibold">الأثر العملي</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">اللغة (ES2026)</td>
+                        <td class="px-4 py-2">Temporal، using، Iterator Helpers</td>
+                        <td class="px-4 py-2">إلغاء مكتبات التواريخ، إدارة موارد آمنة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أدوات البناء</td>
+                        <td class="px-4 py-2">Rolldown وVite 8</td>
+                        <td class="px-4 py-2">بناء أسرع 10–30x، توافق Rollup</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">TypeScript</td>
+                        <td class="px-4 py-2">TS 7 بمترجم Go</td>
+                        <td class="px-4 py-2">بناء أسرع 8–12x للمشاريع الكبيرة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">بيئات التشغيل</td>
+                        <td class="px-4 py-2">Bun وDeno 2</td>
+                        <td class="px-4 py-2">TypeScript أصلي، أداء أعلى</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أطر العمل</td>
+                        <td class="px-4 py-2">React 19، Svelte 5، Astro 5، Qwik</td>
+                        <td class="px-4 py-2">أقل JavaScript، أداء أفضل</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الذكاء الاصطناعي</td>
+                        <td class="px-4 py-2">Cursor، Copilot، Claude Code</td>
+                        <td class="px-4 py-2">الكود يولد أسرع، المراجعة أهم</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">WebAssembly</td>
+                        <td class="px-4 py-2">WASI P3 وJCO</td>
+                        <td class="px-4 py-2">JS تعمل داخل بيئات معزولة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="es2026">ES2026: الميزات التي وصلت رسميًا</h2>
+
+        <p>
+            <img
+                src="/images/articles/future-of-javascript-modern-features-2026/01.webp"
+                alt="مستقبل جافاسكريبت"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            في 30 يونيو 2026، أقرت ECMA International الإصدار السابع عشر
+            من مواصفة JavaScript، <strong>ECMAScript 2026</strong>.
+            الإصدار يضيف سبع ميزات رئيسية معتمدة، بعضها كان في
+            Stage 4 لسنوات، وبعضها وصل متأخرًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Math.sumPrecise:</strong> جمع قيم iterable
+                بدقة أعلى، مع تقليل فقدان الدقة في الأعداد
+                العشرية ذات المقادير المتفاوتة.
+            </li>
+            <li>
+                <strong>Iterator.concat:</strong> دمج عدة iterators
+                في تسلسل واحد، دون تحويلها إلى مصفوفات.
+            </li>
+            <li>
+                <strong>Array.fromAsync:</strong> بناء مصفوفة من
+                async iterable أو مصدر غير متزامن.
+            </li>
+            <li>
+                <strong>Error.isError:</strong> التحقق الموثوق من
+                أن الكائن خطأ حقيقي، بدلًا من فحص
+                <code>instanceof</code> الهش.
+            </li>
+            <li>
+                <strong>Map.prototype.getOrInsert وupsert:</strong>
+                إضافة قيمة افتراضية عند غياب المفتاح، دون
+                كتابة شرط يدوي.
+            </li>
+            <li>
+                <strong>Uint8Array base64/hex:</strong> تحويل
+                مباشر بين البايتات والنصوص المُرمزة، بدلًا من
+                حلقات يدوية.
+            </li>
+            <li>
+                <strong>JSON.parse source access وJSON.rawJSON:</strong>
+                وصول إلى النص الأصلي للقيم أثناء التحليل، وتحكم
+                دقيق في الإخراج.
+            </li>
+        </ul>
+
+        <p>
+            بعض هذه الميزات قد تبدو صغيرة، لكنها تتراكم. <strong>كل
+            ميزة تحذف أسطرًا من الكود اليومي</strong>، وتقلل
+            الاعتماد على مكتبات مساعدة. وهذا هو الاتجاه العام:
+            اللغة تتولى ما كان يُترك للمكتبات.
+        </p>
+
+        <h2 id="temporal">Temporal API: نهاية عصر Date</h2>
+
+        <p>
+            <strong>Temporal</strong> هو أهم إضافة في ES2026 على
+            الإطلاق. إنه يحل محل <code>Date</code>، الذي كان
+            معطوبًا منذ 1995. المشاكل القديمة معروفة: الشهور تبدأ
+            من صفر، والكائن قابل للتعديل (mutable)، ودعم المناطق
+            الزمنية محدود، والتوقيت الصيفي يفاجئ الجميع، والتقويمات
+            غير الميلادية غير مدعومة أصلًا.
+        </p>
+
+        <p>
+            في يناير 2026، أصبح Temporal متاحًا افتراضيًا في
+            <strong>Chrome 144</strong>، بعد أن كان Firefox 139
+            أول متصفح يدعمه في مايو 2025. ومع وجود متصفحين
+            رئيسيين، أصبح استخدامه في الإنتاج واقعًا، لا تجربة
+            مستقبلية.
+        </p>
+
+        <p>
+            الفرق الجوهري أن Temporal يقدم <strong>أنواعًا غير
+            قابلة للتعديل</strong> ومحددة بوضوح:
+            <code>Temporal.PlainDate</code> للتاريخ دون وقت،
+            و<code>Temporal.PlainTime</code> للوقت دون تاريخ،
+            و<code>Temporal.ZonedDateTime</code> للتاريخ والوقت
+            مع منطقة زمنية. العمليات الحسابية تصبح صريحة، لا
+            تعتمد على تغيير الكائن الأصلي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// الطريقة القديمة: Date قابل للتعديل، والشهور تبدأ من صفر
+const now = new Date();
+const nextWeek = new Date(now);
+nextWeek.setDate(now.getDate() + 7);
+
+// Temporal: أنواع غير قابلة للتعديل، وشهور تبدأ من 1
+const today = Temporal.PlainDate.from("2026-10-27");
+const nextWeek = today.add({ days: 7 });
+
+console.log(nextWeek.toString()); // "2026-11-03"
+console.log(today.toString());     // "2026-10-27" — لم يتغير`}</code></pre>
+
+        <p>
+            هذا يعني أن مكتبات مثل Moment.js وDay.js وdate-fns ستفقد
+            جزءًا من سبب وجودها. ليس لأنها سيئة، بل لأن اللغة نفسها
+            قدمت البديل الأصلي. خلال السنوات القادمة، ستصبح
+            <strong>Temporal هي الافتراضي</strong>، و<code>Date</code>
+            ميزة قديمة تُصان للتوافق.
+        </p>
+
+        <h2 id="resource-management">using وawait using: إدارة الموارد بشكل حتمي</h2>
+
+        <p>
+            <strong>Explicit Resource Management</strong> هي الميزة
+            التي تغير طريقة كتابة الكود الذي يتعامل مع موارد
+            تحتاج إلى تحرير: ملفات، اتصالات شبكة، أقفال، قارئات
+            streams. الفكرة مستعارة من
+            <code>try-with-resources</code> في Java و
+            <code>using</code> في C#، لكنها مدمجة في جافاسكريبت.
+        </p>
+
+        <p>
+            الكلمة <code>using</code> تُعرّف موردًا يُستدعى
+            <code>[Symbol.dispose]()</code> تلقائيًا عند الخروج من
+            النطاق. و<code>await using</code> تفعل الشيء نفسه مع
+            الموارد غير المتزامنة عبر
+            <code>[Symbol.asyncDispose]()</code>. هذا يمنع التسريب
+            حتى عند حدوث خطأ:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`async function readFile(path) {
+    await using handle = await openFile(path);
+    // handle يُغلق تلقائيًا عند الخروج من الدالة، حتى لو حدث خطأ
+    return await handle.readText();
+}`}</code></pre>
+
+        <p>
+            المشكلة التي يحلها هذا واضحة في الكود غير المحمي:
+            إذا حدث خطأ أثناء القراءة، ولم تتذكر استدعاء
+            <code>close()</code> أو <code>releaseLock()</code>،
+            يبقى المورد محتجزًا. مع <code>using</code>، لا تحتاج
+            إلى التذكر: اللغة تضمن التحرير. وتبقى
+            <code>DisposableStack</code> و
+            <code>AsyncDisposableStack</code> متاحة لتجميع عدة
+            موارد في كائن واحد.
+        </p>
+
+        <h2 id="iterator-helpers">Iterator Helpers: برمجة وظيفية للـ iterables</h2>
+
+        <p>
+            قبل Iterator Helpers، إذا أردت استخدام
+            <code>map</code> أو <code>filter</code> على iterable
+            غير مصفوفة، كان عليك تحويله إلى مصفوفة بـ
+            <code>Array.from()</code>. هذا كان يستهلك ذاكرة إضافية،
+            ويستحيل مع التكرارات اللانهائية. الآن أصبحت هذه
+            الدوال متاحة مباشرة على <code>Iterator.prototype</code>:
+            <code>map</code>، <code>filter</code>،
+            <code>take</code>، <code>drop</code>،
+            <code>flatMap</code>، <code>reduce</code>،
+            <code>toArray</code>، <code>forEach</code>،
+            <code>some</code>، <code>every</code>،
+            <code>find</code>.
+        </p>
+
+        <p>
+            الميزة الأهم أنها <strong>كسولة (lazy)</strong>: لا
+            تُنفذ العملية حتى تحتاج القيمة. هذا يسمح بالعمل مع
+            تسلسلات لا نهائية، ومع بيانات ضخمة دون تحميلها كاملة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function* factorials() {
+    let result = 1;
+    for (let i = 1; ; i++) {
+        result *= i;
+        yield result;
+    }
+}
+
+const firstFive = factorials()
+    .filter((x) => x % 8 === 0)
+    .take(5)
+    .toArray();
+
+console.log(firstFive); // أول 5 مضاريع للـ 8`}</code></pre>
+
+        <p>
+            لاحظ أن <code>factorials()</code> لا نهائية. لو حاولت
+            تحويلها إلى مصفوفة أولًا، لانهار البرنامج. Iterator
+            Helpers تجعل هذا ممكنًا وأمنًا. ملاحظة مهمة:
+            <strong>Async Iterator Helpers</strong> ما زالت في
+            Stage 2 حتى منتصف 2026، ولم تُشحن في أي محرك، لذا
+            التعامل مع التكرارات غير المتزامنة لا يزال يحتاج
+            إلى حلول يدوية.
+        </p>
+
+        <h2 id="small-but-powerful">ميزات صغيرة بأثر كبير</h2>
+
+        <p>
+            بعض الميزات لا تتصدر العناوين، لكنها تختفي من الكود
+            اليومي بسرعة:
+        </p>
+
+        <h3>Promise.withResolvers</h3>
+
+        <p>
+            بدلًا من إنشاء Promise وحفظ <code>resolve</code> و
+            <code>reject</code> في متغيرات خارجية، تُرجع الدالة
+            الثلاثة معًا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const { promise, resolve, reject } = Promise.withResolvers();
+
+button.addEventListener("click", () => resolve("clicked"));
+setTimeout(() => reject(new Error("timeout")), 5000);
+
+await promise;`}</code></pre>
+
+        <p>
+            هذا النمط كان يظهر كثيرًا في الأحداث، والأقفال التي
+            تُفتح مرة واحدة، وإدارة اتصالات WebSocket.
+            <code>Promise.withResolvers()</code> أصبح
+            <strong>متاحًا على نطاق واسع</strong> منذ سبتمبر 2026.
+        </p>
+
+        <h3>Set methods وRegExp v flag</h3>
+
+        <p>
+            كائن <code>Set</code> أصبح يدعم العمليات الرياضية
+            مباشرة: <code>union</code>، <code>intersection</code>،
+            <code>difference</code>، <code>symmetricDifference</code>،
+            <code>isSubsetOf</code>، <code>isSupersetOf</code>،
+            <code>isDisjointFrom</code>. و<code>RegExp</code> حصل
+            على علم <code>v</code>، وهو ترقية لعلم <code>u</code>
+            تسمح بتدوين المجموعات داخل فئات الأحرف، وخصائص
+            السلاسل، مما يبسط التعابير النمطية المعقدة.
+        </p>
+
+        <h2 id="toolchain">ثورة أدوات البناء: Rolldown وVite 8 وTypeScript 7</h2>
+
+        <p>
+            التغيير الأكبر في 2026 لا يحدث داخل اللغة، بل في
+            الأدوات المحيطة بها. ثلاث أدوات أعادت تعريف سرعة
+            التطوير:
+        </p>
+
+        <h3>Vite 8 وRolldown</h3>
+
+        <p>
+            <strong>Vite 8</strong> صدر في مارس 2026، وهو أول
+            إصدار يستخدم <strong>Rolldown</strong> كأداة تجميع
+            افتراضية بدلًا من Rollup وesbuild. Rolldown مكتوب
+            بلغة Rust، وأسرع من Rollup بـ<strong>10 إلى 30
+            مرة</strong>، مع الحفاظ على توافق واجهة إضافات
+            Rollup. هذا يعني أن مشاريعك الحالية قد تعمل دون
+            تغييرات كبيرة، لكن أسرع بكثير.
+        </p>
+
+        <p>
+            Rolldown لا يجلب السرعة فقط. إنه يدمج TypeScript وJSX
+            وتحويلات الصياغة عبر <strong>Oxc</strong>، ويوفر
+            تقسيم كود أدق (code splitting) على غرار webpack،
+            ويتعامل مع CJS/ESM أصليًا دون إضافات منفصلة.
+        </p>
+
+        <h3>TypeScript 7: مترجم Go الأصلي</h3>
+
+        <p>
+            في يوليو 2026، أصدرت Microsoft
+            <strong>TypeScript 7.0</strong> بمترجم أصلي مكتوب
+            بلغة Go. النتيجة: بناء أسرع بـ<strong>8 إلى 12
+            مرة</strong> للمشاريع الكبيرة، مع الحفاظ على نفس
+            الدلالات. هذا لا يغير الكود الذي تكتبه، لكنه يغير
+            تجربة التطوير اليومية: انتظار أقل، تغذية راجعة أسرع،
+            ومراجعة أنواع أثقل ممكنة.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الأداة</th>
+                        <th class="px-4 py-2 font-semibold">قبل 2026</th>
+                        <th class="px-4 py-2 font-semibold">في 2026</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">تجميع Vite</td>
+                        <td class="px-4 py-2">Rollup + esbuild</td>
+                        <td class="px-4 py-2">Rolldown (Rust)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">سرعة Rolldown</td>
+                        <td class="px-4 py-2">مرجع Rollup</td>
+                        <td class="px-4 py-2">10–30x أسرع</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مترجم TypeScript</td>
+                        <td class="px-4 py-2">JavaScript</td>
+                        <td class="px-4 py-2">Go أصلي (TS 7)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">سرعة بناء TS</td>
+                        <td class="px-4 py-2">المرجع</td>
+                        <td class="px-4 py-2">8–12x أسرع</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="runtimes">بيئات التشغيل: Bun وDeno 2 وNode.js</h2>
+
+        <p>
+            الثلاثة الكبار أصبحوا جميعًا يدعمون TypeScript أصليًا
+            في 2026. <strong>Deno 2</strong> يقدم دعمًا من الدرجة
+            الأولى مع توافق npm، و<strong>Bun</strong> يتفوق في
+            السرعة (أكثر من 52,000 طلب/ثانية) ويضم مدير حزم
+            مدمجًا، و<strong>Node.js</strong> يبقى الخيار
+            الأكثر استقرارًا للمؤسسات. الاختيار لم يعد “أي لغة”،
+            بل “أي بيئة تشغيل تناسب نشرك”.
+        </p>
+
+        <h2 id="frameworks">أطر العمل: React 19 وSvelte 5 وAstro 5 وQwik</h2>
+
+        <p>
+            الاتجاه العام في 2026 هو <strong>تقليل JavaScript على
+            العميل</strong>. أربعة أطر تقود هذا التحول بطرق
+            مختلفة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>React 19 وReact Compiler:</strong> المترجم
+                يتولى التحسينات تلقائيًا، فيقلل الحاجة إلى
+                <code>useMemo</code> و<code>useCallback</code>
+                اليدوية. React ما زالت تهيمن على أعداد التنزيلات
+                (أكثر من 50 مليون أسبوعيًا)، لكن نموها هو الأبطأ
+                بين الأطر الكبرى.
+            </li>
+            <li>
+                <strong>Svelte 5 (Runes):</strong> تستخدم
+                <code>runes</code> لتفاعل يُترجم إلى عمليات DOM
+                مباشرة، دون DOM افتراضي. حزم أصغر، وأداء أعلى،
+                ورضا مطورين مرتفع. أسرع الأطر نموًا نسبيًا.
+            </li>
+            <li>
+                <strong>Astro 5:</strong> تبدأ بصفر JavaScript
+                افتراضيًا، وتُفعّل التفاعل فقط في “جزر” محددة.
+                مناسبة للمواقع كثيفة المحتوى والمدونات
+                والتوثيق.
+            </li>
+            <li>
+                <strong>Qwik:</strong> تلغي الترطيب (hydration)
+                بالكامل عبر <strong>القابلية للاستئناف
+                (resumability)</strong>: تُسلسل حالة التطبيق
+                ومستمعي الأحداث، وتُحمّل الكود عند الحاجة فقط.
+            </li>
+        </ul>
+
+        <p>
+            لا يعني هذا أن React “ماتت”. إنها ما زالت الخيار
+            الأول للفرق الكبيرة والأنظمة المؤسسية. لكن
+            <strong>“React فقط” لم تعد كافية</strong>؛ الوظائف
+            الحديثة تطلب معرفة TypeScript، وأدوات الاختبار مثل
+            Vitest وPlaywright، وأنماط جلب البيانات الحديثة.
+        </p>
+
+        <h2 id="ai-impact">الذكاء الاصطناعي يعيد تشكيل كتابة الكود</h2>
+
+        <p>
+            في 2026، أصبحت أدوات مثل <strong>Cursor</strong>
+            و<strong>GitHub Copilot</strong> و
+            <strong>Claude Code</strong> جزءًا من سير العمل
+            اليومي. هذه الأدوات لا تكتب الكود فقط، بل تُعيد
+            هيكلته، وتشرحه، وتصلح أخطاءه. النتيجة أن
+            <strong>60–70% من الكود في بعض المشاريع</strong> قد
+            يُولَّد آليًا، ويبقى على المطور التركيز على المعمارية
+            والمراجعة والحالات الحدية.
+        </p>
+
+        <p>
+            هذا يغير المهارات المطلوبة. لم يعد السؤال “هل تحفظ
+            صياغة الدالة؟”، بل “هل تستطيع قراءة كود وُلد للتو
+            والحكم عليه؟”. القدرة على <strong>فهم كود الآخرين
+            ومراجعته</strong> أصبحت أثمن من سرعة الكتابة.
+        </p>
+
+        <h2 id="wasm">WebAssembly: الجافاسكريبت تتجاوز حدودها</h2>
+
+        <p>
+            <strong>WASI P3</strong> و<strong>JCO</strong> يفتحان
+            بابًا جديدًا: تشغيل كود JavaScript وNode.js داخل
+            صناديق رمل WebAssembly. هذا يعني إمكانية تشغيل
+            حزم غير موثوقة بأمان، أو نقل منطق حساس إلى بيئة
+            معزولة دون التضحية بالتوافق. يبقى هذا مجالًا
+            متقدمًا، لكنه يتوسع بسرعة في المنصات السحابية
+            والحوسبة الطرفية.
+        </p>
+
+        <h2 id="how-to-adapt">كيف تستعد لهذه التحولات عمليًا؟</h2>
+
+        <ul>
+            <li>
+                <strong>حدّث مشروعك إلى Vite 8.</strong> الفائدة
+                الأكبر بأقل تغيير في الكود. جرّبه على فرع منفصل
+                أولًا، وقس زمن البناء قبل وبعد.
+            </li>
+            <li>
+                <strong>استبدل مكتبات التواريخ تدريجيًا.</strong>
+                ابدأ بأجزاء جديدة من الكود، ولا تحاول ترحيل كل
+                شيء دفعة واحدة. Temporal متاح الآن في
+                المتصفحات الرئيسية.
+            </li>
+            <li>
+                <strong>استخدم using في الكود الجديد.</strong>
+                خاصة عند التعامل مع الملفات والاتصالات
+                والقوارئ. لا تحتاج إلى إعادة كتابة الكود
+                القديم، لكن الكود الجديد يجب أن يستفيد.
+            </li>
+            <li>
+                <strong>تعلّم Iterator Helpers.</strong>
+                ستختفي منها حلقات <code>Array.from()</code>
+                غير الضرورية، وستفتح لك التعامل مع التسلسلات
+                الكبيرة.
+            </li>
+            <li>
+                <strong>راقب أدوات الذكاء الاصطناعي، لا
+                تعتمد عليها فقط.</strong> استخدمها لتسريع
+                العمل، لكن طوّر قدرتك على المراجعة والتحقق.
+            </li>
+            <li>
+                <strong>لا تتبنَّ كل شيء في وقت واحد.</strong>
+                اختر ميزة أو أداتين، وطبّقهما في مشروع حقيقي،
+                ثم قيّم النتيجة قبل التوسع.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تستخدم <code>Date</code> في كود جديد؟ ←
+                <strong>ابدأ باستخدام Temporal</strong>
+            </li>
+            <li>
+                هل تدير موارد يدويًا دون <code>using</code>؟ ←
+                <strong>استخدمها في الكود الجديد</strong>
+            </li>
+            <li>
+                هل تحوّل iterables إلى مصفوفات لاستخدام
+                <code>map</code>؟ ←
+                <strong>Iterator Helpers تغنيك عن ذلك</strong>
+            </li>
+            <li>
+                هل ما زلت على Rollup/esbuild في Vite؟ ←
+                <strong>Vite 8 يجلب Rolldown افتراضيًا</strong>
+            </li>
+            <li>
+                هل تعاني من بطء بناء TypeScript؟ ←
+                <strong>TS 7 أسرع 8–12x</strong>
+            </li>
+            <li>
+                هل تستخدم React بالطريقة القديمة؟ ←
+                <strong>React Compiler يلغي التحسينات اليدوية</strong>
+            </li>
+            <li>
+                هل تحتاج مواقع أسرع بأقل JavaScript؟ ←
+                <strong>جرّب Astro أو Qwik</strong>
+            </li>
+            <li>
+                هل تعتمد على الذكاء الاصطناعي دون مراجعة؟ ←
+                <strong>المراجعة هي المهارة الأهم الآن</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع إليها لتعميق
+            فهمك:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://tc39.es/ecma262/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ECMAScript Language Specification
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Temporal API
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://v8.dev/features/explicit-resource-management"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    V8 — Explicit Resource Management
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://vite.dev/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Vite — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://rolldown.rs/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Rolldown — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.typescriptlang.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    TypeScript — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://bun.sh/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Bun — بيئة تشغيل JavaScript
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://deno.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Deno — بيئة تشغيل JavaScript
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://react.dev/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    React — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://svelte.dev/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Svelte — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://astro.build/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Astro — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://qwik.dev/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Qwik — الموقع الرسمي
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل Temporal بديل كامل لـDate؟</h3>
+        <p>
+            نعم في الاستخدام الجديد. <code>Date</code> سيبقى
+            للتوافق مع الكود القديم، لكن Temporal يقدم أنواعًا
+            أوضح، ودعمًا للمناطق الزمنية والتقويمات، وعمليات
+            حسابية غير قابلة للتعديل. خلال السنوات القادمة،
+            سيصبح الافتراضي.
+        </p>
+
+        <h3>هل <code>using</code> متاح في كل المتصفحات؟</h3>
+        <p>
+            دعمه يتوسع بسرعة في 2026، لكنه ليس شاملًا بعد.
+            تحقق من دعم البيئات التي تستهدفها، واستخدم
+            أدوات البناء التي تحوّله عند الحاجة.
+        </p>
+
+        <h3>هل يجب أن أهاجر إلى Vite 8 فورًا؟</h3>
+        <p>
+            ليس بالضرورة. جرّبه على فرع منفصل، وقس زمن البناء
+            والاستقرار. الفائدة الأكبر تظهر في المشاريع
+            المتوسطة والكبيرة. إذا كان مشروعك صغيرًا جدًا،
+            فقد لا تلاحظ فرقًا كبيرًا.
+        </p>
+
+        <h3>هل يعني صعود Svelte وAstro وQwik أن React تنتهي؟</h3>
+        <p>
+            لا. React ما زالت الأكثر استخدامًا، ولها نظام بيئي
+            ضخم ووظائف كثيرة. لكن “React فقط” لم تعد كافية،
+            والأطر الأخرى تقدم بدائل أفضل في حالات محددة
+            (المحتوى، الحجم، الأداء الأولي).
+        </p>
+
+        <h3>هل الذكاء الاصطناعي سيلغي وظائف المطورين؟</h3>
+        <p>
+            لن يلغيها، لكنه يغيرها. الكتابة الروتينية تصبح
+            أسرع، لكن الحاجة إلى من يفهم المعمارية، ويراجع
+            الكود، ويحل المشكلات المعقدة تزداد. المهارة
+            الأثمن هي <strong>فهم الكود والحكم عليه</strong>،
+            لا سرعة كتابته.
+        </p>
+    </PostLayout>
+</BaseLayout>
