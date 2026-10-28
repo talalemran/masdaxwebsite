@@ -1,0 +1,773 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "finding-malicious-files-on-linux",
+    title: "العثور على الملفات الخبيثة في لينكس: دليل عملي من الفحص السطحي إلى الكشف السلوكي",
+    metaTitle: "كيف تجد الملفات الخبيثة في لينكس: الأدوات والمنهجية الصحيحة",
+    description:
+        "دليل عملي لاكتشاف الملفات الخبيثة في لينكس: ClamAV وrkhunter وchkrootkit وLMD وLynis وAIDE وTripwire، والكشف عن rootkits عبر مقارنة النواة، والمراقبة السلوكية بـeBPF. مع أوامر جاهزة وجداول مقارنة وقائمة تحقق.",
+    keywords: [
+        "اكتشاف الملفات الخبيثة في لينكس",
+        "فحص لينكس من الفيروسات",
+        "ClamAV لينكس",
+        "rkhunter",
+        "chkrootkit",
+        "Linux Malware Detect",
+        "كشف rootkit",
+        "AIDE Tripwire",
+        "eBPF security",
+        "أمان لينكس",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "28 أكتوبر 2026",
+    pubDate: new Date("2026-10-28"),
+    tags: ["لينكس", "أمان", "برمجيات خبيثة", "rootkits", "فحص"],
+    thumbnail: "/images/finding-malicious-files-on-linux.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة أدوات الكشف في لينكس" },
+    { id: "why-linux-not-immune", label: "لماذا لينكس ليس محصنًا؟" },
+    { id: "threat-types", label: "أنواع التهديدات التي تبحث عنها فعليًا" },
+    { id: "methodology", label: "المنهجية: ثلاث طبقات من الفحص" },
+    { id: "layer1-signatures", label: "الطبقة 1: الفحص بالتوقيعات (ClamAV وLMD)" },
+    { id: "layer2-rootkits", label: "الطبقة 2: كشف rootkits (rkhunter وchkrootkit)" },
+    { id: "kernel-cross-view", label: "الكشف المتقدم: مقارنة رؤيتين للنواة" },
+    { id: "file-integrity", label: "سلامة الملفات: AIDE وTripwire" },
+    { id: "behavioral-ebpf", label: "الطبقة 3: الكشف السلوكي بـeBPF" },
+    { id: "logs-and-audit", label: "السجلات وauditd: كيف تقرأ الأثر؟" },
+    { id: "false-positives", label: "الإيجابيات الكاذبة: لماذا تحدث وكيف تتعامل معها؟" },
+    { id: "post-detection", label: "بعد الاكتشاف: ماذا تفعل؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            السؤال الذي يطرحه معظم مديري الخوادم بعد سلوك غريب هو:
+            “كيف أعرف إن كان هناك ملف خبيث على النظام؟”. المشكلة أن
+            الإجابة ليست أمرًا واحدًا. <strong>لينكس لا يملك “فحصًا
+            شاملًا” واحدًا</strong> يكشف كل شيء، لأن التهديدات نفسها
+            متعددة الطبقات: ملف تنفيذي خبيث، سكريبت ويب مخفي، rootkit
+            يعدل النواة، أو عملية تعمل من ذاكرة دون ملف على القرص.
+        </p>
+
+        <p>
+            هذا الدليل يقدم منهجية عملية من ثلاث طبقات: الفحص
+            بالتوقيعات، والكشف عن rootkits، والمراقبة السلوكية. لكل
+            طبقة أدواتها وأوامرها الجاهزة، وحدودها التي يجب أن تعرفها
+            قبل الاعتماد عليها. الهدف ليس أن تشغّل أداة وتقول “انتهيت”،
+            بل أن تبني <strong>شبكة كشف</strong> يمكنك الوثوق بها
+            عندما يكون الوقت حرجًا.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة أدوات الكشف في لينكس</h2>
+
+        <p>
+            الجدول التالي يلخص الأدوات الرئيسية، وما تكشفه، وحدودها
+            الأساسية:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الأداة</th>
+                        <th class="px-4 py-2 font-semibold">ما تكشفه</th>
+                        <th class="px-4 py-2 font-semibold">القيد الأساسي</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><strong>ClamAV</strong></td>
+                        <td class="px-4 py-2">فيروسات وبرمجيات خبيثة معروفة</td>
+                        <td class="px-4 py-2">توقيعات فقط، لا يكشف الجديد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>LMD</strong></td>
+                        <td class="px-4 py-2">WebShells وسكريبتات خبيثة في مواقع الويب</td>
+                        <td class="px-4 py-2">يحتاج ضبطًا، ويفوت الملفات الثنائية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>rkhunter</strong></td>
+                        <td class="px-4 py-2">rootkits وbackdoors وsniffers معروفة</td>
+                        <td class="px-4 py-2">قد يفوّت rootkits الجديدة، إيجابيات كاذبة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>chkrootkit</strong></td>
+                        <td class="px-4 py-2">آثار rootkits معروفة</td>
+                        <td class="px-4 py-2">قديم نسبيًا، يحتاج مراجعة يدوية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>AIDE / Tripwire</strong></td>
+                        <td class="px-4 py-2">تغيّر الملفات عن خط الأساس</td>
+                        <td class="px-4 py-2">يخبرك “ماذا” لا “من” أو “كيف”</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Lynis</strong></td>
+                        <td class="px-4 py-2">ثغرات إعداد وتقوية أمنية</td>
+                        <td class="px-4 py-2">ليس مكافح فيروسات، بل مدقق</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>eBPF (Talus, Kunai)</strong></td>
+                        <td class="px-4 py-2">سلوك مشبوه لحظيًا</td>
+                        <td class="px-4 py-2">يحتاج إعدادًا، وقد يفوّت الهجمات البطيئة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-linux-not-immune">لماذا لينكس ليس محصنًا؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/finding-malicious-files-on-linux/01.webp"
+                alt=">لماذا لينكس ليس محصنًا؟"
+                width="1000"
+                height="520"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الاعتقاد السائد بأن لينكس “غير قابل للإصابة” خطأ شائع. صحيح
+            أن نموذج الصلاحيات وتعدد المستخدمين يقلل من سطح الهجوم،
+            لكن التهديدات التي تصيب لينكس واقعية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>سكريبتات الويب الخبيثة:</strong> خادم ويب
+                مخترق قد يحتوي على WebShell مكتوب بـPHP أوPython
+                يسمح للمهاجم بتنفيذ أوامر. هذا شائع جدًا في
+                الاستضافات المشتركة.
+            </li>
+            <li>
+                <strong>برمجيات التعدين الخبيثة:</strong> تعمل في
+                الخلفية وتستهلك المعالج، وغالبًا تُثبت عبر ثغرة في
+                خدمة مكشوفة.
+            </li>
+            <li>
+                <strong>rootkits:</strong> تعدل النواة أو مكتبات
+                المستخدم لإخفاء العمليات والملفات، وتجعل أدوات
+                الفحص العادية تعطي نتائج نظيفة كاذبة
+                .
+            </li>
+            <li>
+                <strong>ثغرات سلسلة التوريد:</strong> حزم برمجية
+                أو تحديثات تحتوي على كود خبيث، كما حدث في حوادث
+                سابقة. الفحص بالتوقيعات قد لا يكتشفها إذا كانت
+                جديدة.
+            </li>
+        </ul>
+
+        <p>
+            النتيجة أن “لينكس أكثر أمانًا” لا تعني “لينكس آمن
+            تلقائيًا”. تحتاج إلى <strong>فحص دوري</strong> و
+            <strong>مراقبة سلوكية</strong>، لا إلى الاعتماد على
+            طبيعة النظام.
+        </p>
+
+        <h2 id="threat-types">أنواع التهديدات التي تبحث عنها فعليًا</h2>
+
+        <p>
+            قبل تشغيل أي أداة، اعرف ما تبحث عنه. المصطلح “ملف خبيث”
+            يغطي أشياء مختلفة:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النوع</th>
+                        <th class="px-4 py-2 font-semibold">المكان النموذجي</th>
+                        <th class="px-4 py-2 font-semibold">أداة الكشف المناسبة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">ملف تنفيذي خبيث</td>
+                        <td class="px-4 py-2">/tmp، /dev/shm، /var/tmp</td>
+                        <td class="px-4 py-2">ClamAV + مراجعة يدوية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">WebShell</td>
+                        <td class="px-4 py-2">/var/www، مجلدات الرفع</td>
+                        <td class="px-4 py-2">LMD + YARA</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">rootkit في النواة</td>
+                        <td class="px-4 py-2">وحدة LKM مخفية</td>
+                        <td class="px-4 py-2">مقارنة /proc/modules مع /sys/module</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">rootkit في المستخدم</td>
+                        <td class="px-4 py-2">/etc/ld.so.preload</td>
+                        <td class="px-4 py-2">فحص الملف وrkhunter</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">برمجية تعدين</td>
+                        <td class="px-4 py-2">عملية تعمل بلا ملف</td>
+                        <td class="px-4 py-2">eBPF أو مراقبة العمليات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تعديل ملف نظام</td>
+                        <td class="px-4 py-2">/etc/passwd، /etc/ssh/sshd_config</td>
+                        <td class="px-4 py-2">AIDE أو Tripwire</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="methodology">المنهجية: ثلاث طبقات من الفحص</h2>
+
+        <p>
+            لا توجد أداة واحدة تغطي كل شيء. الفحص الفعال يجمع ثلاث
+            طبقات، كل منها يغطي ما يفوته الآخر:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الطبقة الأولى: التوقيعات.</strong> سريعة
+                وواسعة، تكشف المعروف. تناسب الفحص الدوري
+                والملفات التي “تُكتب على القرص”.
+            </li>
+            <li>
+                <strong>الطبقة الثانية: النزاهة والكشف عن
+                rootkits.</strong> تكشف ما لا يعرف له توقيع،
+                لكنها تحتاج خط أساس سليم.
+            </li>
+            <li>
+                <strong>الطبقة الثالثة: السلوك.</strong> تراقب
+                ما يحدث الآن، وتكشف الهجمات الجديدة أو التي
+                تعمل من الذاكرة.
+            </li>
+        </ul>
+
+        <h2 id="layer1-signatures">الطبقة 1: الفحص بالتوقيعات (ClamAV وLMD)</h2>
+
+        <p>
+            <strong>ClamAV</strong> هو محرك مكافحة فيروسات مفتوح
+            المصدر، ويعمل على معظم توزيعات لينكس
+            . تثبيته وتحديث قواعد
+            البيانات:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo apt install clamav clamav-daemon
+sudo systemctl stop clamav-freshclam
+sudo freshclam
+sudo systemctl start clamav-freshclam`}</code></pre>
+
+        <p>
+            للفحص الأساسي، استخدم <code>-r</code> للفحص التكراري،
+            و<code>-i</code> لعرض الملفات المصابة فقط
+            :
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo clamscan -r -i /home
+sudo clamscan -r -i --exclude-dir="^/sys" --exclude-dir="^/proc" /
+`}</code></pre>
+
+        <p>
+            إذا أردت نقل الملفات المصابة إلى الحجر الصحي بدلًا من
+            حذفها، استخدم <code>--move</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo mkdir -p /var/quarantine
+sudo clamscan -r -i --move=/var/quarantine /var/www`}</code></pre>
+
+        <p>
+            <strong>Linux Malware Detect (LMD)</strong> مكمل لـClamAV
+            في سياق خوادم الويب. هو مصمم لاكتشاف WebShells
+            والسكريبتات الخبيثة في مجلدات المواقع، ويدعم المراقبة
+            المستمرة والتنبيهات:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# بعد تثبيت LMD
+sudo maldet -a /var/www
+sudo maldet --monitor-start
+sudo maldet --report list`}</code></pre>
+
+        <p>
+            الإصدار 2.0.1 من LMD (2026) أعاد كتابة محرك الفحص، وأضاف
+            فحص YARA أصليًا، وتقارير JSON، ومحرك توقيعات مركب
+            . هذا يجعله أسرع
+            وأكثر ملاءمة للبيئات الحديثة.
+        </p>
+
+        <h2 id="layer2-rootkits">الطبقة 2: كشف rootkits (rkhunter وchkrootkit)</h2>
+
+        <p>
+            <strong>rkhunter</strong> (Rootkit Hunter) يفحص النظام
+            بحثًا عن rootkits وbackdoors وsniffers معروفة، ويتحقق من
+            سلامة الأوامر الأساسية
+            . قبل الفحص، حدّث قاعدة
+            خصائص الملفات، ثم شغّل الفحص الكامل:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo rkhunter --propupd
+sudo rkhunter --update
+sudo rkhunter --checkall`}</code></pre>
+
+        <p>
+            النتائج تُسجَّل في <code>/var/log/rkhunter.log</code>.
+            لتصفية التحذيرات فقط:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo grep -i warning /var/log/rkhunter.log`}</code></pre>
+
+        <p>
+            <strong>chkrootkit</strong> أداة أخف وأسرع، تفحص آثار
+            rootkits المعروفة. تشغيلها المباشر:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo chkrootkit`}</code></pre>
+
+        <p>
+            كلا الأداتين تعتمدان على <strong>توقيعات وأنماط
+            معروفة</strong>. إذا كان rootkit جديدًا أو معدلًا
+            بدرجة كافية، فقد يمر. ولهذا تحتاج إلى الطبقة المتقدمة
+            التالية.
+        </p>
+
+        <h2 id="kernel-cross-view">الكشف المتقدم: مقارنة رؤيتين للنواة</h2>
+
+        <p>
+            الـ rootkit الحقيقي لا يكتفي بإخفاء ملف؛ إنه يجعل النظام
+            “يكذب” عليك. لكن الكذب المتسق صعب. النواة تعرض حالتها
+            عبر واجهات متعددة، وعلى rootkit أن يعترض كل واحدة منها
+            بنفس الطريقة، وإلا اختلفت الرؤى. هذا هو أساس الكشف
+            المتقدم .
+        </p>
+
+        <p>
+            <strong>الفحص الأول: مقارنة الوحدات المحملة.</strong>
+            إذا ظهرت وحدة في <code>/sys/module</code> لكنها غائبة
+            عن <code>/proc/modules</code> (الذي يقرأه
+            <code>lsmod</code>)، فهذه علامة على وحدة تخفي نفسها:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`comm -13 \
+  <(cut -d' ' -f1 /proc/modules | sort) \
+  <(for m in /sys/module/*/; do [ -f "$m/refcnt" ] && basename "$m" done | sort)`}</code></pre>
+
+        <p>
+            الناتج المتوقع: لا شيء. أي سطر يظهر هو وحدة محملة حسب
+            <code>/sys</code> لكنها مخفية من <code>/proc</code>
+            .
+        </p>
+
+        <p>
+            <strong>الفحص الثاني: مقارنة العمليات.</strong> إذا
+            استجاب PID لـ<code>stat</code> مباشرة لكنه غائب عن
+            إدراج <code>/proc</code>، فهذا تناقض يستحق التحقيق.
+        </p>
+
+        <p>
+            <strong>الفحص الثالث: <code>ld.so.preload</code>.</strong>
+            ملف غير فارغ في <code>/etc/ld.so.preload</code> يعني أن
+            مكتبة تُحمَّل في كل عملية. هذا أسلوب شائع لـrootkits
+            في مساحة المستخدم . افحصه:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`cat /etc/ld.so.preload
+ls -la /etc/ld.so.preload`}</code></pre>
+
+        <p>
+            إذا كان الملف موجودًا وغير فارغ، فاعتبره حادثًا حتى تثبت
+            العكس.
+        </p>
+
+        <h2 id="file-integrity">سلامة الملفات: AIDE وTripwire</h2>
+
+        <p>
+            <strong>AIDE</strong> (Advanced Intrusion Detection
+            Environment) يبني قاعدة بيانات ببصمات الملفات
+            وصلاحياتها وسماتها، ثم يعيد الفحص دوريًا ويبلغ عن
+            الفروق . <strong>Tripwire</strong>
+            يعمل بالمبدأ نفسه، لكنه يضيف توقيعًا تشفيريًا لقاعدة
+            البيانات، ما يجعل التلاعب بها قابلًا للكشف
+            .
+        </p>
+
+        <p>
+            الفرق العملي: AIDE أبسط، وقاعدة بياناته غير موقعة، فأي
+            مستخدم بـroot يمكنه إعادة كتابتها. Tripwire يضيف
+            توقيعًا، لكنه يفرض إدارة مفاتيح وتعقيدًا أكبر
+            .
+        </p>
+
+        <p>
+            حدودهما البنيوية واضحة: الفحص الدوري يعني أنك تعرف
+            “الثلاثاء” ما تغير “الأحد”، ولا تعرف من غيّره أو كيف
+            . إذا كانت نافذة الكشف
+            ليلية، فالمهاجم لديه ما يصل إلى 24 ساعة قبل أن تكتشف
+            التغيير . ولهذا
+            تحتاج إلى طبقة سلوكية.
+        </p>
+
+        <h2 id="behavioral-ebpf">الطبقة 3: الكشف السلوكي بـeBPF</h2>
+
+        <p>
+            أدوات مثل <strong>eBPF</strong> تراقب الأحداث من النواة
+            لحظة حدوثها، لا بعد ساعات. هذا يغير طبيعة الكشف من
+            “مراجعة أرشيف” إلى “ملاحظة مباشرة”.
+        </p>
+
+        <p>
+            <strong>Talus</strong> مثال حديث: وكيل كشف واستجابة
+            لبرمجيات الفدية على لينكس، يستخدم نقاط تتبع eBPF
+            لاعتراض استدعاءات النظام، ويحسب لكل عملية نافذة منزلقة
+            لسلوك فتح الملفات، ويمكنه إنهاء العملية فورًا عند
+            إصدار حكم . يقيس الأداء
+            بحوالي 280 ألف حدث في الثانية باستهلاك 7.6% من
+            المعالج .
+        </p>
+
+        <p>
+            <strong>Kunai</strong> أداة أخرى قائمة على eBPF تسجل
+            أحداث العمليات والملفات والشبكة من النواة أثناء حدوثها،
+            ما يمنحك سجلًا لا يمكن للمضيف المخترق تعديله لاحقًا
+            . هذا مهم في التحقيق
+            الجنائي، حيث لا تثق في سجلات النظام التي قد تكون
+            عُدّلت.
+        </p>
+
+        <h2 id="logs-and-audit">السجلات وauditd: كيف تقرأ الأثر؟</h2>
+
+        <p>
+            الأدوات لا تغني عن قراءة السجلات. ابدأ من الأماكن
+            التالية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>سجلات المصادقة:</strong>
+                <code>/var/log/auth.log</code> (Debian/Ubuntu) أو
+                <code>/var/log/secure</code> (RHEL). ابحث عن
+                “Failed password” والمحاولات الناجحة من عناوين
+                غريبة .
+            </li>
+            <li>
+                <strong>سجلات systemd:</strong>
+                <code>journalctl -xe</code> و
+                <code>journalctl -u ssh</code>.
+            </li>
+            <li>
+                <strong>سجلات auditd:</strong> إذا كان مفعّلًا،
+                يمكنك تتبع من فتح ملفًا أو نفّذ أمرًا. هذا يعطيك
+                “من” و“كيف”، لا “ماذا” فقط
+                .
+            </li>
+            <li>
+                <strong>مهام cron وsystemd:</strong> تحقق من
+                <code>crontab -l</code> و<code>/etc/cron*</code>
+                و<code>systemctl list-unit-files --type=service</code>
+                بحثًا عن خدمات غريبة مفعلة
+                .
+            </li>
+        </ul>
+
+        <h2 id="false-positives">الإيجابيات الكاذبة: لماذا تحدث وكيف تتعامل معها؟</h2>
+
+        <p>
+            rkhunter وchkrootkit يشتهران بإنتاج تحذيرات كاذبة. السبب
+            أن أنظمة لينكس الحديثة تتغير باستمرار: تحديثات الحزم
+            تعدل ملفات النظام، وsystemd يغير سلوك العمليات، وبعض
+            الأدوات المشروعة تستخدم تقنيات مشابهة للـrootkits
+            (مثل preload أو وحدات نواة). القاعدة العملية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>لا تعتبر كل تحذير إصابة.</strong> اقرأ
+                السجل كاملًا، وتحقق من سياق الملف أو العملية.
+            </li>
+            <li>
+                <strong>حدّث قاعدة rkhunter بعد كل تحديث
+                كبير.</strong> <code>rkhunter --propupd</code>
+                يقلل الإيجابيات الكاذبة .
+            </li>
+            <li>
+                <strong>استخدم بيئة فحص نظيفة.</strong> إذا
+                شككت في أن أدوات النظام نفسها مخترقة، افحص من
+                LiveUSB أو من نظام آخر بتركيب القرص للقراءة فقط
+                .
+            </li>
+        </ul>
+
+        <h2 id="post-detection">بعد الاكتشاف: ماذا تفعل؟</h2>
+
+        <p>
+            اكتشاف ملف خبيث ليس النهاية، بل بداية الاستجابة:
+        </p>
+
+        <ol>
+            <li>
+                <strong>اعزل، لا تحذف فورًا.</strong> انقل الملف
+                إلى الحجر الصحي أو احتفظ بنسخة للتحليل. الحذف
+                يمحو الأدلة.
+            </li>
+            <li>
+                <strong>حدد نطاق الإصابة.</strong> هل الملف
+                واحد؟ هل هناك cron أو خدمة systemd تشغله؟ هل
+                هناك اتصال شبكي خارجي؟
+            </li>
+            <li>
+                <strong>ابحث عن آلية البقاء.</strong> المهاجم
+                لا يضع ملفًا فقط؛ يضع طريقة لإعادة تشغيله. افحص
+                cron، وsystemd، و<code>.bashrc</code>،
+                و<code>/etc/rc.local</code>.
+            </li>
+            <li>
+                <strong>غيّر بيانات الاعتماد.</strong> إذا كان
+                الاختراق عبر SSH، فالمفاتيح وكلمات المرور
+                مكشوفة. غيّرها.
+            </li>
+            <li>
+                <strong>أعد البناء إذا لزم.</strong> في حالة
+                rootkit في النواة، قد لا تكون الثقة في النظام
+                ممكنة. إعادة التثبيت من وسيط نظيف هي الخيار
+                الآمن.
+            </li>
+        </ol>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تحدّث قواعد ClamAV قبل الفحص؟ ←
+                <strong><code>freshclam</code></strong>
+            </li>
+            <li>
+                هل فحصت <code>/tmp</code> و<code>/var/tmp</code>
+                و<code>/dev/shm</code>؟ ←
+                <strong>هذه أماكن شائعة للملفات التنفيذية</strong>
+            </li>
+            <li>
+                هل فحصت مجلدات الويب بـLMD؟ ←
+                <strong><code>maldet -a /var/www</code></strong>
+            </li>
+            <li>
+                هل شغّلت rkhunter وchkrootkit؟ ←
+                <strong>نعم، مع مراجعة السجلات</strong>
+            </li>
+            <li>
+                هل قارنت <code>/proc/modules</code> مع
+                <code>/sys/module</code>؟ ←
+                <strong>أي اختلاف يستحق التحقيق</strong>
+            </li>
+            <li>
+                هل <code>/etc/ld.so.preload</code> فارغ؟ ←
+                <strong>إن لم يكن، اعتبره حادثًا</strong>
+            </li>
+            <li>
+                هل لديك خط أساس لـAIDE أو Tripwire؟ ←
+                <strong>بدونه لا يمكنك كشف التغيير</strong>
+            </li>
+            <li>
+                هل تراقب السلوك بـeBPF أو أداة مماثلة؟ ←
+                <strong>ضروري للهجمات الجديدة</strong>
+            </li>
+            <li>
+                هل راجعت cron وsystemd للتحقق من البقاء؟ ←
+                <strong>نعم، بعد أي اكتشاف</strong>
+            </li>
+            <li>
+                هل تعرف من عدّل الملف، لا ماذا تغير فقط؟ ←
+                <strong>auditd وeBPF يجيبان عن “من”</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية وأدوات يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.clamav.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ClamAV — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/rfxn/linux-malware-detect"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Linux Malware Detect (LMD) — GitHub
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://rkhunter.sourceforge.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    rkhunter — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="http://www.chkrootkit.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    chkrootkit — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://aide.github.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    AIDE — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/Tripwire/tripwire-open-source"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Tripwire Open Source — GitHub
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://cisofy.com/lynis/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Lynis — أداة تدقيق أمني
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/BartoszOsiej/talus-process-monitor"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Talus — كشف برمجيات الفدية بـeBPF
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/kunai-project/kunai"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Kunai — مراقبة سلوكية بـeBPF
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/VirusTotal/yara"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    YARA — قواعد كشف البرمجيات الخبيثة
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل أحتاج مكافح فيروسات على لينكس؟</h3>
+        <p>
+            ليس بنفس الطريقة التي تحتاجه على ويندوز، لكن الفحص
+            الدوري مفيد. ClamAV يفيد في فحص الملفات التي تتبادلها
+            مع أنظمة أخرى، وفي كشف سكريبتات الويب الخبيثة. والأهم
+            من الفحص: المراقبة السلوكية وسلامة الملفات.
+        </p>
+
+        <h3>ما الفرق بين rkhunter وchkrootkit؟</h3>
+        <p>
+            كلاهما يبحث عن rootkits معروفة، لكن rkhunter أكثر
+            شمولًا ويقدم فحصًا للخصائص والتحديثات، بينما chkrootkit
+            أخف وأسرع. استخدامهما معًا يغطي مساحة أكبر، مع توقع
+            إيجابيات كاذبة من كليهما.
+        </p>
+
+        <h3>هل rootkit يمكن أن يخفي نفسه عن كل الأدوات؟</h3>
+        <p>
+            يمكنه إخفاء نفسه عن أدوات تعتمد على واجهات معينة
+            (مثل <code>/proc</code>)، لكنه لا يستطيع إخفاء
+            التناقض بين واجهات النواة المختلفة. لهذا فإن مقارنة
+            <code>/proc/modules</code> مع <code>/sys/module</code>
+            تكشفه. الأدوات السلوكية مثل eBPF تلتقط ما يحدث قبل
+            أن يتمكن من الإخفاء.
+        </p>
+
+        <h3>هل AIDE كافٍ لمراقبة التغييرات؟</h3>
+        <p>
+            هو أفضل من لا شيء، لكنه يخبرك “ماذا تغير” لا “من غيّره”
+            أو “كيف”. ونافذة الكشف تعتمد على تكرار الفحص. للحصول
+            على صورة كاملة، ادمجه مع auditd وeBPF.
+        </p>
+
+        <h3>ماذا أفعل إذا وجدت ملفًا خبيثًا؟</h3>
+        <p>
+            لا تحذفه فورًا. انقله إلى حجر صحي أو احتفظ بنسخة
+            للتحليل. ثم ابحث عن آلية البقاء (cron، systemd،
+            بدء التشغيل)، وغيّر بيانات الاعتماد، وحدد ما إذا
+            كانت إعادة البناء ضرورية.
+        </p>
+    </PostLayout>
+</BaseLayout>
