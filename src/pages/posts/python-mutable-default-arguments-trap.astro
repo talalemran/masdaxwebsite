@@ -1,0 +1,880 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "python-mutable-default-arguments-trap",
+    title: "لماذا تعتبر الوسائط الافتراضية القابلة للتغيير فخاً خطيراً في دوال بايثون؟",
+    metaTitle: "فخ الوسائط الافتراضية القابلة للتغيير في بايثون: الأسباب والحلول",
+    description:
+        "تحليل معمق لفخ الوسائط الافتراضية القابلة للتغيير في بايثون: لماذا تُقيَّم مرة واحدة عند التعريف، وكيف تسبب أخطاء يصعب تتبعها في القوائم والقواميس والكائنات المخصصة، وكيف تكتشفها بأدوات مثل flake8-bugbear وRuff، مع أنماط الإصلاح الصحيحة والحالات التي يكون فيها السلوك مقصودًا.",
+    keywords: [
+        "mutable default arguments python",
+        "فخ الوسائط الافتراضية بايثون",
+        "Python gotchas",
+        "flake8-bugbear B006",
+        "Ruff B006",
+        "pylint W0102",
+        "default arguments evaluated once",
+        "__defaults__",
+        "sentinel object python",
+        "أخطاء بايثون الشائعة",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "29 أكتوبر 2026",
+    pubDate: new Date("2026-10-29"),
+    tags: ["بايثون", "أخطاء شائعة", "برمجة", "جودة الكود", "أدوات تحليل"],
+    thumbnail: "/images/python-mutable-default-arguments-trap.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة الفخ ومكوناته" },
+    { id: "the-trap-in-one-line", label: "الفخ في سطر واحد: المثال الكلاسيكي" },
+    { id: "why-it-happens", label: "لماذا يحدث هذا؟ آلية التقييم عند التعريف" },
+    { id: "from-surprise-to-trap", label: "ما الذي يحوّله من مفاجأة إلى فخ خطير؟" },
+    { id: "where-it-hides", label: "أين يختبئ الفخ: القوائم والقواميس والكائنات المخصصة" },
+    { id: "the-sibling-trap", label: "الفخ الشقيق: القيم المحسوبة وقت التعريف" },
+    { id: "design-rationale", label: "لماذا صُمم بايثون بهذه الطريقة؟" },
+    { id: "real-world-patterns", label: "أنماط حقيقية يظهر فيها الفخ في الكود الإنتاجي" },
+    { id: "the-fixes", label: "أنماط الإصلاح الصحيحة" },
+    { id: "sentinel-pattern", label: "نمط الحارس (Sentinel): الحل الأكثر تعبيرًا" },
+    { id: "when-intentional", label: "متى يكون السلوك مقصودًا؟" },
+    { id: "detection-tools", label: "الكشف الآلي: flake8-bugbear وRuff وpylint وmypy" },
+    { id: "related-traps", label: "فخاخ مجاورة تستحق المعرفة" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في كل لغة برمجة، هناك أخطاء يقع فيها المبتدئ ثم يتوقف عن
+            الوقوع فيها، وأخطاء أخرى يرتكبها المطور ذو الخبرة لأنه لا
+            يتوقعها. فخ <strong>الوسائط الافتراضية القابلة للتغيير</strong>
+            في بايثون ينتمي إلى الفئة الثانية. هو سطر واحد يبدو سليمًا
+            تمامًا، ثم يفشل بطرق لا علاقة لها بالسطر الذي كتبته.
+        </p>
+
+        <p>
+            المشكلة ليست أن الفخ غامض، بل أن أعراضه تُشخَّص خطأً. المطور
+            يرى أن الدالة “تتذكر” قيمة من استدعاء سابق، فيفترض أن هناك
+            متغيرًا عامًا، أو مشكلة في الكاش، أو تداخلًا بين الطلبات.
+            يقضي ساعات في تتبع متغيرات لا علاقة لها بالمشكلة، بينما
+            السبب في سطر تعريف الدالة نفسه. هذا الدليل يفكك الفخ من
+            الجذور: كيف يعمل، وأين يظهر، وكيف تكتشفه آليًا قبل أن يصل
+            إلى الإنتاج.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة الفخ ومكوناته</h2>
+
+        <p>
+            الجدول التالي يلخص جوهر المشكلة في محاورها الأساسية، قبل
+            الدخول في التفاصيل:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">البعد</th>
+                        <th class="px-4 py-2 font-semibold">السلوك في بايثون</th>
+                        <th class="px-4 py-2 font-semibold">التوقع الخاطئ الشائع</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">وقت تقييم القيمة الافتراضية</td>
+                        <td class="px-4 py-2">مرة واحدة عند تعريف الدالة</td>
+                        <td class="px-4 py-2">عند كل استدعاء</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مكان تخزين القيمة</td>
+                        <td class="px-4 py-2"><code>func.__defaults__</code></td>
+                        <td class="px-4 py-2">داخل نطاق الاستدعاء</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">هل تُنشأ نسخة جديدة؟</td>
+                        <td class="px-4 py-2">لا، نفس الكائن في كل استدعاء</td>
+                        <td class="px-4 py-2">نعم، نسخة مستقلة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأنواع المتأثرة</td>
+                        <td class="px-4 py-2">list، dict، set، bytearray، أي كائن قابل للتغيير</td>
+                        <td class="px-4 py-2">يُفترض أن أي قيمة افتراضية “آمنة”</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أعراض الفشل</td>
+                        <td class="px-4 py-2">تسرب حالة بين استدعاءات لا علاقة لها</td>
+                        <td class="px-4 py-2">يُشخَّص كخطأ في المتغيرات العامة أو الكاش</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">قابلية الكشف الآلي</td>
+                        <td class="px-4 py-2">عالية (flake8-bugbear B006، Ruff، pylint W0102)</td>
+                        <td class="px-4 py-2">يعتمد كثيرون على المراجعة اليدوية فقط</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="the-trap-in-one-line">الفخ في سطر واحد: المثال الكلاسيكي</h2>
+
+        <p>
+            <img
+                src="/images/articles/python-mutable-default-arguments-trap/01.webp"
+                alt="مثال على فخ الوسائط الافتراضية القابلة للتغيير في بايثون"
+                width="1130"
+                height="584"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الكود التالي يبدو بريئًا تمامًا. الغرض منه إضافة عنصر إلى
+            قائمة افتراضية وإرجاعها:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def add_item(item, bucket=[]):
+    bucket.append(item)
+    return bucket`}</code></pre>
+
+        <p>
+            التوقع البديهي أن كل استدعاء يبدأ بقائمة فارغة جديدة. الواقع
+            مختلف:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`print(add_item("a"))   # ['a']
+print(add_item("b"))   # ['a', 'b']
+print(add_item("c"))   # ['a', 'b', 'c']`}</code></pre>
+
+        <p>
+            القائمة لم تُنشأ من جديد. إنها <strong>الكائن نفسه</strong>
+            يُعاد استخدامه في كل استدعاء، وتتراكم العناصر فيه. الدالة
+            “تتذكر” الحالة من الاستدعاء السابق، رغم أنه لا يوجد في
+            الكود أي شيء يوحي بأنها متغيرة أو تحتفظ بحالة.
+        </p>
+
+        <h2 id="why-it-happens">لماذا يحدث هذا؟ آلية التقييم عند التعريف</h2>
+
+        <p>
+            السر في أن بايثون تُقيّم القيم الافتراضية عند
+            <strong>تعريف الدالة</strong>، لا عند استدعائها. هذا
+            يختلف عن لغات أخرى، ويتطلب وعيًا خاصًا. عند تنفيذ السطر
+            الذي يعرّف الدالة، تُنشأ القائمة <code>[]</code> مرة واحدة،
+            وتُربط بمعامل <code>bucket</code> كقيمة افتراضية، وتُخزَّن
+            في خاصية الدالة <code>__defaults__</code>.
+        </p>
+
+        <p>
+            يمكنك رؤية ذلك مباشرة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def add_item(item, bucket=[]):
+    bucket.append(item)
+    return bucket
+
+print(add_item.__defaults__)  # ([],)
+add_item("a")
+print(add_item.__defaults__)  # (['a'],)
+add_item("b")
+print(add_item.__defaults__)  # (['a', 'b'],)`}</code></pre>
+
+        <p>
+            الخاصية <code>__defaults__</code> تكشف أن القائمة الافتراضية
+            هي الكائن نفسه، وقد تغيّر محتواه. بايثون لا تنسخ القيمة عند
+            الاستدعاء، ولو نسختها لكان السلوك مختلفًا. لكنها لا تنسخ،
+            لأن ذلك سيكون مكلفًا في كل استدعاء لكل دالة، وهذا قرار
+            تصميمي مقصود، كما سنرى لاحقًا.
+        </p>
+
+        <p>
+            النقطة الجوهرية أن الفخ ليس “خطأً” في بايثون، بل نتيجة
+            متسقة لقواعدها. اللغة تعمل كما صُممت. المشكلة أن التصميم
+            نفسه <strong>ينتج عن سلوك غير متوقع</strong> عندما تكون
+            القيمة قابلة للتغيير، وهذا ما يجعل الفخ خطيرًا: الكود ليس
+            خاطئًا نحويًا، والسلوك ليس عشوائيًا، لكنه يخالف التوقع
+            الذهني للمطور.
+        </p>
+
+        <h2 id="from-surprise-to-trap">ما الذي يحوّله من مفاجأة إلى فخ خطير؟</h2>
+
+        <p>
+            لو كان الفخ يظهر دائمًا في مثال مثل المثال السابق، لكان
+            اكتشافه سهلًا. لكن في الكود الحقيقي، يظهر بثلاث طرق تجعله
+            خطيرًا:
+        </p>
+
+        <h3>1. لا يظهر إلا في الاستدعاء الثاني</h3>
+
+        <p>
+            في الاختبار الأول، تعمل الدالة كما هو متوقع. المشكلة تظهر
+            فقط عند التكرار. كثير من الاختبارات الآلية تستدعي الدالة
+            مرة واحدة، فتمر. المشكلة تصل إلى الإنتاج، وتظهر بعد ساعات
+            أو أيام، في سياق مختلف تمامًا.
+        </p>
+
+        <h3>2. يخلط الحالة بين مستخدمين أو طلبات</h3>
+
+        <p>
+            في تطبيق ويب، إذا كانت الدالة تُستدعى في سياق طلب من مستخدم
+            A، ثم في طلب من مستخدم B، فقد يرى المستخدم B بيانات
+            المستخدم A. هذا ليس “خطأً غريبًا” بل <strong>تسرب
+            بيانات</strong>، وقد يكون له أثر قانوني وأمني، لا مجرد
+            إزعاج.
+        </p>
+
+        <h3>3. الأعراض لا تشير إلى السبب</h3>
+
+        <p>
+            عندما تُشخَّص المشكلة، تُشخَّص في المكان الخطأ. المطور يبحث
+            في المتغيرات العامة، وفي الكاش، وفي decorators، وفي سلوك
+            الإطار المستخدم. بينما السبب في تعريف الدالة، وهو سطر
+            يبدو سليمًا. الأدوات التي تجعل الأعراض “تبدو منطقية”
+            (مثل decorators التي تغلف الدالة) تزيد صعوبة التشخيص.
+        </p>
+
+        <h2 id="where-it-hides">أين يختبئ الفخ: القوائم والقواميس والكائنات المخصصة</h2>
+
+        <h3>القوائم</h3>
+
+        <p>
+            الشكل الأشهر، وقد رأيناه. الأعراض: تراكم عناصر بين
+            استدعاءات، أو ظهور عناصر لم يُضفها الاستدعاء الحالي.
+        </p>
+
+        <h3>القواميس</h3>
+
+        <p>
+            المشكلة نفسها، لكن الأعراض مختلفة. قد تظهر مفاتيح لم
+            تُضف في هذا الاستدعاء، أو تختفي قيم حُلَّت في استدعاء
+            سابق:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def configure(options={}):
+    options.setdefault("timeout", 30)
+    return options
+
+configure({"retries": 3})
+print(configure())  # {'timeout': 30} — لكن من أين جاءت retries?
+print(configure())  # القاموس نفسه يكبر مع كل استدعاء`}</code></pre>
+
+        <p>
+            المشكلة أن القاموس الافتراضي هو الكائن نفسه، وقد تغير في
+            الاستدعاء الأول (أو استدعاءات سابقة)، فيظهر في الاستدعاء
+            الذي لا يمرر قاموسًا.
+        </p>
+
+        <h3>المجموعات (sets)</h3>
+
+        <p>
+            أعراضها أخف، لأن المجموعة لا تحتفظ بالترتيب. قد تظهر
+            عناصر لم تُضف في الاستدعاء الحالي، أو تختفي عناصر
+            أضفتها، لأن هناك استدعاءًا آخر يعمل على المجموعة نفسها.
+        </p>
+
+        <h3>الكائنات المخصصة</h3>
+
+        <p>
+            هذا هو الشكل الأخطر. يمكن أن يكون الكائن مثيلًا لفئة
+            تحمل اتصالًا بقاعدة بيانات، أو مؤقتًا، أو قفلًا، أو حتى
+            قائمة داخلية. الفخ هنا لا يقتصر على البيانات، بل على
+            الموارد:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Worker:
+    def __init__(self):
+        self.jobs = []
+        self.lock = threading.Lock()
+
+def schedule(worker, job, queue=Worker().jobs):
+    queue.append(job)
+    return queue`}</code></pre>
+
+        <p>
+            هنا ليس فقط القائمة مشتركة، بل كائن Worker نفسه — بمؤقته
+            وقفله — موجود كقيمة افتراضية. أي استدعاء يشارك الموارد
+            نفسها، وهذا قد يسبب حالة سباق (race condition) أو قفلًا
+            دائمًا، ليس مجرد بيانات متراكمة.
+        </p>
+
+        <h2 id="the-sibling-trap">الفخ الشقيق: القيم المحسوبة وقت التعريف</h2>
+
+        <p>
+            المشكلة ليست في “القابلية للتغيير” فقط، بل في أن
+            <strong>القيمة تُحسب مرة واحدة</strong>. هذا يعني أن
+            القيم غير القابلة للتغيير قد تنتج أخطاءً أيضًا، لأنها
+            “تتجمد” في اللحظة التي عُرّفت فيها الدالة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`from datetime import datetime
+import time
+
+def log_event(message, timestamp=datetime.now()):
+    print(f"{timestamp}: {message}")
+
+log_event("start")
+time.sleep(2)
+log_event("end")
+# الطابع الزمني لن يتغير`}</code></pre>
+
+        <p>
+            الطابع الزمني يُحسب عند تعريف الدالة، لا عند استدعائها.
+            الاستدعاء الثاني يطبع نفس الطابع الزمني. هذا فخ من النوع
+            نفسه، لكنه لا علاقة له بـ“القابلية للتغيير”، بل بالتقييم
+            المبكر.
+        </p>
+
+        <p>
+            لذلك، عند التفكير في الوسائط الافتراضية، القاعدة الأدق:
+            <strong>أي قيمة افتراضية تُقيّم مرة واحدة ولا تتحدث مع
+            الزمن</strong> — سواء كانت قائمة أو قاموسًا أو نتيجة
+            استدعاء دالة — هي مصدر محتمل للأخطاء. التمرير بـ
+            <code>None</code> وحساب القيمة داخل الدالة هو الحل الأكثر
+            أمانًا.
+        </p>
+
+        <h2 id="design-rationale">لماذا صُمم بايثون بهذه الطريقة؟</h2>
+
+        <p>
+            من السهل أن ننظر إلى الفخ كخطأ في التصميم، لكن القرار له
+            مبرر تقني. لو كانت بايثون تحسب القيمة الافتراضية في كل
+            استدعاء، لكان كل استدعاء لدالة لها وسيط افتراضي يحمل
+            تكلفة إضافية. في دالة تُستدعى ملايين المرات، هذا يتراكم.
+        </p>
+
+        <p>
+            التقييم مرة واحدة يضمن أن تعريف الدالة يكفي لمعرفة
+            <strong>كل</strong> ما تحتاجه الدالة. لا يوجد “تقييم
+            كسول” مخفي، ولا تبعية على الحالة الحالية للبرنامج. هذا
+            يتماشى مع شفافية بايثون في كثير من الجوانب: ما تراه في
+            السطر هو ما تحصل عليه.
+        </p>
+
+        <p>
+            كما أن التصميم يسمح بأنماط مفيدة: تخزين الكاش كقيمة
+            افتراضية، وتثبيت سلوك الدالة لضمان الاتساق. هذه الأنماط
+            تستخدم القيمة الافتراضية كـ<strong>وسيلة لتحقيق
+            الاستقرار</strong>، لا كوسيلة للتهيئة. المشكلة تنشأ عندما
+            يستخدم المطور القيمة الافتراضية كوسيلة للتهيئة، وهي ليست
+            كذلك.
+        </p>
+
+        <h2 id="real-world-patterns">أنماط حقيقية يظهر فيها الفخ في الكود الإنتاجي</h2>
+
+        <h3>1. دالة تجميع النتائج</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def collect_errors(errors=[]):
+    for e in validate():
+        errors.append(e)
+    return errors`}</code></pre>
+
+        <p>
+            الأعراض: أخطاء من طلب سابق تظهر في طلب جديد، وتتراكم
+            بمرور الوقت. السبب في السطر الأول، الذي يبدو “قائمة
+            فارغة”، لكنه قائمة مشتركة بين كل الاستدعاءات.
+        </p>
+
+        <h3>2. دالة بناء استعلام</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def build_query(filters={}):
+    filters["active"] = True
+    return " AND ".join(f"{k}={v}" for k, v in filters.items())`}</code></pre>
+
+        <p>
+            الأعراض: استعلامات تحتوي على شروط لم يضفها الكود الذي
+            استدعى الدالة. المشكلة أن القاموس الافتراضي يحتفظ
+            بمفاتيح من استدعاءات سابقة.
+        </p>
+
+        <h3>3. Decorators</h3>
+
+        <p>
+            عندما يُغلِّف decorator دالة، ويحتفظ بمعاملاتها، فقد تنتقل
+            القيمة الافتراضية عبر طبقات. النتيجة أن الأعراض تظهر في
+            مكان لا علاقة له بالدالة الأصلية:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def cache_args(func):
+    seen = []
+    def wrapper(*args, **kwargs):
+        seen.append((args, kwargs))
+        return func(*args, **kwargs)
+    return wrapper`}</code></pre>
+
+        <p>
+            هنا <code>seen</code> هو closure، لا وسيط افتراضي، لكن
+            الأثر مشابه: تراكم حالة بين استدعاءات. في الكود الحقيقي،
+            هذا يخلق صعوبة في التمييز بين فخ الوسائط الافتراضية وفخ
+            الـ closure، وكلاهما يحتاج إلى وعي بآلية التقييم.
+        </p>
+
+        <h3>4. طرق الفئات</h3>
+
+        <p>
+            إذا استُخدمت قيمة افتراضية قابلة للتغيير في طريقة داخل
+            فئة، فالفخ يظهر أيضًا. والأخطر أن المطور قد يفترض أن
+            <code>self</code> كافٍ لعزل الحالة، بينما القيمة الافتراضية
+            مشتركة بين كل المثيلات:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Report:
+    def add(self, row, rows=[]):
+        rows.append(row)
+        return rows`}</code></pre>
+
+        <p>
+            التمرير إلى <code>self</code> لا يعزل شيئًا. القائمة
+            مشتركة بين كل الاستدعاءات لكل المثيلات.
+        </p>
+
+        <h2 id="the-fixes">أنماط الإصلاح الصحيحة</h2>
+
+        <h3>1. النمط الأساسي: None ثم إنشاء</h3>
+
+        <p>
+            الحل الأشهر: استخدم <code>None</code> كقيمة افتراضية، ثم
+            أنشئ الكائن داخل الدالة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def add_item(item, bucket=None):
+    if bucket is None:
+        bucket = []
+    bucket.append(item)
+    return bucket`}</code></pre>
+
+        <p>
+            هذا يحل مشكلة القيمة المشتركة، لكنه يخلق مشكلة دلالية
+            صغيرة: الآن <code>None</code> لا يمكن أن تكون قيمة
+            صالحة للمعامل. إذا كان المعامل قد يقبل <code>None</code>
+            كقيمة فعلية، فهذا النمط غير مناسب.
+        </p>
+
+        <h3>2. القيم غير القابلة للتغيير كقيمة افتراضية</h3>
+
+        <p>
+            إذا كان المعامل يقبل قائمة، يمكن استخدام <code>tuple</code>
+            أو <code>frozenset</code> كقيمة افتراضية، ثم التحويل
+            داخل الدالة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def add_item(item, bucket=()):
+    bucket = list(bucket)
+    bucket.append(item)
+    return bucket`}</code></pre>
+
+        <p>
+            هذا يحل الفخ، لكنه يُنشئ نسخة جديدة في كل استدعاء، وهذا
+            مقبول في معظم الحالات. المشكلة أنه يفقد دلالة “قائمة
+            فارغة” إذا كان النوع مهمًا.
+        </p>
+
+        <h2 id="sentinel-pattern">نمط الحارس (Sentinel): الحل الأكثر تعبيرًا</h2>
+
+        <p>
+            عندما يكون <code>None</code> قيمة صالحة للمعامل، أو عندما
+            تريد التمييز بدقة بين “لم يمرر المستخدم قيمة” و“مرر
+            None”، استخدم كائنًا خاصًا كحارس:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`_MISSING = object()
+
+def add_item(item, bucket=_MISSING):
+    if bucket is _MISSING:
+        bucket = []
+    bucket.append(item)
+    return bucket`}</code></pre>
+
+        <p>
+            الكائن <code>object()</code> فريد ولا يساوي أي قيمة أخرى،
+            لذلك يعمل كحارس لا لبس فيه. هذا النمط شائع في مكتبات
+            بايثون الكبرى، خصوصًا في واجهات API حيث التمييز بين
+            “قيمة افتراضية” و“قيمة فعلية” مهم.
+        </p>
+
+        <p>
+            الميزة الإضافية أن هذا النمط يوثق النية. عندما يقرأ مطور
+            آخر الكود، يفهم فورًا أن الدالة تميز بين ثلاثة سياقات:
+            لم تُمرر قيمة، مُرّرت قيمة، مُرّر None. هذا وضوح لا يوفره
+            نمط <code>None</code> البسيط.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النمط</th>
+                        <th class="px-4 py-2 font-semibold">الميزة</th>
+                        <th class="px-4 py-2 font-semibold">القيد</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><code>None</code> كقيمة افتراضية</td>
+                        <td class="px-4 py-2">بسيط ومألوف</td>
+                        <td class="px-4 py-2">لا يسمح بتمرير None كقيمة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">قيمة غير قابلة للتغيير</td>
+                        <td class="px-4 py-2">آمن من الفخ</td>
+                        <td class="px-4 py-2">يفقد دلالة النوع الأصلي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Sentinel (<code>object()</code>)</td>
+                        <td class="px-4 py-2">الأوضح دلاليًا، يميز بين ثلاث حالات</td>
+                        <td class="px-4 py-2">يحتاج سطر تعريف إضافي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إعادة الهيكلة</td>
+                        <td class="px-4 py-2">يحل المشكلة من الجذر</td>
+                        <td class="px-4 py-2">قد يكون تغييرًا كبيرًا على واجهة API</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="when-intentional">متى يكون السلوك مقصودًا؟</h2>
+
+        <p>
+            رغم كل ما سبق، هناك حالات يكون فيها الاعتماد على القيمة
+            الافتراضية المشتركة <strong>مقصودًا</strong>، وتكون
+            جزءًا من تصميم الدالة. أشهر مثال هو الكاش:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def fib(n, cache={}):
+    if n in cache:
+        return cache[n]
+    if n < 2:
+        return n
+    cache[n] = fib(n - 1) + fib(n - 2)
+    return cache[n]`}</code></pre>
+
+        <p>
+            هنا القاموس المشترك هو الكاش نفسه. الهدف أن يحتفظ بين
+            الاستدعاءات. لو أُنشئ من جديد في كل استدعاء، لاختفت
+            فائدة الكاش. هذا نمط صحيح، لكنه <strong>يجب أن يكون
+            صريحًا في النية</strong>، ويُفضَّل استخدام
+            <code>functools.lru_cache</code> بدلًا منه في الكود
+            الحديث.
+        </p>
+
+        <p>
+            حالات أخرى شائعة: تخزين مرجع لمورد مشترك (مثل اتصال
+            بقاعدة بيانات) يفضل ألا يُعاد إنشاؤه في كل استدعاء.
+            أو تثبيت سلوك دالة (مثل سجل تدقيق لا يتغير).
+        </p>
+
+        <p>
+            القاعدة: إذا كنت تستخدم القيمة الافتراضية المشتركة
+            <strong>عن قصد</strong>، فاكتب تعليقًا يوضح ذلك. لأن من
+            يقرأ الكود لاحقًا سيفترض أنها فخ، ما لم توضح العكس.
+        </p>
+
+        <h2 id="detection-tools">الكشف الآلي: flake8-bugbear وRuff وpylint وmypy</h2>
+
+        <p>
+            أفضل ما في هذا الفخ أنه قابل للكشف الآلي بدقة عالية. لا
+            حاجة للاعتماد على المراجعة اليدوية.
+        </p>
+
+        <h3>flake8-bugbear</h3>
+
+        <p>
+            إضافة إلى <code>flake8</code>، تضيف تحذير
+            <strong>B006</strong>: “Do not use mutable data structures
+            for default arguments”. عندما تكتب
+            <code>def f(x=[])</code>، تحصل على تحذير فوري، مع
+            اقتراح الإصلاح.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# .flake8
+[flake8]
+extend-select = B006
+`}</code></pre>
+
+        <h3>Ruff</h3>
+
+        <p>
+            Ruff بديل حديث لـflake8، أسرع بكثير، ويطبق قاعدة B006
+            نفسها. إعداده بسيط:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# pyproject.toml
+[tool.ruff.lint]
+extend-select = ["B006"]
+`}</code></pre>
+
+        <h3>pylint</h3>
+
+        <p>
+            pylint يطلق تحذير <strong>W0102</strong>: “Dangerous
+            default value as argument”. هو أقل تحديدًا من B006، لكنه
+            يغطي حالات مشابهة.
+        </p>
+
+        <h3>mypy وtype hints</h3>
+
+        <p>
+            mypy لا يكشف هذا الفخ تلقائيًا، لأن المشكلة ليست في
+            الأنواع بل في القيمة. لكن يمكن كتابة تعليقات نوعية
+            تساعد في تجنب الأخطاء:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`from typing import Optional
+
+def add_item(item: str, bucket: Optional[list[str]] = None) -> list[str]:
+    if bucket is None:
+        bucket = []
+    bucket.append(item)
+    return bucket`}</code></pre>
+
+        <p>
+            الفائدة هنا أن <code>Optional</code> يوضح للقارئ أن
+            <code>None</code> قيمة متوقعة، لكن التغيير الحقيقي هو
+            النمط نفسه. النوعية وحدها لا تحمي.
+        </p>
+
+        <h2 id="related-traps">فخاخ مجاورة تستحق المعرفة</h2>
+
+        <h3>السمات القابلة للتغيير على مستوى الفئة</h3>
+
+        <p>
+            المشكلة نفسها في الفئات:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Counter:
+    items = []
+    def add(self, item):
+        self.items.append(item)`}</code></pre>
+
+        <p>
+            <code>items</code> مشترك بين كل المثيلات، لأن السمات
+            المعرفة على مستوى الفئة تُقيَّم مرة واحدة. الحل: تعريفها
+            داخل <code>__init__</code>.
+        </p>
+
+        <h3>الـ closures المشتركة</h3>
+
+        <p>
+            الدالة الداخلية التي تحتفظ بحالة قابلة للتغيير من النطاق
+            الخارجي، قد تنتج أثرًا مشابهًا. المشكلة ليست في الـ
+            closure نفسه، بل في إعادة استخدامه بطريقة تنكر أن الحالة
+            مشتركة.
+        </p>
+
+        <h3>القيم المحسوبة في تعريف الفئة</h3>
+
+        <p>
+            في decorators وواجهات API، قد يُخزَّن مرجع كائن مشترك
+            كقيمة افتراضية لمعامل. المشكلة تظهر لاحقًا عندما يتغير
+            الكائن في موضع، فيظهر التغيير في موضع آخر.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل لديك دالة بقيمة افتراضية <code>[]</code> أو
+                <code>{}</code> أو <code>set()</code>؟ ←
+                <strong>اعتبره فخًا حتى تثبت العكس</strong>
+            </li>
+            <li>
+                هل القيمة الافتراضية تُقيَّم مرة واحدة وتتغير مع
+                الزمن (مثل <code>datetime.now()</code>)؟ ←
+                <strong>انقل الحساب إلى داخل الدالة</strong>
+            </li>
+            <li>
+                هل تستخدم <code>None</code> كقيمة افتراضية وتنشئ
+                داخل الدالة؟ ←
+                <strong>نمط آمن، لكنه يفقد القدرة على تمرير None</strong>
+            </li>
+            <li>
+                هل تحتاج التمييز بين “لم تُمرر” و“مُرّر None”؟ ←
+                <strong>استخدم Sentinel</strong>
+            </li>
+            <li>
+                هل القيمة الافتراضية المشتركة مقصودة (كاش، مورد
+                مشترك)؟ ←
+                <strong>أضف تعليقًا يوضح النية</strong>
+            </li>
+            <li>
+                هل تشغّل flake8-bugbear أو Ruff في CI؟ ←
+                <strong>أضف B006</strong>
+            </li>
+            <li>
+                هل تفحص سمات الفئة القابلة للتغيير؟ ←
+                <strong>انقلها إلى <code>__init__</code></strong>
+            </li>
+            <li>
+                هل تراجع الكود الذي يحتوي على decorators؟ ←
+                <strong>قد يخفي الفخ بين طبقات</strong>
+            </li>
+            <li>
+                هل تعرف قيمة <code>__defaults__</code> لكل دالة
+                تستخدمها؟ ←
+                <strong>افحصها عند الشك</strong>
+            </li>
+            <li>
+                هل توثق النية في كل حالة غير عادية؟ ←
+                <strong>القارئ سيفترض الخطأ</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية وأدوات يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://docs.python.org/3/reference/compound_stmts.html#function-definitions"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Python Language Reference — Function definitions
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/reference/datamodel.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Python Data Model — <code>__defaults__</code>
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/library/functools.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    functools — lru_cache وcache
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/PyCQA/flake8-bugbear"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    flake8-bugbear — قاعدة B006
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.astral.sh/ruff/rules/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Ruff — قائمة القواعد (B006)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://pylint.readthedocs.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    pylint — W0102 Dangerous default value
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/library/typing.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    typing — Optional وAnnotated
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>لماذا لا يعتبر هذا خطأً في بايثون؟</h3>
+        <p>
+            لأن السلوك متسق مع قواعد اللغة: القيم الافتراضية تُقيَّم
+            عند التعريف. بايثون لا تعتبره خطأً نحويًا، لكن أدوات
+            التحليل الساكن تعتبره ممارسة خطرة وتنبه إليه. التصميم
+            يخدم الأداء والتوقع، لكنه يفشل عندما يستخدم المطور
+            القيمة الافتراضية كوسيلة للتهيئة.
+        </p>
+
+        <h3>هل <code>None</code> آمن دائمًا؟</h3>
+        <p>
+            نعم كقيمة افتراضية، لأن <code>None</code> غير قابل
+            للتغيير. المشكلة تظهر إذا كنت تحتاج تمرير
+            <code>None</code> كقيمة فعلية. في هذه الحالة، استخدم
+            Sentinel لتمييز الحالتين.
+        </p>
+
+        <h3>هل يمكن أن يحدث الفخ مع سلاسل نصية؟</h3>
+        <p>
+            لا، لأن السلاسل غير قابلة للتغيير. أي عملية “تعديل”
+            على سلسلة تُنتج سلسلة جديدة، ولا تغير الكائن الأصلي.
+            الفخ يقتصر على الأنواع القابلة للتغيير.
+        </p>
+
+        <h3>هل flake8-bugbear كافٍ لاكتشاف كل الحالات؟</h3>
+        <p>
+            يكشف الحالات الشائعة (list، dict، set)، لكنه لا يكشف
+            الكائنات المخصصة القابلة للتغيير، ولا القيم المحسوبة
+            وقت التعريف مثل <code>datetime.now()</code>. لهذه،
+            تحتاج إلى مراجعة يدوية أو قواعد إضافية.
+        </p>
+
+        <h3>هل يمكن استخدام هذا النمط بشكل مقصود؟</h3>
+        <p>
+            نعم، مثل كاش داخلي. لكن يجب أن يكون ذلك صريحًا وموثقًا،
+            وأن يُفضَّل <code>functools.lru_cache</code> في الكود
+            الحديث. النية الصامتة هي ما يجعل الفخ خطيرًا.
+        </p>
+    </PostLayout>
+</BaseLayout>
