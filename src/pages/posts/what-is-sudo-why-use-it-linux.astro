@@ -1,0 +1,726 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "what-is-sudo-why-use-it-linux",
+    title: "ما هو sudo ولماذا نستخدمه؟ دليل عملي لفهم الصلاحيات في لينكس",
+    metaTitle: "ما هو sudo في لينكس؟ شرح عملي لآلية العمل والمخاطر وأفضل الممارسات",
+    description:
+        "شرح شامل لـ sudo في لينكس: كيف يعمل عبر setuid وملف sudoers، الفرق بينه وبين su، لماذا هو أفضل من تسجيل الدخول كـ root، المخاطر الشائعة مثل NOPASSWD وقشرة shell مخفية، وأفضل ممارسات التكوين مع visudo وملفات sudoers.d.",
+    keywords: [
+        "ما هو sudo",
+        "sudo لينكس",
+        "شرح sudo",
+        "sudoers file",
+        "visudo",
+        "sudo vs su",
+        "NOPASSWD خطر",
+        "صلاحيات لينكس",
+        "setuid root",
+        "أمان لينكس sudo",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "30 أكتوبر 2026",
+    pubDate: new Date("2026-10-30"),
+    tags: ["لينكس", "أمان", "sudo", "صلاحيات", "إدارة الأنظمة"],
+    thumbnail: "/images/what-is-sudo-why-use-it-linux.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة sudo في سطر" },
+    { id: "what-is-sudo", label: "ما هو sudo بالضبط؟" },
+    { id: "why-not-root", label: "لماذا لا نسجل الدخول كـ root مباشرة؟" },
+    { id: "how-it-works", label: "كيف يعمل sudo داخليًا؟ setuid وsudoers" },
+    { id: "sudo-vs-su", label: "sudo مقابل su: الفرق الذي يحدد الأمان" },
+    { id: "sudoers-file", label: "ملف sudoers: القواعد والبنية" },
+    { id: "safe-editing", label: "تحرير sudoers بأمان: visudo وملفات sudoers.d" },
+    { id: "common-mistakes", label: "أخطاء تكوين sudo الشائعة والخطيرة" },
+    { id: "hidden-shells", label: "الأوامر التي تمنح shell كاملًا دون أن تدري" },
+    { id: "sudo-su-danger", label: "لماذا sudo su وsudo -i يبطلان مزايا sudo؟" },
+    { id: "best-practices", label: "أفضل ممارسات sudo في الإنتاج" },
+    { id: "alternatives", label: "بدائل sudo: doas وsudo-rs" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في أول أسبوع لك على لينكس، ستكتب <strong>sudo</strong> عشرات
+            المرات دون أن تسأل لماذا. تنسخ أمرًا من دليل، تضعه أمامه،
+            وتضغط Enter. لكن هذا الأمر الصغير هو أحد أهم مكونات الأمان
+            في النظام، وأحد أكثر المكونات التي يُسيء الناس تكوينها.
+            فهمه ليس ترفًا معرفيًا، بل ضرورة لمن يدير خادمًا.
+        </p>
+
+        <p>
+            هذا الدليل يشرح sudo من الداخل: كيف يمنح الصلاحيات دون
+            مشاركة كلمة مرور root، ولماذا يعتبر أفضل من تسجيل الدخول
+            المباشر، وكيف تكتب قواعده بأمان، وما الأخطاء التي تحوّله
+            من طبقة حماية إلى باب خلفي. الهدف ليس أن تحفظ الأمر، بل
+            أن تفهم <strong>ما الذي يحدث فعلًا</strong> عندما تضغط
+            Enter بعد كتابته.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة sudo في سطر</h2>
+
+        <p>
+            الجدول التالي يلخص جوهر sudo في محاوره الأساسية، قبل الدخول
+            في التفاصيل:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">البعد</th>
+                        <th class="px-4 py-2 font-semibold">sudo</th>
+                        <th class="px-4 py-2 font-semibold">تسجيل الدخول كـ root</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">كلمة المرور المطلوبة</td>
+                        <td class="px-4 py-2">كلمة مرور المستخدم الحالي</td>
+                        <td class="px-4 py-2">كلمة مرور root (تُشارك بين الجميع)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مدة الصلاحية</td>
+                        <td class="px-4 py-2">أمر واحد (أو نافذة زمنية محدودة)</td>
+                        <td class="px-4 py-2">الجلسة كاملة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التسجيل</td>
+                        <td class="px-4 py-2">كل أمر مع المستخدم والتاريخ</td>
+                        <td class="px-4 py-2">قد لا يُسجَّل من نفّذ ماذا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التخصيص</td>
+                        <td class="px-4 py-2">يمكن تقييد كل مستخدم بأوامر محددة</td>
+                        <td class="px-4 py-2">صلاحية كاملة دائمًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الإلغاء</td>
+                        <td class="px-4 py-2">حذف المستخدم من sudoers</td>
+                        <td class="px-4 py-2">تغيير كلمة مرور root للجميع</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="what-is-sudo">ما هو sudo بالضبط؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/what-is-sudo-why-use-it-linux/01.webp"
+                alt=">ما هو sudo بالضبط؟"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+
+        <p>
+            <strong>sudo</strong> اختصار لـ “superuser do” أو “substitute
+            user do”. هو برنامج يسمح لمستخدم عادي بتنفيذ أمر محدد
+            بصلاحيات مستخدم آخر — افتراضيًا root — وفق قواعد محددة
+            مسبقًا. الفكرة ليست منح صلاحيات كاملة، بل منح
+            <strong>صلاحية مؤقتة ومحددة</strong> لتنفيذ مهمة معينة، ثم
+            العودة إلى الوضع العادي.
+        </p>
+
+        <p>
+            عندما تكتب <code>sudo apt install nginx</code>، لا تتحول
+            إلى root. أنت تطلب من sudo أن تنفّذ أمر
+            <code>apt install nginx</code> بصلاحيات root، ثم تنتهي
+            العلاقة. العملية التي تبدأها sudo تعمل بصلاحيات مرتفعة،
+            لكن جلستك أنت تبقى كمستخدم عادي. هذا الفرق الجوهري بين
+            sudo و“أن تصبح root”.
+        </p>
+
+        <p>
+            sudo ليست مجرد أداة تقنية، بل <strong>طبقة تحكم</strong>.
+            يمكن لمدير النظام أن يحدد: أي مستخدم، على أي جهاز،
+            يستطيع تشغيل أي أمر، وبأي صلاحيات. وكل ذلك
+            مسجل. هذا التسجيل هو ما يجعل sudo أداة تدقيق، لا مجرد
+            أداة تنفيذ.
+        </p>
+
+        <h2 id="why-not-root">لماذا لا نسجل الدخول كـ root مباشرة؟</h2>
+
+        <p>
+            الإجابة المختصرة: لأن root يمكنه فعل أي شيء، بما في ذلك
+            تدمير النظام عن طريق الخطأ. والأخطاء تصبح كارثية عندما
+            تُرتكب بصلاحيات كاملة. لكن الأسباب أعمق من ذلك:
+        </p>
+
+        <ul>
+            <li>
+                <strong>مبدأ الامتياز الأقل.</strong> يجب أن يعمل
+                المستخدم بالحد الأدنى من الصلاحيات اللازمة لمهمته.
+                root يمنح كل الصلاحيات طوال الوقت، وهذا يخالف
+                المبدأ.
+            </li>
+            <li>
+                <strong>تقليل سطح الهجوم.</strong> جلسة root مفتوحة
+                تعني أن أي خطأ في أمر واحد، أو أي عملية خبيثة
+                تعمل في الخلفية، ترث صلاحيات كاملة. جلسة مستخدم
+                عادي تحد من الضرر.
+            </li>
+            <li>
+                <strong>المساءلة.</strong> عندما يشترك عدة
+                مسؤولين في كلمة مرور root، لا يمكن معرفة من فعل
+                ماذا. sudo يسجل كل أمر مع هوية المستخدم.
+            </li>
+            <li>
+                <strong>إلغاء الوصول دون تغيير كلمة المرور.</strong>
+                إذا غادر موظف الفريق، تحذفه من sudoers. لا تحتاج
+                إلى تغيير كلمة مرور root ومشاركتها مع الجميع
+                مجددًا.
+            </li>
+            <li>
+                <strong>منع القفل التام.</strong> إذا كان root
+                فقط هو من يمكنه الدخول، وخطأ ما في إعدادات
+                الشبكة أو المصادقة، فقد تُقفل خارج النظام. وجود
+                مستخدم عادي بصلاحيات sudo يمنحك مسارًا للتعافي.
+            </li>
+        </ul>
+
+        <h2 id="how-it-works">كيف يعمل sudo داخليًا؟ setuid وsudoers</h2>
+
+        <p>
+            الآلية التي تجعل sudo قادرًا على منح الصلاحيات هي
+            <strong>setuid bit</strong>. ملف sudo التنفيذي مملوك
+            لـroot وموسوم بـsetuid، ما يعني أن أي مستخدم يشغّله
+            يحصل على صلاحيات مالك الملف (root) أثناء تنفيذه. هذا
+            هو الأساس التقني الذي يسمح للمستخدم العادي ببدء عملية
+            sudo التي تعمل بصلاحيات root.
+        </p>
+
+        <p>
+            لكن sudo لا تمنح الصلاحيات تلقائيًا. إنها تقرأ ملف
+            <code>/etc/sudoers</code>، وتتحقق من:
+        </p>
+
+        <ul>
+            <li>هل هذا المستخدم موجود في أي قاعدة تسمح له؟</li>
+            <li>هل الأمر المطلوب ضمن الأوامر المسموحة له؟</li>
+            <li>هل يحتاج إلى كلمة مرور؟ (بعض القواعد تسمح بـNOPASSWD)</li>
+            <li>هل هناك قيود على الوقت أو الجهاز؟</li>
+        </ul>
+
+        <p>
+            إذا نجح التحقق، تنفّذ sudo الأمر بصلاحيات root، ثم
+            تعيد التحكم للمستخدم. وإذا فشل، ترفض الطلب وترمي
+            “user is not in the sudoers file”.
+        </p>
+
+        <h2 id="sudo-vs-su">sudo مقابل su: الفرق الذي يحدد الأمان</h2>
+
+        <p>
+            كثير من المبتدئين يخلطون بين <code>sudo</code> و
+            <code>su</code>. الفرق ليس شكليًا:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">sudo</th>
+                        <th class="px-4 py-2 font-semibold">su</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">كلمة المرور</td>
+                        <td class="px-4 py-2">كلمة مرور المستخدم الحالي</td>
+                        <td class="px-4 py-2">كلمة مرور الحساب الهدف (root)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">مدة الصلاحية</td>
+                        <td class="px-4 py-2">أمر واحد</td>
+                        <td class="px-4 py-2">حتى الخروج من الجلسة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التسجيل</td>
+                        <td class="px-4 py-2">كل أمر على حدة</td>
+                        <td class="px-4 py-2">لا يوجد تتبع دقيق للأوامر</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التخصيص</td>
+                        <td class="px-4 py-2">يمكن تقييد الأوامر</td>
+                        <td class="px-4 py-2">صلاحية كاملة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأمان</td>
+                        <td class="px-4 py-2">أعلى عند التكوين الصحيح</td>
+                        <td class="px-4 py-2">أقل، خاصة عند مشاركة كلمة المرور</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            sudo أكثر أمانًا لأنه لا يشارك كلمة مرور root، ويسجل
+            كل أمر، ويقيد الصلاحيات. أما su فيفتح جلسة كاملة
+            بصلاحيات root، وكل ما تفعله داخلها غير مسجل بالتفصيل.
+        </p>
+
+        <h2 id="sudoers-file">ملف sudoers: القواعد والبنية</h2>
+
+        <p>
+            ملف <code>/etc/sudoers</code> هو قلب سياسة sudo. بنيته
+            الأساسية:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`user  host=(target_user)  command`}</code></pre>
+
+        <p>
+            مثال:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`alice  ALL=(ALL)  /usr/bin/apt update, /usr/bin/apt upgrade`}</code></pre>
+
+        <p>
+            هذا يعني: أليس، على أي جهاز، يمكنها تشغيل أوامر
+            <code>apt update</code> و<code>apt upgrade</code>
+            بصلاحيات أي مستخدم (بما في ذلك root). لاحظ أن الأوامر
+            محددة، لا “كل شيء”.
+        </p>
+
+        <p>
+            الملف يدعم أيضًا <strong>Aliases</strong> لتجميع
+            المستخدمين والأوامر، و<strong>Defaults</strong>
+            لضبط سلوك sudo العام. ويمكن تضمين ملفات إضافية من
+            <code>/etc/sudoers.d/</code>، وهذا أفضل من تعديل
+            الملف الرئيسي.
+        </p>
+
+        <h2 id="safe-editing">تحرير sudoers بأمان: visudo وملفات sudoers.d</h2>
+
+        <p>
+            القاعدة الأولى: <strong>لا تفتح /etc/sudoers بمحرر
+            نصي عادي</strong>. استخدم <code>visudo</code>، لأنه
+            يتحقق من صحة الصياغة قبل الحفظ. إذا أخطأت في الصياغة
+            دون visudo، فقد تفقد القدرة على استخدام sudo تمامًا.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo visudo`}</code></pre>
+
+        <p>
+            للتحقق من الصياغة دون فتح المحرر:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo visudo -c`}</code></pre>
+
+        <p>
+            الطريقة الأفضل هي وضع القواعد في ملفات منفصلة داخل
+            <code>/etc/sudoers.d/</code>، بصلاحيات <code>0440</code>،
+            ثم تضمينها من الملف الرئيسي. هذا يسهل إدارة القواعد
+            وحذفها دون لمس الملف الأساسي.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo visudo -f /etc/sudoers.d/ops`}</code></pre>
+
+        <h2 id="common-mistakes">أخطاء تكوين sudo الشائعة والخطيرة</h2>
+
+        <p>
+            sudo ليست آمنة بطبيعتها. أمانها يعتمد على القواعد التي
+            تكتبها. هذه أكثر الأخطاء شيوعًا:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الخطأ</th>
+                        <th class="px-4 py-2 font-semibold">لماذا هو خطير</th>
+                        <th class="px-4 py-2 font-semibold">البديل الأفضل</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><code>ALL=(ALL) ALL</code> لكل مستخدم</td>
+                        <td class="px-4 py-2">كل مستخدم يصبح root بلا قيود</td>
+                        <td class="px-4 py-2">قواعد محددة لكل دور</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>NOPASSWD: ALL</code></td>
+                        <td class="px-4 py-2">أي عملية مخترقة تنفّذ أوامر دون كلمة مرور</td>
+                        <td class="px-4 py-2">NOPASSWD لأوامر محددة فقط</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">السماح بـ<code>vim</code> أو<code>less</code> أو<code>find</code></td>
+                        <td class="px-4 py-2">كلها تفتح shell كامل</td>
+                        <td class="px-4 py-2">استخدم <code>sudoedit</code> بدلًا من محرر كامل</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Wildcards مثل <code>/bin/systemctl restart *</code></td>
+                        <td class="px-4 py-2">يسمح بإعادة تشغيل أي خدمة، لا خدمة محددة</td>
+                        <td class="px-4 py-2">حدد اسم الخدمة بدقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">قواعد تشير إلى سكريبتات في مجلدات قابلة للكتابة</td>
+                        <td class="px-4 py-2">المستخدم يعدل السكريبت ثم يشغله كـroot</td>
+                        <td class="px-4 py-2">ضع السكريبت في مسار آمن غير قابل للكتابة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">ترك <code>timestamp_timeout</code> طويلًا</td>
+                        <td class="px-4 py-2">أي عملية تستولي على الجلسة تستفيد من النافذة</td>
+                        <td class="px-4 py-2">اضبطه على قيمة قصيرة أو صفر</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="hidden-shells">الأوامر التي تمنح shell كاملًا دون أن تدري</h2>
+
+        <p>
+            أخطر خطأ في sudoers هو السماح بأمر “يبدو بريئًا” لكنه
+            يسمح بالهروب إلى shell. هذه الأوامر لا تنفذ مهمة محددة
+            فقط، بل تتيح تنفيذ أي أمر آخر. أمثلة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>vim / vi:</strong> يمكنك من داخله تشغيل
+                <code>:!bash</code> للحصول على shell.
+            </li>
+            <li>
+                <strong>less / more:</strong> يمكنك من داخله
+                تشغيل <code>!bash</code>.
+            </li>
+            <li>
+                <strong>find:</strong> يدعم <code>-exec</code>،
+                فيمكنك تنفيذ أي أمر.
+            </li>
+            <li>
+                <strong>awk:</strong> يدعم <code>system()</code>
+                لتنفيذ أوامر.
+            </li>
+            <li>
+                <strong>python / perl / ruby:</strong> يمكنك
+                تشغيل <code>os.system()</code> أو ما يعادلها.
+            </li>
+            <li>
+                <strong>tar / zip:</strong> تدعم خيارات تنفيذ
+                أوامر خارجية.
+            </li>
+        </ul>
+
+        <p>
+            مشروع <strong>GTFOBins</strong> يحصر مئات هذه
+            الأوامر. القاعدة: أي أداة تسمح بتنفيذ أوامر خارجية، أو
+            فتح محرر، أو تشغيل shell، هي أداة تمنح root كاملًا. إذا
+            احتجت إلى تحرير ملف كـroot، استخدم
+            <code>sudoedit</code>، لأنه ينسخ الملف ويعيده دون منح
+            shell.
+        </p>
+
+        <h2 id="sudo-su-danger">لماذا sudo su وsudo -i يبطلان مزايا sudo؟</h2>
+
+        <p>
+            من الشائع أن يكتب المستخدم <code>sudo su</code> أو
+            <code>sudo -i</code> للحصول على shell كـroot. هذا
+            يبدو مريحًا، لكنه يلغي معظم ما يجعل sudo آمنة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>يفقد التسجيل الدقيق.</strong> الأوامر
+                التي تُنفَّذ داخل shell تفقد سياق sudo، فلا
+                يُسجَّل من نفّذ ماذا.
+            </li>
+            <li>
+                <strong>يمنح صلاحية دائمة للجلسة.</strong> أي
+                خطأ أو عملية خبيثة تستفيد من shell المفتوح.
+            </li>
+            <li>
+                <strong>يتجاوز مبدأ الامتياز الأقل.</strong>
+                أنت لا تحتاج root لكل شيء داخل الجلسة.
+            </li>
+        </ul>
+
+        <p>
+            القاعدة العملية: <strong>استخدم sudo لكل أمر على
+            حدة، ولا تفتح shell دائمًا</strong>. إذا كنت تحتاج
+            إلى عدة أوامر، نفّذها واحدًا واحدًا، أو اكتب سكريبتًا
+            محدودًا. هذا يحافظ على سجل التدقيق وحدود الصلاحية.
+        </p>
+
+        <h2 id="best-practices">أفضل ممارسات sudo في الإنتاج</h2>
+
+        <ul>
+            <li>
+                <strong>لا تمنح ALL=(ALL) ALL إلا لمن يحتاجها
+                فعلًا.</strong> ابدأ بقواعد محددة، ووسّع عند
+                الحاجة.
+            </li>
+            <li>
+                <strong>استخدم مجموعات بدل المستخدمين.</strong>
+                أضف المستخدمين إلى مجموعة مثل
+                <code>sudo</code> أو <code>wheel</code>، وامنح
+                الصلاحيات للمجموعة.
+            </li>
+            <li>
+                <strong>قيّد NOPASSWD بأوامر محددة.</strong> لا
+                تستخدمه على “ALL” أبدًا.
+            </li>
+            <li>
+                <strong>اضبط timestamp_timeout.</strong> القيمة
+                الافتراضية غالبًا خمس دقائق. قلّلها إذا كانت
+                البيئة حساسة.
+            </li>
+            <li>
+                <strong>راقب /var/log/auth.log أو
+                /var/log/secure.</strong> ابحث عن محاولات فاشلة
+                أو أوامر غير متوقعة.
+            </li>
+            <li>
+                <strong>حدّث sudo.</strong> ثغرات sudo موجودة،
+                وآخرها CVE-2025-32462 وCVE-2025-32463 التي سمحت
+                برفع الصلاحيات محليًا.
+            </li>
+            <li>
+                <strong>استخدم visudo دائمًا.</strong> ولا
+                تعدل sudoers بمحرر عادي.
+            </li>
+        </ul>
+
+        <h2 id="alternatives">بدائل sudo: doas وsudo-rs</h2>
+
+        <p>
+            رغم هيمنة sudo، هناك بدائل تستحق المعرفة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>doas:</strong> أداة من OpenBSD، أصغر
+                بكثير من sudo، وملف تكوينها أبسط. تقدم 95% من
+                وظائف sudo بكود أقل. عيبها أن بعض الميزات
+                المتقدمة (مثل المجموعات والقيود الزمنية)
+                محدودة، وقد تكون أقل نضجًا على لينكس.
+            </li>
+            <li>
+                <strong>sudo-rs:</strong> إعادة كتابة لـsudo
+                بلغة Rust، تهدف إلى تقليل فئة الأخطاء المرتبطة
+                بإدارة الذاكرة. بدأت بعض التوزيعات مثل
+                postmarketOS تستخدمها افتراضيًا في 2026.
+            </li>
+        </ul>
+
+        <p>
+            بالنسبة لمعظم المستخدمين، sudo القياسية كافية
+            وآمنة عند التكوين الصحيح. البدائل مفيدة في سياقات
+            محددة: doas للبساطة، وsudo-rs للبيئات التي تريد
+            تقليل سطح الهجوم في الكود نفسه.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تستخدم <code>sudo</code> لأمر واحد بدل
+                <code>sudo su</code>؟ ←
+                <strong>نعم، هذا هو الاستخدام الصحيح</strong>
+            </li>
+            <li>
+                هل تفتح sudoers بـ<code>visudo</code>؟ ←
+                <strong>دائمًا، ولا تفتحه بمحرر عادي</strong>
+            </li>
+            <li>
+                هل قواعدك محددة بأوامر معينة؟ ←
+                <strong>تجنب ALL=(ALL) ALL</strong>
+            </li>
+            <li>
+                هل تستخدم NOPASSWD؟ ←
+                <strong>فقط لأوامر محددة، لا لـALL</strong>
+            </li>
+            <li>
+                هل تسمح بأدوات مثل vim أو less أو find؟ ←
+                <strong>هذه تمنح shell كاملًا</strong>
+            </li>
+            <li>
+                هل تستخدم wildcards في مسارات الأوامر؟ ←
+                <strong>حدد المسارات بدقة</strong>
+            </li>
+            <li>
+                هل timestamp_timeout منخفض؟ ←
+                <strong>اضبطه حسب حساسية البيئة</strong>
+            </li>
+            <li>
+                هل تحدّث sudo بانتظام؟ ←
+                <strong>ثغرات رفع الصلاحيات موجودة</strong>
+            </li>
+            <li>
+                هل تراقب سجلات sudo؟ ←
+                <strong>auth.log أو secure</strong>
+            </li>
+            <li>
+                هل تعرف من في مجموعتك يستطيع sudo؟ ←
+                <strong>راجع sudoers دوريًا</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية وأدوات يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.sudo.ws/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    sudo — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://manpages.debian.org/testing/sudo/sudoers.5.en.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    sudoers(5) — دليل الصفحة الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.sudo.ws/docs/man/sudo.man/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    sudo(8) — دليل الأمر
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://gtfobins.github.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    GTFOBins — كتالوج الأوامر التي تفتح shell
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/memorysafety/sudo-rs"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    sudo-rs — إعادة كتابة sudo بلغة Rust
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://man.openbsd.org/doas"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    doas — دليل OpenBSD
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل sudo أكثر أمانًا من su دائمًا؟</h3>
+        <p>
+            عند التكوين الصحيح، نعم في الغالب. sudo يسجل الأوامر،
+            ويقيد الصلاحيات، ولا يشارك كلمة مرور root. لكن sudo
+            سيئة التكوين (ALL=(ALL) ALL أو NOPASSWD: ALL) قد
+            تكون أخطر من su، لأنها تمنح صلاحيات واسعة دون
+            تتبع كافٍ.
+        </p>
+
+        <h3>لماذا يطلب sudo كلمة مروري أنا وليس كلمة مرور root؟</h3>
+        <p>
+            لأن sudo تتحقق من هويتك أنت، لا من هوية root. هذا
+            يسمح لك باستخدام sudo دون معرفة كلمة مرور root،
+            ويمنع مشاركة كلمة مرور واحدة بين عدة مسؤولين. كما
+            أن كلمة مرور root قد تكون معطلة أصلًا في بعض
+            التوزيعات مثل Ubuntu.
+        </p>
+
+        <h3>هل يمكن استغلال sudo لرفع الصلاحيات؟</h3>
+        <p>
+            نعم، إذا كانت القواعد سيئة. السماح بـvim أو less أو
+            find أو python يمنح shell كاملًا. وكذلك wildcards
+            الواسعة، والسكريبتات في مجلدات قابلة للكتابة. راجع
+            قواعدك، واستخدم GTFOBins للتحقق من الأوامر
+            الخطرة.
+        </p>
+
+        <h3>ماذا أفعل إذا فقدت القدرة على استخدام sudo؟</h3>
+        <p>
+            إذا أفسدت sudoers، فقد لا تستطيع استخدام sudo. الحل
+            هو الإقلاع في وضع الاسترداد (recovery mode) أو من
+            LiveUSB، ثم إصلاح الملف أو استعادة نسخة احتياطية.
+            هذا سبب إضافي لاستخدام visudo دائمًا.
+        </p>
+
+        <h3>هل أحتاج إلى sudo على الخادم؟</h3>
+        <p>
+            نعم، إلا إذا كنت تستخدم بديلًا مثل doas. sudo هي
+            الطريقة القياسية لمنح صلاحيات إدارية محدودة دون
+            مشاركة حساب root. على الخوادم، الإعداد الصحيح
+            لـsudo جزء أساسي من الأمان.
+        </p>
+    </PostLayout>
+</BaseLayout>
