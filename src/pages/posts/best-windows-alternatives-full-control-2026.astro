@@ -1,0 +1,903 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-windows-alternatives-full-control-2026",
+    title: "هل تعبت من تحديثات ويندوز؟ 5 بدائل قوية تمنحك التحكم الكامل بجهازك",
+    metaTitle: "بدائل ويندوز 2026: 5 أنظمة تمنحك التحكم الكامل بجهازك",
+    description:
+        "دليل عملي لخمسة بدائل قوية لويندوز في 2026: Linux Mint وZorin OS وFedora Workstation وPop!_OS وManjaro. مقارنة في التحكم بالتحديثات، والأداء على العتاد القديم، والألعاب عبر Proton، والتطبيقات، مع جدول اختيار وقائمة تحقق.",
+    keywords: [
+        "بدائل ويندوز 2026",
+        "التخلص من تحديثات ويندوز",
+        "Linux Mint",
+        "Zorin OS",
+        "Fedora Workstation",
+        "Pop!_OS",
+        "Manjaro",
+        "التحكم بالتحديثات لينكس",
+        "Proton Linux gaming",
+        "بديل ويندوز 11",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "2 نوفمبر 2026",
+    pubDate: new Date("2026-11-02"),
+    tags: ["ويندوز", "لينكس", "تحديثات", "تحكم", "بدائل"],
+    thumbnail: "/images/best-windows-alternatives-full-control-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة البدائل الخمسة" },
+    { id: "why-updates-frustrate", label: "لماذا أصبحت تحديثات ويندوز مشكلة؟" },
+    { id: "what-control-means", label: "ما الذي يعنيه «التحكم الكامل» فعليًا؟" },
+    { id: "linux-mint", label: "Linux Mint: البديل الآمن لمعظم الناس" },
+    { id: "zorin-os", label: "Zorin OS: الأقرب شكلًا إلى ويندوز" },
+    { id: "fedora", label: "Fedora Workstation: الأحدث تقنيًا دون مخاطرة" },
+    { id: "pop-os", label: "Pop!_OS: التحكم في النوافذ والألعاب" },
+    { id: "manjaro", label: "Manjaro: التحديثات المتدحرجة دون تعقيد Arch" },
+    { id: "gaming", label: "الألعاب: هل يمكن الاستغناء عن ويندوز فعلًا؟" },
+    { id: "apps", label: "التطبيقات: ماذا يعمل وماذا يحتاج بديلًا؟" },
+    { id: "updates-compared", label: "التحديثات: مقارنة مباشرة بين البدائل الخمسة" },
+    { id: "how-to-choose", label: "كيف تختار بديلك الأول؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            إذا كنت تستخدم ويندوز، فأنت تعرف الشعور: تكتب مستندًا، أو
+            تلعب لعبة، أو تعمل على مشروع، ثم يظهر إشعار بأن الجهاز
+            سيُعاد تشغيله «خارج ساعات العمل». وبعد التحديث، تجد
+            ميزات لم تطلبها، وإعلانات في قائمة ابدأ، ومساعد ذكاء
+            اصطناعي يريد قراءة شاشتك. ويندوز 10 وصل إلى نهاية الدعم
+            في أكتوبر 2025، وويندوز 11 يفرض متطلبات عتاد صارمة،
+            ويربط كثيرًا من «التحديثات الأمنية» بترقية الجهاز
+            نفسه.
+        </p>
+
+        <p>
+            البدائل موجودة، لكن المشكلة أن قوائم «أفضل توزيعات
+            لينكس» غالبًا ما تكتفي بالأسماء. هذا الدليل لا يهدف إلى
+            إقناعك بأن لينكس «أفضل» بشكل مطلق، بل إلى مساعدتك على
+            استعادة <strong>التحكم في جهازك</strong>: متى تُحدَّث
+            ماذا يُثبَّت، وكيف يبدو سطح المكتب. خمسة بدائل، لكل منها
+            جمهوره وسياقه، مع مقارنة صريحة لما تعنيه «السيطرة»
+            فعلًا.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة البدائل الخمسة</h2>
+
+        <p>
+            الجدول التالي يلخص البدائل الخمسة، ونموذج التحديث، والجمهور
+            المستهدف، قبل الدخول في التفاصيل:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">البديل</th>
+                        <th class="px-4 py-2 font-semibold">نموذج التحديث</th>
+                        <th class="px-4 py-2 font-semibold">الأفضل لـ</th>
+                        <th class="px-4 py-2 font-semibold">ملاحظة التحكم</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><strong>Linux Mint</strong></td>
+                        <td class="px-4 py-2">إصدارات LTS كل سنتين</td>
+                        <td class="px-4 py-2">الوافد من ويندوز لأول مرة</td>
+                        <td class="px-4 py-2">لا Snap، لا إعلانات، تحديثات يدوية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Zorin OS</strong></td>
+                        <td class="px-4 py-2">إصدارات LTS + دعم حتى 2029</td>
+                        <td class="px-4 py-2">من يريد أقل تغيير ممكن</td>
+                        <td class="px-4 py-2">واجهة مألوفة، ترحيل موجّه</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Fedora Workstation</strong></td>
+                        <td class="px-4 py-2">كل 6 أشهر، مع تحديثات مستمرة</td>
+                        <td class="px-4 py-2">المطور ومن يريد أحدث البرمجيات</td>
+                        <td class="px-4 py-2">أحدث الميزات، GNOME خام</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Pop!_OS</strong></td>
+                        <td class="px-4 py-2">إصدارات LTS</td>
+                        <td class="px-4 py-2">من يريد تنظيم نوافذ وألعاب</td>
+                        <td class="px-4 py-2">COSMIC، tiling مدمج</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Manjaro</strong></td>
+                        <td class="px-4 py-2">تدحرجية (rolling) باختبار</td>
+                        <td class="px-4 py-2">من يريد أحدث البرمجيات دائمًا</td>
+                        <td class="px-4 py-2">تحكم كامل، لكن يحتاج انتباهًا</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-updates-frustrate">لماذا أصبحت تحديثات ويندوز مشكلة؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-windows-alternatives-full-control-2026/01.webp"
+                alt="شاشة تحديث ويندوز 11"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            المشكلة ليست في «وجود تحديثات»، بل في <strong>طريقة
+            فرضها</strong>. ثلاثة تغييرات تراكمت منذ ويندوز 10:
+        </p>
+
+        <ul>
+            <li>
+                <strong>إعادة التشغيل المفروضة.</strong> التحديثات
+                تُثبَّت في الخلفية، ثم يُطلب منك إعادة التشغيل في
+                وقت قد لا يناسبك. يمكن تأجيلها، لكن ليس
+                تعطيلها تمامًا في الإصدارات السائدة.
+            </li>
+            <li>
+                <strong>ربط الأمان بالترقية.</strong> عندما
+                ينهي ويندوز 10 دعمه في أكتوبر 2025، لم يعد أمام
+                المستخدم إلا الترقية إلى ويندوز 11 أو دفع
+                <strong>Extended Security Updates</strong>
+                (ESU) بحوالي 30 دولارًا سنويًا، أو ترك الجهاز دون
+                تحديثات. هذا ليس تحكمًا، بل <strong>ابتزازًا
+                تقنيًا</strong>.
+            </li>
+            <li>
+                <strong>ميزات لا تطلبها.</strong> Copilot في
+                شريط المهام، وRecall الذي يسجل نشاطك، وإعلانات
+                في قائمة ابدأ. هذه الميزات ليست اختيارية بالكامل،
+                وقد تستهلك موارد إضافية.
+            </li>
+        </ul>
+
+        <p>
+            النتيجة أن المستخدم لم يعد يملك القرار الكامل: هو يملك
+            الجهاز، لكن النظام يقرر متى يتغير، وماذا يُضاف إليه.
+            البدائل الخمسة التالية تعيد هذا القرار إليه، بدرجات
+            متفاوتة.
+        </p>
+
+        <h2 id="what-control-means">ما الذي يعنيه «التحكم الكامل» فعليًا؟</h2>
+
+        <p>
+            «التحكم» كلمة مطاطة. في هذا الدليل، تعني خمسة أشياء
+            محددة يمكنك اختبارها بنفسك:
+        </p>
+
+        <ul>
+            <li>
+                <strong>التحكم في التحديثات:</strong> هل يمكنك
+                اختيار متى تُثبَّت، أو تجميدها، أو الرجوع عن
+                تحديث سيئ؟
+            </li>
+            <li>
+                <strong>التحكم في البرمجيات:</strong> هل يمكنك
+                تثبيت ما تريد، من أي مصدر، دون متجر مركزي يفرض
+                قيودًا؟
+            </li>
+            <li>
+                <strong>التحكم في الواجهة:</strong> هل يمكنك
+                تغيير سطح المكتب، أو استبداله بالكامل، دون
+                أدوات خارجية؟
+            </li>
+            <li>
+                <strong>التحكم في الخصوصية:</strong> هل تعرف ما
+                يُرسل من جهازك، وهل يمكنك إيقافه؟
+            </li>
+            <li>
+                <strong>التحكم في عمر الجهاز:</strong> هل يظل
+                النظام يعمل بعد أن تتوقف الشركة المصنعة عن
+                دعمه؟
+            </li>
+        </ul>
+
+        <p>
+            بالمعيار الخامس تحديدًا، تتفوق البدائل المفتوحة بفارق
+            كبير: يمكنك تثبيت توزيعة خفيفة على جهاز عمره عشر
+            سنوات، وستعمل أفضل من ويندوز 11 على جهاز أحدث.
+        </p>
+
+        <h2 id="linux-mint">Linux Mint: البديل الآمن لمعظم الناس</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-windows-alternatives-full-control-2026/02.webp"
+                alt="سطح مكتب Linux Mint 22.x Cinnamon"
+                width="1200"
+                height="750"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>Linux Mint</strong> هو الخيار الأول لأي شخص
+            يغادر ويندوز ولا يريد مفاجآت. إصدار 2026 (22.x، الاسم
+            الرمزي «Wilma») مبني على Ubuntu 24.04 LTS، ومدعوم
+            بتحديثات أمنية حتى 2029.
+        </p>
+
+        <p>
+            ما يجعله «آمنًا» بهذا المعنى:
+        </p>
+
+        <ul>
+            <li>
+                <strong>واجهة Cinnamon مألوفة.</strong> شريط مهام
+                سفلي، وقائمة تطبيقات، وأيقونات نظام. من جاء من
+                ويندوز 7 أو 10 سيجد نفسه يعمل خلال دقائق.
+            </li>
+            <li>
+                <strong>لا Snap افتراضيًا.</strong> هذا هو الفرق
+                الأكبر عن Ubuntu. الحزم تُثبَّت كـ
+                <code>.deb</code> أصلية، أو Flatpak، دون طبقة
+                Snap البطيئة أحيانًا.
+            </li>
+            <li>
+                <strong>مدير تحديثات واضح.</strong> يمكنك رؤية
+                ما سيُحدَّث، واختيار ما تريد تثبيته. لا إعادة
+                تشغيل مفروضة في منتصف العمل.
+            </li>
+            <li>
+                <strong>Timeshift مدمج.</strong> لقطات نظام
+                تسمح بالرجوع عن تحديث سيئ. هذا تحكم فعلي، لا
+                مجرد وعد.
+            </li>
+        </ul>
+
+        <p>
+            حدوده: الألعاب تحتاج خطوة إضافية (تثبيت Steam وتفعيل
+            Proton)، وتعريفات Nvidia تحتاج تثبيتًا منفصلًا عند أول
+            تشغيل. لكن هذه خطوات موثقة، ولا تعني أن النظام «لا
+            يعمل».
+        </p>
+
+        <h2 id="zorin-os">Zorin OS: الأقرب شكلًا إلى ويندوز</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-windows-alternatives-full-control-2026/03.webp"
+                alt="سطح مكتب Zorin OS 18.x"
+                width="1200"
+                height="674"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>Zorin OS</strong> ليس مجرد توزيعة أخرى بواجهة
+            تشبه ويندوز. إنه مشروع بُني حول فكرة <strong>تقليل كلفة
+            الانتقال</strong>. في 2026، حقق إصدار 18 أكثر من
+            <strong>2 مليون تحميل</strong>، وحوالي 75% من
+            مستخدميه جاؤوا من ويندوز.
+        </p>
+
+        <p>
+            ما يميزه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>واجهة قابلة للتشكيل.</strong> يمكنك
+                اختيار تخطيط يشبه ويندوز أو macOS أو Ubuntu،
+                دون إضافات.
+            </li>
+            <li>
+                <strong>ترحيل موجّه.</strong> إصدار 18.1 يكتشف
+                برامج ويندوز التي تستخدمها، ويقترح بدائل لينكس
+                مكافئة، ويغطي أكثر من 240 تطبيقًا.
+            </li>
+            <li>
+                <strong>توافق مع تطبيقات ويندوز.</strong> طبقة
+                Wine مدمجة لتشغيل بعض البرامج التي لا تملك
+                بديلًا لينكس.
+            </li>
+            <li>
+                <strong>دعم حتى 2029.</strong> تحديثات أمنية
+                لفترة طويلة، دون الحاجة إلى ترقية سنوية.
+            </li>
+        </ul>
+
+        <p>
+            النسخة الأساسية مجانية، وهناك نسخة «Pro» مدفوعة
+            لمرة واحدة (حوالي 39 دولارًا) تضيف تخطيطات وقوالب
+            إضافية. لكن النسخة المجانية كافية لمعظم المستخدمين،
+            ولا تفرض إعلانات أو اشتراكات.
+        </p>
+
+        <h2 id="fedora">Fedora Workstation: الأحدث تقنيًا دون مخاطرة</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-windows-alternatives-full-control-2026/04.webp"
+                alt="سطح مكتب Fedora Workstation 43"
+                width="1200"
+                height="569"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        <p>
+            <strong>Fedora Workstation</strong> هو الخيار لمن يريد
+            أحدث البرمجيات دون الدخول في عالم التحديثات
+            المتدحرجة. إصدار 43 (2026) يأتي بـGNOME 49، وRPM 6.0،
+            وتحديثات أمنية سريعة.
+        </p>
+
+        <p>
+            لماذا يعتبر «تحكمًا» رغم تحديثاته كل ستة أشهر؟ لأن
+            <strong>ما تُحدَّثه واضح</strong>. لا ميزات مفروضة، ولا
+            إعلانات، ولا مساعد يقرأ شاشتك. GNOME خام، دون تخصيصات
+            الشركة المصنعة.
+        </p>
+
+        <p>
+            ما يجعله مناسبًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>أحدث النواة والتعريفات.</strong> إذا كان
+                لديك عتاد حديث (معالج جديد، كرت شاشة جديد)،
+                فFedora غالبًا يدعمه قبل غيره.
+            </li>
+            <li>
+                <strong>Wayland افتراضيًا.</strong> تجربة سطح
+                مكتب حديثة، مع تحسينات في الأداء والأمان.
+            </li>
+            <li>
+                <strong>بيئة تطوير قوية.</strong> أدوات
+                الحاويات (Toolbox) تجعل تثبيت إصدارات مختلفة من
+                اللغات أمرًا معزولًا وآمنًا.
+            </li>
+        </ul>
+
+        <p>
+            حده: دورة الستة أشهر تعني ترقية أكبر مرتين سنويًا.
+            يمكنك التأجيل، لكن ليس إلى ما لا نهاية. وإذا كنت
+            تريد الاستقرار المطلق، فLinux Mint أو Zorin أنسب.
+        </p>
+
+        <h2 id="pop-os">Pop!_OS: التحكم في النوافذ والألعاب</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-windows-alternatives-full-control-2026/05.webp"
+                alt="سطح مكتب Pop!_OS 22.04 LTS"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        <p>
+            <strong>Pop!_OS</strong> من System76 طوّر بيئة سطح
+            مكتب خاصة به تُسمى <strong>COSMIC</strong>، وهي واحدة
+            من أكثر البيئات إثارة للاهتمام في 2026. الفكرة
+            الأساسية: <strong>التحكم في تخطيط النوافذ دون إضافات
+            خارجية</strong>.
+        </p>
+
+        <p>
+            ما يميزه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Auto-tiling مدمج.</strong> النوافذ
+                تُرتَّب تلقائيًا في شبكة، ويمكنك التبديل بين
+                التخطيطات باختصارات لوحة المفاتيح. هذا يغير
+                طريقة العمل، لا مجرد الشكل.
+            </li>
+            <li>
+                <strong>دعم Nvidia من الدرجة الأولى.</strong>
+                إذا كان لديك كرت Nvidia، فـPop!_OS يقدم أفضل
+                تجربة «تعمل من أول تشغيل» بين توزيعات لينكس.
+            </li>
+            <li>
+                <strong>تحديثات واضحة.</strong> مدير التحديثات
+                يعرض ما سيُحدَّث، ويمكنك التحكم فيه.
+            </li>
+        </ul>
+
+        <p>
+            COSMIC لا يزال حديثًا نسبيًا، وقد تواجه بعض التفاصيل
+            غير المصقولة. لكنه يقدم نموذجًا مختلفًا للتحكم: ليس
+            فقط «ماذا يُثبَّت»، بل «كيف تُرتَّب نافذتك».
+        </p>
+
+        <h2 id="manjaro">Manjaro: التحديثات المتدحرجة دون تعقيد Arch</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-windows-alternatives-full-control-2026/06.webp"
+                alt="سطح مكتب Manjaro 23.x"
+                width="1200"
+                height="683"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>Manjaro</strong> مبني على Arch Linux، لكنه
+            يضيف طبقة تأخير واختبار قبل وصول التحديثات. هذا يعني
+            أنك تحصل على برمجيات أحدث من Linux Mint أو Fedora، لكن
+            دون المخاطرة الكاملة لتحديث Arch المباشر.
+        </p>
+
+        <p>
+            ما يجعله «تحكمًا»:
+        </p>
+
+        <ul>
+            <li>
+                <strong>أنت تقرر متى تُحدِّث.</strong> لا إعادة
+                تشغيل مفروضة. يمكنك تأجيل التحديثات لأسبوع أو
+                شهر، ثم تثبيتها دفعة واحدة.
+            </li>
+            <li>
+                <strong>وصول إلى AUR.</strong> مستودع Arch
+                للمستخدمين يضم آلاف الحزم التي لا توجد في
+                المستودعات الرسمية.
+            </li>
+            <li>
+                <strong>بيئات متعددة.</strong> يمكنك اختيار
+                XFCE أو KDE Plasma أو GNOME عند التثبيت.
+            </li>
+        </ul>
+
+        <p>
+            حده: التحديثات المتدحرجة تحتاج انتباهًا. قد يتعارض
+            تحديث مع حزمة قديمة، ويحتاج منك قراءة ملاحظات
+            الإصدار. إذا كنت تريد «اضبطه وانسَه»، فليس الخيار
+            الأول.
+        </p>
+
+        <h2 id="gaming">الألعاب: هل يمكن الاستغناء عن ويندوز فعلًا؟</h2>
+
+        <p>
+            هذا هو السؤال الذي يمنع كثيرين من الانتقال. الإجابة في
+            2026: <strong>نعم، لمعظم الألعاب</strong>، لكن ليس
+            لكلها.
+        </p>
+
+        <p>
+            <strong>Proton</strong> من Valve هو طبقة التوافق التي
+            تشغّل ألعاب ويندوز على لينكس عبر Steam. الإصدار 11
+            (يوليو 2026) أضاف دعمًا لألعاب مثل Resident Evil
+            (1996)، وDino Crisis، وSHOGUN: Total War. وحتى
+            التحديثات التجريبية لـSteam أصبحت تشغّل ملفات
+            <code>.exe</code> غير التابعة لـSteam تلقائيًا عبر
+            Proton.
+        </p>
+
+        <p>
+            ما تحتاج معرفته:
+        </p>
+
+        <ul>
+            <li>
+                <strong>معظم ألعاب Steam تعمل.</strong> لكن بعض
+                الألعاب متعددة اللاعبين التي تعتمد على مكافحة
+                الغش على مستوى النواة قد لا تعمل، لأن مطوريها
+                لم يدعموا لينكس.
+            </li>
+            <li>
+                <strong>الألعاب خارج Steam</strong> تحتاج أدوات
+                إضافية مثل <strong>Lutris</strong> أو
+                <strong>Bottles</strong>. هذه الأدوات تعمل، لكنها
+                تحتاج إعدادًا.
+            </li>
+            <li>
+                <strong>الأداء قريب جدًا من ويندوز</strong> في
+                معظم الألعاب، وأحيانًا أفضل، بفضل Proton وDXVK.
+            </li>
+        </ul>
+
+        <p>
+            إذا كنت تلعب ألعابًا تنافسية بمكافحة غش صارمة، فقد
+            تحتاج إلى الاحتفاظ بويندوز على قرص منفصل (dual-boot).
+            لكن إذا كنت تلعب ألعابًا فردية أو تعاونية، فلينكس
+            خيار عملي.
+        </p>
+
+        <h2 id="apps">التطبيقات: ماذا يعمل وماذا يحتاج بديلًا؟</h2>
+
+        <p>
+            الفجوة في التطبيقات لم تعد كما كانت قبل عشر سنوات.
+            الجدول التالي يلخص الوضع العملي في 2026:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الفئة</th>
+                        <th class="px-4 py-2 font-semibold">الحالة على لينكس</th>
+                        <th class="px-4 py-2 font-semibold">ملاحظة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">المتصفحات</td>
+                        <td class="px-4 py-2">ممتازة</td>
+                        <td class="px-4 py-2">Firefox، Chrome، Edge كلها متاحة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">حزمة المكتب</td>
+                        <td class="px-4 py-2">جيدة جدًا</td>
+                        <td class="px-4 py-2">LibreOffice وOnlyOffice، مع توافق DOCX جيد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تحرير الصور والفيديو</td>
+                        <td class="px-4 py-2">جيدة</td>
+                        <td class="px-4 py-2">GIMP، Krita، Kdenlive، DaVinci Resolve</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">برامج Adobe</td>
+                        <td class="px-4 py-2">غير متاحة أصلًا</td>
+                        <td class="px-4 py-2">بدائل مفتوحة، أو تشغيل عبر Wine (غير موثوق)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Microsoft Office</td>
+                        <td class="px-4 py-2">عبر الويب أو Wine</td>
+                        <td class="px-4 py-2">النسخة الويب كافية لمعظم الاستخدامات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الألعاب</td>
+                        <td class="px-4 py-2">جيدة عبر Proton</td>
+                        <td class="px-4 py-2">معظم ألعاب Steam تعمل</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">برامج التخصصية</td>
+                        <td class="px-4 py-2">متفاوتة</td>
+                        <td class="px-4 py-2">تحقق قبل الانتقال من توفر بديل</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            القاعدة العملية: إذا كان عملك يعتمد على برنامج ويندوز
+            واحد لا بديل له، فإما تحتفظ بويندوز في جهاز افتراضي
+            (VirtualBox أو GNOME Boxes)، أو تستخدم dual-boot. لكن
+            لمعظم المستخدمين، البدائل كافية.
+        </p>
+
+        <h2 id="updates-compared">التحديثات: مقارنة مباشرة بين البدائل الخمسة</h2>
+
+        <p>
+            هذا هو جوهر السؤال. الجدول التالي يقارن ما يمكنك فعله
+            فعلًا في كل نظام:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النظام</th>
+                        <th class="px-4 py-2 font-semibold">تأجيل التحديثات</th>
+                        <th class="px-4 py-2 font-semibold">تعطيلها مؤقتًا</th>
+                        <th class="px-4 py-2 font-semibold">الرجوع عن تحديث</th>
+                        <th class="px-4 py-2 font-semibold">إعادة تشغيل مفروضة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><strong>Linux Mint</strong></td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم (Timeshift)</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Zorin OS</strong></td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم (لقطات)</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Fedora</strong></td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">محدود</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Pop!_OS</strong></td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم (لقطات)</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Manjaro</strong></td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">محدود (يحتاج خبرة)</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>ويندوز 11</strong></td>
+                        <td class="px-4 py-2">محدود (حتى 5 أسابيع)</td>
+                        <td class="px-4 py-2">لا (في الإصدارات السائدة)</td>
+                        <td class="px-4 py-2">محدود</td>
+                        <td class="px-4 py-2">نعم</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            الفرق الجوهري أن إعادة التشغيل في لينكس <strong>قرار
+            تتخذه أنت</strong>، وليست حدثًا يفرضه النظام. حتى
+            تحديثات النواة يمكن تأجيلها إلى ما بعد إعادة التشغيل
+            التالية التي تختارها.
+        </p>
+
+        <h2 id="how-to-choose">كيف تختار بديلك الأول؟</h2>
+
+        <p>
+            القرار يعتمد على ثلاثة أسئلة، لا على «أي توزيعة
+            أفضل»:
+        </p>
+
+        <ul>
+            <li>
+                <strong>هل تريد أقل قدر من التغيير؟</strong>
+                Zorin OS أو Linux Mint. كلاهما يحافظ على تخطيط
+                مألوف، ولا يفرض تعلمًا جديدًا.
+            </li>
+            <li>
+                <strong>هل تحتاج أحدث البرمجيات أو عتادًا
+                حديثًا؟</strong> Fedora Workstation، أو Manjaro
+                إذا كنت مستعدًا لقراءة ملاحظات التحديثات.
+            </li>
+            <li>
+                <strong>هل تلعب أو تحتاج تنظيم نوافذ متقدمًا؟</strong>
+                Pop!_OS، بفضل COSMIC وAuto-tiling ودعم Nvidia.
+            </li>
+        </ul>
+
+        <p>
+            القاعدة العملية: <strong>لا تحاول استبدال كل شيء
+            دفعة واحدة</strong>. جرّب التوزيعة على Live USB
+            لأسبوع، واستخدمها في مهام غير حرجة، ثم قرر. وإذا
+            احتجت برنامج ويندوز واحدًا، فاحتفظ به في جهاز افتراضي
+            أو على قرص منفصل.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعبت من إعادة التشغيل المفروضة؟ ←
+                <strong>أي بديل لينكس يمنحك التحكم</strong>
+            </li>
+            <li>
+                هل تريد أقل تغيير ممكن في الواجهة؟ ←
+                <strong>Zorin OS أو Linux Mint</strong>
+            </li>
+            <li>
+                هل جهازك قديم ولا يدعم ويندوز 11؟ ←
+                <strong>Linux Mint XFCE أو MX Linux</strong>
+            </li>
+            <li>
+                هل تحتاج أحدث تعريفات لعتاد حديث؟ ←
+                <strong>Fedora Workstation</strong>
+            </li>
+            <li>
+                هل تلعب ألعاب Steam؟ ←
+                <strong>Pop!_OS أو Linux Mint مع Proton</strong>
+            </li>
+            <li>
+                هل تستخدم برنامج Adobe؟ ←
+                <strong>تحقق من البدائل قبل الانتقال</strong>
+            </li>
+            <li>
+                هل تحتاج برنامج ويندوز واحد لا بديل له؟ ←
+                <strong>جهاز افتراضي أو dual-boot</strong>
+            </li>
+            <li>
+                هل تريد التحكم في التحديثات بالكامل؟ ←
+                <strong>Linux Mint أو Manjaro</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية للبدائل المذكورة وأدوات مساندة:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://linuxmint.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Linux Mint — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://zorin.com/os/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Zorin OS — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://fedoraproject.org/workstation/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Fedora Workstation — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://pop.system76.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Pop!_OS — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://manjaro.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Manjaro — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/ValveSoftware/Proton"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Proton — مستودع GitHub
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://lutris.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Lutris — منصة ألعاب لينكس
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://usebottles.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Bottles — تشغيل تطبيقات ويندوز على لينكس
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.protondb.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ProtonDB — قاعدة بيانات توافق الألعاب
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل سأفقد ملفاتي عند الانتقال إلى لينكس؟</h3>
+        <p>
+            لا، إذا احتفظت بنسخة احتياطية. لينكس يقرأ أقراص
+            NTFS وFAT32، ويمكنك نقل ملفاتك بعد التثبيت. لكن
+            الأفضل دائمًا أخذ نسخة احتياطية كاملة قبل أي تغيير
+            في نظام التشغيل.
+        </p>
+
+        <h3>هل يمكنني تشغيل برامج ويندوز على لينكس؟</h3>
+        <p>
+            بعضها، عبر Wine أو Bottles أو جهاز افتراضي. لكن
+            البرامج المتخصصة (مثل Adobe Creative Suite أو بعض
+            برامج المحاسبة) قد لا تعمل بشكل موثوق. تحقق من
+            بدائلها قبل الانتقال.
+        </p>
+
+        <h3>أي توزيعة تختار إذا كنت لا أريد استخدام الطرفية؟</h3>
+        <p>
+            Zorin OS أو Linux Mint. كلاهما يقدم مدير
+            برمجيات رسوميًا، وإعدادات كاملة، وترحيلًا موجّهًا.
+            الطرفية موجودة، لكنها ليست إلزامية للمهام
+            اليومية.
+        </p>
+
+        <h3>هل لينكس آمن مثل ويندوز؟</h3>
+        <p>
+            الأمان يعتمد على الممارسة، لا على النظام وحده.
+            لينكس يتلقى تحديثات أمنية منتظمة، ومجتمعه يكتشف
+            الثغرات ويصلحها. لكن المستخدم يبقى مسؤولًا عن
+            تحديث نظامه، وعدم تثبيت برمجيات من مصادر غير
+            موثوقة.
+        </p>
+
+        <h3>هل يمكنني العودة إلى ويندوز بعد التجربة؟</h3>
+        <p>
+            نعم، إذا احتفظت بقرص ويندوز أو نسخة احتياطية. يمكنك
+            تثبيت لينكس على قرص منفصل (dual-boot)، أو على جهاز
+            افتراضي أولًا لتجربته دون التزام. هذا هو الخيار
+            الأسلم للمبتدئ.
+        </p>
+    </PostLayout>
+</BaseLayout>
