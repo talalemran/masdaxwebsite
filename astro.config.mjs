@@ -16,6 +16,10 @@ export default defineConfig({
       lastmod: new Date(),
       priority: 0.7,
       filter: (page) => !page.includes("/author/") && !page.includes("/tags/"),
+      serialize(item) {
+        if (item.lastmod) item.lastmod = new Date(item.lastmod).toISOString().slice(0, 10);
+        return item;
+      },
     }),
   ],
 });
