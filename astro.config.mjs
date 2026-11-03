@@ -13,8 +13,9 @@ export default defineConfig({
     tailwind(),
     sitemap({
       changefreq: "daily",
+      lastmod: new Date(),
       priority: 0.7,
-      filter: (page) => !page.includes("/author/"),
+      filter: (page) => !page.includes("/author/") && !page.includes("/tags/"),
     }),
   ],
 });
