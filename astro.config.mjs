@@ -13,14 +13,16 @@ export default defineConfig({
     tailwind(),
     sitemap({
       changefreq: "daily",
-      // تحويل تاريخ اليوم مباشرة إلى صيغة YYYY-MM-DD
-      lastmod: new Date().toISOString().split("T")[0],
+      lastmod: new Date(),
       priority: 0.7,
       filter: (page) => !page.includes("/author/") && !page.includes("/tags/"),
       serialize(item) {
         if (item.lastmod) {
-          // التأكد من إرجاع التاريخ فقط لكل صفحة
-          item.lastmod = new Date(item.lastmod).toISOString().split("T")[0];
+          const date = new Date(item.lastmod);
+          // التحقق من أن التاريخ صالح قبل تحويله لتجنب انهيار البناء
+          if (!isNaN(date.getTime())) {
+            item.lastmod = date.toISOString().split("T")[0];
+          }
         }
         return item;
       },
