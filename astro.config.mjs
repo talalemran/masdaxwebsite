@@ -15,9 +15,12 @@ export default defineConfig({
       changefreq: "daily",
       priority: 0.7,
       filter: (page) => !page.includes("/author/") && !page.includes("/tags/"),
+      
       serialize(item) {
-        // اقتطاع الجزء الخاص بالوقت وإبقاء التاريخ فقط بصيغة YYYY-MM-DD
-        const dateStr = item.lastmod ? new Date(item.lastmod).toISOString().substring(0, 10) : new Date().toISOString().substring(0, 10);
+        // اقتطاع الوقت والإبقاء على التاريخ فقط بصيغة YYYY-MM-DD
+        const dateStr = item.lastmod 
+          ? new Date(item.lastmod).toISOString().substring(0, 10) 
+          : new Date().toISOString().substring(0, 10);
         
         return {
           ...item,
