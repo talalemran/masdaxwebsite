@@ -13,18 +13,16 @@ export default defineConfig({
     tailwind(),
     sitemap({
       changefreq: "daily",
-      lastmod: new Date(),
       priority: 0.7,
       filter: (page) => !page.includes("/author/") && !page.includes("/tags/"),
       serialize(item) {
-        if (item.lastmod) {
-          const date = new Date(item.lastmod);
-          // التحقق من أن التاريخ صالح قبل تحويله لتجنب انهيار البناء
-          if (!isNaN(date.getTime())) {
-            item.lastmod = date.toISOString().split("T")[0];
-          }
-        }
-        return item;
+        // اقتطاع الجزء الخاص بالوقت وإبقاء التاريخ فقط بصيغة YYYY-MM-DD
+        const dateStr = item.lastmod ? new Date(item.lastmod).toISOString().substring(0, 10) : new Date().toISOString().substring(0, 10);
+        
+        return {
+          ...item,
+          lastmod: dateStr,
+        };
       },
     }),
   ],
