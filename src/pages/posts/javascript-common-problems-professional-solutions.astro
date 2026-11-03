@@ -1,0 +1,960 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "javascript-common-problems-professional-solutions",
+    title: "دليل المبرمج: 5 مشاكل شائعة في JavaScript وكيفية حلها باحترافية",
+    metaTitle: "5 مشاكل شائعة في JavaScript وحلولها الاحترافية في 2026",
+    description:
+        "دليل عملي لفهم وحل خمس مشاكل شائعة في JavaScript: فخ this، إدارة الأخطاء في async/await، المقارنة والتحقق من الأنواع، النسخ والتغيير (mutation)، وتسريب الذاكرة. مع أمثلة كود، وجداول مقارنة، وأدوات كشف آلية.",
+    keywords: [
+        "مشاكل JavaScript الشائعة",
+        "this in JavaScript",
+        "async await error handling",
+        "=== vs == JavaScript",
+        "deep clone JavaScript",
+        "structuredClone",
+        "JavaScript memory leaks",
+        "AbortController",
+        "TypeScript strict mode",
+        "أخطاء جافاسكريبت",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "3 نوفمبر 2026",
+    pubDate: new Date("2026-11-03"),
+    tags: ["جافاسكريبت", "تطوير الويب", "أخطاء شائعة", "أدوات تحليل", "أداء"],
+    thumbnail: "/images/javascript-common-problems-professional-solutions.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة المشاكل الخمس وحلولها" },
+    { id: "problem-1-this", label: "المشكلة 1: فخ this وسياق التنفيذ" },
+    { id: "problem-2-async", label: "المشكلة 2: إدارة الأخطاء في async/await" },
+    { id: "problem-3-types", label: "المشكلة 3: المقارنة والتحقق من الأنواع" },
+    { id: "problem-4-mutation", label: "المشكلة 4: النسخ والتغيير (Mutation)" },
+    { id: "problem-5-leaks", label: "المشكلة 5: تسريب الذاكرة الخفي" },
+    { id: "shared-tooling", label: "الأدوات المشتركة: ESLint وTypeScript وDevTools" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            JavaScript ليست لغة “صعبة” بالمعنى الأكاديمي، لكنها لغة
+            <strong>مليئة بالحالات الحدية</strong> التي تُنتج أخطاءً
+            لا تظهر عند الكتابة، بل عند التشغيل، وأحيانًا بعد
+            أشهر. الفرق بين مطور مبتدئ ومطور محترف ليس في معرفة
+            الصياغة، بل في <strong>معرفة هذه الحالات مسبقًا</strong>
+            وتجنبها بنيويًا.
+        </p>
+
+        <p>
+            هذا الدليل يفكك خمس مشاكل تظهر في معظم قواعد الأكواد:
+            فخ <code>this</code>، وإدارة الأخطاء في
+            <code>async/await</code>، والمقارنة والتحقق من الأنواع،
+            والنسخ والتغيير (mutation)، وتسريب الذاكرة. لكل مشكلة
+            نشرح <strong>لماذا تحدث</strong>، ثم نقدم
+            <strong>الحل الاحترافي</strong> لا الحل “الذي يعمل”،
+            ونوضح كيف تكتشفها آليًا قبل الإنتاج.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة المشاكل الخمس وحلولها</h2>
+
+        <p>
+            <img
+                src="/images/articles/javascript-common-problems-professional-solutions/01.webp"
+                alt="خريطة المشاكل الخمس في JavaScript وحلولها الاحترافية"
+                width="1200"
+                height="630"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+
+        <p>
+            الجدول التالي يلخص المشاكل الخمس، وأعراضها، والحل
+            الاحترافي لكل منها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المشكلة</th>
+                        <th class="px-4 py-2 font-semibold">العرض</th>
+                        <th class="px-4 py-2 font-semibold">الحل الاحترافي</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">فخ this</td>
+                        <td class="px-4 py-2">undefined أو كائن خاطئ داخل callback</td>
+                        <td class="px-4 py-2">Arrow functions، bind، أو تمرير صريح</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أخطاء async/await</td>
+                        <td class="px-4 py-2">Promises معلقة، أخطاء غير ملتقطة، تنفيذ تسلسلي بطيء</td>
+                        <td class="px-4 py-2">try/catch صريح، Promise.allSettled، AbortController</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">المقارنة والأنواع</td>
+                        <td class="px-4 py-2">==، NaN، typeof null، مقارنة كائنات</td>
+                        <td class="px-4 py-2">===، Number.isNaN، Object.is، TypeScript</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">النسخ والتغيير</td>
+                        <td class="px-4 py-2">تغيير الكائن الأصلي دون قصد</td>
+                        <td class="px-4 py-2">structuredClone، spread، Object.freeze</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تسريب الذاكرة</td>
+                        <td class="px-4 py-2">مستمعون غير مُزالون، مؤقتات لا تُلغى</td>
+                        <td class="px-4 py-2">AbortController، تنظيف صريح، WeakMap</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="problem-1-this">المشكلة 1: فخ this وسياق التنفيذ</h2>
+
+        <h3>العرض</h3>
+
+        <p>
+            <code>this</code> في JavaScript لا يُحدد عند تعريف
+            الدالة، بل عند <strong>استدعائها</strong>. هذا يعني
+            أن الدالة نفسها قد تحصل على قيم مختلفة لـ
+            <code>this</code> حسب طريقة الاستدعاء. النتيجة أخطاء
+            يصعب تتبعها، لأن الكود “يبدو” صحيحًا.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const user = {
+    name: "Ali",
+    greet() {
+        console.log(\`Hello, \${this.name}\`);
+    }
+};
+
+const fn = user.greet;
+fn(); // "Hello, undefined"`}</code></pre>
+
+        <h3>لماذا يحدث؟</h3>
+
+        <p>
+            في المثال السابق، <code>user.greet()</code> تستدعي
+            الدالة كطريقة على الكائن، فيكون <code>this</code> هو
+            <code>user</code>. لكن عندما ننسخ الدالة إلى متغير
+            ثم نستدعيها، لم يعد هناك “كائن” يحملها،
+            <code>this</code> يصبح <code>undefined</code> في
+            الوضع الصارم أو <code>window</code> في الوضع غير
+            الصارم.
+        </p>
+
+        <p>
+            المشكلة تتكرر مع:
+        </p>
+
+        <ul>
+            <li>
+                مستمعو الأحداث: <code>addEventListener</code>
+                يستدعي الدالة، فيكون <code>this</code> هو
+                العنصر، لا الكائن الذي يهمك.
+            </li>
+            <li>
+                <code>setTimeout</code> و<code>setInterval</code>:
+                الدالة تُستدعى في سياق آخر، و<code>this</code>
+                ليس ما تتوقع.
+            </li>
+            <li>
+                الدوال التي تُمرر إلى دوال أخرى (callbacks)، ثم
+                تستدعيها الدالة المستلمة دون ربط.
+            </li>
+        </ul>
+
+        <h3>الحل الاحترافي</h3>
+
+        <p>
+            الحل الأول: <strong>Arrow functions</strong> عندما
+            تريد وراثة <code>this</code> من النطاق الخارجي.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const user = {
+    name: "Ali",
+    greetLater() {
+        setTimeout(() => {
+            console.log(\`Hello, \${this.name}\`); // "Hello, Ali"
+        }, 100);
+    }
+};`}</code></pre>
+
+        <p>
+            الحل الثاني: <strong>bind</strong> عندما تحتاج
+            الدالة نفسها لكن مع سياق ثابت:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const user = {
+    name: "Ali",
+    greet() {
+        console.log(this.name);
+    }
+};
+
+const boundGreet = user.greet.bind(user);
+boundGreet(); // "Ali"`}</code></pre>
+
+        <p>
+            الحل الثالث، وهو الأفضل من ناحية التصميم:
+            <strong>لا تعتمد على this أصلًا</strong>. مرر البيانات
+            كوسائط صريحة، فتصبح الدالة نقية، وقابلة للاختبار،
+            ومستقلة عن السياق.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function greet(name) {
+    console.log(\`Hello, \${name}\`);
+}
+
+greet(user.name); // "Hello, Ali"`}</code></pre>
+
+        <p>
+            القاعدة العملية: <strong>إذا لم تكن بحاجة إلى
+            this، فلا تستخدمه</strong>. ومعظم الدوال في التطبيقات
+            الحديثة لا تحتاجه. استخدمه فقط في سياقات الكائنات
+            والفئات، وفكر جيدًا في طريقة الاستدعاء قبل أن تفترض
+            قيمته.
+        </p>
+
+        <h2 id="problem-2-async">المشكلة 2: إدارة الأخطاء في async/await</h2>
+
+        <h3>العرض</h3>
+
+        <p>
+            <code>async/await</code> جعل الكود غير المتزامن
+            يبدو متزامنًا، لكنه لم يجعل الأخطاء متزامنة. النتيجة
+            أن كثيرًا من المطورين يكتبون <code>await</code> دون
+            <code>try/catch</code>، أو يستخدمون <code>await</code>
+            داخل حلقات فيتحول الكود إلى تنفيذ تسلسلي بطيء.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// خطأ 1: خطأ غير ملتقط
+async function load() {
+    const data = await fetch("/api/users").then(r => r.json());
+    return data; // إذا فشل fetch، الخطأ يطير دون معالجة
+}
+
+// خطأ 2: تنفيذ تسلسلي بطيء
+async function loadAll() {
+    const a = await fetchOne();
+    const b = await fetchTwo();
+    const c = await fetchThree(); // ثلاثة طلبات متتالية، لا داعي
+}`}</code></pre>
+
+        <h3>لماذا يحدث؟</h3>
+
+        <p>
+            <code>await</code> يوقف تنفيذ الدالة الحالية، لكنه لا
+            يوقف تطبيقك. إذا فشل الطلب الذي تنتظره، فإن الخطأ
+            يظهر كـ <code>unhandled promise rejection</code>،
+            وهو غير قابل للاكتشاف إلا في <code>window.onunhandledrejection</code>
+            أو أدوات المراقبة. وهذا يعني أن المستخدم قد يرى
+            شاشة فارغة دون أي رسالة خطأ.
+        </p>
+
+        <p>
+            المشكلة الثانية أكثر شيوعًا في الكود الحقيقي:
+            <code>await</code> في حلقة ينتج تنفيذًا
+            <strong>تسلسليًا</strong>، حيث ينتظر كل طلب انتهاء
+            السابق. إذا كان الطلب يستغرق ثانية، فثلاثة طلبات
+            تستغرق ثلاث ثوانٍ، بدلًا من ثانية واحدة لو نُفِّذت
+            بالتوازي.
+        </p>
+
+        <h3>الحل الاحترافي</h3>
+
+        <p>
+            <strong>أولًا: معالجة الأخطاء صراحةً.</strong> استخدم
+            <code>try/catch</code>، ولا تفترض أن الخطأ لن يحدث:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`async function load() {
+    try {
+        const response = await fetch("/api/users");
+        if (!response.ok) {
+            throw new Error(\`HTTP \${response.status}\`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to load users:", error);
+        throw error;
+    }
+}`}</code></pre>
+
+        <p>
+            <strong>ثانيًا: التزامن عند الاستقلال.</strong> إذا
+            كانت الطلبات مستقلة، نفّذها معًا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`async function loadAll() {
+    const [a, b, c] = await Promise.all([
+        fetchOne(),
+        fetchTwo(),
+        fetchThree()
+    ]);
+    return { a, b, c };
+}`}</code></pre>
+
+        <p>
+            لكن <code>Promise.all</code> يفشل بأول خطأ. إذا كنت
+            تريد أن تكمل الطلبات حتى لو فشل بعضها، استخدم
+            <code>Promise.allSettled</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const results = await Promise.allSettled([
+    fetchOne(),
+    fetchTwo(),
+    fetchThree()
+]);
+
+results.forEach((result, i) => {
+    if (result.status === "rejected") {
+        console.error(\`Task \${i} failed:\`, result.reason);
+    }
+});`}</code></pre>
+
+        <p>
+            <strong>ثالثًا: الإلغاء.</strong> الطلب غير المتزامن
+            قد يبقى معلقًا إذا غادر المستخدم الصفحة. استخدم
+            <code>AbortController</code> لإلغاء الطلبات غير
+            الضرورية:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const controller = new AbortController();
+
+fetch("/api/users", { signal: controller.signal })
+    .catch(error => {
+        if (error.name === "AbortError") return; // متوقع
+        throw error;
+    });
+
+// عند مغادرة المكون أو الصفحة
+controller.abort();`}</code></pre>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">السيناريو</th>
+                        <th class="px-4 py-2 font-semibold">الأداة</th>
+                        <th class="px-4 py-2 font-semibold">الملاحظة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">طلبات مستقلة</td>
+                        <td class="px-4 py-2"><code>Promise.all</code></td>
+                        <td class="px-4 py-2">يفشل بأول خطأ</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">طلبات مستقلة مع احتمال فشل جزئي</td>
+                        <td class="px-4 py-2"><code>Promise.allSettled</code></td>
+                        <td class="px-4 py-2">يكمل الجميع ويعيد الحالات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أول طلب ينجح فقط</td>
+                        <td class="px-4 py-2"><code>Promise.any</code></td>
+                        <td class="px-4 py-2">يعيد أول نجاح</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أول طلب ينتهي فقط</td>
+                        <td class="px-4 py-2"><code>Promise.race</code></td>
+                        <td class="px-4 py-2">يعيد أول نتيجة أو خطأ</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إلغاء</td>
+                        <td class="px-4 py-2"><code>AbortController</code></td>
+                        <td class="px-4 py-2">ينطبق على fetch ومعظم APIs الحديثة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="problem-3-types">المشكلة 3: المقارنة والتحقق من الأنواع</h2>
+
+        <h3>العرض</h3>
+
+        <p>
+            JavaScript لغة ضعيفة الأنواع، وهذا يعني أن
+            <code>==</code> و<code>typeof</code> قد يعطيان نتائج
+            غير متوقعة. المثال الكلاسيكي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`console.log(0 == "");        // true
+console.log(null == undefined); // true
+console.log(typeof null);    // "object"
+console.log(NaN === NaN);    // false`}</code></pre>
+
+        <p>
+            هذه ليست “حالات غريبة” يمكن تجاهلها. إنها تسبب
+            أخطاءً فعلية في التحقق من الإدخال، وفي المقارنة بين
+            قيم مختلفة، وفي التعامل مع القيم الفارغة القادمة من
+            API.
+        </p>
+
+        <h3>لماذا يحدث؟</h3>
+
+        <p>
+            <code>==</code> يقوم بتحويل ضمني للأنواع قبل
+            المقارنة، فيساوي بين <code>0</code> و<code>""</code>
+            لأن الاثنين “فارغان” بعد التحويل. و
+            <code>typeof null</code> يعيد <code>"object"</code>
+            بسبب خطأ تاريخي في اللغة، لا لأن null كائن. و
+            <code>NaN</code> لا يساوي نفسه، لأنها القيمة الوحيدة
+            في اللغة التي تتصرف بهذه الطريقة.
+        </p>
+
+        <h3>الحل الاحترافي</h3>
+
+        <ul>
+            <li>
+                <strong>استخدم <code>===</code> دائمًا.</strong>
+                إنه يمنع التحويل الضمني، ويجعل المقارنة
+                متوقعة.
+            </li>
+            <li>
+                <strong>للأرقام، استخدم <code>Number.isNaN</code></strong>
+                بدل <code>isNaN</code> العامة، التي تُحوّل
+                القيمة إلى رقم أولًا وتنتج نتائج مضللة.
+            </li>
+            <li>
+                <strong>للكائنات، استخدم <code>Object.is</code></strong>
+                إذا كنت تحتاج مقارنة دقيقة، فهو يميز بين
+                <code>-0</code> و<code>+0</code>، ويعتبر
+                <code>NaN</code> تساوي نفسها.
+            </li>
+            <li>
+                <strong>للتحقق من النوع، استخدم
+                <code>Array.isArray</code> و<code>Object.prototype.toString</code></strong>
+                بدل <code>typeof</code> وحده.
+            </li>
+            <li>
+                <strong>في المشاريع الكبيرة، استخدم
+                TypeScript.</strong> هو لا يمنع هذه المشاكل
+                تمامًا، لكنه يمنع معظم الحالات قبل التشغيل.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// بدلًا من typeof
+function isArray(value) {
+    return Array.isArray(value);
+}
+
+// بدلًا من isNaN
+if (Number.isNaN(value)) {
+    // قيمة غير صالحة
+}
+
+// بدلًا من === على الكائنات
+if (Object.is(a, b)) {
+    // مقارنة دقيقة
+}`}</code></pre>
+
+        <h2 id="problem-4-mutation">المشكلة 4: النسخ والتغيير (Mutation)</h2>
+
+        <h3>العرض</h3>
+
+        <p>
+            في JavaScript، الكائنات والمصفوفات تُمرَّر
+            <strong>بالمرجع</strong>، لا بالقيمة. عندما تنسخ
+            كائنًا، فأنت تنسخ “العنوان”، لا المحتوى. النتيجة
+            أن التعديل على “النسخة” يغيّر الأصل، وهذا يفسد
+            الحالة في مكان آخر من الكود.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const original = { user: { name: "Ali" } };
+const copy = { ...original };
+
+copy.user.name = "Omar";
+console.log(original.user.name); // "Omar" — تغيّر الأصل`}</code></pre>
+
+        <h3>لماذا يحدث؟</h3>
+
+        <p>
+            <strong>spread operator</strong> (<code>...</code>)
+            يقوم بنسخ <strong>سطحي</strong>. أي أنه ينسخ
+            المفاتيح، لكن القيم التي هي كائنات تبقى مراجع
+            لنفس الكائن الأصلي. وبالتالي، تعديل
+            <code>copy.user</code> يؤثر على
+            <code>original.user</code>، لأنهما نفس الكائن.
+        </p>
+
+        <p>
+            هذه المشكلة تظهر في:
+        </p>
+
+        <ul>
+            <li>
+                إدارة الحالة في React أو Vue، حيث تعديل
+                الحالة مباشرة قد لا يُحدث إعادة رسم، أو يُحدث
+                تغييرات غير متوقعة في مكونات أخرى.
+            </li>
+            <li>
+                الدوال التي تستقبل كائنًا وتعدّله “للراحة”،
+                دون أن يتوقع المستدعي ذلك.
+            </li>
+            <li>
+                الإعدادات (config) المشتركة بين مكونات، حيث
+                تعديل مكوّن واحد يؤثر على الجميع.
+            </li>
+        </ul>
+
+        <h3>الحل الاحترافي</h3>
+
+        <p>
+            <strong>أولًا: النسخ العميق.</strong>
+            <code>structuredClone</code> متاحة في المتصفحات
+            الحديثة وNode.js، وتقوم بنسخ عميق حقيقي دون
+            مشاكل <code>JSON.parse(JSON.stringify(...))</code>
+            القديمة (التي تفقد التواريخ والدوال و
+            <code>Map</code> و<code>Set</code>):
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const original = { user: { name: "Ali" }, date: new Date() };
+const deepCopy = structuredClone(original);
+
+deepCopy.user.name = "Omar";
+console.log(original.user.name); // "Ali"`}</code></pre>
+
+        <p>
+            <strong>ثانيًا: التجميد.</strong> إذا كنت تريد
+            منع التغيير تمامًا، استخدم
+            <code>Object.freeze</code>. لكن تذكر أنه سطحي
+            أيضًا، وتحتاج تجميد كل كائن داخلي لتجميد عميق:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function deepFreeze(obj) {
+    Object.getOwnPropertyNames(obj).forEach(name => {
+        const value = obj[name];
+        if (value && typeof value === "object") {
+            deepFreeze(value);
+        }
+    });
+    return Object.freeze(obj);
+}`}</code></pre>
+
+        <p>
+            <strong>ثالثًا: الأنماط غير المتغيرة (immutable).</strong>
+            في React وRedux، القاعدة أن تعديل الحالة يجب أن
+            يُنتج كائنًا جديدًا لا تعديلًا على القديم:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// بدلًا من
+state.user.name = "Omar";
+
+// استخدم
+const newState = {
+    ...state,
+    user: { ...state.user, name: "Omar" }
+};`}</code></pre>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الأداة</th>
+                        <th class="px-4 py-2 font-semibold">النسخ</th>
+                        <th class="px-4 py-2 font-semibold">القيد</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><code>{"{...obj}"}</code></td>
+                        <td class="px-4 py-2">سطحي</td>
+                        <td class="px-4 py-2">لا ينسخ الكائنات الداخلية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>JSON.parse(JSON.stringify())</code></td>
+                        <td class="px-4 py-2">عميق جزئيًا</td>
+                        <td class="px-4 py-2">يفقد Date وMap وSet والدوال</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>structuredClone</code></td>
+                        <td class="px-4 py-2">عميق</td>
+                        <td class="px-4 py-2">لا ينسخ الدوال، ويدعم معظم الأنواع</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><code>lodash.cloneDeep</code></td>
+                        <td class="px-4 py-2">عميق</td>
+                        <td class="px-4 py-2">يحتاج مكتبة خارجية</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="problem-5-leaks">المشكلة 5: تسريب الذاكرة الخفي</h2>
+
+        <h3>العرض</h3>
+
+        <p>
+            تسريب الذاكرة يعني أن كائنات لم تعد مستخدمة تبقى
+            في الذاكرة، لأن شيئًا ما لا يزال يشير إليها. في
+            تطبيق صفحة واحدة يعمل لساعات، يتراكم هذا حتى
+            يبطئ التطبيق أو ينهار.
+        </p>
+
+        <p>الأنماط الأكثر شيوعًا:</p>
+
+        <ul>
+            <li>
+                مستمعو أحداث (<code>addEventListener</code>) لم
+                يُزالوا عند إزالة العنصر من DOM.
+            </li>
+            <li>
+                <code>setInterval</code> لم يُلغَ، فيستمر في
+                العمل ويحتفظ بمراجع.
+            </li>
+            <li>
+                متغيرات عامة تحمل بيانات كبيرة دون حاجة.
+            </li>
+            <li>
+                مراجع إلى عناصر DOM في كائنات JavaScript
+                (مثل خرائط أو مستمعين) بعد إزالة العناصر من
+                الصفحة.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function attach(element, data) {
+    element.addEventListener("click", () => {
+        console.log(data);
+    });
+    // لا يوجد removeEventListener
+}`}</code></pre>
+
+        <h3>لماذا يحدث؟</h3>
+
+        <p>
+            كل استدعاء لـ<code>attach</code> يُنشئ closure
+            يحتفظ بـ<code>data</code>. المستمع نفسه يبقى
+            مسجلًا على <code>element</code>، حتى لو أزلت
+            <code>element</code> من DOM. المتصفح لا يعرف أن
+            هذا المستمع لم يعد مطلوبًا، فيحتفظ به وبكل ما
+            يشير إليه.
+        </p>
+
+        <h3>الحل الاحترافي</h3>
+
+        <p>
+            <strong>أولًا: إزالة صريحة.</strong> احتفظ بمرجع
+            الدالة، وأزل المستمع عند التدمير:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`function attach(element, data) {
+    const handler = () => console.log(data);
+    element.addEventListener("click", handler);
+    return () => element.removeEventListener("click", handler);
+}
+
+const detach = attach(el, data);
+// عند الحاجة
+detach();`}</code></pre>
+
+        <p>
+            <strong>ثانيًا: AbortController للمستمعين.</strong>
+            واجهة حديثة، وأنظف من إدارة مراجع متعددة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const controller = new AbortController();
+
+element.addEventListener("click", handler, {
+    signal: controller.signal
+});
+
+// إزالة كل المستمعين المرتبطين
+controller.abort();`}</code></pre>
+
+        <p>
+            <strong>ثالثًا: تنظيف المؤقتات.</strong> كل
+            <code>setInterval</code> يجب أن يقابله
+            <code>clearInterval</code> في دالة التنظيف
+            (cleanup) الخاصة بالمكون:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`useEffect(() => {
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+}, []);`}</code></pre>
+
+        <p>
+            <strong>رابعًا: مراجع ضعيفة.</strong> إذا كنت
+            تحتاج إلى تخزين مراجع لكائنات دون منع جمع
+            القمامة، استخدم <code>WeakMap</code> و
+            <code>WeakRef</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`const cache = new WeakMap();
+
+function memoize(obj, compute) {
+    if (cache.has(obj)) return cache.get(obj);
+    const result = compute(obj);
+    cache.set(obj, result);
+    return result;
+}`}</code></pre>
+
+        <h2 id="shared-tooling">الأدوات المشتركة: ESLint وTypeScript وDevTools</h2>
+
+        <p>
+            هذه المشاكل الخمس لا تُحل بالذاكرة وحدها. الأدوات
+            تكشف معظمها قبل التشغيل:
+        </p>
+
+        <ul>
+            <li>
+                <strong>ESLint</strong> بقواعد مثل
+                <code>no-eq-null</code>،
+                <code>eqeqeq</code>،
+                <code>no-loop-func</code>،
+                <code>no-return-await</code>. هذه القواعد
+                تكشف <code>==</code> غير المقصود، والـ
+                closures في الحلقات، والـ await غير المفيد.
+            </li>
+            <li>
+                <strong>TypeScript</strong> يمنع معظم أخطاء
+                الأنواع، بما فيها تمرير <code>null</code>
+                إلى دالة لا تقبله، أو الوصول إلى خصائص غير
+                موجودة.
+            </li>
+            <li>
+                <strong>Chrome DevTools</strong> تقدم
+                Memory Profiler لكشف التسريبات، و
+                Performance Panel لتحليل التزامن، و
+                Console لالتقاط الأخطاء غير المعالجة.
+            </li>
+            <li>
+                <strong>ESLint + TypeScript معًا</strong>
+                يغطيان الغالبية العظمى من المشاكل الخمس
+                المذكورة، إذا استُخدما في CI وليس فقط في
+                المحرر.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تستخدم <code>this</code> في دالة تُمرر
+                كـcallback؟ ←
+                <strong>استخدم arrow function أو مرر البيانات صراحة</strong>
+            </li>
+            <li>
+                هل كل <code>await</code> داخل
+                <code>try/catch</code>؟ ←
+                <strong>نعم، إن لم يكن الخطأ متوقعًا</strong>
+            </li>
+            <li>
+                هل الطلبات المستقلة تُنفَّذ بالتوازي؟ ←
+                <strong>استخدم Promise.all أو allSettled</strong>
+            </li>
+            <li>
+                هل تستخدم <code>==</code>؟ ←
+                <strong>استبدلها بـ=== دائمًا</strong>
+            </li>
+            <li>
+                هل تتحقق من NaN بـisNaN؟ ←
+                <strong>استخدم Number.isNaN</strong>
+            </li>
+            <li>
+                هل تنسخ كائنات بـspread وتعدل الداخلي؟ ←
+                <strong>استخدم structuredClone أو أنماط غير متغيرة</strong>
+            </li>
+            <li>
+                هل كل مستمع حدث له إزالة؟ ←
+                <strong>AbortController أو removeEventListener</strong>
+            </li>
+            <li>
+                هل كل setInterval له clearInterval؟ ←
+                <strong>نعم، في دالة التنظيف</strong>
+            </li>
+            <li>
+                هل تشغّل ESLint في CI؟ ←
+                <strong>نعم، مع قواعد eqeqeq وno-loop-func</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية وأدوات يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — this
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Promise
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — AbortController
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/API/structuredClone"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — structuredClone
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Equality comparisons
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://eslint.org/docs/latest/rules/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ESLint — قائمة القواعد
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.typescriptlang.org/docs/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    TypeScript — التوثيق الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.chrome.com/docs/devtools/memory-problems"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Chrome DevTools — Memory Problems
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل يمكن تجنب فخ this بالكامل؟</h3>
+        <p>
+            نعم، إذا توقفت عن استخدام <code>this</code>
+            ومررت البيانات كوسائط صريحة. معظم الدوال في
+            التطبيقات الحديثة لا تحتاجه. اتركه للسياقات
+            التي تتطلبه فعلًا، مثل الفئات، واستخدم arrow
+            functions عندما تريد وراثته.
+        </p>
+
+        <h3>لماذا لا يكفي try/catch حول كل شيء؟</h3>
+        <p>
+            لأن الأخطاء في العمليات غير المتزامنة قد تحدث
+            خارج نطاق <code>try</code>. على سبيل المثال، إذا
+            لم تنتظر الـPromise، فإن الخطأ يظهر كـ
+            unhandled rejection، لا داخل <code>catch</code>.
+            تحتاج إلى معالجة صريحة، أو مراقبة عالمية
+            عبر <code>unhandledrejection</code>.
+        </p>
+
+        <h3>هل structuredClone بديل كامل عن lodash.cloneDeep؟</h3>
+        <p>
+            لمعظم الحالات، نعم. <code>structuredClone</code>
+            يدعم Date وMap وSet وArrayBuffer، لكنه لا ينسخ
+            الدوال أو الكائنات المخصصة بطرق معقدة. إذا كنت
+            تحتاج نسخًا عميقًا لأصناف مخصصة، فقد تحتاج
+            <code>lodash.cloneDeep</code> أو كتابة نسخ يدوي.
+        </p>
+
+        <h3>كيف أكتشف تسريب الذاكرة في تطبيقي؟</h3>
+        <p>
+            استخدم Chrome DevTools: افتح تبويب Memory، وخذ
+            Snapshot قبل وبعد سيناريو معين، وقارن الكائنات
+            التي بقيت. إذا وجدت كائنات لم يُفترض أن تبقى،
+            تتبع المراجع التي تشير إليها. التنظيف الصريح
+            للمستمعين والمؤقتات يحل معظم التسريبات.
+        </p>
+
+        <h3>هل TypeScript يغني عن فهم هذه المشاكل؟</h3>
+        <p>
+            لا. TypeScript يكشف أخطاء الأنواع، لكنه لا
+            يكشف مشاكل <code>this</code>، ولا تسريب
+            الذاكرة، ولا التغيير (mutation) الذي لا يغير
+            النوع. هو أداة مساعدة، لا بديل عن الفهم.
+        </p>
+    </PostLayout>
+</BaseLayout>

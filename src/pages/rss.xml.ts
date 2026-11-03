@@ -27,7 +27,7 @@ export function GET() {
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml" />
 ${posts.map((post) => {
   const cats = Array.isArray(post.category) ? post.category : [post.category];
-  const categoryXml = cats.map((c) => `      <category>${escapeXml(c)}</category>`).join("\n");
+  const categoryXml = cats.map((c: string) => `      <category>${escapeXml(c)}</category>`).join("\n");
   return `    <item>
       <title>${escapeXml(post.title)}</title>
       <link>${siteUrl}/posts/${post.slug}/</link>
