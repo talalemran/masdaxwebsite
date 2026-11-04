@@ -1,0 +1,860 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "how-to-master-linux-roadmap-2026",
+    title: "كيف تحترف لينكس؟ خارطة طريق عملية من الصفر إلى الإتقان في 2026",
+    metaTitle: "كيف تحترف لينكس في 2026: خارطة طريق من الصفر إلى الاحتراف",
+    description:
+        "دليل عملي شامل لإتقان لينكس: بناء بيئة تدريب آمنة، إتقان الطرفية وإدارة النظام والشبكات، أتمتة المهام بـBash، أساسيات الأمان والحاويات، الشهادات المعتمدة (LFCS/RHCSA)، أفضل المصادر المجانية، وخطة 90 يومًا قابلة للتنفيذ.",
+    keywords: [
+        "كيف أحترف لينكس",
+        "تعلم لينكس من الصفر",
+        "خارطة طريق لينكس 2026",
+        "Linux roadmap",
+        "LFCS",
+        "RHCSA",
+        "Bash scripting",
+        "إدارة نظام لينكس",
+        "أوامر لينكس",
+        "لينكس للمبتدئين",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "4 نوفمبر 2026",
+    pubDate: new Date("2026-11-04"),
+    tags: ["لينكس", "تعلم", "خارطة طريق", "Bash", "شهادات"],
+    thumbnail: "/images/how-to-master-linux-roadmap-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: مراحل إتقان لينكس السبع" },
+    { id: "mindset", label: "قبل أن تبدأ: العقلية الصحيحة لتعلم لينكس" },
+    { id: "environment", label: "الخطوة 1: ابنِ بيئة تدريب آمنة" },
+    { id: "foundations", label: "الخطوة 2: الأساسيات التي لا يمكن تجاوزها" },
+    { id: "administration", label: "الخطوة 3: إدارة النظام اليومية" },
+    { id: "networking", label: "الخطوة 4: الشبكات وفهم الاتصالات" },
+    { id: "text-processing", label: "الخطوة 5: معالجة النصوص والأنابيب" },
+    { id: "automation", label: "الخطوة 6: الأتمتة بـBash Scripting" },
+    { id: "advanced", label: "الخطوة 7: المهارات المتقدمة (أمان، حاويات، أداء)" },
+    { id: "certifications", label: "الشهادات: هل تحتاجها؟ وأيها تختار؟" },
+    { id: "resources", label: "أفضل المصادر المجانية والمدفوعة" },
+    { id: "90-day-plan", label: "خطة 90 يومًا قابلة للتنفيذ" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            “كيف أحترف لينكس؟” سؤال يبدو بسيطًا، لكنه يخفي مشكلة
+            حقيقية: معظم المصادر إما تبدأ من الصفر المطلق فتبقى في
+            الأساسيات، أو تفترض خبرة سابقة فتقفز مباشرة إلى مواضيع
+            متقدمة. النتيجة أن المتعلم يقضي أشهرًا في مشاهدة
+            دورات دون أن يصل إلى مستوى يمكنه فيه <strong>إدارة
+            خادم حقيقي</strong> أو تشخيص مشكلة إنتاجية.
+        </p>
+
+        <p>
+            هذا الدليل لا يقدم “قائمة أوامر”، بل <strong>خارطة
+            طريق متسلسلة</strong> مبنية على المهارات التي يحتاجها
+            المهني فعليًا، مع نقاط تحقق واضحة: بعد كل مرحلة، يجب
+            أن تكون قادرًا على إنجاز مهمة محددة، لا مجرد “قراءة
+            عن” المفهوم. الهدف ليس أن تحفظ كل أمر، بل أن تصل إلى
+            مرحلة <strong>تستطيع فيها حل مشكلة لم ترها من
+            قبل</strong> باستخدام الطرفية.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: مراحل إتقان لينكس السبع</h2>
+
+        <p>
+            <img
+                src="/images/articles/how-to-master-linux-roadmap-2026/01.webp"
+                alt="نظرة سريعة: مراحل إتقان لينكس السبع"
+                width="1200"
+                height="750"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الجدول التالي يلخص المراحل السبع، والهدف العملي لكل
+            مرحلة، ومعيار الانتقال إلى التالية:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المرحلة</th>
+                        <th class="px-4 py-2 font-semibold">ماذا تتعلم</th>
+                        <th class="px-4 py-2 font-semibold">معيار الانتقال</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">1. البيئة</td>
+                        <td class="px-4 py-2">تثبيت توزيعة، الوصول للطرفية، فهم النظام الأساسي</td>
+                        <td class="px-4 py-2">تشغيل نظام كامل والتنقل فيه بثقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">2. الأساسيات</td>
+                        <td class="px-4 py-2">نظام الملفات، الأوامر، الصلاحيات، المحررات</td>
+                        <td class="px-4 py-2">إدارة ملفات ومجلدات وصلاحيات دون مساعدة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">3. الإدارة</td>
+                        <td class="px-4 py-2">العمليات، الخدمات (systemd)، الحزم، السجلات</td>
+                        <td class="px-4 py-2">تشغيل خدمة، تشخيص فشلها، قراءة سجلاتها</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">4. الشبكات</td>
+                        <td class="px-4 py-2">SSH، DNS، TCP/IP، الجدر النارية</td>
+                        <td class="px-4 py-2">تشخيص مشكلة اتصال وفصل سببها</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">5. معالجة النصوص</td>
+                        <td class="px-4 py-2">grep، awk، sed، الأنابيب، إعادة التوجيه</td>
+                        <td class="px-4 py-2">استخراج تقرير من سجل باستخدام سطر واحد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">6. الأتمتة</td>
+                        <td class="px-4 py-2">Bash scripting، cron، المهام المجدولة</td>
+                        <td class="px-4 py-2">كتابة سكريبت ينفذ مهمة متكررة بأمان</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">7. المتقدم</td>
+                        <td class="px-4 py-2">الأمان، الحاويات، الأداء، استكشاف الأخطاء</td>
+                        <td class="px-4 py-2">إدارة خادم إنتاجي أو اجتياز شهادة عملية</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="mindset">قبل أن تبدأ: العقلية الصحيحة لتعلم لينكس</h2>
+
+        <p>
+            ثلاث حقائق يجب أن تستوعبها قبل أول أمر:
+        </p>
+
+        <ul>
+            <li>
+                <strong>لينكس يُتعلم باليد، لا بالعين.</strong>
+                مشاهدة دورة كاملة دون تنفيذ الأوامر على نظام حقيقي
+                تعطي إحساسًا زائفًا بالمعرفة. القاعدة: كل أمر
+                تراه، اكتبه بيدك، حتى لو كان بسيطًا. [reference:0]
+            </li>
+            <li>
+                <strong>صفحات الدليل (man pages) هي أفضل
+                صديق.</strong> لن تحفظ كل خيارات كل أمر، ولن
+                تحتاج. تعلّم كيف تقرأ <code>man</code>،
+                واستخدمه بدلًا من البحث العشوائي. [reference:1]
+            </li>
+            <li>
+                <strong>الهدف هو حل المشكلات، لا حفظ
+                الأوامر.</strong> المهني لا يعرف كل شيء، لكنه
+                يعرف كيف يبحث، وكيف يقرأ الخطأ، وكيف يختبر
+                فرضيته. هذه العقلية أهم من أي قائمة أوامر.
+            </li>
+        </ul>
+
+        <h2 id="environment">الخطوة 1: ابنِ بيئة تدريب آمنة</h2>
+
+        <p>
+            لا تبدأ بتثبيت لينكس على جهازك الأساسي إن كنت جديدًا.
+            ابنِ بيئة يمكنك تدميرها دون خسارة. الخيارات الأربعة
+            الرئيسية:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">البيئة</th>
+                        <th class="px-4 py-2 font-semibold">الميزة</th>
+                        <th class="px-4 py-2 font-semibold">القيد</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">جهاز افتراضي (VirtualBox/VMware)</td>
+                        <td class="px-4 py-2">الأقرب لبيئة إنتاج، ولقطات للرجوع</td>
+                        <td class="px-4 py-2">يستهلك ذاكرة ومعالجًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">WSL على ويندوز</td>
+                        <td class="px-4 py-2">بدء سريع، تكامل مع ويندوز</td>
+                        <td class="px-4 py-2">ليس نظامًا كاملًا (بدون وحدات نواة في WSL1)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">خادم سحابي (VPS)</td>
+                        <td class="px-4 py-2">بيئة حقيقية، وصول من أي مكان</td>
+                        <td class="px-4 py-2">تكلفة شهرية (منخفضة للطلاب)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">Live USB</td>
+                        <td class="px-4 py-2">بدون تثبيت، بدون مخاطرة</td>
+                        <td class="px-4 py-2">التغييرات لا تُحفظ افتراضيًا</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            التوصية العملية: ابدأ بـ<strong>Ubuntu LTS</strong> في
+            جهاز افتراضي. Ubuntu هي التوزيعة الأكثر توثيقًا
+            للمبتدئين، ومدير الحزم <code>apt</code> واضح ومباشر.
+            بعد أن تصل إلى مرحلة الراحة، جرّب توزيعة أخرى
+            (Fedora أو Debian) لفهم الفروق، لكن لا تبدأ بالتوزيعات
+            المتقدمة مثل Arch. [reference:2]
+        </p>
+
+        <h2 id="foundations">الخطوة 2: الأساسيات التي لا يمكن تجاوزها</h2>
+
+        <p>
+            هذه المرحلة تبني المفردات التي ستستخدمها في كل ما بعدها.
+            أربعة محاور:
+        </p>
+
+        <h3>1. فلسفة نظام الملفات</h3>
+
+        <p>
+            في لينكس، “كل شيء ملف”: الأجهزة، والعمليات، والإعدادات.
+            فهم الهرم الهرمي (FHS) يوفر عليك ساعات من البحث:
+        </p>
+
+        <ul>
+            <li><code>/etc</code>: إعدادات النظام.</li>
+            <li><code>/var</code>: البيانات المتغيرة (سجلات، طوابير، قواعد بيانات).</li>
+            <li><code>/home</code>: بيانات المستخدمين.</li>
+            <li><code>/proc</code> و<code>/sys</code>: واجهات النواة (معلومات حية عن العمليات والعتاد).</li>
+            <li><code>/bin</code> و<code>/sbin</code>: أوامر النظام الأساسية. [reference:3]</li>
+        </ul>
+
+        <h3>2. الأوامر الأساسية</h3>
+
+        <p>
+            ليست كثيرة كما يظن البعض. هذه القائمة تغطي 80% من
+            العمل اليومي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`pwd ls cd cat less head tail
+cp mv rm mkdir touch
+grep find man
+ps top kill
+systemctl journalctl
+ip ss ping ssh
+chmod chown
+apt update && apt install`}</code></pre>
+
+        <p>
+            لا تحفظ الخيارات. تعلّم <code>--help</code> و
+            <code>man</code>، واعتمد عليهما. الهدف أن تعرف
+            <strong>ماذا يفعل الأمر</strong>، لا أن تحفظ كل
+            مفاتيحه. [reference:4]
+        </p>
+
+        <h3>3. الصلاحيات والملكية</h3>
+
+        <p>
+            هذا هو أول مفهوم يفصل المبتدئ عن المستخدم الفعلي.
+            الصلاحيات في لينكس ثلاثة أنواع (قراءة، كتابة، تنفيذ)
+            لثلاث فئات (المالك، المجموعة، الآخرون). أوامر
+            <code>chmod</code> و<code>chown</code> هي المفتاح.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# صلاحيات رقمية: 755 = rwxr-xr-x
+chmod 755 script.sh
+
+# تغيير المالك والمجموعة
+chown user:group file.txt`}</code></pre>
+
+        <h3>4. محرر نصوص في الطرفية</h3>
+
+        <p>
+            لا يمكنك إدارة نظام دون تحرير ملفات على الخادم. تعلّم
+            <code>vim</code> الأساسي (على الأقل: فتح، إدراج، حفظ،
+            خروج)، أو <code>nano</code> كبداية. <code>vim</code>
+            موجود على كل خادم تقريبًا، لذا يستحق الاستثمار. [reference:5]
+        </p>
+
+        <h2 id="administration">الخطوة 3: إدارة النظام اليومية</h2>
+
+        <p>
+            هنا تنتقل من “استخدام النظام” إلى “إدارته”. أربع
+            مهارات:
+        </p>
+
+        <h3>العمليات والخدمات</h3>
+
+        <p>
+            <code>systemd</code> هو مدير الخدمات في معظم
+            التوزيعات الحديثة. يجب أن تعرف:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`systemctl status nginx
+systemctl start/stop/restart nginx
+systemctl enable/disable nginx
+journalctl -u nginx -f`}</code></pre>
+
+        <p>
+            <code>journalctl</code> هو بوابة السجلات. إتقانه
+            يعني القدرة على تشخيص أي خدمة فاشلة. [reference:6]
+        </p>
+
+        <h3>إدارة الحزم</h3>
+
+        <p>
+            كل توزيعة لها مدير حزمها. على Ubuntu/Debian:
+            <code>apt</code>. على RHEL/Fedora: <code>dnf</code>.
+            المبادئ واحدة: تحديث القوائم، البحث، التثبيت، الإزالة،
+            التنظيف.
+        </p>
+
+        <h3>التخزين</h3>
+
+        <p>
+            فهم <code>lsblk</code>، <code>df</code>،
+            <code>du</code>، وتركيب الأقراص (<code>mount</code>).
+            لاحقًا، ستتعلم LVM و<code>fdisk</code>، لكن في البداية
+            يكفي أن تعرف كيف تتحقق من المساحة وأين تُستهلك.
+        </p>
+
+        <h3>المهام المجدولة</h3>
+
+        <p>
+            <code>cron</code> هو أداة الجدولة الأساسية. تعلّم
+            صياغة <code>crontab</code>، وكيف تختبر أن المهمة تعمل.
+        </p>
+
+        <h2 id="networking">الخطوة 4: الشبكات وفهم الاتصالات</h2>
+
+        <p>
+            لا تحتاج إلى أن تصبح مهندس شبكات، لكن تحتاج إلى
+            <strong>فهم كافٍ لتشخيص مشكلة اتصال</strong>. المحاور
+            الأساسية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>TCP/IP وDNS:</strong> كيف يُترجم الاسم إلى
+                عنوان، وكيف يمر الطلب عبر الشبكة.
+            </li>
+            <li>
+                <strong>SSH:</strong> توليد المفاتيح، الاتصال،
+                النسخ عبر <code>scp</code> أو
+                <code>rsync</code>، والأنفاق.
+            </li>
+            <li>
+                <strong>المنافذ:</strong> <code>ss -tlnp</code>
+                لمعرفة ما يستمع على أي منفذ.
+            </li>
+            <li>
+                <strong>الجدر النارية:</strong> <code>ufw</code>
+                أو <code>firewalld</code>، وكيف تفتح منفذًا
+                وتتحقق من عمله.
+            </li>
+        </ul>
+
+        <p>
+            معيار الانتقال: إذا تعطل اتصال SSH بخادم، تستطيع
+            تحديد ما إذا كانت المشكلة في الشبكة، أو DNS، أو
+            الخدمة نفسها، أو الجدار الناري. [reference:7]
+        </p>
+
+        <h2 id="text-processing">الخطوة 5: معالجة النصوص والأنابيب</h2>
+
+        <p>
+            هذه هي المهارة التي تفصل من “يعرف الأوامر” عن من
+            “يستخرج معلومة من ملف سجل بحجم غيغابايت في ثوانٍ”.
+            الأدوات الأساسية:
+        </p>
+
+        <ul>
+            <li>
+                <strong><code>grep</code>:</strong> بحث نصي
+                بأنماط.
+            </li>
+            <li>
+                <strong><code>awk</code>:</strong> معالجة أعمدة
+                وحقول.
+            </li>
+            <li>
+                <strong><code>sed</code>:</strong> استبدال
+                وتحرير نصي.
+            </li>
+            <li>
+                <strong><code>cut</code>، <code>sort</code>،
+                <code>uniq</code>:</strong> تقطيع وترتيب وتصفية.
+            </li>
+            <li>
+                <strong>الأنابيب (<code>|</code>) وإعادة التوجيه
+                (<code>></code>، <code>2></code>):</strong> ربط
+                الأوامر.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# أكثر عناوين IP تكرارًا في سجل الوصول
+awk '{print $1}' access.log | sort | uniq -c | sort -nr | head -10`}</code></pre>
+
+        <p>
+            معيار الانتقال: تستطيع كتابة سطر واحد يستخرج تقريرًا
+            مفيدًا من سجل، دون فتحه في محرر. [reference:8]
+        </p>
+
+        <h2 id="automation">الخطوة 6: الأتمتة بـBash Scripting</h2>
+
+        <p>
+            الأتمتة هي الهدف النهائي. كتابة سكريبت يحل محل عشر
+            خطوات يدوية هي ما يجعل المهني منتجًا. ابدأ من الأساسيات:
+            المتغيرات، الشروط، الحلقات، الدوال، ومعالجة الأخطاء
+            بـ<code>set -euo pipefail</code>.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`#!/usr/bin/env bash
+set -euo pipefail
+
+log_dir="/var/log/myapp"
+backup_dir="/backups/myapp"
+
+mkdir -p "$backup_dir"
+tar -czf "$backup_dir/logs-$(date +%F).tar.gz" "$log_dir"
+echo "Backup completed."`}</code></pre>
+
+        <p>
+            لا تحاول كتابة “نظام” في أول سكريبت. ابدأ بمهمة صغيرة
+            تتكرر يوميًا (نسخ احتياطي، تنظيف ملفات، فحص خدمة)،
+            ثم وسّعها. [reference:9]
+        </p>
+
+        <h2 id="advanced">الخطوة 7: المهارات المتقدمة (أمان، حاويات، أداء)</h2>
+
+        <p>
+            هذه المرحلة ليست للجميع. لكنها ما يفصل “مستخدم لينكس
+            المتقدم” عن “محترف لينكس”:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الأمان:</strong> <code>ufw</code> أو
+                <code>firewalld</code>، وSSH المقوّى (تعطيل كلمة
+                المرور، منع root)، و<code>fail2ban</code>،
+                ومراجعة السجلات.
+            </li>
+            <li>
+                <strong>الحاويات:</strong> Docker هو الأساس، ثم
+                Kubernetes للمشاريع الأكبر. فهم الحاويات ضروري
+                لأي دور حديث.
+            </li>
+            <li>
+                <strong>الأداء والتشخيص:</strong>
+                <code>htop</code>، <code>iotop</code>،
+                <code>strace</code>، <code>lsof</code>،
+                وتحليل سجلات النظام.
+            </li>
+            <li>
+                <strong>مفاهيم النواة:</strong> فهم أن النواة
+                تدير العمليات والذاكرة والأجهزة. لا تحتاج إلى
+                تطوير النواة، لكن فهمها يفسر سلوك النظام.
+                [reference:10]
+            </li>
+        </ul>
+
+        <h2 id="certifications">الشهادات: هل تحتاجها؟ وأيها تختار؟</h2>
+
+        <p>
+            الشهادات ليست ضرورة للتعلم، لكنها مفيدة للتوظيف.
+            خريطة الشهادات في 2026:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الشهادة</th>
+                        <th class="px-4 py-2 font-semibold">الجهة</th>
+                        <th class="px-4 py-2 font-semibold">الطابع</th>
+                        <th class="px-4 py-2 font-semibold">الأنسب لـ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><strong>CompTIA Linux+</strong></td>
+                        <td class="px-4 py-2">CompTIA</td>
+                        <td class="px-4 py-2">محايد، اختيار متعدد + أداء</td>
+                        <td class="px-4 py-2">دخول مجال IT</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>LPIC-1</strong></td>
+                        <td class="px-4 py-2">LPI</td>
+                        <td class="px-4 py-2">محايد، متدرج</td>
+                        <td class="px-4 py-2">أساس قوي ومحايد</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>LFCS</strong></td>
+                        <td class="px-4 py-2">Linux Foundation</td>
+                        <td class="px-4 py-2">عملي 100%</td>
+                        <td class="px-4 py-2">إدارة أنظمة عملية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>RHCSA (EX200)</strong></td>
+                        <td class="px-4 py-2">Red Hat</td>
+                        <td class="px-4 py-2">عملي 100%، Red Hat</td>
+                        <td class="px-4 py-2">بيئات RHEL/Rocky/Alma</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            التوصية: إذا كنت مبتدئًا وتريد أساسًا محايدًا، ابدأ
+            بـ<strong>LFCS</strong> أو <strong>LPIC-1</strong>.
+            إذا كنت ستعمل في بيئة Red Hat، فـ<strong>RHCSA</strong>
+            هي الخيار. الشهادات لا تعوض الخبرة العملية، لكنها
+            تثبت أنك تعرف ما تدعي معرفته. [reference:11]
+        </p>
+
+        <h2 id="resources">أفضل المصادر المجانية والمدفوعة</h2>
+
+        <p>
+            لا تحتاج إلى دفع مبالغ كبيرة. هذه المصادر تغطي من
+            الصفر إلى الاحتراف:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المصدر</th>
+                        <th class="px-4 py-2 font-semibold">النوع</th>
+                        <th class="px-4 py-2 font-semibold">الملاحظة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><strong>The Linux Command Line</strong> (William Shotts)</td>
+                        <td class="px-4 py-2">كتاب مجاني (PDF)</td>
+                        <td class="px-4 py-2">أفضل مقدمة للطرفية والسكريبتات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Linux Journey</strong></td>
+                        <td class="px-4 py-2">دروس تفاعلية</td>
+                        <td class="px-4 py-2">مجاني، مناسب للمبتدئين</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>OverTheWire: Bandit</strong></td>
+                        <td class="px-4 py-2">تحديات عملية</td>
+                        <td class="px-4 py-2">تعلم عبر حل مشكلات حقيقية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Linux Foundation LFS101</strong></td>
+                        <td class="px-4 py-2">دورة مجانية</td>
+                        <td class="px-4 py-2">منظمة، مع شهادة اختيارية</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>LearnLinuxTV</strong> (YouTube)</td>
+                        <td class="px-4 py-2">فيديوهات</td>
+                        <td class="px-4 py-2">شروحات عملية محدثة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Arch Wiki</strong></td>
+                        <td class="px-4 py-2">توثيق</td>
+                        <td class="px-4 py-2">مرجع ممتاز حتى لغير مستخدمي Arch</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            القاعدة: لا تشترِ دورة قبل أن تنهي مصدرًا مجانيًا واحدًا
+            على الأقل. المصادر المجانية كافية للوصول إلى مستوى
+            متقدم. [reference:12][reference:13]
+        </p>
+
+        <h2 id="90-day-plan">خطة 90 يومًا قابلة للتنفيذ</h2>
+
+        <p>
+            هذه خطة واقعية لمن يستثمر ساعة إلى ساعتين يوميًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الأسبوع 1–2:</strong> تثبيت Ubuntu في جهاز
+                افتراضي، إتقان الأوامر الأساسية، التنقل في نظام
+                الملفات، استخدام <code>man</code>.
+            </li>
+            <li>
+                <strong>الأسبوع 3–4:</strong> الصلاحيات،
+                المستخدمون والمجموعات، محرر نصوص، إدارة الحزم.
+            </li>
+            <li>
+                <strong>الأسبوع 5–6:</strong> العمليات والخدمات
+                (<code>systemd</code>)، السجلات
+                (<code>journalctl</code>)، التخزين الأساسي.
+            </li>
+            <li>
+                <strong>الأسبوع 7–8:</strong> الشبكات: SSH،
+                المنافذ، DNS، الجدر النارية. تشخيص مشكلة اتصال
+                واحدة على الأقل.
+            </li>
+            <li>
+                <strong>الأسبوع 9–10:</strong> معالجة النصوص
+                (grep/awk/sed)، الأنابيب، استخراج تقرير من سجل.
+            </li>
+            <li>
+                <strong>الأسبوع 11–12:</strong> كتابة سكريبت
+                Bash كامل (نسخ احتياطي، تنظيف، فحص خدمة)،
+                وجدولته بـcron.
+            </li>
+            <li>
+                <strong>الأسبوع 13:</strong> مراجعة، مشروع صغير
+                (تشغيل خدمة ويب، تأمين SSH، مراقبة بسيطة)،
+                والبدء في التحضير لشهادة إن رغبت.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل لديك بيئة تدريب يمكنك تدميرها دون خسارة؟ ←
+                <strong>جهاز افتراضي أو VPS</strong>
+            </li>
+            <li>
+                هل تستخدم <code>man</code> قبل البحث في
+                الإنترنت؟ ←
+                <strong>اجعله عادة</strong>
+            </li>
+            <li>
+                هل تفهم الفرق بين <code>/etc</code> و
+                <code>/var</code> و<code>/proc</code>؟ ←
+                <strong>أساسي لتشخيص أي مشكلة</strong>
+            </li>
+            <li>
+                هل تعرف كيف تتحقق من صلاحيات ملف وتغيرها؟ ←
+                <strong><code>ls -l</code> و<code>chmod</code></strong>
+            </li>
+            <li>
+                هل تستطيع تشخيص خدمة فاشلة عبر
+                <code>systemctl</code> و<code>journalctl</code>؟ ←
+                <strong>مهارة إدارة أساسية</strong>
+            </li>
+            <li>
+                هل تستطيع استخراج معلومة من سجل بسطر واحد؟ ←
+                <strong>grep + awk + sort + uniq</strong>
+            </li>
+            <li>
+                هل كتبت سكريبت Bash كاملًا يعمل دون تدخل؟ ←
+                <strong>هدف الأتمتة</strong>
+            </li>
+            <li>
+                هل تعرف كيف تؤمّن SSH على خادم؟ ←
+                <strong>مفاتيح، تعطيل root، جدار ناري</strong>
+            </li>
+            <li>
+                هل تفهم أساسيات الحاويات (Docker)؟ ←
+                <strong>ضروري لأي دور حديث</strong>
+            </li>
+            <li>
+                هل لديك مشروع صغير على خادم حقيقي؟ ←
+                <strong>أفضل دليل على الإتقان</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط مباشرة للمصادر المذكورة:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://linuxcommand.org/tlcl.php"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    The Linux Command Line — كتاب مجاني
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://linuxjourney.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Linux Journey — دروس تفاعلية
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://overthewire.org/wargames/bandit/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    OverTheWire: Bandit — تحديات عملية
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://training.linuxfoundation.org/training/introduction-to-linux/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Linux Foundation LFS101 — دورة مجانية
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    LFCS — شهادة Linux Foundation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.redhat.com/en/services/certification/rhcsa"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    RHCSA — شهادة Red Hat
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://wiki.archlinux.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Arch Wiki — مرجع تقني شامل
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.youtube.com/c/LearnLinuxtv"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    LearnLinuxTV — قناة يوتيوب
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://tldp.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    The Linux Documentation Project
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>كم يستغرق إتقان لينكس؟</h3>
+        <p>
+            للوصول إلى مستوى “إدارة خادم بثقة”، تحتاج عادةً 3–6
+            أشهر من التدريب المنتظم (ساعة إلى ساعتين يوميًا). هذا
+            لا يعني معرفة كل شيء، بل القدرة على حل معظم المشكلات
+            اليومية دون مساعدة. الإتقان العميق (فهم النواة،
+            الأداء، الأمان المتقدم) يستغرق سنوات، لكنه ليس
+            ضروريًا لكل المسارات.
+        </p>
+
+        <h3>هل أحتاج إلى شهادة لأحترف لينكس؟</h3>
+        <p>
+            لا. الشهادة تفيد في تجاوز فلاتر التوظيف، لكنها لا
+            تعوض الخبرة العملية. إذا كان لديك مشاريع حقيقية
+            (خادم شخصي، مساهمات في مشاريع مفتوحة، سكريبتات
+            تعمل في بيئة إنتاج)، فهذا أقوى من أي شهادة. لكن
+            إذا كنت تبدأ، فشهادة عملية مثل LFCS أو RHCSA
+            تمنحك هدفًا واضحًا وتثبت أساسك.
+        </p>
+
+        <h3>هل أبدأ بـUbuntu أم Arch؟</h3>
+        <p>
+            ابدأ بـUbuntu (أو Linux Mint). Arch ممتازة للتعلم
+            العميق، لكنها تفترض أنك تعرف الأساسيات. إذا بدأت
+            بها، قد تقضي أيامًا في إصلاح مشكلات التثبيت بدلًا
+            من تعلم المبادئ. بعد أن تصبح مرتاحًا، جرّب Arch
+            كتجربة تعليمية.
+        </p>
+
+        <h3>ما أهم مهارة واحدة يجب أن أتقنها؟</h3>
+        <p>
+            إذا كان عليك اختيار واحدة: <strong>قراءة السجلات
+            وتشخيص المشكلات</strong>. هذه المهارة تجمع كل ما
+            تعلمته (العمليات، الخدمات، الشبكات، الصلاحيات)
+            وتجبرك على فهمها معًا. المهني الذي يستطيع قراءة
+            <code>journalctl</code> و<code>dmesg</code>
+            و<code>ss</code> وتحديد سبب المشكلة، يستطيع تعلم
+            الباقي بسرعة.
+        </p>
+
+        <h3>هل يمكن تعلم لينكس دون تثبيته؟</h3>
+        <p>
+            يمكنك البدء بدروس تفاعلية (Linux Journey،
+            OverTheWire)، لكنك لن تتقنه دون نظام حقيقي تدير
+            فيه الملفات والخدمات. حتى WSL أو جهاز افتراضي
+            يعطيك خبرة أقرب للواقع. الأفضل: بيئة حقيقية
+            (VPS) بعد الأساسيات، لأنها تفرض عليك التعامل مع
+            الشبكة والخدمات كما في العمل.
+        </p>
+    </PostLayout>
+</BaseLayout>
