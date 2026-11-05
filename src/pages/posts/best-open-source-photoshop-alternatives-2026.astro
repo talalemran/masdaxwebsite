@@ -1,0 +1,806 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-open-source-photoshop-alternatives-2026",
+    title: "أفضل بدائل ادوبي فوتوشوب مفتوحة المصدر في 2026: دليل شامل",
+    metaTitle: "أفضل بدائل ادوبي فوتوشوب مفتوحة المصدر في 2026: دليل شامل",
+    description:
+        "دليل عملي لأفضل بدائل ادوبي فوتوشوب مفتوحة المصدر في 2026: GIMP 3.2 مع الطبقات غير المدمرة، Krita 6.0 للرسم الرقمي، Photopea لتحرير PSD في المتصفح، Darktable للـRAW، وأدوات خفيفة مثل PhotoDemon وPinta. مع جداول مقارنة ومعايير اختيار.",
+    keywords: [
+        "بدائل Photoshop مفتوحة المصدر",
+        "GIMP 3.2",
+        "Krita 6.0",
+        "Photopea",
+        "بديل فوتوشوب مجاني",
+        "Darktable",
+        "PhotoDemon",
+        "Pinta",
+        "تحرير الصور مفتوح المصدر",
+        "Open source Photoshop alternatives",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "5 نوفمبر 2026",
+    pubDate: new Date("2026-11-05"),
+    tags: ["مفتوح المصدر", "بدائل فوتوشوب", "GIMP", "Krita", "تصميم"],
+    thumbnail: "/images/best-open-source-photoshop-alternatives-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة بدائل Photoshop المفتوحة" },
+    { id: "why-leave-photoshop", label: "لماذا يبحث الناس عن بديل لـPhotoshop؟" },
+    { id: "gimp", label: "GIMP 3.2: البديل الأشمل والأقرب وظيفيًا" },
+    { id: "krita", label: "Krita 6.0: ملك الرسم الرقمي والرسوم التوضيحية" },
+    { id: "photopea", label: "Photopea: Photoshop في المتصفح دون تثبيت" },
+    { id: "darktable", label: "Darktable: بديل Lightroom لمعالجة RAW" },
+    { id: "lightweight", label: "أدوات خفيفة: PhotoDemon وPinta وPhotoFlare" },
+    { id: "other-tools", label: "أدوات مساندة: RawTherapee وInkscape وdigiKam" },
+    { id: "comparison", label: "مقارنة شاملة: أي بديل يناسبك؟" },
+    { id: "psd-workflow", label: "التوافق مع PSD: ما الذي يعمل وما الذي ينكسر؟" },
+    { id: "how-to-choose", label: "كيف تختار بديلك الأول؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            اشتراك ادوبي فوتوشوب في 2026 يكلّف حوالي <strong>22.99
+            دولارًا شهريًا</strong>، أي ما يقارب 275 دولارًا سنويًا
+            لمستخدم واحد. وإذا توقفت عن الدفع، لا تفقد التحديثات
+            فقط، بل تفقد القدرة على فتح ملفاتك وتعديلها. لهذا
+            يبحث كثيرون عن بديل <strong>مفتوح المصدر</strong> يمنحهم
+            ملكية أدواتهم وملفاتهم، دون التضحية بجودة النتيجة.
+        </p>
+
+        <p>
+            المشكلة أن قوائم البدائل غالبًا ما تكتفي بذكر GIMP
+            وتقول “إنه يشبه Photoshop”. هذا غير دقيق. في 2026،
+            أصبح لدينا <strong>GIMP 3.2</strong> مع طبقات غير
+            مدمرة، و<strong>Krita 6.0</strong> بمحرك فرش يتفوق
+            على Photoshop في بعض الجوانب، و<strong>Photopea</strong>
+            الذي يفتح PSD في المتصفح دون تثبيت، وأدوات أخرى لكل
+            حالة استخدام. هذا الدليل يرتب البدائل حسب
+            <strong>نوع العمل</strong>، لا حسب الشهرة، ويشرح
+            حدود كل بديل بصراحة.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة بدائل Photoshop المفتوحة</h2>
+
+        <p>
+            الجدول التالي يلخص البدائل الرئيسية، وأفضل استخدام لكل
+            منها، وحالة النضج في 2026:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">الأداة</th>
+                        <th class="px-4 py-2 font-semibold">الأفضل لـ</th>
+                        <th class="px-4 py-2 font-semibold">النضج (2026)</th>
+                        <th class="px-4 py-2 font-semibold">المنصات</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2"><strong>GIMP 3.2</strong></td>
+                        <td class="px-4 py-2">تحرير صور شامل، تركيب، استرجاع</td>
+                        <td class="px-4 py-2">ناضج جدًا، مع طبقات غير مدمرة</td>
+                        <td class="px-4 py-2">Windows، macOS، Linux</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Krita 6.0</strong></td>
+                        <td class="px-4 py-2">رسم رقمي، رسوم توضيحية، أنيميشن</td>
+                        <td class="px-4 py-2">ناضج، محرك فرش متقدم</td>
+                        <td class="px-4 py-2">Windows، macOS، Linux، Android</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Photopea</strong></td>
+                        <td class="px-4 py-2">تحرير PSD في المتصفح، تعديلات سريعة</td>
+                        <td class="px-4 py-2">وظيفي جدًا، إعلانات في النسخة المجانية</td>
+                        <td class="px-4 py-2">ويب (أي متصفح)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Darktable</strong></td>
+                        <td class="px-4 py-2">معالجة RAW وإدارة مكتبة صور</td>
+                        <td class="px-4 py-2">ناضج جدًا للتصوير</td>
+                        <td class="px-4 py-2">Windows، macOS، Linux</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>PhotoDemon</strong></td>
+                        <td class="px-4 py-2">تعديلات خفيفة وسريعة</td>
+                        <td class="px-4 py-2">خفيف، مناسب للمبتدئين</td>
+                        <td class="px-4 py-2">Windows (Linux عبر Wine)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2"><strong>Pinta</strong></td>
+                        <td class="px-4 py-2">رسم وتعديل بسيط</td>
+                        <td class="px-4 py-2">بسيط، ليس بديلًا كاملًا</td>
+                        <td class="px-4 py-2">Windows، macOS، Linux</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-leave-photoshop">لماذا يبحث الناس عن بديل لـPhotoshop؟</h2>
+
+        <p>
+            الأسباب لم تعد مالية فقط. ثلاثة تحولات دفعت المهنيين
+            إلى البحث الجدي:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الاشتراك الإجباري.</strong> لا يوجد خيار
+                لشراء نسخة دائمة. وإذا توقفت عن الدفع، تفقد
+                الوصول إلى أدوات التحرير الأساسية، لا التحديثات
+                فقط. هذا يعني أن <strong>أرشيفك الإبداعي</strong>
+                مرهون باستمرار الدفع.
+            </li>
+            <li>
+                <strong>الاعتماد على السحابة.</strong> كثير من
+                الميزات الحديثة مرتبطة بالتخزين السحابي
+                والمزامنة. من يريد الاحتفاظ بملفاته محليًا يجد
+                نفسه في مسار غير مباشر.
+            </li>
+            <li>
+                <strong>غياب النسخ الأصلية على لينكس.</strong>
+                Photoshop لا يعمل أصليًا على لينكس. مستخدمو
+                لينكس مضطرون إلى البدائل المفتوحة، وهذا دفع
+                تطوير تلك البدائل.
+            </li>
+            <li>
+                <strong>تغير نموذج الملكية.</strong> أدوات مثل
+                GIMP وKrita تعمل محليًا، ويمكنك تثبيتها على
+                أجهزة متعددة دون قيود، والاحتفاظ بنسخ قديمة
+                تعمل حتى لو توقف المشروع.
+            </li>
+        </ul>
+
+        <h2 id="gimp">GIMP 3.2: البديل الأشمل والأقرب وظيفيًا</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-photoshop-alternatives-2026/01.webp"
+                alt="GIMP 3.2: البديل الأشمل والأقرب وظيفيًا"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>GIMP</strong> (GNU Image Manipulation Program)
+            هو أقدم وأشهر بديل مفتوح لـPhotoshop، وما زال الخيار
+            الأول لمن يريد تحرير صور شاملًا دون اشتراك. الإصدار
+            <strong>3.2</strong> صدر في مارس 2026، وهو أهم تحديث
+            منذ سنوات، لأنه أضاف <strong>الطبقات غير
+            المدمرة</strong> التي كانت أكبر فجوة بينه وبين
+            Photoshop.
+        </p>
+
+        <p>ما الذي أضافه GIMP 3.2 تحديدًا؟</p>
+
+        <ul>
+            <li>
+                <strong>Link Layers:</strong> يمكنك ربط صورة
+                خارجية داخل التكوين، وتعديلها (تحجيم، تدوير،
+                تحويل) دون فقدان الجودة. وإذا تغير الملف
+                الأصلي في محرر آخر، يتحدث تلقائيًا في GIMP
+                . هذا يشبه “Linked Smart
+                Objects” في Photoshop.
+            </li>
+            <li>
+                <strong>Vector Layers:</strong> أداة المسار
+                (Path) يمكنها الآن إنشاء طبقات متجهية قابلة
+                للتحرير، بتعبئة وحدود قابلة للتعديل، دون
+                تحويلها إلى نقطية . هذا
+                يفتح الباب لتصدير SVG من GIMP.
+            </li>
+            <li>
+                <strong>فلاتر غير مدمرة على القنوات:</strong>
+                لم تعد الفلاتر غير المدمرة محصورة في الطبقات،
+                بل تعمل أيضًا على القنوات ومجموعات
+                الطبقات .
+            </li>
+            <li>
+                <strong>20 فرشاة MyPaint جديدة</strong>، مع
+                تكيف تلقائي مع تكبير/تدوير اللوحة
+                .
+            </li>
+            <li>
+                <strong>وضع Overwrite:</strong> يسمح بالرسم فوق
+                الألوان الحالية دون مزج شفافيتها، وهو مفيد
+                للرسامين .
+            </li>
+        </ul>
+
+        <p>
+            نقاط القوة الأخرى: دعم PSD للقراءة والكتابة، ونظام
+            إضافات واسع، وأتمتة عبر Script-Fu وPython، وتوفر
+            على المنصات الثلاث. أما حدوده الرئيسية فما زالت
+            قائمة: <strong>لا يوجد وضع CMYK أصلي</strong> (فقط
+            محاكاة عبر فصل الألوان)، و<strong>واجهة تحتاج
+            تعلمًا</strong>، و<strong>لا ذكاء اصطناعي توليدي
+            مدمج</strong>.
+        </p>
+
+        <p>
+            الحكم العملي: إذا كان عملك تحرير صور فوتوغرافية، أو
+            تركيب (compositing)، أو استرجاع (retouching)، فـGIMP
+            3.2 هو أقرب بديل وظيفي لـPhotoshop في 2026. وإذا كان
+            عملك رسمًا رقميًا، فـKrita أنسب.
+        </p>
+
+        <h2 id="krita">Krita 6.0: ملك الرسم الرقمي والرسوم التوضيحية</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-photoshop-alternatives-2026/02.webp"
+                alt="Krita 6.0: ملك الرسم الرقمي والرسوم التوضيحية"
+                width="1200"
+                height="677"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>Krita</strong> ليس بديلًا مباشرًا لـPhotoshop.
+            إنه أداة <strong>رسم رقمي ورسوم توضيحية</strong>،
+            ويستبدل Adobe Fresco وCorel Painter أكثر مما يستبدل
+            Photoshop. لكنه يتفوق على Photoshop في محرك الفرش،
+            وهذا سبب كافٍ لاستخدامه إلى جانب GIMP
+            .
+        </p>
+
+        <p>
+            الإصدار <strong>6.0</strong> (مارس 2026) جاء بترحيل
+            كامل إلى Qt6، مع تحسينات كبيرة في دعم Wayland
+            وإدارة الألوان على لينكس. أما الإصدار
+            <strong>5.3</strong> فهو مكافئ وظيفيًا لكنه يعمل على
+            Qt5 .
+        </p>
+
+        <p>ما يقدمه Krita في 2026:</p>
+
+        <ul>
+            <li>
+                <strong>أكثر من 100 فرشاة جاهزة</strong>، وتسعة
+                محركات فرش، مع تثبيت (stabilizers) لخطوط
+                ناعمة .
+            </li>
+            <li>
+                <strong>أداة نص جديدة كليًا:</strong> تحرير على
+                اللوحة، دعم كامل لـOpenType، ونص يتدفق داخل
+                الأشكال .
+            </li>
+            <li>
+                <strong>دعم HDR محسّن:</strong> مع تنفيذ كامل
+                لبروتوكول إدارة الألوان في Wayland على لينكس
+                .
+            </li>
+            <li>
+                <strong>تحسينات في PSD:</strong> دعم كائنات
+                النص داخل ملفات PSD، وتحسين التعامل مع
+                الملفات بشكل عام .
+            </li>
+            <li>
+                <strong>الرسوم المتحركة:</strong> خط زمني
+                للإطارات، ما يجعله مناسبًا للرسوم المتحركة
+                ثنائية الأبعاد البسيطة .
+            </li>
+        </ul>
+
+        <p>
+            حده الرئيسي: <strong>ليس محرر صور فوتوغرافية</strong>.
+            أدوات مثل ختم النسخ (clone stamp) وفرشاة المعالجة
+            (healing brush) أضعف من GIMP، ولا يناسب استرجاع
+            الصور أو تصحيح المنظور المعقد. القاعدة: Krita
+            للرسم والتوضيح، GIMP للتحرير والاسترجاع.
+        </p>
+
+        <h2 id="photopea">Photopea: Photoshop في المتصفح دون تثبيت</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-photoshop-alternatives-2026/03.webp"
+                alt="Photopea: Photoshop في المتصفح دون تثبيت"
+                width="1200"
+                height="654"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        <p>
+            <strong>Photopea</strong> ليس مفتوح المصدر بالكامل،
+            لكنه مجاني ويعمل في المتصفح، ويفتح PSD وXCF وSketch
+            وFigma و40 صيغة أخرى. هو أقرب إلى “Photoshop في
+            المتصفح” من أي بديل آخر، وقد يكون الأداة الأنسب لمن
+            يحتاج إلى فتح ملفات PSD بسرعة دون تثبيت
+            GIMP .
+        </p>
+
+        <p>
+            نقاط قوته: <strong>دعم PSD كامل</strong> (فتح وحفظ
+            مع الطبقات والأقنعة والكائنات الذكية)، وواجهة مألوفة
+            لمن جاء من Photoshop، ومعالجة الملفات على جهازك لا
+            على خادم بعيد . النسخة
+            المجانية تعرض إعلانات، ويمكن إزالتها بدفع 5 دولارات
+            شهريًا .
+        </p>
+
+        <p>
+            حدوده: <strong>يعمل في المتصفح فقط</strong>، لذا
+            يحتاج اتصالًا بالإنترنت (وإن كان يعمل جزئيًا دون
+            اتصال)، و<strong>لا يدعم CMYK للتحرير الفعلي</strong>
+            (فقط معاينة طباعية)، وميزاته الذكاء الاصطناعي تعتمد
+            على رصيد خارجي . للمشاريع
+            الكبيرة أو العمل دون اتصال، GIMP أنسب.
+        </p>
+
+        <h2 id="darktable">Darktable: بديل Lightroom لمعالجة RAW</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-photoshop-alternatives-2026/04.webp"
+                alt="Darktable: بديل Lightroom لمعالجة RAW"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        <p>
+            إذا كان عملك يقوم على التصوير الفوتوغرافي ومعالجة
+            ملفات RAW، فـ<strong>Darktable</strong> هو البديل
+            المفتوح الأقرب لـLightroom، وليس لـPhotoshop. هو
+            يدير مكتبة الصور، ويطبق تعديلات غير مدمرة، ويصدر
+            النتائج، مع أدوات تصحيح ألوان متقدمة مثل AgX tone
+            mapping .
+        </p>
+
+        <p>
+            لماذا قد يفضله مصورون على Lightroom؟ لأن
+            <strong>علم الألوان</strong> فيه قوي جدًا، وكثيرون
+            يفضلون تعاملاته مع الظلال والإضاءة العالية. كما أنه
+            يعمل محليًا بالكامل، دون مزامنة سحابية
+            إلزامية .
+        </p>
+
+        <p>
+            حده: <strong>منحنى تعلم حاد</strong>، وواجهة تفترض
+            معرفة فوتوغرافية، ويحتاج 10–20 ساعة من التدريب
+            ليصبح منتجًا . أما إذا كنت
+            تحتاج فقط إلى تحويل RAW دون إدارة مكتبة، فـ
+            <strong>RawTherapee</strong> يركز على جودة التحويل
+            نفسها .
+        </p>
+
+        <h2 id="lightweight">أدوات خفيفة: PhotoDemon وPinta وPhotoFlare</h2>
+
+        <p>
+            ليس كل من يغادر Photoshop يحتاج إلى بديل كامل. إذا
+            كانت احتياجاتك قصّ صور، تعديل سطوع، إضافة نص، أو
+            رسم بسيط، فهناك أدوات أخف وأسرع:
+        </p>
+
+        <ul>
+            <li>
+                <strong>PhotoDemon:</strong> محرر خفيف
+                للويندوز، سريع، يدعم الطبقات وبعض ميزات
+                الاسترجاع. ليس بديلًا كاملًا، لكنه ممتاز
+                للتعديلات السريعة .
+            </li>
+            <li>
+                <strong>Pinta:</strong> محرر بسيط
+                ومتعدد المنصات، مستوحى من Paint.NET. مناسب
+                للرسم الأساسي والتعديل الخفيف، وليس للعمل
+                الاحترافي .
+            </li>
+            <li>
+                <strong>PhotoFlare:</strong> محرر خفيف
+                آخر، بواجهة بسيطة، موجه للمهام السريعة
+                .
+            </li>
+        </ul>
+
+        <h2 id="other-tools">أدوات مساندة: RawTherapee وInkscape وdigiKam</h2>
+
+        <p>
+            الصورة الكاملة لبديل Photoshop لا تقتصر على محرر
+            واحد. الأدوات المساندة تكمل ما ينقص:
+        </p>
+
+        <ul>
+            <li>
+                <strong>RawTherapee:</strong> لتحويل RAW
+                بأقصى جودة، دون إدارة مكتبة. مثالي لمن يريد
+                التحكم الكامل في خوارزميات إزالة التمويه
+                (demosaicing) .
+            </li>
+            <li>
+                <strong>Inkscape:</strong> للرسوم المتجهية
+                (SVG). يستبدل Illustrator أكثر مما يستبدل
+                Photoshop، لكنه ضروري إذا كان عملك يخلط
+                النقطي والمتجهي .
+            </li>
+            <li>
+                <strong>digiKam:</strong> لإدارة مكتبة
+                الصور، مع وسوم وتصنيفات وبحث. يكمل GIMP
+                إذا كنت تحتاج إلى تنظيم آلاف
+                الصور .
+            </li>
+        </ul>
+
+        <h2 id="comparison">مقارنة شاملة: أي بديل يناسبك؟</h2>
+
+        <p>
+            الجدول التالي يضع البدائل الرئيسية في مقارنة مباشرة
+            على المعايير التي تهم المستخدم:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">GIMP 3.2</th>
+                        <th class="px-4 py-2 font-semibold">Krita 6.0</th>
+                        <th class="px-4 py-2 font-semibold">Photopea</th>
+                        <th class="px-4 py-2 font-semibold">Darktable</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">تحرير صور فوتوغرافية</td>
+                        <td class="px-4 py-2">ممتاز</td>
+                        <td class="px-4 py-2">محدود</td>
+                        <td class="px-4 py-2">جيد</td>
+                        <td class="px-4 py-2">ممتاز (RAW)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">رسم رقمي</td>
+                        <td class="px-4 py-2">جيد</td>
+                        <td class="px-4 py-2">ممتاز</td>
+                        <td class="px-4 py-2">محدود</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">دعم PSD</td>
+                        <td class="px-4 py-2">جيد (تحسينات 3.2)</td>
+                        <td class="px-4 py-2">جيد (نصوص PSD)</td>
+                        <td class="px-4 py-2">ممتاز</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">طبقات غير مدمرة</td>
+                        <td class="px-4 py-2">نعم (Link/Vector)</td>
+                        <td class="px-4 py-2">نعم (فلاتر/أقنعة)</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم (تعديلات RAW)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">CMYK للطباعة</td>
+                        <td class="px-4 py-2">محاكاة فقط</td>
+                        <td class="px-4 py-2">دعم محدود</td>
+                        <td class="px-4 py-2">معاينة فقط</td>
+                        <td class="px-4 py-2">لا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">العمل دون اتصال</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">نعم</td>
+                        <td class="px-4 py-2">جزئيًا</td>
+                        <td class="px-4 py-2">نعم</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الترخيص</td>
+                        <td class="px-4 py-2">GPL-3.0</td>
+                        <td class="px-4 py-2">GPL-3.0</td>
+                        <td class="px-4 py-2">مجاني/إعلانات</td>
+                        <td class="px-4 py-2">GPL-3.0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="psd-workflow">التوافق مع PSD: ما الذي يعمل وما الذي ينكسر؟</h2>
+
+        <p>
+            إذا كنت تعمل مع زملاء يستخدمون Photoshop، فالتوافق مع
+            PSD هو العامل الحاسم. الحقيقة أن كل البدائل تفتح
+            PSD، لكن بدرجات متفاوتة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Photopea:</strong> الأفضل في هذا
+                الجانب. يفتح PSD ويحفظه مع الطبقات والأقنعة
+                والكائنات الذكية، ويحافظ على التنسيق بشكل
+                قريب جدًا من الأصل .
+            </li>
+            <li>
+                <strong>GIMP:</strong> يفتح PSD ويحفظه، لكن
+                الميزات المتقدمة مثل الكائنات الذكية وطبقات
+                الضبط وأنماط الطبقات قد لا تُعاد بنفس الشكل.
+                الإصدار 3.2 حسّن استيراد أنماط الطبقات
+                .
+            </li>
+            <li>
+                <strong>Krita:</strong> يفتح PSD للقراءة،
+                ويحسّن دعم كائنات النص، لكنه ليس بديلًا
+                كاملًا لتحرير ملفات PSD المعقدة
+                .
+            </li>
+        </ul>
+
+        <p>
+            القاعدة العملية: إذا كنت تحتاج إلى تبادل ملفات PSD
+            مع آخرين، فـPhotopea هو الأكثر أمانًا. أما إذا كنت
+            تعمل محليًا ويمكنك تصدير النتيجة النهائية فقط، فـGIMP
+            كافٍ.
+        </p>
+
+        <h2 id="how-to-choose">كيف تختار بديلك الأول؟</h2>
+
+        <p>القرار يعتمد على ثلاثة أسئلة، لا على “أي بديل أفضل”:</p>
+
+        <ul>
+            <li>
+                <strong>ما نوع العمل الذي تؤديه معظم الوقت؟</strong>
+                تحرير صور فوتوغرافية وتركيب ← GIMP. رسم
+                رقمي وتوضيح ← Krita. تعديلات سريعة وPSD ←
+                Photopea. تصوير RAW ← Darktable +
+                RawTherapee.
+            </li>
+            <li>
+                <strong>هل تعمل دون اتصال أو على جهاز
+                قديم؟</strong> GIMP وKrita يعملان محليًا
+                بالكامل، ولا يحتاجان اتصالًا. Photopea
+                يحتاج متصفحًا، وقد يكون أبطأ على الأجهزة
+                القديمة.
+            </li>
+            <li>
+                <strong>هل تحتاج إلى CMYK أو طباعة
+                احترافية؟</strong> هنا القيود تظهر.
+                GIMP لا يدعم CMYK أصليًا، وPhotopea يعرض
+                معاينة فقط. للطباعة الاحترافية، قد تحتاج
+                إلى أدوات مساندة أو إلى حلول ليست مفتوحة
+                بالكامل.
+            </li>
+        </ul>
+
+        <p>
+            القاعدة العملية: <strong>لا تحاول استبدال كل شيء
+            دفعة واحدة</strong>. ابدأ بأداة واحدة، واستخدمها
+            في مشروع حقيقي لأسبوعين، ثم قرر. وإذا احتجت، استخدم
+            مزيجًا: GIMP للتحرير، Krita للرسم، Photopea
+            لتبادل PSD.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تحتاج بديلًا شاملًا لتحرير الصور؟ ←
+                <strong>GIMP 3.2</strong>
+            </li>
+            <li>
+                هل ترسم رقميًا أو تصنع رسومًا توضيحية؟ ←
+                <strong>Krita 6.0</strong>
+            </li>
+            <li>
+                هل تحتاج فتح PSD في المتصفح دون تثبيت؟ ←
+                <strong>Photopea</strong>
+            </li>
+            <li>
+                هل تعالج ملفات RAW من الكاميرا؟ ←
+                <strong>Darktable أو RawTherapee</strong>
+            </li>
+            <li>
+                هل تحتاج تعديلات خفيفة وسريعة؟ ←
+                <strong>PhotoDemon أو Pinta</strong>
+            </li>
+            <li>
+                هل تحتاج رسومًا متجهية (SVG)؟ ←
+                <strong>Inkscape</strong>
+            </li>
+            <li>
+                هل تحتاج إدارة مكتبة صور؟ ←
+                <strong>digiKam أو Darktable</strong>
+            </li>
+            <li>
+                هل تحتاج CMYK للطباعة؟ ←
+                <strong>البدائل المفتوحة محدودة هنا</strong>
+            </li>
+            <li>
+                هل تعمل مع زملاء يستخدمون Photoshop؟ ←
+                <strong>اختبر Photopea أولًا لتبادل PSD</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية للبدائل المذكورة في المقال:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.gimp.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    GIMP — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://krita.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Krita — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.photopea.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Photopea — محرر ويب متوافق مع PSD
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.darktable.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Darktable — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.rawtherapee.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    RawTherapee — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://photodemon.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    PhotoDemon — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.pinta-project.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Pinta — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://inkscape.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Inkscape — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.digikam.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    digiKam — الموقع الرسمي
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل GIMP بديل كامل لـPhotoshop؟</h3>
+        <p>
+            ليس “كاملًا” بكل معنى الكلمة، لكنه الأقرب وظيفيًا في
+            2026. يغطي معظم مهام تحرير الصور والتركيب
+            والاسترجاع، مع طبقات غير مدمرة في الإصدار 3.2.
+            الفجوات الرئيسية: لا CMYK أصلي، ولا ذكاء اصطناعي
+            توليدي مدمج، وواجهة مختلفة تحتاج تعلمًا.
+        </p>
+
+        <h3>هل Krita بديل لـPhotoshop أم لـIllustrator؟</h3>
+        <p>
+            Krita أقرب إلى بديل لـAdobe Fresco أو Corel Painter،
+            وليس لـPhotoshop أو Illustrator. هو أداة رسم رقمي
+            ورسوم توضيحية، وليس محرر صور فوتوغرافية. إذا كنت
+            تحتاج تحرير صور، فاستخدم GIMP معه.
+        </p>
+
+        <h3>هل Photopea مجاني بالكامل؟</h3>
+        <p>
+            النسخة المجانية تعمل بالكامل لكنها تعرض إعلانات.
+            يمكن إزالتها بدفع 5 دولارات شهريًا (أو دفعة واحدة
+            لفترة محددة). Photopea ليس مفتوح المصدر، لكنه
+            مجاني للاستخدام الشخصي والتجاري.
+        </p>
+
+        <h3>هل يمكنني استخدام هذه البدائل في العمل التجاري؟</h3>
+        <p>
+            نعم. GIMP وKrita وDarktable وRawTherapee وInkscape
+            كلها برخص GPL تسمح بالاستخدام التجاري. Photopea
+            يسمح بالاستخدام التجاري في نسخته المجانية، لكنه
+            ليس مفتوح المصدر. راجع ترخيص كل أداة إذا كنت تعيد
+            توزيعها أو تعدلها.
+        </p>
+
+        <h3>ما أفضل بديل لتحرير ملفات PSD؟</h3>
+        <p>
+            إذا كان التوافق مع PSD هو الأولوية، فـPhotopea هو
+            الأفضل: يفتح ويحفظ PSD مع الطبقات والأقنعة
+            والكائنات الذكية. GIMP يفتح PSD لكن قد يفقد بعض
+            الميزات المتقدمة. Krita يدعم PSD لكنه ليس
+            بديلًا كاملًا لتحرير ملفات معقدة.
+        </p>
+    </PostLayout>
+</BaseLayout>
