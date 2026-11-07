@@ -1,0 +1,995 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "python-coding-challenges-beginner-to-intermediate",
+    title: "5 تحديات برمجية في بايثون: من المبتدئ إلى المتوسط خطوة بخطوة",
+    metaTitle: "5 تحديات برمجية في بايثون للمبتدئين والمتوسطين مع الحلول",
+    description:
+        "خمسة تحديات برمجية متدرجة في بايثون مصممة لتطوير مهاراتك الحقيقية: حاسبة الدرجات، كاشف التكرار، ضاغط RLE، محلل الجمل، ومخزن LRU. مع الأمثلة، الأخطاء الشائعة، الحلول الكاملة، والحالات الحدية.",
+    keywords: [
+        "تحديات بايثون",
+        "تمارين بايثون للمبتدئين",
+        "Python coding challenges",
+        "تمارين برمجية بايثون",
+        "أسئلة مقابلات بايثون",
+        "تعلم بايثون بالممارسة",
+        "RLE compression python",
+        "LRU cache python",
+        "word frequency python",
+        "python beginner projects",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "7 نوفمبر 2026",
+    pubDate: new Date("2026-11-07"),
+    tags: ["بايثون", "تحديات برمجية", "تعلم", "خوارزميات", "مقابلات"],
+    thumbnail: "/images/python-coding-challenges-beginner-to-intermediate.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة التحديات الخمسة" },
+    { id: "how-to-use", label: "كيف تستفيد من هذا المقال؟" },
+    { id: "challenge-1", label: "التحدي 1: حاسبة الدرجات الذكية (مبتدئ)" },
+    { id: "challenge-2", label: "التحدي 2: كاشف التكرار مع حفظ الترتيب (مبتدئ→متوسط)" },
+    { id: "challenge-3", label: "التحدي 3: ضاغط النصوص RLE (متوسط)" },
+    { id: "challenge-4", label: "التحدي 4: محلل الجمل (متوسط)" },
+    { id: "challenge-5", label: "التحدي 5: مخزن LRU بسيط (متوسط→متقدم)" },
+    { id: "shared-patterns", label: "أنماط مشتركة بين التحديات الخمسة" },
+    { id: "next-steps", label: "كيف تطور حلولك بعد هذا المقال؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            الفرق بين من يتعلم بايثون ومن يتقنها ليس عدد الدورات التي
+            شاهدها، بل عدد <strong>المشكلات التي حلّها بيده</strong>.
+            التحديات البرمجية هي الطريقة الوحيدة لتحويل المعرفة
+            السلبية إلى مهارة حقيقية. وليس أي تحدٍّ: التحدي المصمم
+            جيدًا يعلّمك <strong>نمطًا قابلًا لإعادة الاستخدام</strong>،
+            ويكشف لك الأخطاء التي ستكررها في الإنتاج إن لم ترها الآن.
+        </p>
+
+        <p>
+            هذا المقال ليس قائمة تمارين منفصلة، بل <strong>مسارًا
+            متدرجًا</strong> من خمسة تحديات، كل واحد يبني على الذي
+            قبله. ابدأ من الأول حتى لو بدا سهلًا: ليس الهدف أن تحله،
+            بل أن تحله <strong>بطريقة تنجح مع الحالات الحدية</strong>.
+            لكل تحدٍّ، نشرح الفكرة، ونكشف الفخاخ، ثم نقدم حلًا مع
+            تحليل لما يجعله صحيحًا. حاول أن تحل التحدي بنفسك قبل
+            قراءة الحل.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة التحديات الخمسة</h2>
+
+        <p>
+            الجدول التالي يوضح مستوى كل تحدٍّ، والمهارات التي يغطيها،
+            والوقت المتوقع:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">التحدي</th>
+                        <th class="px-4 py-2 font-semibold">المستوى</th>
+                        <th class="px-4 py-2 font-semibold">المهارات الأساسية</th>
+                        <th class="px-4 py-2 font-semibold">الوقت</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">1. حاسبة الدرجات</td>
+                        <td class="px-4 py-2">مبتدئ</td>
+                        <td class="px-4 py-2">الشروط، التحقق من الإدخال، المرشحات</td>
+                        <td class="px-4 py-2">15 دقيقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">2. كاشف التكرار</td>
+                        <td class="px-4 py-2">مبتدئ→متوسط</td>
+                        <td class="px-4 py-2">dict، set، الحفاظ على الترتيب</td>
+                        <td class="px-4 py-2">20 دقيقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">3. ضاغط RLE</td>
+                        <td class="px-4 py-2">متوسط</td>
+                        <td class="px-4 py-2">تكرار محكوم، بناء النصوص، الضغط العكسي</td>
+                        <td class="px-4 py-2">30 دقيقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">4. محلل الجمل</td>
+                        <td class="px-4 py-2">متوسط</td>
+                        <td class="px-4 py-2">split، comprehensions، Counter، max(key=)</td>
+                        <td class="px-4 py-2">30 دقيقة</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">5. مخزن LRU</td>
+                        <td class="px-4 py-2">متوسط→متقدم</td>
+                        <td class="px-4 py-2">تصميم الأصناف، dict المرتب، الحالات الحدية</td>
+                        <td class="px-4 py-2">45 دقيقة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="how-to-use">كيف تستفيد من هذا المقال؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/python-coding-challenges-beginner-to-intermediate/01.webp"
+                alt="خمسة تحديات برمجية في بايثون: من المبتدئ إلى المتوسط خطوة بخطوة"
+                width="1200"
+                height="735"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            قبل أن تبدأ، التزم بأربع قواعد:
+        </p>
+
+        <ul>
+            <li>
+                <strong>حاول أولًا.</strong> لا تقرأ الحل قبل أن
+                تحاول 10–15 دقيقة. الفشل في المحاولة الأولى جزء من
+                التعلم، وليس عيبًا.
+            </li>
+            <li>
+                <strong>اختبر الحالات الحدية.</strong> إذا نجح
+                حلك على المثال، فهذا لا يعني أنه صحيح. اختبره على
+                القائمة الفارغة، العنصر الواحد، القيم السالبة،
+                والنصوص الفارغة.
+            </li>
+            <li>
+                <strong>لا تحفظ الحل، افهم النمط.</strong> كل
+                تحدٍّ يعلمك نمطًا يعود في تحديات أخرى. إذا فهمت
+                النمط، ستتعرف عليه في أي مسألة لاحقة.
+            </li>
+            <li>
+                <strong>وسّع بعد الحل.</strong> كل تحدٍّ ينتهي
+                بـ«تحدٍّ إضافي». لا تتجاهله؛ فهو ما يجعلك تتجاوز
+                المستوى.
+            </li>
+        </ul>
+
+        <h2 id="challenge-1">التحدي 1: حاسبة الدرجات الذكية (مبتدئ)</h2>
+
+        <h3>المشكلة</h3>
+
+        <p>
+            اكتب دالة <code>analyze_grades(grades)</code> تستقبل
+            قائمة أرقام (قد تحتوي على قيم غير صالحة)، وتعيد قاموسًا
+            يحتوي على:
+        </p>
+
+        <ul>
+            <li><code>average</code>: متوسط الدرجات الصالحة (فقط بين 0 و100).</li>
+            <li><code>letter</code>: تقدير حرفي حسب المتوسط (A ≥ 90، B ≥ 80، C ≥ 70، D ≥ 60، F أقل من ذلك).</li>
+            <li><code>count_valid</code>: عدد الدرجات الصالحة.</li>
+            <li><code>count_invalid</code>: عدد الدرجات غير الصالحة.</li>
+        </ul>
+
+        <p>
+            إذا لم تكن هناك أي درجة صالحة، فالمتوسط والتقدير يجب أن
+            يكونا <code>None</code>.
+        </p>
+
+        <h3>أمثلة</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`analyze_grades([90, 85, 100])
+# {'average': 91.67, 'letter': 'A', 'count_valid': 3, 'count_invalid': 0}
+
+analyze_grades([50, -10, 200, 75])
+# {'average': 62.5, 'letter': 'D', 'count_valid': 2, 'count_invalid': 2}
+
+analyze_grades([])
+# {'average': None, 'letter': None, 'count_valid': 0, 'count_invalid': 0}`}</code></pre>
+
+        <h3>الفخاخ الشائعة</h3>
+
+        <ul>
+            <li>
+                <strong>نسيان التحقق من النوع.</strong> ماذا لو
+                كانت القائمة تحتوي على نص مثل <code>"85"</code>؟
+                القاعدة: اعتبره غير صالح، ولا تُصدر استثناء.
+            </li>
+            <li>
+                <strong>القسمة على صفر.</strong> إذا كانت كل
+                القيم غير صالحة، فالقائمة الصالحة فارغة، ولا
+                يمكن حساب المتوسط.
+            </li>
+            <li>
+                <strong>استخدام مقارنات متسلسلة بشكل خاطئ.</strong>
+                في بايثون، <code>0 &lt;= g &lt;= 100</code> صحيح، لكن
+                <code>g &gt;= 0 and g &lt;= 100</code> أوضح للمبتدئين.
+            </li>
+        </ul>
+
+        <h3>الحل</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def analyze_grades(grades):
+    valid = [g for g in grades if isinstance(g, (int, float)) and 0 <= g <= 100]
+    count_invalid = len(grades) - len(valid)
+
+    if not valid:
+        return {
+            "average": None,
+            "letter": None,
+            "count_valid": 0,
+            "count_invalid": count_invalid,
+        }
+
+    average = round(sum(valid) / len(valid), 2)
+
+    if average >= 90:
+        letter = "A"
+    elif average >= 80:
+        letter = "B"
+    elif average >= 70:
+        letter = "C"
+    elif average >= 60:
+        letter = "D"
+    else:
+        letter = "F"
+
+    return {
+        "average": average,
+        "letter": letter,
+        "count_valid": len(valid),
+        "count_invalid": count_invalid,
+    }`}</code></pre>
+
+        <h3>لماذا هذا الحل صحيح؟</h3>
+
+        <p>
+            ثلاثة قرارات تجعله متينًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>التحقق من النوع قبل المقارنة.</strong>
+                <code>isinstance(g, (int, float))</code> يمنع
+                <code>TypeError</code> عند مقارنة نص برقم.
+            </li>
+            <li>
+                <strong>فصل «التحقق» عن «الحساب».</strong> نبني
+                القائمة الصالحة أولًا، ثم نعمل عليها. هذا يبسط
+                المنطق ويمنع الأخطاء.
+            </li>
+            <li>
+                <strong>معالجة القائمة الفارغة صراحةً.</strong>
+                لا نعتمد على استثناءات؛ نرجع قيمة محددة.
+            </li>
+        </ul>
+
+        <h3>التحدي الإضافي</h3>
+
+        <p>
+            عدّل الدالة لتُرجع <code>median</code> أيضًا، مع مراعاة
+            أن القائمة قد تحتوي على عدد فردي أو زوجي من القيم. تلميح:
+            استخدم <code>sorted()</code> ثم ابحث عن العنصر الأوسط.
+        </p>
+
+        <h2 id="challenge-2">التحدي 2: كاشف التكرار مع حفظ الترتيب (مبتدئ→متوسط)</h2>
+
+        <h3>المشكلة</h3>
+
+        <p>
+            اكتب دالة <code>find_duplicates(items)</code> تستقبل
+            قائمة، وتعيد قائمة تحتوي على العناصر المكررة
+            <strong>بترتيب ظهورها الأول</strong>. يجب أن تتعامل مع
+            النصوص دون حساسية لحالة الأحرف، مع تجاهل المسافات
+            الزائدة.
+        </p>
+
+        <h3>أمثلة</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`find_duplicates(["Ali", "Omar", "Ali", "Sara", "omar"])
+# ['Ali', 'Omar']
+
+find_duplicates(["a", "A", "b", "B", "c"])
+# ['a', 'b']
+
+find_duplicates([])
+# []`}</code></pre>
+
+        <h3>الفخاخ الشائعة</h3>
+
+        <ul>
+            <li>
+                <strong>استخدام <code>set</code> فقط.</strong>
+                هذا يعطيك التكرارات بلا ترتيب، والترتيب مطلوب.
+            </li>
+            <li>
+                <strong>نسيان التطبيع.</strong> <code>"Ali"</code>
+                و<code>"ali"</code> و<code>" ALI "</code> كلها
+                نفس الاسم. يجب أن تُطبَّع (normalize) قبل
+                المقارنة.
+            </li>
+            <li>
+                <strong>إضافة التكرار أكثر من مرة.</strong>
+                إذا ظهر العنصر ثلاث مرات، يجب أن يُضاف مرة واحدة
+                إلى النتيجة.
+            </li>
+        </ul>
+
+        <h3>الحل</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def find_duplicates(items):
+    seen = set()
+    added = set()
+    result = []
+
+    for item in items:
+        if not isinstance(item, str):
+            continue
+
+        normalized = item.strip().lower()
+
+        if normalized in seen and normalized not in added:
+            result.append(normalized)
+            added.add(normalized)
+        else:
+            seen.add(normalized)
+
+    return result`}</code></pre>
+
+        <h3>لماذا هذا الحل صحيح؟</h3>
+
+        <p>
+            نستخدم مجموعتين: <code>seen</code> لتتبع ما رأيناه،
+            و<code>added</code> لتتبع ما أضفناه إلى النتيجة. هذا
+            يمنع إضافة العنصر نفسه مرتين، ويحافظ على الترتيب لأن
+            <code>result</code> قائمة تُبنى بالترتيب.
+        </p>
+
+        <p>
+            لاحظ أننا <strong>نستخدم <code>dict</code> ضمنيًا</strong>
+            عندما نحتاج حفظ الترتيب مع معرفة التكرار. هذا النمط
+            سيعود في تحديات كثيرة: مجموعة للبحث السريع، وقائمة أو
+            dict للترتيب.
+        </p>
+
+        <h3>التحدي الإضافي</h3>
+
+        <p>
+            عدّل الدالة لتُرجع <code>dict</code> يربط كل عنصر مكرر
+            بعدد مرات ظهوره، مع الحفاظ على ترتيب الظهور الأول.
+        </p>
+
+        <h2 id="challenge-3">التحدي 3: ضاغط النصوص RLE (متوسط)</h2>
+
+        <h3>المشكلة</h3>
+
+        <p>
+            اكتب دالتين: <code>rle_compress(text)</code>
+            و<code>rle_decompress(encoded)</code>. الأولى تضغط
+            النص بخوارزمية <strong>Run-Length Encoding</strong>:
+            كل سلسلة أحرف متتالية متطابقة تُستبدل بالحرف ثم عدد
+            تكراره. والثانية تفك الضغط.
+        </p>
+
+        <h3>أمثلة</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`rle_compress("aaabbc")
+# "a3b2c1"
+
+rle_compress("abc")
+# "a1b1c1"
+
+rle_compress("")
+# ""
+
+rle_decompress("a3b2c1")
+# "aaabbc"
+
+rle_decompress("")
+# ""`}</code></pre>
+
+        <h3>الفخاخ الشائعة</h3>
+
+        <ul>
+            <li>
+                <strong>الحرف الأخير.</strong> عند التكرار على
+                النص، الحرف الأخير لا يُغلق تلقائيًا. إذا لم
+                تُعالجه صراحةً، ستُفقد آخر مجموعة.
+            </li>
+            <li>
+                <strong>الأرقام متعددة الخانات.</strong>
+                <code>"a12"</code> تعني 12 نسخة، لا واحدة ثم
+                اثنتين. فك الضغط يحتاج إلى قراءة كل الأرقام.
+            </li>
+            <li>
+                <strong>النص الفارغ.</strong> كثير من الحلول
+                تنهار على <code>""</code>؛ عالجه كحالة خاصة.
+            </li>
+        </ul>
+
+        <h3>الحل</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def rle_compress(text):
+    if not text:
+        return ""
+
+    result = []
+    current = text[0]
+    count = 1
+
+    for char in text[1:]:
+        if char == current:
+            count += 1
+        else:
+            result.append(f"{current}{count}")
+            current = char
+            count = 1
+
+    result.append(f"{current}{count}")
+    return "".join(result)
+
+
+def rle_decompress(encoded):
+    if not encoded:
+        return ""
+
+    result = []
+    i = 0
+
+    while i < len(encoded):
+        char = encoded[i]
+        i += 1
+        num_start = i
+        while i < len(encoded) and encoded[i].isdigit():
+            i += 1
+        count = int(encoded[num_start:i]) if i > num_start else 1
+        result.append(char * count)
+
+    return "".join(result)`}</code></pre>
+
+        <h3>لماذا هذا الحل صحيح؟</h3>
+
+        <p>
+            في الضغط، نعالج الحرف الأول خارج الحلقة ثم نبدأ من
+            الثاني. هذا يجعل «آخر مجموعة» تُغلق بعد الحلقة، فتجنبنا
+            مشكلة نسيان الحرف الأخير. في فك الضغط، نقرأ الحرف ثم
+            نقرأ كل الأرقام المتتالية، وهذا يدعم <code>"a12"</code>
+            و<code>"a100"</code> دون انكسار.
+        </p>
+
+        <h3>التحدي الإضافي</h3>
+
+        <p>
+            ما فائدة هذه الخوارزمية؟ ومتى تكون <strong>أسوأ</strong>
+            من النص الأصلي؟ فكر في نص مثل
+            <code>"abcdefg"</code> وحجم الناتج مقابل الأصل.
+        </p>
+
+        <h2 id="challenge-4">التحدي 4: محلل الجمل (متوسط)</h2>
+
+        <h3>المشكلة</h3>
+
+        <p>
+            اكتب دالة <code>analyze_sentence(sentence)</code> تستقبل
+            جملة نصية، وتعيد قاموسًا يحتوي على:
+        </p>
+
+        <ul>
+            <li><code>word_count</code>: عدد الكلمات (تجاهل الترقيم).</li>
+            <li><code>unique_words</code>: عدد الكلمات الفريدة (بعد التطبيع).</li>
+            <li><code>longest_word</code>: أطول كلمة، وطولها.</li>
+            <li><code>palindromes</code>: قائمة الكلمات التي تُقرأ من الجهتين بالتساوي.</li>
+            <li><code>top_words</code>: أكثر ثلاث كلمات تكرارًا.</li>
+        </ul>
+
+        <h3>أمثلة</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`analyze_sentence("Level is level, noon is noon!")
+# {
+#   'word_count': 6,
+#   'unique_words': 3,
+#   'longest_word': ('level', 5),
+#   'palindromes': ['level', 'noon'],
+#   'top_words': [('level', 2), ('noon', 2), ('is', 2)]
+# }`}</code></pre>
+
+        <h3>الفخاخ الشائعة</h3>
+
+        <ul>
+            <li>
+                <strong>الترقيم.</strong> <code>"level,"</code>
+                ليست <code>"level"</code>؛ يجب إزالة الترقيم
+                قبل التحليل.
+            </li>
+            <li>
+                <strong>حالة الأحرف.</strong> <code>"Level"</code>
+                و<code>"level"</code> كلمة واحدة.
+            </li>
+            <li>
+                <strong>ترتيب top_words.</strong> عند تعادل
+                التكرار، تحتاج قاعدة ترتيب محددة (مثلًا
+                أبجديًا) لتجنب نتائج غير حتمية.
+            </li>
+        </ul>
+
+        <h3>الحل</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`import re
+from collections import Counter
+
+def analyze_sentence(sentence):
+    if not sentence or not sentence.strip():
+        return {
+            "word_count": 0,
+            "unique_words": 0,
+            "longest_word": ("", 0),
+            "palindromes": [],
+            "top_words": [],
+        }
+
+    words = re.findall(r"\\b\\w+\\b", sentence.lower())
+    counts = Counter(words)
+
+    longest = max(words, key=lambda w: (len(w), w))
+    palindromes = [w for w in words if w == w[::-1] and len(w) > 1]
+    palindromes = list(dict.fromkeys(palindromes))
+
+    top_words = sorted(counts.items(), key=lambda x: (-x[1], x[0]))[:3]
+
+    return {
+        "word_count": len(words),
+        "unique_words": len(counts),
+        "longest_word": (longest, len(longest)),
+        "palindromes": palindromes,
+        "top_words": top_words,
+    }`}</code></pre>
+
+        <h3>لماذا هذا الحل صحيح؟</h3>
+
+        <p>
+            نستخدم <code>re.findall</code> لاستخراج الكلمات وحدها،
+            فتختفي الترقيم دون معالجة يدوية. ثم <code>Counter</code>
+            يمنحنا التكرار بسهولة. لترتيب <code>top_words</code>
+            بشكل حتمي، نرتب بمفتاح مركب:
+            <code>(-count, word)</code>. هذا يعطينا الأكثر تكرارًا
+            أولًا، وعند التعادل، الأبجدي أولًا. وتستخدم
+            <code>dict.fromkeys</code> لإزالة تكرار قائمة
+            <code>palindromes</code> مع الحفاظ على الترتيب.
+        </p>
+
+        <h3>التحدي الإضافي</h3>
+
+        <p>
+            عدّل الدالة لتحسب <strong>متوسط طول الكلمة</strong>،
+            وتُرجع أطول ثلاث كلمات، لا أطول كلمة واحدة. فكر في كيفية
+            التعامل مع التعادل.
+        </p>
+
+        <h2 id="challenge-5">التحدي 5: مخزن LRU بسيط (متوسط→متقدم)</h2>
+
+        <h3>المشكلة</h3>
+
+        <p>
+            صمّم صنفًا <code>LRUCache</code> (Least Recently Used)
+            بسعة محددة، يدعم عمليتين:
+        </p>
+
+        <ul>
+            <li>
+                <code>get(key)</code>: يُرجع القيمة، أو
+                <code>-1</code> إذا لم يكن المفتاح موجودًا. أي
+                وصول ناجح يجعل المفتاح «الأحدث استخدامًا».
+            </li>
+            <li>
+                <code>put(key, value)</code>: يُضيف أو يُحدّث
+                القيمة. إذا امتلأ المخزن، يُحذف المفتاح الأقل
+                استخدامًا.
+            </li>
+        </ul>
+
+        <h3>أمثلة</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`cache = LRUCache(2)
+cache.put(1, 10)
+cache.put(2, 20)
+cache.get(1)      # 10 (يُصبح 1 الأحدث)
+cache.put(3, 30)  # يحذف 2 (الأقل استخدامًا)
+cache.get(2)      # -1
+cache.get(1)      # 10
+cache.get(3)      # 30`}</code></pre>
+
+        <h3>الفخاخ الشائعة</h3>
+
+        <ul>
+            <li>
+                <strong>نسيان تحديث الترتيب في get.</strong>
+                مجرد قراءة قيمة يجب أن يغير أولوية الحذف.
+                هذا الفخ يسبب أخطاء منطقية صامتة.
+            </li>
+            <li>
+                <strong>نسيان تحديث القيمة.</strong>
+                <code>put</code> على مفتاح موجود يجب أن يغير
+                القيمة <strong>و</strong> الترتيب.
+            </li>
+            <li>
+                <strong>السعة صفر.</strong> يجب أن تتعامل مع
+                <code>LRUCache(0)</code> دون انكسار.
+            </li>
+            <li>
+                <strong>الاعتماد على سلوك غير موثق.</strong>
+                <code>dict</code> في بايثون 3.7+ يحافظ على
+                ترتيب الإدراج، لكن لا تعتمد على ذلك دون أن
+                تفهمه.
+            </li>
+        </ul>
+
+        <h3>الحل</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`from collections import OrderedDict
+
+class LRUCache:
+    def __init__(self, capacity):
+        if capacity < 0:
+            raise ValueError("Capacity must be non-negative")
+        self.capacity = capacity
+        self.data = OrderedDict()
+
+    def get(self, key):
+        if key not in self.data:
+            return -1
+        self.data.move_to_end(key)
+        return self.data[key]
+
+    def put(self, key, value):
+        if self.capacity == 0:
+            return
+        if key in self.data:
+            self.data.move_to_end(key)
+        self.data[key] = value
+        if len(self.data) > self.capacity:
+            self.data.popitem(last=False)`}</code></pre>
+
+        <h3>لماذا هذا الحل صحيح؟</h3>
+
+        <p>
+            <code>OrderedDict</code> يوفر <code>move_to_end</code>
+            (لنقل المفتاح إلى نهاية الترتيب) و<code>popitem(last=False)</code>
+            (لحذف الأقدم). هذا يحقق شرط LRU دون بناء قائمة مرتبطة
+            يدويًا. لاحظ أننا نعالج <code>capacity == 0</code>
+            صراحةً، لأن <code>popitem</code> على قاموس فارغ يسبب
+            استثناء.
+        </p>
+
+        <p>
+            بديل يستخدم <code>dict</code> العادي ممكن أيضًا، لأن
+            الإصدارات الحديثة تحافظ على الترتيب:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = max(0, capacity)
+        self.data = {}
+
+    def get(self, key):
+        if key not in self.data:
+            return -1
+        value = self.data.pop(key)
+        self.data[key] = value  # إعادة الإدراج في النهاية
+        return value
+
+    def put(self, key, value):
+        if self.capacity == 0:
+            return
+        if key in self.data:
+            self.data.pop(key)
+        self.data[key] = value
+        if len(self.data) > self.capacity:
+            oldest = next(iter(self.data))
+            del self.data[oldest]`}</code></pre>
+
+        <h3>التحدي الإضافي</h3>
+
+        <p>
+            أضف طريقة <code>peek(key)</code> تُرجع القيمة دون تحديث
+            ترتيب الاستخدام. فكر في الفرق الدلالي بينها وبين
+            <code>get</code>، ومتى تحتاج كلًا منهما.
+        </p>
+
+        <h2 id="shared-patterns">أنماط مشتركة بين التحديات الخمسة</h2>
+
+        <p>
+            التحديات ليست منفصلة. هي تستخدم أنماطًا متكررة ستعود
+            في كل كود تكتبه:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">النمط</th>
+                        <th class="px-4 py-2 font-semibold">أين ظهر</th>
+                        <th class="px-4 py-2 font-semibold">القاعدة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">التحقق قبل المعالجة</td>
+                        <td class="px-4 py-2">التحدي 1</td>
+                        <td class="px-4 py-2">اعزل المدخلات الصالحة أولًا، ثم اعمل عليها</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الترتيب مع السرعة</td>
+                        <td class="px-4 py-2">التحدي 2</td>
+                        <td class="px-4 py-2">قائمة أو dict للترتيب + set للبحث</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الحرف الأخير</td>
+                        <td class="px-4 py-2">التحدي 3</td>
+                        <td class="px-4 py-2">عالج آخر عنصر خارج الحلقة دائمًا</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الترتيب الحتمي</td>
+                        <td class="px-4 py-2">التحدي 4</td>
+                        <td class="px-4 py-2">حدد قاعدة تعادل صريحة، لا تعتمد على الترتيب العشوائي</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الحالة الصفرية</td>
+                        <td class="px-4 py-2">التحدي 5</td>
+                        <td class="px-4 py-2">كل صنف أو دالة تحتاج اختبارًا للسعة/المدخل صفر</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="next-steps">كيف تطور حلولك بعد هذا المقال؟</h2>
+
+        <p>
+            الحل الصحيح هو نقطة البداية، لا النهاية. هذه أربع خطوات
+            تجعل حلك “مقبولًا” يصبح “ممتازًا”:
+        </p>
+
+        <ul>
+            <li>
+                <strong>اختبارات.</strong> اكتب اختبارات
+                <code>unittest</code> أو <code>pytest</code>
+                لكل حالة حدية: فارغ، عنصر واحد، تكرار، مدخل
+                غير صالح.
+            </li>
+            <li>
+                <strong>قياس.</strong> استخدم
+                <code>time.perf_counter()</code> لقياس أداء
+                دالتك على مدخل كبير. تعلم أن تلاحظ الفرق بين
+                <code>O(n)</code> و<code>O(n²)</code>.
+            </li>
+            <li>
+                <strong>التحسين.</strong> بعد أن يعمل، اسأل:
+                هل يمكن أن يعمل أسرع؟ هل يمكن أن يكون أنظف؟
+                هل يمكن أن يكون أسهل في القراءة؟
+            </li>
+            <li>
+                <strong>إعادة الاستخدام.</strong> حوّل الحل
+                إلى دالة أو صنف قابل للاستيراد، مع docstrings
+                وشروح نوعية (type hints). هذا يحوّلك من
+                “متدرب” إلى “مهندس”.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل حاولت كل تحدٍّ 10–15 دقيقة قبل قراءة الحل؟ ←
+                <strong>الهدف التعلم، لا الحل</strong>
+            </li>
+            <li>
+                هل اختبرت القائمة الفارغة في كل دالة؟ ←
+                <strong>أشهر سبب لانهيار الكود</strong>
+            </li>
+            <li>
+                هل عالجت القيم غير الصالحة (نصوص، سالب، أكبر من 100)؟ ←
+                <strong>التحقق قبل المعالجة</strong>
+            </li>
+            <li>
+                هل حافظت على الترتيب عندما كان مطلوبًا؟ ←
+                <strong>set لا يحفظ الترتيب</strong>
+            </li>
+            <li>
+                هل عالجت الحرف الأخير في RLE؟ ←
+                <strong>الخطأ الصامت الأكثر شيوعًا</strong>
+            </li>
+            <li>
+                هل استخدمت قاعدة تعادل صريحة في top_words؟ ←
+                <strong>النتائج غير الحتمية خطر</strong>
+            </li>
+            <li>
+                هل تعاملت مع السعة صفر في LRU؟ ←
+                <strong>حالة حدية ينساها الكثيرون</strong>
+            </li>
+            <li>
+                هل كتبت اختبارات لحلك؟ ←
+                <strong>الاختبار جزء من الحل، لا إضافة</strong>
+            </li>
+            <li>
+                هل جرّبت التحدي الإضافي في كل تحدٍّ؟ ←
+                <strong>هو ما يجعلك تتقدم</strong>
+            </li>
+            <li>
+                هل قست أداء حلك على مدخل كبير؟ ←
+                <strong>الفرق بين O(n) وO(n²) حاسم</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط لمصادر يمكنك استخدامها لتعميق التدريب:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://docs.python.org/3/tutorial/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Python Tutorial — التوثيق الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/library/collections.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    collections — Counter وOrderedDict
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/library/unittest.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    unittest — إطار الاختبار الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.pytest.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    pytest — إطار اختبار عملي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://leetcode.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    LeetCode — تحديات برمجية متدرجة
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://exercism.org/tracks/python"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Exercism — تمارين بايثون مع مراجعة
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.hackerrank.com/domains/python"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    HackerRank — مسار بايثون
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://realpython.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Real Python — دروس عملية
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل هذه التحديات كافية لمقابلة عمل؟</h3>
+        <p>
+            هي بداية جيدة، لكن المقابلات التقنية تغطي أيضًا هياكل
+            البيانات (المكدس، الطابور، الشجرة)، والخوارزميات
+            (البحث، الترتيب، البرمجة الديناميكية)، وتحليل التعقيد.
+            هذه التحديات تؤسس مهارة “التفكير بالحالات الحدية”،
+            وهي مهارة ستستخدمها في كل سؤال لاحق.
+        </p>
+
+        <h3>هل أستخدم مكتبات جاهزة أم أكتب كل شيء بنفسي؟</h3>
+        <p>
+            تعلم أولًا بكتابة الحل يدويًا، ثم استخدم المكتبة. هذا
+            يجعلك تفهم ما تفعله المكتبة، ويعطيك حكمًا لاختيار
+            الأداة المناسبة. مثلًا، <code>Counter</code> يختصر
+            سطورًا، لكن كتابة عدّاد يدويًا تعلمك <code>dict</code>
+            و<code>setdefault</code>.
+        </p>
+
+        <h3>لماذا التحدي 5 أصعب من الباقي؟</h3>
+        <p>
+            لأنه يتطلب <strong>تصميم حالة</strong> (الحفاظ على
+            الترتيب عبر العمليات) لا مجرد تحويل مدخلات. هذا
+            النوع من التفكير هو ما يفصل المبتدئ عن المتوسط. ابدأ
+            بحل بسيط، ثم حسّنه.
+        </p>
+
+        <h3>ما الوقت المناسب لحل كل تحدٍّ؟</h3>
+        <p>
+            لا يوجد معيار. المهم أن تحاول قبل قراءة الحل. إذا
+            استغرق تحدٍّ أكثر من 30 دقيقة دون تقدم، اقرأ أول
+            سطرين من الحل، ثم أكمل بنفسك. التعلم يحدث في
+            المحاولة، لا في القراءة.
+        </p>
+
+        <h3>كيف أعرف أن حلي “جيد”؟</h3>
+        <p>
+            المعايير ثلاثة: <strong>الصحة</strong> (ينجح مع كل
+            الحالات الحدية)، <strong>الوضوح</strong> (يستطيع
+            مطور آخر فهمه في دقيقة)، و<strong>الكفاءة</strong>
+            (لا يستهلك وقتًا أو ذاكرة أكثر من اللازم). الحل
+            الذي ينجح في المثال فقط، وليس في الحالات الحدية،
+            ليس جيدًا.
+        </p>
+    </PostLayout>
+</BaseLayout>
