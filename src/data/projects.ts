@@ -70,7 +70,7 @@ export const projects: Project[] = [
   },
   {
     slug: "gimp",
-    name: "جي آي إم بي - GIMP",
+    name: "جمب- GIMP",
     nameEn: "GIMP",
     description: "برنامج احترافي لتحرير الصور الرقمية ومعالجتها، يقدّم أدوات متقدمة للرتوش والتركيب والرسم تُضاهي برامج تجارية مثل Photoshop، مع دعم واسع للإضافات وسكربتات الأتمتة.",
     sections: [
@@ -95,7 +95,7 @@ export const projects: Project[] = [
   },
   {
     slug: "obs-studio",
-    name: "أوبس ستوديو - OBS Studio",
+    name: "أو بي اس ستوديو - OBS Studio",
     nameEn: "OBS Studio",
     description: "برنامج بث وتسجيل شاشة مجاني بالكامل، يتيح للاعبين وصانعي المحتوى البث المباشر للألعاب والدروس أو تسجيل الشاشة بجودة عالية، مع إمكانية مزج مصادر متعددة وتطبيق فلاتر صوتية وبصرية في الوقت الحقيقي.",
     sections: [
@@ -470,7 +470,7 @@ export const projects: Project[] = [
   },
   {
     slug: "onlyoffice",
-    name: "أوني أوفيس - OnlyOffice",
+    name: "أونلي أوفيس - OnlyOffice",
     nameEn: "OnlyOffice",
     description: "مجموعة مكتبية سحابية تتيح لعدة مستخدمين تحرير المستند نفسه في الوقت الحقيقي، مع توافق عالٍ مع صيغ Microsoft Office ومحرر PDF ونماذج تفاعلية، ما يجعلها خيارًا عمليًا للفرق والشركات.",
     sections: [
@@ -495,7 +495,7 @@ export const projects: Project[] = [
   },
   {
     slug: "veracrypt",
-    name: "فيركريبت - VeraCrypt",
+    name: "فيراكريبت - VeraCrypt",
     nameEn: "VeraCrypt",
     description: "أداة تشفير أقراص تتيح إنشاء أقسام أو حاويات مشفّرة بالكامل، بما في ذلك خاصية الحجم المخفي التي تمنح إنكارًا معقولًا (Plausible Deniability)، وتدعم تشفير نظام التشغيل نفسه على ويندوز ولينكس وماك.",
     sections: [
