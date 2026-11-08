@@ -1,0 +1,917 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "ubuntu-vs-arch-for-beginners-2026",
+    title: "هل أبدأ بـUbuntu أم Arch؟ إجابة صريحة لا تعتمد على الشعارات",
+    metaTitle: "Ubuntu أم Arch للمبتدئين؟ مقارنة صريحة في 2026",
+    description:
+        "مقارنة معمقة بين Ubuntu وArch للمستخدم الجديد: منحنى التعلم، الوقت والتكلفة، الاستقرار، الألعاب، العتاد الحديث، المجتمع، والأخطاء الشائعة في كل مسار. مع بدائل وسطية مثل Fedora وEndeavourOS، وجدول قرار وقائمة تحقق.",
+    keywords: [
+        "Ubuntu أم Arch",
+        "أبدأ بـUbuntu أم Arch",
+        "Ubuntu للمبتدئين",
+        "Arch للمبتدئين",
+        "الفرق بين Ubuntu وArch",
+        "EndeavourOS",
+        "أفضل توزيعة للمبتدئين 2026",
+        "توزيعات لينكس للمبتدئين",
+        "Arch Linux learning curve",
+        "Ubuntu LTS",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "8 نوفمبر 2026",
+    pubDate: new Date("2026-11-08"),
+    tags: ["لينكس", "Ubuntu", "Arch", "توزيعات", "مبتدئين"],
+    thumbnail: "/images/ubuntu-vs-arch-for-beginners-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة القرار بين Ubuntu وArch" },
+    { id: "the-real-question", label: "السؤال الحقيقي وراء «Ubuntu أم Arch؟»" },
+    { id: "ubuntu-what", label: "ما هي Ubuntu فعليًا؟" },
+    { id: "arch-what", label: "ما هو Arch فعليًا؟" },
+    { id: "philosophy", label: "الفلسفة: السهولة المقصودة مقابل التحكم الكامل" },
+    { id: "learning-curve", label: "منحنى التعلم: كم ساعة تحتاج فعلًا؟" },
+    { id: "time-cost", label: "تكلفة الوقت: ماذا تدفع مقابل كل مسار؟" },
+    { id: "stability", label: "الاستقرار: هل Arch فعلا «غير مستقر»؟" },
+    { id: "hardware", label: "العتاد: من يدعم جهازك بشكل أفضل؟" },
+    { id: "gaming", label: "الألعاب: أيهما أسهل لمن يريد اللعب؟" },
+    { id: "community", label: "المجتمع والتوثيق: أيهما يساعدك أكثر؟" },
+    { id: "common-mistakes", label: "أخطاء شائعة في كل مسار" },
+    { id: "when-arch-better", label: "متى يكون Arch خيارًا أفضل فعلًا؟" },
+    { id: "middle-ground", label: "الطريق الوسط: Fedora وEndeavourOS وManjaro" },
+    { id: "decision-table", label: "جدول القرار: أي توزيعة تناسبك؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            كل من دخل عالم لينكس واجه هذا السؤال: <strong>Ubuntu
+            أم Arch؟</strong>. على السطح، يبدو السؤال بسيطًا: توزيعة
+            سهلة مقابل توزيعة صعبة. لكن الحقيقة أكثر تعقيدًا.
+            Ubuntu ليست مجرد “الخيار السهل”، وArch ليست مجرد
+            “الخيار الصعب”. كل واحدة منهما تعكس
+            <strong>فلسفة مختلفة تمامًا</strong> لما يعنيه استخدام
+            نظام تشغيل، ومن يطرح السؤال دون فهم هذه الفلسفة يقع في
+            فخ التوصيات العشوائية.
+        </p>
+
+        <p>
+            هذا المقال لا يحاول أن يقول “Ubuntu أفضل” أو “Arch
+            أفضل”. إنه يحاول أن يجيب عن السؤال الذي يجب أن تطرحه
+            بدلًا منه: <strong>ما الذي تحتاجه أنت، وكيف يتوافق مع
+            طريقة عملك، وكم من الوقت والطاقة تريد أن تستثمر في
+            النظام نفسه؟</strong>. بعد قراءة هذا الدليل، ستكون
+            قادرًا على اتخاذ قرار مبني على فهم، لا على توصية
+            من فيديو يوتيوب.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة القرار بين Ubuntu وArch</h2>
+
+        <p>
+            الجدول التالي يلخص الفروق الرئيسية التي تحدد القرار،
+            قبل الدخول في تفاصيل كل واحدة:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المعيار</th>
+                        <th class="px-4 py-2 font-semibold">Ubuntu</th>
+                        <th class="px-4 py-2 font-semibold">Arch</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">نموذج الإصدار</td>
+                        <td class="px-4 py-2">LTS كل سنتين + إصدارات كل 6 أشهر</td>
+                        <td class="px-4 py-2">متدحرجة (rolling)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">وقت التثبيت الأول</td>
+                        <td class="px-4 py-2">30–60 دقيقة</td>
+                        <td class="px-4 py-2">2–6 ساعات (يدويًا)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">منحنى التعلم</td>
+                        <td class="px-4 py-2">لطيف، تدريجي</td>
+                        <td class="px-4 py-2">حاد، صاعد من اليوم الأول</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التحكم</td>
+                        <td class="px-4 py-2">معقول، مع بعض القرارات المفروضة</td>
+                        <td class="px-4 py-2">كامل، كل شيء بيدك</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الدعم الرسمي</td>
+                        <td class="px-4 py-2">5 سنوات LTS + 5 ESM</td>
+                        <td class="px-4 py-2">لا يوجد، المجتمع فقط</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الوثائق</td>
+                        <td class="px-4 py-2">منتشرة على الإنترنت</td>
+                        <td class="px-4 py-2">Arch Wiki، أفضل توثيق لينكس</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الأنسب لـ</td>
+                        <td class="px-4 py-2">من يريد نظامًا يعمل</td>
+                        <td class="px-4 py-2">من يريد أن يفهم كيف يعمل</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="the-real-question">السؤال الحقيقي وراء «Ubuntu أم Arch؟»</h2>
+
+        <p>
+            السؤال ليس “أيهما أفضل؟”. السؤال هو: <strong>ما علاقتك
+            بنظام التشغيل؟</strong>. هل تريد أن يكون النظام أداة
+            تعمل في الخلفية، بينما تركز على مهامك؟ أم تريد أن يكون
+            النظام نفسه مشروعًا تتعلم منه؟
+        </p>
+
+        <p>
+            Ubuntu تجيب عن السؤال الأول: النظام يُثبَّت بضغطة، ويعمل
+            خلال دقائق، ويتلقى تحديثات أمنية لسنوات. Arch تجيب عن
+            السؤال الثاني: النظام يُبنى طبقة طبقة، وتتعلم من كل
+            خطوة، لكن كل خطوة تحتاج قرارًا.
+        </p>
+
+        <p>
+            من هنا تنشأ التوصية الأولى: <strong>إذا لم تكن متأكدًا،
+            فأنت تريد Ubuntu</strong>. لأن من يحتاج Arch يعرف
+            عادة أنه يحتاجها، أو على الأقل يعرف أنه يريد أن يتعلم
+            بعمق. من لا يعرف الفرق بعد، لن يستفيد من Arch، بل
+            سيعاني منها.
+        </p>
+
+        <h2 id="ubuntu-what">ما هي Ubuntu فعليًا؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/ubuntu-vs-arch-for-beginners-2026/01.webp"
+                alt="ما هي Ubuntu فعليًا؟"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Ubuntu توزيعة لينكس طوّرتها Canonical، مبنية على Debian،
+            وأول إصدار لها كان في 2004. نجاحها جاء من معادلة بسيطة:
+            نظام سهل التثبيت، مع مجتمع كبير، وتحديثات منتظمة،
+            ودعم تجاري اختياري.
+        </p>
+
+        <p>خصائصها الرئيسية:</p>
+
+        <ul>
+            <li>
+                <strong>إصدارات LTS:</strong> كل سنتين، تصدر نسخة
+                طويلة الدعم (5 سنوات مجانًا، ويمكن تمديدها إلى
+                10 بـESM). هذه النسخ تتلقى تحديثات أمنية فقط، لا
+                ميزات جديدة، وهذا يجعلها مستقرة جدًا.
+            </li>
+            <li>
+                <strong>GNOME كواجهة افتراضية:</strong> حديثة،
+                نظيفة، لكنها مختلفة عن ويندوز. من يريد واجهة
+                أكثر ألفة، يمكنه تثبيت Kubuntu (KDE) أو
+                Xubuntu (XFCE).
+            </li>
+            <li>
+                <strong>Snap:</strong> صيغة حزم خاصة بـCanonical،
+                تعمل معزولة، وتتلقى تحديثات تلقائية. البعض يراها
+                ميزة (أمان، تحديثات سريعة)، والبعض يراها
+                عيبًا (أبطأ، تحديثات غير متحكم بها).
+            </li>
+            <li>
+                <strong>دعم تجاري:</strong> يمكن للشركات شراء
+                دعم Canonical، وهذا يجعله خيارًا شائعًا في
+                الشركات، خصوصًا في الخوادم.
+            </li>
+        </ul>
+
+        <p>
+            Ubuntu ليست “أفضل توزيعة” بمعنى مطلق، لكنها
+            <strong>أقل التوزيعات مقاومة للمبتدئ</strong>، وهذا
+            سبب كافٍ لاختيارها كنقطة بداية. 
+        </p>
+
+        <h2 id="arch-what">ما هو Arch فعليًا؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/ubuntu-vs-arch-for-beginners-2026/02.webp"
+                alt="ما هو Arch فعليًا؟"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Arch Linux توزيعة مستقلة، بدأت في 2002، مبنية على فلسفة
+            <strong>KISS</strong> (Keep It Simple, Stupid). ليست
+            “سيطة للمستخدم”، بل “بسيطة في التصميم”: لا خطوات مخفية،
+            لا طبقات إضافية، كل شيء بيدك.
+        </p>
+
+        <p>خصائصها الرئيسية:</p>
+
+        <ul>
+            <li>
+                <strong>التحديثات المتدحرجة:</strong> لا توجد
+                “إصدارات”. كل تحديث يومي يبقي نظامك في أحدث
+                إصدار. هذا يعني أنك تحصل على أحدث البرمجيات
+                دائمًا، لكن قد تدفع ثمن ذلك في استقرار أحيانًا.
+            </li>
+            <li>
+                <strong>التثبيت اليدوي:</strong> التثبيت
+                التقليدي يتطلب إعداد الأقراص، والشبكة، والمستخدم،
+                والواجهة يدويًا. هذا يبدو “معقدًا”، لكنه تعليمي
+                جدًا. مؤخرًا، وُفِّر مثبّت رسمي (archinstall)
+                يبسط الخطوة، لكنك تفقد جزءًا كبيرًا من الفائدة
+                التعليمية.
+            </li>
+            <li>
+                <strong>AUR (Arch User Repository):</strong> أكبر
+                مستودع حزم مجتمعي في عالم لينكس. أي حزمة
+                تريدها، تقريبًا، موجودة فيه.
+            </li>
+            <li>
+                <strong>Arch Wiki:</strong> أفضل توثيق لينكس
+                موجود، يغطي كل شيء، حتى لغير مستخدمي Arch.
+                كثير من مستخدمي Ubuntu يبحثون في Arch Wiki
+                لحل مشاكلهم. 
+            </li>
+        </ul>
+
+        <p>
+            Arch ليست “للخبراء فقط”، لكنها تفترض أنك مستعد لتخصيص
+            وقت للتعلم. من لا يستعد، سيجد نفسه يعيد تثبيت النظام
+            كل بضعة أسابيع بعد أن يكسر شيئًا.
+        </p>
+
+        <h2 id="philosophy">الفلسفة: السهولة المقصودة مقابل التحكم الكامل</h2>
+
+        <p>
+            الفرق الجوهري بينهما في الفلسفة:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المبدأ</th>
+                        <th class="px-4 py-2 font-semibold">Ubuntu</th>
+                        <th class="px-4 py-2 font-semibold">Arch</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">القرارات</td>
+                        <td class="px-4 py-2">مسبقة، يمكنك تغييرها</td>
+                        <td class="px-4 py-2">كل القرارات لك</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">التحديثات</td>
+                        <td class="px-4 py-2">منظمة، مع اختبار</td>
+                        <td class="px-4 py-2">فورية، دون وسيط</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">البرمجيات</td>
+                        <td class="px-4 py-2">مستودعات رسمية + Snap</td>
+                        <td class="px-4 py-2">مستودعات + AUR</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الاستقرار</td>
+                        <td class="px-4 py-2">الأولوية، بالتضحية بالحداثة</td>
+                        <td class="px-4 py-2">الحداثة أولًا، الاستقرار مسؤوليتك</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الفلسفة</td>
+                        <td class="px-4 py-2">«يعمل من أول لحظة»</td>
+                        <td class="px-4 py-2">«افهم كل شيء، ثم استخدمه»</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            الفلاسفتان ليستا صحيحة أو خاطئة. المهم أن تعرف أيهما
+            تناسب شخصيتك. من يريد أن يبدأ العمل فورًا، Ubuntu أنسب.
+            من يريد أن يفهم كيف يعمل كل شيء، Arch أنسب.
+        </p>
+
+        <h2 id="learning-curve">منحنى التعلم: كم ساعة تحتاج فعلًا؟</h2>
+
+        <p>
+            الأرقام هنا تقديرية، لكنها مبنية على ملاحظة عملية:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">المرحلة</th>
+                        <th class="px-4 py-2 font-semibold">Ubuntu</th>
+                        <th class="px-4 py-2 font-semibold">Arch</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">التثبيت الأول</td>
+                        <td class="px-4 py-2">30–60 دقيقة</td>
+                        <td class="px-4 py-2">2–6 ساعات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الوصول إلى سطح مكتب عامل</td>
+                        <td class="px-4 py-2">فوري بعد التثبيت</td>
+                        <td class="px-4 py-2">+2–4 ساعات</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">إتقان أساسيات النظام</td>
+                        <td class="px-4 py-2">1–2 أسبوع</td>
+                        <td class="px-4 py-2">3–4 أسابيع</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">القدرة على حل المشاكل بنفسك</td>
+                        <td class="px-4 py-2">شهر</td>
+                        <td class="px-4 py-2">شهرين</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">الراحة الكاملة في الإدارة</td>
+                        <td class="px-4 py-2">2–3 أشهر</td>
+                        <td class="px-4 py-2">4–6 أشهر</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            المهم أن هذه الأوقات تفترض أنك تعمل ساعة أو ساعتين
+            يوميًا، مع قراءة وتطبيق. من يعمل 15 دقيقة يوميًا،
+            ستتضاعف المدة. 
+        </p>
+
+        <h2 id="time-cost">تكلفة الوقت: ماذا تدفع مقابل كل مسار؟</h2>
+
+        <p>
+            الفرق ليس فقط في “منحنى التعلم”، بل في <strong>توزيع
+            الوقت</strong>. Ubuntu تطلب منك وقتًا أقل بكثير في
+            البداية، لكنها قد تطلب وقتًا عند حل مشكلة معينة
+            (إعداد طابعة، تعارض تعريفات، Snap لا يعمل). Arch
+            تطلب وقتًا كبيرًا في البداية، لكن بعد ذلك تكون
+            المشاكل أقل لأنك تعرف نظامك.
+        </p>
+
+        <p>
+            القاعدة العملية: إذا كنت تريد نتيجة سريعة (نظام يعمل
+            اليوم)، Ubuntu. إذا كنت مستعدًا لاستثمار أسبوعين
+            لتفهم ما يحدث، Arch.
+        </p>
+
+        <h2 id="stability">الاستقرار: هل Arch فعلا «غير مستقر»؟</h2>
+
+        <p>
+            هذا سؤال مهم، لأن الجواب الشائع “Arch غير مستقرة” غير
+            دقيق. Arch <strong>مستقرة بشكل جيد</strong> إذا
+            تعاملت معها كما هو متوقع: قرأت أخبار Arch قبل
+            التحديثات الكبيرة، لا تؤجل التحديثات لشهور، ولا تخلط
+            مستودعات غير متوافقة.
+        </p>
+
+        <p>
+            لكن هناك حالات تصبح فيها Arch “غير مستقرة”:
+        </p>
+
+        <ul>
+            <li>
+                <strong>التحديثات المتأخرة:</strong> إذا لم
+                تُحدِّث لشهور، ثم تحدثت دفعة واحدة، قد تتعارض
+                الحزم.
+            </li>
+            <li>
+                <strong>حزم AUR غير المحدثة:</strong> إذا
+                ثبّتت حزمة من AUR، ثم تغيرت تبعياتها، قد تنكسر.
+            </li>
+            <li>
+                <strong>دعم Nvidia:</strong> كلاهما يعاني من
+                مشاكل مع تعريفات Nvidia عند التحديثات الكبيرة،
+                لكن Arch تتعرض لها أولًا.
+            </li>
+            <li>
+                <strong>مشاكل مكونات سطح المكتب:</strong>
+                تحديث GNOME أو KDE الرئيسي قد يكسر إضافات
+                خارجية.
+            </li>
+        </ul>
+
+        <p>
+            في Ubuntu، هذه المشاكل أقل لأن التحديثات تأتي متأخرة،
+            ولأنها مختبرة على نطاق أوسع. ليس لأن Ubuntu “أفضل”،
+            بل لأن سياسة الإصدارات تؤجل الميزات الجديدة وتفضل
+            الاستقرار. 
+        </p>
+
+        <h2 id="hardware">العتاد: من يدعم جهازك بشكل أفضل؟</h2>
+
+        <p>
+            هذا يعتمد على العتاد:
+        </p>
+
+        <ul>
+            <li>
+                <strong>عتاد حديث جدًا (معالجات جديدة، كروت
+                شاشة جديدة):</strong> Arch غالبًا يدعمه أولًا،
+                لأن نواة النظام جديدة دائمًا. Ubuntu LTS قد
+                تتأخر أشهرًا في دعم عتاد جديد، رغم أن إصدارات
+                HWE (Hardware Enablement) تعالج ذلك جزئيًا.
+            </li>
+            <li>
+                <strong>عتاد قديم أو مستقر:</strong> Ubuntu LTS
+                غالبًا يعمل من أول تثبيت، دون مشاكل. Arch قد
+                تحتاج تخصيصًا أكثر.
+            </li>
+            <li>
+                <strong>لابتوبات حديثة (خصوصًا مع بطاريات
+                وإدارة طاقة):</strong> Ubuntu غالبًا يوفر
+                تجربة أفضل من أول تثبيت، لأن Canonical تختبر
+                على أجهزة معروفة.
+            </li>
+            <li>
+                <strong>لابتوبات قديمة أو محدودة
+                الموارد:</strong> Arch مع واجهة خفيفة (مثل
+                XFCE أو i3) يعطي أداءً أفضل من Ubuntu
+                الافتراضي مع GNOME.
+            </li>
+        </ul>
+
+        <h2 id="gaming">الألعاب: أيهما أسهل لمن يريد اللعب؟</h2>
+
+        <p>
+            Ubuntu تتفوق هنا للمبتدئ. تثبيت Steam، وتفعيل Proton،
+            وتشغيل الألعاب، كلها خطوات موثقة، وتحتاج وقتًا أقل.
+            Arch تدعم الألعاب أيضًا، لكنك تحتاج إلى تثبيت
+            تعريفات إضافية (خصوصًا Mesa وVulkan)، وقد تواجه
+            مشاكل في Proton مع بعض الألعاب.
+        </p>
+
+        <p>
+            إذا كانت الألعاب أولوية، Ubuntu (أو Pop!_OS، وهي
+            مشتقة منها) خيار أسهل. Arch قد تمنح أداءً أفضل
+            قليلًا في بعض الحالات، لكن الفرق لا يستحق التعقيد
+            لمعظم اللاعبين. 
+        </p>
+
+        <h2 id="community">المجتمع والتوثيق: أيهما يساعدك أكثر؟</h2>
+
+        <p>
+            هنا Arch تتفوق بشكل واضح في <strong>جودة
+            التوثيق</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Arch Wiki:</strong> مرجع شامل، محدث
+                باستمرار، يغطي كل شيء تقريبًا. حتى مستخدمو
+                Ubuntu يعودون إليه.
+            </li>
+            <li>
+                <strong>منتدى Arch:</strong> مجتمع خبراء، لكنه
+                قد يكون قاسيًا على الأسئلة “الغبية”. إذا قرأت
+                التوثيق أولًا، ستجد إجابات ممتازة.
+            </li>
+            <li>
+                <strong>Ubuntu:</strong> مجتمع أكبر وأكثر
+                تسامحًا، لكن التوثيق منتشر في مدونات ومنتديات
+                ومنصات متعددة، وقد يكون قديمًا أو غير دقيق.
+            </li>
+        </ul>
+
+        <p>
+            القاعدة: Arch Wiki أفضل توثيق، لكن Ubuntu يقدم مجتمعًا
+            أكثر ترحيبًا بالمبتدئين. إذا كنت تريد أن تتعلم من
+            التوثيق، Arch. إذا كنت تريد أن تسأل، Ubuntu. 
+        </p>
+
+        <h2 id="common-mistakes">أخطاء شائعة في كل مسار</h2>
+
+        <h3>أخطاء شائعة في Ubuntu</h3>
+
+        <ul>
+            <li>
+                <strong>الاعتماد على Snap دون فهمه.</strong>
+                Snap يعمل بشكل مختلف عن APT، وقد يواجه
+                المستخدم بطئًا في التشغيل الأول أو مشاكل في
+                الوصول إلى الملفات.
+            </li>
+            <li>
+                <strong>تثبيت PPA عشوائيًا.</strong> PPA
+                مستودعات طرف ثالث، قد تكسر نظامك إذا لم تكن
+                متوافقة مع إصدارك.
+            </li>
+            <li>
+                <strong>ترقية LTS قبل اختبارها.</strong> انتظر
+                بضعة أسابيع بعد إصدار LTS جديد قبل الترقية،
+                لأن المشاكل الأولى عادة تُكتشف سريعًا.
+            </li>
+            <li>
+                <strong>الخلط بين Ubuntu وKubuntu/Xubuntu في
+                الإعدادات.</strong> الواجهات مختلفة، وبعض
+                الإعدادات مشتركة، وقد يحدث ارتباك.
+            </li>
+        </ul>
+
+        <h3>أخطاء شائعة في Arch</h3>
+
+        <ul>
+            <li>
+                <strong>تأجيل التحديثات.</strong> تحديث دفعة
+                واحدة بعد أسابيع قد يكسر النظام. القاعدة:
+                حدّث بانتظام، واقرأ أخبار Arch قبل التحديثات
+                الكبيرة.
+            </li>
+            <li>
+                <strong>تثبيت AUR دون قراءة PKGBUILD.</strong>
+                AUR غير رسمي، وقد يحتوي حزمًا ضارة. اقرأ
+                الملفات قبل التثبيت.
+            </li>
+            <li>
+                <strong>استخدام archinstall دون فهم.</strong>
+                المثبت الرسمي يسهل العملية، لكنه يخفي
+                الخطوات، وقد تترك النظام دون فهم أساسي.
+            </li>
+            <li>
+                <strong>عدم عمل نسخ احتياطي قبل تحديث
+                كبير.</strong> في Ubuntu، يمكنك الرجوع
+                بسهولة. في Arch، الرجوع أصعب، والنسخ الاحتياطي
+                ضروري.
+            </li>
+        </ul>
+
+        <h2 id="when-arch-better">متى يكون Arch خيارًا أفضل فعلًا؟</h2>
+
+        <p>
+            Arch ليست خيارًا سيئًا للمبتدئ في كل الحالات. هناك
+            حالات يكون فيها Arch الخيار الأفضل:
+        </p>
+
+        <ul>
+            <li>
+                <strong>إذا كان التعلم هو الهدف.</strong>
+                من يريد أن يفهم كيف يعمل لينكس من الداخل،
+                Arch تعطيه هذا. Ubuntu تخفي الكثير.
+            </li>
+            <li>
+                <strong>إذا كان جهازك حديثًا جدًا.</strong>
+                Arch يدعم أحدث العتاد فورًا.
+            </li>
+            <li>
+                <strong>إذا كنت تحتاج أحدث
+                البرمجيات.</strong> مطور يستخدم أدوات
+                جديدة، أو مصمم يحتاج أحدث إصدار من برنامج
+                معين، يجد في Arch ما لا يجده في Ubuntu LTS.
+            </li>
+            <li>
+                <strong>إذا كان لديك خادم لا يحتاج تحديثات
+                متكررة.</strong> Arch على خادم شخصي يعمل
+                بشكل جيد إذا كان التحديث منتظمًا.
+            </li>
+            <li>
+                <strong>إذا كنت تحب التحكم الكامل.</strong>
+                من يريد أن يقرر كل شيء، من نواة النظام إلى
+                سطح المكتب، Arch تمنحه ذلك.
+            </li>
+        </ul>
+
+        <p>
+            في المقابل، إذا كان هدفك “نظام يعمل دون تفكير”، أو
+            “جهاز للعمل”، أو “أجهزة للعائلة”، Ubuntu خيار أذكى.
+        </p>
+
+        <h2 id="middle-ground">الطريق الوسط: Fedora وEndeavourOS وManjaro</h2>
+
+        <p>
+            ليس عليك أن تختار بين طرفين فقط. هناك بدائل تجمع
+            بين ميزات من كل منهما:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Fedora Workstation:</strong> أحدث
+                البرمجيات دون تعقيد Arch. تحديثات كل 6 أشهر،
+                مع GNOME خام، وأدوات تطوير قوية. مناسب لمن
+                يريد حداثة مع استقرار نسبي.
+            </li>
+            <li>
+                <strong>EndeavourOS:</strong> Arch بمثبّت
+                رسومي، دون طبقات إضافية. تحصل على Arch
+                الحقيقية، لكن مع تثبيت أسهل ومجتمع داعم.
+            </li>
+            <li>
+                <strong>Manjaro:</strong> مبنية على Arch،
+                لكنها تؤجل التحديثات أسبوعين لاختبارها.
+                تعطيك حداثة Arch مع استقرار أعلى، لكن مع
+                مخاطر خاصة بها.
+            </li>
+            <li>
+                <strong>Linux Mint:</strong> مبنية على
+                Ubuntu، لكنها تزيل Snap وتقدم واجهة
+                Cinnamon مألوفة. أفضل لمن يريد Ubuntu
+                بدون “إضافات Canonical”.
+            </li>
+        </ul>
+
+        <p>
+            إذا كنت مترددًا، فإن Linux Mint أو Fedora تعطيك
+            تجربة متوازنة. وإذا أردت Arch دون تعقيد التثبيت،
+            EndeavourOS خيار ممتاز.
+        </p>
+
+        <h2 id="decision-table">جدول القرار: أي توزيعة تناسبك؟</h2>
+
+        <p>
+            الجدول التالي يلخص القرار حسب حالتك:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">حالتك</th>
+                        <th class="px-4 py-2 font-semibold">التوصية</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">لأول مرة تستخدم لينكس، وتريد نظامًا يعمل</td>
+                        <td class="px-4 py-2"><strong>Ubuntu LTS</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تريد واجهة تشبه ويندوز</td>
+                        <td class="px-4 py-2"><strong>Linux Mint</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تريد أحدث البرمجيات مع سهولة</td>
+                        <td class="px-4 py-2"><strong>Fedora</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تريد Arch لكن دون تثبيت يدوي</td>
+                        <td class="px-4 py-2"><strong>EndeavourOS</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تريد أن تتعلم لينكس من الداخل</td>
+                        <td class="px-4 py-2"><strong>Arch</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تريد ألعابًا بأقل تعقيد</td>
+                        <td class="px-4 py-2"><strong>Ubuntu أو Pop!_OS</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">جهازك قديم جدًا</td>
+                        <td class="px-4 py-2"><strong>Xubuntu أو Linux Mint XFCE</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">جهازك حديث جدًا ويحتاج دعمًا</td>
+                        <td class="px-4 py-2"><strong>Fedora أو Arch</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">تريد نظام خادم مستقر لسنوات</td>
+                        <td class="px-4 py-2"><strong>Ubuntu LTS Server أو Debian</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل هذه أول مرة تستخدم لينكس؟ ←
+                <strong>ابدأ بـUbuntu LTS</strong>
+            </li>
+            <li>
+                هل تريد أن تفهم كيف يعمل النظام؟ ←
+                <strong>Arch تعلمك ذلك</strong>
+            </li>
+            <li>
+                هل تحتاج نظامًا يعمل من اليوم الأول؟ ←
+                <strong>Ubuntu</strong>
+            </li>
+            <li>
+                هل لديك أسبوعان لتفهم النظام؟ ←
+                <strong>Arch خيار عملي</strong>
+            </li>
+            <li>
+                هل تلعب ألعابًا؟ ←
+                <strong>Ubuntu أو Pop!_OS أسهل</strong>
+            </li>
+            <li>
+                هل جهازك حديث جدًا؟ ←
+                <strong>Arch أو Fedora</strong>
+            </li>
+            <li>
+                هل تريد Arch دون تعقيد؟ ←
+                <strong>EndeavourOS</strong>
+            </li>
+            <li>
+                هل تريد استقرارًا طويل المدى؟ ←
+                <strong>Ubuntu LTS</strong>
+            </li>
+            <li>
+                هل أنت مستعد لقراءة التوثيق قبل السؤال؟ ←
+                <strong>Arch تناسبك</strong>
+            </li>
+            <li>
+                هل ما زلت مترددًا؟ ←
+                <strong>جرّب Live USB لكلتيهما أولًا</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومصادر يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://ubuntu.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Ubuntu — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://ubuntu.com/download"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Ubuntu — صفحة التحميل
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://archlinux.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Arch Linux — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://wiki.archlinux.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Arch Wiki — أفضل توثيق لينكس
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://endeavouros.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    EndeavourOS — Arch بمثبّت سهل
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://manjaro.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Manjaro — موقع رسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://fedoraproject.org/workstation/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Fedora Workstation — موقع رسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://linuxmint.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Linux Mint — موقع رسمي
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل Arch مناسبة للمبتدئين تمامًا؟</h3>
+        <p>
+            “مناسبة” بمعنى أنها تعمل، لكنها ليست “مناسبة” بمعنى
+            أنها توفر تجربة لطيفة. من يبدأ بـArch دون استعداد
+            سيقضي أسابيع في حل مشاكل كان يمكن تجنبها. الأفضل:
+            ابدأ بـUbuntu لتفهم الأساسيات، ثم انتقل إلى Arch
+            إذا أردت.
+        </p>
+
+        <h3>هل Ubuntu “للمبتدئين فقط”؟</h3>
+        <p>
+            لا. Ubuntu تُستخدم في خوادم إنتاج، وفي شركات كبرى،
+            وفي محطات عمل احترافية. لكنها ليست “الأفضل” لكل
+            شيء: من يريد أحدث البرمجيات، أو تحكمًا كاملًا،
+            أو بيئة تعلم عميقة، قد يجد Arch أو Fedora أنسب.
+        </p>
+
+        <h3>هل يمكنني التحول من Ubuntu إلى Arch لاحقًا؟</h3>
+        <p>
+            نعم، وهذا مسار شائع. ابدأ بـUbuntu لتفهم الطرفية،
+            والحزم، والصلاحيات، ثم انتقل إلى Arch بعد سنة
+            أو سنتين. ستحصل على تعلم تدريجي دون صدمة.
+        </p>
+
+        <h3>هل Arch “أسرع” من Ubuntu؟</h3>
+        <p>
+            الفرق في الأداء ضئيل في معظم الحالات. Arch قد
+            تكون أخف على الأجهزة القديمة إذا استخدمت
+            واجهة خفيفة، لكن Ubuntu مع واجهة خفيفة
+            (Xubuntu) تعطي نتيجة مشابهة. الأداء الحقيقي
+            يعتمد على العتاد والاستخدام، لا على التوزيعة.
+        </p>
+
+        <h3>ماذا لو لم يعمل شيء بعد التثبيت؟</h3>
+        <p>
+            في Ubuntu، عادة توجد إجابة جاهزة على الإنترنت،
+            والمجتمع أكبر. في Arch، الحل قد يكون في Arch
+            Wiki، لكنه يتطلب قراءة دقيقة. إذا كنت جديدًا،
+            Ubuntu أسهل في التعافي.
+        </p>
+    </PostLayout>
+</BaseLayout>
