@@ -1,0 +1,919 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "fixing-linux-gaming-proton-gpu-drivers",
+    title: "حل مشاكل الألعاب في لينكس: من تفعيل Proton إلى تعريفات كرت الشاشة",
+    metaTitle: "حل مشاكل الألعاب في لينكس: دليل Proton وتعريفات كرت الشاشة",
+    description:
+        "دليل عملي شامل لحل مشاكل الألعاب في لينكس: التحقق من التوافق، تفعيل Proton وProton-GE، تثبيت تعريفات Nvidia وAMD وIntel، إصلاح أخطاء Vulkan وDXVK، مشاكل الأداء ومكافحة الغش، وتشغيل ألعاب خارج Steam عبر Lutris وHeroic.",
+    keywords: [
+        "ألعاب لينكس",
+        "Proton Linux",
+        "Proton-GE",
+        "تعريفات Nvidia لينكس",
+        "Mesa AMD",
+        "DXVK Vulkan",
+        "Lutris",
+        "Heroic Games Launcher",
+        "MangoHud",
+        "إصلاح ألعاب لينكس",
+    ],
+    category: "ألعاب وترفيه",
+    author: "طلال عمران",
+    date: "9 نوفمبر 2026",
+    pubDate: new Date("2026-11-09"),
+    tags: ["لينكس", "ألعاب", "Proton", "تعريفات", "Vulkan"],
+    thumbnail: "/images/fixing-linux-gaming-proton-gpu-drivers.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة مشاكل الألعاب في لينكس" },
+    { id: "why-linux-gaming", label: "لماذا أصبحت الألعاب على لينكس واقعًا؟" },
+    { id: "check-first", label: "الخطوة 0: تحقق من التوافق قبل التثبيت" },
+    { id: "enable-proton", label: "الخطوة 1: تفعيل Proton في Steam" },
+    { id: "proton-ge", label: "الخطوة 2: Proton-GE ومتى تحتاجه" },
+    { id: "drivers-nvidia", label: "الخطوة 3أ: تعريفات Nvidia" },
+    { id: "drivers-amd", label: "الخطوة 3ب: تعريفات AMD وIntel وMesa" },
+    { id: "vulkan-dxvk", label: "الخطوة 4: Vulkan وDXVK — الطبقة الحقيقية" },
+    { id: "launch-errors", label: "الخطوة 5: أخطاء الإقلاع الشائعة وحلولها" },
+    { id: "performance", label: "الخطوة 6: مشاكل الأداء وGamemode وMangoHud" },
+    { id: "anticheat", label: "الخطوة 7: مكافحة الغش — ما يعمل وما لا يعمل" },
+    { id: "non-steam", label: "الخطوة 8: ألعاب خارج Steam عبر Lutris وHeroic" },
+    { id: "methodology", label: "منهجية التشخيص: كيف تصل إلى السبب؟" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في 2026، لم يعد السؤال “هل تعمل الألعاب على لينكس؟” بل
+            “كيف أجعل <strong>هذه اللعبة تحديدًا</strong> تعمل
+            بأفضل أداء؟”. التحول جاء بفضل <strong>Proton</strong>،
+            الطبقة التي بنتها Valve فوق Wine لتشغيل ألعاب ويندوز
+            على Steam Deck وأجهزة لينكس. اليوم، الغالبية العظمى من
+            ألعاب Steam تعمل، وكثير منها بأداء يقارب ويندوز.
+        </p>
+
+        <p>
+            لكن “تعمل” لا تعني “تعمل دون مشاكل”. الأخطاء موجودة،
+            وتأتي من مصادر متعددة: تعريف كرت الشاشة، طبقة Vulkan،
+            إصدار Proton، مكتبة مفقودة، أو نظام مكافحة غش لا يدعم
+            لينكس. هذا الدليل يتبع مسارًا تشخيصيًا من الأكثر شيوعًا
+            إلى الأقل، ويشرح <strong>لماذا</strong> يحدث كل خطأ،
+            لا مجرد “جرّب هذا الأمر”. الهدف أن تصل إلى مرحلة تعرف
+            فيها من أين تبدأ عندما تتعطل لعبة جديدة.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة مشاكل الألعاب في لينكس</h2>
+
+        <p>
+            الجدول التالي يلخص المشاكل الأكثر شيوعًا، وأعراضها،
+            والخطوة التي تحلها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <table
+                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
+            >
+                <thead
+                    class="bg-zinc-100 dark:bg-zinc-800 light:text-zinc-700 dark:text-zinc-300"
+                >
+                    <tr>
+                        <th class="px-4 py-2 font-semibold">العرض</th>
+                        <th class="px-4 py-2 font-semibold">السبب المحتمل</th>
+                        <th class="px-4 py-2 font-semibold">الخطوة</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr>
+                        <td class="px-4 py-2">اللعبة لا تُقلع</td>
+                        <td class="px-4 py-2">Proton غير مفعّل أو إصدار غير متوافق</td>
+                        <td class="px-4 py-2">تفعيل Proton، ثم تجربة Proton-GE</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">شاشة سوداء بعد شعار اللعبة</td>
+                        <td class="px-4 py-2">تعريف كرت شاشة أو Vulkan</td>
+                        <td class="px-4 py-2">فحص التعريفات وVulkan</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">أداء منخفض وتقطيع</td>
+                        <td class="px-4 py-2">Shaders، Gamemode، MangoHud</td>
+                        <td class="px-4 py-2">تفعيل Gamemode وضبط Proton</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">اللعبة تُغلق فجأة</td>
+                        <td class="px-4 py-2">مكتبة مفقودة أو خطأ DXVK</td>
+                        <td class="px-4 py-2">قراءة سجلات Proton</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">خطأ مكافحة الغش</td>
+                        <td class="px-4 py-2">EAC أو BattlEye غير مُفعّل للينكس</td>
+                        <td class="px-4 py-2">مراجعة Are We Anti-Cheat Yet</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">اللعبة تعمل لكن بدون صوت</td>
+                        <td class="px-4 py-2">PipeWire/PulseAudio أو مكتبة 32-بت</td>
+                        <td class="px-4 py-2">تثبيت مكتبات 32-bit</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="why-linux-gaming">لماذا أصبحت الألعاب على لينكس واقعًا؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/fixing-linux-gaming-proton-gpu-drivers/01.webp"
+                alt="Steam وProton"
+                width="1200"
+                height="681"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            ثلاثة تحولات جعلت ذلك ممكنًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Proton:</strong> طبقة توافق مبنية على Wine
+                وتطوير من Valve، تستخدم DXVK وVKD3D لترجمة
+                DirectX إلى Vulkan. أصبحت مستقرة بما يكفي لتشغيل
+                آلاف الألعاب دون تدخل يدوي.
+            </li>
+            <li>
+                <strong>Steam Deck:</strong> أجبر المطورين على
+                أخذ لينكس بجدية. Valve صنعت نظامًا كاملًا (SteamOS)
+                حول Proton، وأثبتت أن التجربة ممكنة.
+            </li>
+            <li>
+                <strong>Mesa وVulkan:</strong> تعريفات AMD
+                المفتوحة تحسنت بدرجة هائلة. Nvidia أضافت دعمًا
+                أفضل لـVulkan وWayland.
+            </li>
+        </ul>
+
+        <p>
+            النتيجة أن معظم ألعاب Steam تعمل، مع أداء يقارب
+            ويندوز أو يفوقه أحيانًا. لكن التفاصيل ما زالت تعتمد
+            على <strong>الألعاب ومكافحة الغش والتعريفات</strong>.
+        </p>
+
+        <h2 id="check-first">الخطوة 0: تحقق من التوافق قبل التثبيت</h2>
+
+        <p>
+            قبل أن تُنزّل لعبة بحجم 80 غيغابايت، تحقق من أنها
+            ستعمل. هذا يوفر ساعات من التحميل ثم الإحباط.
+        </p>
+
+        <ul>
+            <li>
+                <strong>ProtonDB:</strong> موقع يعرض تقييمات
+                المجتمع لكل لعبة على Steam. يعرض التصنيف من
+                “Platinum” (تعمل بامتياز) إلى “Borked” (لا
+                تعمل). اقرأ تعليقات المستخدمين: كثيرًا ما
+                يذكرون إصدار Proton الذي نجح، وأي إعدادات
+                استخدموها.
+            </li>
+            <li>
+                <strong>Are We Anti-Cheat Yet:</strong> قاعدة
+                بيانات تركز على أنظمة مكافحة الغش (EAC،
+                BattlEye، Vanguard). تخبرك إذا كانت اللعبة
+                تعمل أونلاين على لينكس، أو تحتاج تفعيلًا
+                يدويًا من المطور.
+            </li>
+            <li>
+                <strong>Steam Deck Verified:</strong> شارة
+                على صفحة اللعبة في Steam. إذا كانت “Verified”،
+                فالتجربة مضمونة تقريبًا. إذا كانت “Playable”،
+                قد تحتاج تعديلات صغيرة.
+            </li>
+        </ul>
+
+        <p>
+            القاعدة العملية: <strong>لا تشترِ لعبة أونلاين قبل
+            التحقق من مكافحة الغش</strong>. هذه أكثر نقطة
+            تُحبط المستخدمين الجدد.
+        </p>
+
+        <h2 id="enable-proton">الخطوة 1: تفعيل Proton في Steam</h2>
+
+        <p>
+            Proton لا يعمل تلقائيًا على كل الألعاب. Steam
+            يفعّله فقط للألعاب التي تصنفها Valve كمتوافقة. لتفعيله
+            لكل الألعاب:
+        </p>
+
+        <ol>
+            <li>افتح Steam، ثم الإعدادات (Settings).</li>
+            <li>اختر Compatibility من القائمة اليسرى.</li>
+            <li>
+                فعّل “Enable Steam Play for supported titles”،
+                وهذا يجب أن يكون مفعّلًا افتراضيًا.
+            </li>
+            <li>
+                فعّل “Enable Steam Play for all other titles”.
+            </li>
+            <li>
+                من القائمة المنسدلة، اختر Proton Experimental،
+                لأنه يتلقى التحديثات أولًا.
+            </li>
+            <li>أعد تشغيل Steam.</li>
+        </ol>
+
+        <p>
+            بعد ذلك، إذا لم تعمل اللعبة، جرّب إصدارات Proton
+            الأخرى. من خصائص اللعبة (Properties → Compatibility)
+            يمكنك اختيار إصدار محدد لكل لعبة، وهذا مفيد عندما
+            يعمل إصدار أقدم بشكل أفضل.
+        </p>
+
+        <h2 id="proton-ge">الخطوة 2: Proton-GE ومتى تحتاجه</h2>
+
+        <p>
+            <strong>Proton-GE</strong> إصدار مجتمعي من Proton
+            يطوره GloriousEggroll، ويضيف تحسينات لا تدخل الإصدار
+            الرسمي لأسباب قانونية أو تنظيمية. أبرز ما يقدمه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>ترميزات فيديو إضافية:</strong> بعض
+                الألعاب تحتاج ترميزات لا تتوفر في النسخة
+                الرسمية (H.264 عبر FFmpeg مثلاً).
+            </li>
+            <li>
+                <strong>إصلاحات ألعاب محددة:</strong> تصحيحات
+                لألعاب معينة تعمل بشكل أفضل على GE.
+            </li>
+            <li>
+                <strong>دعم FSR وFSR 2:</strong> في بعض
+                الحالات، للاستفادة من التحسين بدون دعم اللعبة
+                الأصلي.
+            </li>
+            <li>
+                <strong>مكتبات إضافية:</strong> بعض المكتبات
+                التي تعتمد عليها ألعاب ويندوز القديمة.
+            </li>
+        </ul>
+
+        <p>
+            تثبيت Proton-GE سهل عبر <strong>ProtonUp-Qt</strong>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# Debian/Ubuntu
+sudo add-apt-repository ppa:babar/protonup-qt
+sudo apt update
+sudo apt install protonup-qt
+
+# Fedora
+sudo dnf install protonup-qt
+
+# Arch
+yay -S protonup-qt`}</code></pre>
+
+        <p>
+            افتح ProtonUp-Qt، اختر “Add version”، حدد
+            Proton-GE، وثبّت. بعد ذلك ستجده ضمن قائمة Proton في
+            خصائص اللعبة على Steam.
+        </p>
+
+        <p>
+            القاعدة العملية: <strong>Proton الرسمي أولًا، ثم
+            Proton-GE</strong>. لا تبدأ بـGE، لأن الرسمي أكثر
+            استقرارًا ويغطي 90% من الألعاب.
+        </p>
+
+        <h2 id="drivers-nvidia">الخطوة 3أ: تعريفات Nvidia</h2>
+
+        <p>
+            Nvidia أكثر حساسية على لينكس من AMD، لأن تعريفها
+            مغلق (proprietary) ولا يأتي في النواة. المشاكل تتركز
+            في ثلاث نقاط: التثبيت، Vulkan، وWayland.
+        </p>
+
+        <h3>التثبيت</h3>
+
+        <p>
+            على Ubuntu، الخيار الأسهل هو مدير التعريفات:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`ubuntu-drivers devices
+sudo ubuntu-drivers autoinstall`}</code></pre>
+
+        <p>
+            على Fedora، استخدم RPM Fusion:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf install akmod-nvidia
+sudo dnf install xorg-x11-drv-nvidia-cuda`}</code></pre>
+
+        <p>
+            على Arch، الحزم في المستودع الرسمي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo pacman -S nvidia nvidia-utils lib32-nvidia-utils`}</code></pre>
+
+        <p>
+            الأهم: ثبّت حزم <strong>32-bit</strong> أيضًا
+            (مثل <code>lib32-nvidia-utils</code>)، لأن كثير من
+            الألعاب ما زالت 32-بت، أو تستخدم مكتبات 32-بت.
+        </p>
+
+        <h3>التحقق من Vulkan</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo apt install vulkan-tools
+vulkaninfo | head -20`}</code></pre>
+
+        <p>
+            إذا لم يظهر Vulkan أو ظهر خطأ، فالمشكلة في التعريف
+            أو في حزمة <code>libvulkan1</code> المفقودة. تأكد
+            أيضًا من أنك لم تخلط بين Mesa وNvidia proprietary،
+            لأن الخلط يسبب تعارضات غريبة.
+        </p>
+
+        <h2 id="drivers-amd">الخطوة 3ب: تعريفات AMD وIntel وMesa</h2>
+
+        <p>
+            الخبر الجيد أن AMD وIntel تستخدمان تعريفات مفتوحة
+            مدمجة في النواة (amdgpu وi915/xe). هذا يعني أن
+            النظام يعمل من أول تثبيت دون خطوات إضافية.
+        </p>
+
+        <p>
+            ما تحتاج التأكد منه:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Mesa محدث:</strong> Mesa هو التنفيذ
+                المفتوح لـOpenGL وVulkan. على Ubuntu، Mesa
+                في المستودع قد يكون قديمًا. استخدم PPA
+                رسمي لتحديثه:
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo add-apt-repository ppa:kisak/kisak-mesa
+sudo apt update
+sudo apt upgrade`}</code></pre>
+
+        <ul>
+            <li>
+                <strong>حزم 32-بت:</strong> تأكد من تثبيت
+                <code>mesa-vulkan-drivers:i386</code> و
+                <code>libgl1-mesa-dri:i386</code>. بدونها،
+                كثير من الألعاب لن تُقلع.
+            </li>
+            <li>
+                <strong>Vulkan:</strong> استخدم
+                <code>vulkaninfo</code> للتأكد من أن Vulkan
+                يعمل. على AMD، محرك <strong>RADV</strong>
+                هو الافتراضي، وهو ممتاز.
+            </li>
+        </ul>
+
+        <p>
+            إذا كان لديك كرت AMD حديث وتريد أداء إضافيًا، جرّب
+            <code>mesa-git</code> (على Arch) أو PPA Kisak
+            (على Ubuntu). لكن كن مستعدًا لمشاكل صغيرة قد تظهر
+            مع كل تحديث.
+        </p>
+
+        <h2 id="vulkan-dxvk">الخطوة 4: Vulkan وDXVK — الطبقة الحقيقية</h2>
+
+        <p>
+            عندما تشغّل لعبة ويندوز على لينكس، يحدث هذا:
+        </p>
+
+        <ol>
+            <li>
+                اللعبة تنادي DirectX (11 أو 12).
+            </li>
+            <li>
+                Proton يعترض هذه الاستدعاءات، ويترجمها عبر
+                <strong>DXVK</strong> (لـDX11 وDX10 وDX9)
+                أو <strong>VKD3D-Proton</strong> (لـDX12).
+            </li>
+            <li>
+                DXVK يترجمها إلى <strong>Vulkan</strong>،
+                الذي يفهمه تعريف كرت الشاشة.
+            </li>
+            <li>
+                التعريف يرسم الإطار على الشاشة.
+            </li>
+        </ol>
+
+        <p>
+            أي خلل في هذه السلسلة يسبب مشاكل:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Vulkan مفقود أو قديم:</strong> شاشة
+                سوداء أو خروج فوري.
+            </li>
+            <li>
+                <strong>DXVK قديم:</strong> مشاكل رسومية،
+                انهيار، أو أداء ضعيف.
+            </li>
+            <li>
+                <strong>تعارض بين Mesa وNvidia:</strong>
+                أخطاء Vulkan غامضة.
+            </li>
+        </ul>
+
+        <p>
+            الحل عمليًا: Proton يتضمن DXVK وVKD3D، فلا تحتاج
+            تثبيتهما يدويًا. لكن عند استخدام <strong>Wine
+            مباشرة</strong> (بدل Proton) عبر Lutris أو Bottles،
+            قد تحتاج تثبيت DXVK بنفسك. Lutris يقدم أداة تثبيت
+            تلقائية لـDXVK وVKD3D.
+        </p>
+
+        <p>
+            للتحقق من إصدار DXVK الذي يستخدمه Proton:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`DXVK_HUD=version proton run game.exe`}</code></pre>
+
+        <h2 id="launch-errors">الخطوة 5: أخطاء الإقلاع الشائعة وحلولها</h2>
+
+        <h3>شاشة سوداء بعد الشعار</h3>
+
+        <p>
+            أكثر سبب: Vulkan لا يعمل، أو تعريف كرت الشاشة غير
+            مثبت. افحص <code>vulkaninfo</code>، وتأكد من أنك
+            تستخدم Proton الرسمي (وليس GE) كبداية، لأن GE قد
+            يجرب إعدادات لا تناسب جهازك.
+        </p>
+
+        <h3>خطأ “Missing libXXX.so”</h3>
+
+        <p>
+            بعض الألعاب تحتاج مكتبات 32-بت أو مكتبات إضافية.
+            على Ubuntu:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install libgl1-mesa-dri:i386 libvulkan1:i386 libc6:i386`}</code></pre>
+
+        <p>
+            على Fedora، استخدم <code>dnf</code> مع
+            <code>*.i686</code>. على Arch، فعّل
+            <code>multilib</code> في <code>pacman.conf</code>،
+            ثم ثبّت الحزم المقابلة.
+        </p>
+
+        <h3>اللعبة تعمل لكن لا صوت</h3>
+
+        <p>
+            تحقق من PipeWire أو PulseAudio:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`pactl info
+systemctl --user status pipewire`}</code></pre>
+
+        <p>
+            أحيانًا المشكلة أن اللعبة تحاول استخدام جهاز صوت
+            غير موجود. جرّب تغيير جهاز الصوت الافتراضي من
+            <code>pavucontrol</code> أثناء اللعب.
+        </p>
+
+        <h3>قراءة سجلات Proton</h3>
+
+        <p>
+            هذا هو المفتاح الحقيقي للتشخيص. عندما تفشل لعبة،
+            ابحث عن سجلاتها:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# ملف السجل الافتراضي
+~/.steam/steam/logs/
+
+# تفعيل سجل تفصيلي لكل لعبة
+PROTON_LOG=1 %command%`}</code></pre>
+
+        <p>
+            ضع <code>PROTON_LOG=1 %command%</code> في خيارات
+            الإقلاع للعبة على Steam. بعد تشغيلها، ستجد ملف
+            <code>steam-*.log</code> في مجلد المنزل. ابحث
+            فيه عن “err:” و“fixme:” — هذه هي الأخطاء الفعلية.
+        </p>
+
+        <h2 id="performance">الخطوة 6: مشاكل الأداء وGamemode وMangoHud</h2>
+
+        <h3>Gamemode</h3>
+
+        <p>
+            <strong>Gamemode</strong> أداة من Feral Interactive
+            تعدل إعدادات النظام تلقائيًا أثناء اللعب: ترفع أولوية
+            العملية، وتفعّل وضع الأداء في المعالج، وتوقف بعض
+            خدمات الخلفية. تثبيته:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo apt install gamemode      # Debian/Ubuntu
+sudo dnf install gamemode      # Fedora
+sudo pacman -S gamemode        # Arch`}</code></pre>
+
+        <p>
+            ثم فعّله لأي لعبة بإضافة
+            <code>gamemoderun %command%</code> في خيارات
+            الإقلاع على Steam.
+        </p>
+
+        <h3>MangoHud</h3>
+
+        <p>
+            <strong>MangoHud</strong> يعرض إحصائيات الأداء
+            (FPS، استهلاك المعالج، درجة الحرارة) أثناء اللعب.
+            مثالي لمعرفة ما إذا كانت المشكلة في المعالج، كرت
+            الشاشة، أو الذاكرة.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo apt install mangohud      # Debian/Ubuntu
+sudo dnf install mangohud      # Fedora
+sudo pacman -S mangohud        # Arch`}</code></pre>
+
+        <p>
+            فعّله بـ<code>mangohud %command%</code>. لإظهاره مع
+            Gamemode: <code>gamemoderun mangohud %command%</code>.
+        </p>
+
+        <h3>Shaders وتقطيع</h3>
+
+        <p>
+            التقطيع (stuttering) في البداية قد يكون بسبب ترجمة
+            shaders. Proton لديه معالجة مسبقة للـshaders، لكن قد
+            تحتاج تمكين خاصية <strong>Shader Pre-Caching</strong>
+            في Steam (Settings → Downloads). هذا يترجم الشيدرز
+            أثناء التحميل، لا أثناء اللعب.
+        </p>
+
+        <h3>FSR</h3>
+
+        <p>
+            إذا كانت اللعبة ثقيلة، يمكن استخدام
+            <strong>FSR</strong> (FidelityFX Super Resolution)
+            من AMD، وهو يعمل على أي كرت شاشة. على Proton، يمكن
+            تفعيله عبر:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`WINE_FULLSCREEN_FSR=1 WINE_FULLSCREEN_FSR_STRENGTH=2 %command%`}</code></pre>
+
+        <p>
+            هذا يخفض الدقة الداخلية ثم يرفعها، فيحسن الأداء على
+            حساب بعض الحدة.
+        </p>
+
+        <h2 id="anticheat">الخطوة 7: مكافحة الغش — ما يعمل وما لا يعمل</h2>
+
+        <p>
+            هذا هو أصعب جزء، لأنه لا يعتمد على جهازك بل على
+            <strong>قرار المطور</strong>. أنظمة مثل EAC وBattlEye
+            تدعم لينكس تقنيًا، لكن المطورين يحتاجون تفعيله
+            يدويًا. بعضهم فعل، والبعض لم يفعل.
+        </p>
+
+        <ul>
+            <li>
+                <strong>EAC:</strong> يدعم Proton، لكن يحتاج
+                تفعيلًا من المطور. ألعاب مثل Apex Legends وRust
+                تعمل بفضل هذا الدعم.
+            </li>
+            <li>
+                <strong>BattlEye:</strong> نفس المبدأ. بعض
+                الألعاب تعمل، وبعضها لا.
+            </li>
+            <li>
+                <strong>Vanguard (Riot):</strong> لا يدعم لينكس
+                ولا Proton، ويعتمد على تعريف نواة.
+            </li>
+            <li>
+                <strong>أنظمة أخرى:</strong> بعضها يعمل عبر
+                Proton، وبعضها لا. راجع Are We Anti-Cheat Yet
+                قبل الشراء.
+            </li>
+        </ul>
+
+        <p>
+            الحل الوحيد: <strong>التحقق قبل الشراء</strong>. لا
+            يوجد “حل تقني” لمسألة قرار سياسي من المطور.
+        </p>
+
+        <h2 id="non-steam">الخطوة 8: ألعاب خارج Steam عبر Lutris وHeroic</h2>
+
+        <p>
+            ليست كل الألعاب على Steam. لـGOG وEpic Games
+            وBattle.net وألعاب مستقلة، تحتاج أدوات إضافية.
+        </p>
+
+        <h3>Lutris</h3>
+
+        <p>
+            Lutris منصة مفتوحة تدير ألعاب ويندوز ولينكس ومحاكيات
+            في مكان واحد. تثبت Wine تلقائيًا، وتوفر سكريبتات
+            جاهزة لكل لعبة. تثبيتها:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo apt install lutris      # Debian/Ubuntu
+sudo dnf install lutris      # Fedora
+sudo pacman -S lutris        # Arch`}</code></pre>
+
+        <p>
+            ثم ابحث عن اسم اللعبة على موقع Lutris، واضغط “Install”،
+            واتبع الخطوات.
+        </p>
+
+        <h3>Heroic Games Launcher</h3>
+
+        <p>
+            Heroic تطبيق مفتوح يدير ألعاب Epic Games وGOG وAmazon
+            Games. يعمل على لينكس، ويستخدم Proton أو Wine، ويوفر
+            واجهة شبيهة بـSteam. مثالي لمن يلعب من Epic.
+        </p>
+
+        <h3>Bottles</h3>
+
+        <p>
+            Bottles واجهة رسومية لـWine، تسمح بإنشاء “زجاجات”
+            (بيئات معزولة) لكل تطبيق. مفيد للألعاب غير المعروفة
+            أو القديمة التي لا تعمل على Lutris أو Proton بسهولة.
+        </p>
+
+        <h2 id="methodology">منهجية التشخيص: كيف تصل إلى السبب؟</h2>
+
+        <p>
+            عندما تتعطل لعبة، لا تجرب حلولًا عشوائية. اتبع
+            تسلسلًا منطقيًا:
+        </p>
+
+        <ol>
+            <li>
+                <strong>هل اللعبة مدعومة؟</strong> افحص ProtonDB
+                وAre We Anti-Cheat Yet. إذا كانت “Borked” أو
+                مكافحة الغش غير مدعومة، فتوقف هنا.
+            </li>
+            <li>
+                <strong>هل Proton مفعّل؟</strong> تحقق من
+                الإعدادات، واختر إصدارًا محددًا للعبة.
+            </li>
+            <li>
+                <strong>هل Vulkan يعمل؟</strong> شغّل
+                <code>vulkaninfo</code>. إذا فشل، فالمشكلة
+                في التعريفات.
+            </li>
+            <li>
+                <strong>اقرأ سجلات Proton.</strong> شغّل بـ
+                <code>PROTON_LOG=1</code>، وابحث عن أخطاء
+                “err:”.
+            </li>
+            <li>
+                <strong>جرّب Proton-GE.</strong> أحيانًا
+                إصدار مختلف يحل المشكلة.
+            </li>
+            <li>
+                <strong>جرّب خيارات إقلاع إضافية.</strong>
+                مثل <code>-vulkan</code> أو
+                <code>-dx11</code>، حسب اللعبة.
+            </li>
+            <li>
+                <strong>ابحث عن اللعبة في ProtonDB.</strong>
+                اقرأ تعليقات المستخدمين — أحدهم مرّ بنفس
+                المشكلة.
+            </li>
+            <li>
+                <strong>اسأل المجتمع.</strong> على Reddit
+                (r/linux_gaming) أو منتدى التوزيعة. اذكر
+                تفاصيل: التوزيعة، الكرت، إصدار Proton،
+                والسجل.
+            </li>
+        </ol>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تحققت من ProtonDB قبل شراء اللعبة؟ ←
+                <strong>يوفر وقتًا وإحباطًا</strong>
+            </li>
+            <li>
+                هل Proton مفعّل لكل الألعاب في Steam؟ ←
+                <strong>Settings → Compatibility</strong>
+            </li>
+            <li>
+                هل جربت Proton-GE للألعاب التي لا تعمل؟ ←
+                <strong>عبر ProtonUp-Qt</strong>
+            </li>
+            <li>
+                هل تعريف كرت الشاشة محدث؟ ←
+                <strong>خصوصًا Nvidia</strong>
+            </li>
+            <li>
+                هل Vulkan يعمل؟ ←
+                <strong><code>vulkaninfo</code></strong>
+            </li>
+            <li>
+                هل ثبّت حزم 32-بت؟ ←
+                <strong>ضرورية لألعاب كثيرة</strong>
+            </li>
+            <li>
+                هل تستخدم Gamemode وMangoHud؟ ←
+                <strong>أداء وتشخيص أفضل</strong>
+            </li>
+            <li>
+                هل تعرف حالة مكافحة الغش؟ ←
+                <strong>لا تشترِ قبل التحقق</strong>
+            </li>
+            <li>
+                هل تعرف كيف تقرأ سجلات Proton؟ ←
+                <strong><code>PROTON_LOG=1</code></strong>
+            </li>
+            <li>
+                هل جرّبت Lutris أو Heroic لألعاب خارج Steam؟ ←
+                <strong>بدائل عملية</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية وأدوات يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.protondb.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ProtonDB — قاعدة بيانات توافق الألعاب
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://areweanticheatyet.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Are We Anti-Cheat Yet — حالة مكافحة الغش
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/GloriousEggroll/proton-ge-custom"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Proton-GE — مستودع GitHub
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/GloriousEggroll/proton-ge-custom/releases"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Proton-GE — الإصدارات
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://lutris.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Lutris — منصة ألعاب لينكس
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://heroicgameslauncher.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Heroic Games Launcher — الموقع الرسمي
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://usebottles.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Bottles — واجهة Wine رسومية
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/flightlessmango/MangoHud"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MangoHud — مراقبة الأداء
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/FeralInteractive/gamemode"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Gamemode — تحسين الأداء
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.gamingonlinux.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    GamingOnLinux — أخبار ومقالات
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل كل ألعاب Steam تعمل على لينكس؟</h3>
+        <p>
+            الغالبية العظمى تعمل، لكن ليست كلها. الألعاب
+            الفردية والقديمة تعمل بامتياز. الألعاب الأونلاين
+            تعتمد على مكافحة الغش. تحقق من ProtonDB قبل
+            الشراء.
+        </p>
+
+        <h3>هل أداء لينكس أقل من ويندوز؟</h3>
+        <p>
+            في معظم الحالات، الفرق ضئيل (5–10%)، وأحيانًا
+            يكون لينكس أسرع. الاستثناءات: ألعاب DirectX 12
+            الجديدة جدًا (VKD3D لا يزال يتطور)، وبعض
+            التعريفات القديمة لـNvidia.
+        </p>
+
+        <h3>ما أفضل توزيعة للألعاب؟</h3>
+        <p>
+            Pop!_OS وLinux Mint وFedora وNobara. الثلاثة
+            الأولى توفر تعريفات جاهزة، وNobara مبنية
+            خصيصًا للألعاب (من نفس مطور Proton-GE). Ubuntu
+            أيضًا تعمل بشكل جيد.
+        </p>
+
+        <h3>هل يمكنني استخدام Nvidia على لينكس للألعاب؟</h3>
+        <p>
+            نعم، لكنك تحتاج تثبيت التعريف المغلق وحزم
+            32-بت. الأداء جيد، لكن بعض الألعاب تحتاج
+            تعديلات إضافية. AMD أسهل عمومًا، لكن Nvidia
+            تعمل.
+        </p>
+
+        <h3>لماذا لا تعمل لعبتي رغم أن ProtonDB يقول “Platinum”؟</h3>
+        <p>
+            قد يكون إصدار Proton مختلفًا، أو تعريف كرت الشاشة
+            قديمًا، أو لديك مشكلة في Vulkan. شغّل
+            <code>PROTON_LOG=1</code>، واقرأ السجل. غالبًا
+            ستجد السبب في الأسطر الأولى من الأخطاء.
+        </p>
+    </PostLayout>
+</BaseLayout>
