@@ -88,7 +88,7 @@ const tocItems = [
             class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
             aria-label="جدول المحتويات"
         >
-            <p class="font-bold text-lg mb-4 text-navy dark:text-white">
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
                 محتويات المقال
             </p>
             <ol class="list-decimal list-inside space-y-3 text-lg">
@@ -113,61 +113,59 @@ const tocItems = [
         </p>
 
         <div class="overflow-x-auto my-4">
-            <table
-                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
-            >
-                <thead
-                    class="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
-                >
-                    <tr>
-                        <th class="px-4 py-2 font-semibold">المفهوم</th>
-                        <th class="px-4 py-2 font-semibold">الوظيفة</th>
-                        <th class="px-4 py-2 font-semibold">مثال</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
-                    <tr>
-                        <td class="px-4 py-2">التدفق</td>
-                        <td class="px-4 py-2">مسار الحدث عبر DOM</td>
-                        <td class="px-4 py-2">capture → target → bubble</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">addEventListener</td>
-                        <td class="px-4 py-2">تسجيل مستمع حدث</td>
-                        <td class="px-4 py-2"><code>el.addEventListener(...)</code></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">كائن الحدث</td>
-                        <td class="px-4 py-2">بيانات الحدث</td>
-                        <td class="px-4 py-2"><code>e.target</code>، <code>e.type</code></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">preventDefault</td>
-                        <td class="px-4 py-2">منع السلوك الافتراضي</td>
-                        <td class="px-4 py-2">منع إرسال نموذج</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">stopPropagation</td>
-                        <td class="px-4 py-2">إيقاف انتشار الحدث</td>
-                        <td class="px-4 py-2">منع وصول النقر للأب</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">التفويض</td>
-                        <td class="px-4 py-2">مستمع واحد لعناصر كثيرة</td>
-                        <td class="px-4 py-2"><code>parent.addEventListener</code></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">Passive</td>
-                        <td class="px-4 py-2">تحسين أداء التمرير</td>
-                        <td class="px-4 py-2"><code>{`{ passive: true }`}</code></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">AbortController</td>
-                        <td class="px-4 py-2">إزالة مستمعات متعددة</td>
-                        <td class="px-4 py-2"><code>signal: controller.signal</code></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المفهوم</th>
+                            <th class="px-4 py-2 font-semibold">الوظيفة</th>
+                            <th class="px-4 py-2 font-semibold">مثال</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">التدفق</td>
+                            <td class="px-4 py-2">مسار الحدث عبر DOM</td>
+                            <td class="px-4 py-2">capture → target → bubble</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">addEventListener</td>
+                            <td class="px-4 py-2">تسجيل مستمع حدث</td>
+                            <td class="px-4 py-2"><code>el.addEventListener(...)</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">كائن الحدث</td>
+                            <td class="px-4 py-2">بيانات الحدث</td>
+                            <td class="px-4 py-2"><code>e.target</code>، <code>e.type</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">preventDefault</td>
+                            <td class="px-4 py-2">منع السلوك الافتراضي</td>
+                            <td class="px-4 py-2">منع إرسال نموذج</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">stopPropagation</td>
+                            <td class="px-4 py-2">إيقاف انتشار الحدث</td>
+                            <td class="px-4 py-2">منع وصول النقر للأب</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">التفويض</td>
+                            <td class="px-4 py-2">مستمع واحد لعناصر كثيرة</td>
+                            <td class="px-4 py-2"><code>parent.addEventListener</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Passive</td>
+                            <td class="px-4 py-2">تحسين أداء التمرير</td>
+                            <td class="px-4 py-2"><code>{`{ passive: true }`}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">AbortController</td>
+                            <td class="px-4 py-2">إزالة مستمعات متعددة</td>
+                            <td class="px-4 py-2"><code>signal: controller.signal</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <h2 id="what-are-events">ما هي الأحداث؟ ولماذا هي جوهر الويب التفاعلي؟</h2>
@@ -182,7 +180,6 @@ const tocItems = [
                 class="w-full h-auto rounded-lg mb-4"
             />
         </p>
-
 
         <p>
             الحدث هو <strong>إشعار يصدره المتصفح</strong> عند حدوث
@@ -289,51 +286,49 @@ const tocItems = [
         </p>
 
         <div class="overflow-x-auto my-4">
-            <table
-                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
-            >
-                <thead
-                    class="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
-                >
-                    <tr>
-                        <th class="px-4 py-2 font-semibold">المعيار</th>
-                        <th class="px-4 py-2 font-semibold">onclick</th>
-                        <th class="px-4 py-2 font-semibold">addEventListener</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
-                    <tr>
-                        <td class="px-4 py-2">مستمعات متعددة</td>
-                        <td class="px-4 py-2">لا، يستبدل السابق</td>
-                        <td class="px-4 py-2">نعم، يمكن إضافة عدة مستمعات</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">التحكم في المرحلة</td>
-                        <td class="px-4 py-2">لا</td>
-                        <td class="px-4 py-2">نعم، عبر capture</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">الإزالة</td>
-                        <td class="px-4 py-2"><code>el.onclick = null</code></td>
-                        <td class="px-4 py-2"><code>removeEventListener</code> أو AbortSignal</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">المستمعات السلبية</td>
-                        <td class="px-4 py-2">لا</td>
-                        <td class="px-4 py-2">نعم، <code>{`{passive: true}`}</code></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">التوافق مع الأطر</td>
-                        <td class="px-4 py-2">قد يتعارض مع مستمعات أخرى</td>
-                        <td class="px-4 py-2">مستقل</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">الشيوع في الإنتاج</td>
-                        <td class="px-4 py-2">نادر</td>
-                        <td class="px-4 py-2">المعيار الفعلي</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المعيار</th>
+                            <th class="px-4 py-2 font-semibold">onclick</th>
+                            <th class="px-4 py-2 font-semibold">addEventListener</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">مستمعات متعددة</td>
+                            <td class="px-4 py-2">لا، يستبدل السابق</td>
+                            <td class="px-4 py-2">نعم، يمكن إضافة عدة مستمعات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">التحكم في المرحلة</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">نعم، عبر capture</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الإزالة</td>
+                            <td class="px-4 py-2"><code>el.onclick = null</code></td>
+                            <td class="px-4 py-2"><code>removeEventListener</code> أو AbortSignal</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">المستمعات السلبية</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">نعم، <code>{`{passive: true}`}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">التوافق مع الأطر</td>
+                            <td class="px-4 py-2">قد يتعارض مع مستمعات أخرى</td>
+                            <td class="px-4 py-2">مستقل</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الشيوع في الإنتاج</td>
+                            <td class="px-4 py-2">نادر</td>
+                            <td class="px-4 py-2">المعيار الفعلي</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <p>
@@ -508,56 +503,54 @@ document.querySelector(".list").addEventListener("click", (e) => {
         <p>هذه هي الأحداث التي ستستخدمها في 90% من الحالات:</p>
 
         <div class="overflow-x-auto my-4">
-            <table
-                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
-            >
-                <thead
-                    class="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
-                >
-                    <tr>
-                        <th class="px-4 py-2 font-semibold">الفئة</th>
-                        <th class="px-4 py-2 font-semibold">الأحداث</th>
-                        <th class="px-4 py-2 font-semibold">الاستخدام</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
-                    <tr>
-                        <td class="px-4 py-2">الفأرة</td>
-                        <td class="px-4 py-2"><code>click</code>، <code>dblclick</code>، <code>mousedown</code>، <code>mouseup</code>، <code>mousemove</code></td>
-                        <td class="px-4 py-2">أزرار، سحب، تلميحات</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">لوحة المفاتيح</td>
-                        <td class="px-4 py-2"><code>keydown</code>، <code>keyup</code>، <code>keypress</code> (مهمل)</td>
-                        <td class="px-4 py-2">اختصارات، إدخال</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">النماذج</td>
-                        <td class="px-4 py-2"><code>submit</code>، <code>change</code>، <code>input</code>، <code>focus</code>، <code>blur</code></td>
-                        <td class="px-4 py-2">التحقق، الإرسال</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">اللمس</td>
-                        <td class="px-4 py-2"><code>touchstart</code>، <code>touchmove</code>، <code>touchend</code></td>
-                        <td class="px-4 py-2">تفاعلات الهاتف</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">التمرير والحجم</td>
-                        <td class="px-4 py-2"><code>scroll</code>، <code>resize</code></td>
-                        <td class="px-4 py-2">تأثيرات، تحميل كسول</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">الحياة</td>
-                        <td class="px-4 py-2"><code>DOMContentLoaded</code>، <code>load</code>، <code>beforeunload</code></td>
-                        <td class="px-4 py-2">تهيئة، تحذير مغادرة</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">الشبكة</td>
-                        <td class="px-4 py-2"><code>online</code>، <code>offline</code></td>
-                        <td class="px-4 py-2">إشعارات الاتصال</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الفئة</th>
+                            <th class="px-4 py-2 font-semibold">الأحداث</th>
+                            <th class="px-4 py-2 font-semibold">الاستخدام</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">الفأرة</td>
+                            <td class="px-4 py-2"><code>click</code>، <code>dblclick</code>، <code>mousedown</code>، <code>mouseup</code>، <code>mousemove</code></td>
+                            <td class="px-4 py-2">أزرار، سحب، تلميحات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">لوحة المفاتيح</td>
+                            <td class="px-4 py-2"><code>keydown</code>، <code>keyup</code>، <code>keypress</code> (مهمل)</td>
+                            <td class="px-4 py-2">اختصارات، إدخال</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">النماذج</td>
+                            <td class="px-4 py-2"><code>submit</code>، <code>change</code>، <code>input</code>، <code>focus</code>، <code>blur</code></td>
+                            <td class="px-4 py-2">التحقق، الإرسال</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">اللمس</td>
+                            <td class="px-4 py-2"><code>touchstart</code>، <code>touchmove</code>، <code>touchend</code></td>
+                            <td class="px-4 py-2">تفاعلات الهاتف</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">التمرير والحجم</td>
+                            <td class="px-4 py-2"><code>scroll</code>، <code>resize</code></td>
+                            <td class="px-4 py-2">تأثيرات، تحميل كسول</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الحياة</td>
+                            <td class="px-4 py-2"><code>DOMContentLoaded</code>، <code>load</code>، <code>beforeunload</code></td>
+                            <td class="px-4 py-2">تهيئة، تحذير مغادرة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الشبكة</td>
+                            <td class="px-4 py-2"><code>online</code>، <code>offline</code></td>
+                            <td class="px-4 py-2">إشعارات الاتصال</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <p>
@@ -674,56 +667,54 @@ controller.abort();`}</code></pre>
         <h2 id="common-mistakes">أخطاء شائعة في التعامل مع الأحداث</h2>
 
         <div class="overflow-x-auto my-4">
-            <table
-                class="w-full text-right border border-zinc-200 dark:border-zinc-700 rounded-lg"
-            >
-                <thead
-                    class="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
-                >
-                    <tr>
-                        <th class="px-4 py-2 font-semibold">الخطأ</th>
-                        <th class="px-4 py-2 font-semibold">السبب</th>
-                        <th class="px-4 py-2 font-semibold">الحل</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
-                    <tr>
-                        <td class="px-4 py-2">استخدام دالة مجهولة ثم محاولة إزالتها</td>
-                        <td class="px-4 py-2">لا يوجد مرجع</td>
-                        <td class="px-4 py-2">استخدم دالة مسماة أو AbortController</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">الاعتماد على e.target بدل closest()</td>
-                        <td class="px-4 py-2">النقر قد يقع على ابن</td>
-                        <td class="px-4 py-2">استخدم e.target.closest(".item")</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">خلط preventDefault وstopPropagation</td>
-                        <td class="px-4 py-2">سلوك غير مقصود</td>
-                        <td class="px-4 py-2">افهم الفرق</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">إضافة مستمع داخل حلقة</td>
-                        <td class="px-4 py-2">آلاف المستمعات</td>
-                        <td class="px-4 py-2">استخدم التفويض</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">عدم استخدام passive في scroll</td>
-                        <td class="px-4 py-2">تمرير بطيء</td>
-                        <td class="px-4 py-2"><code>{`{passive: true}`}</code></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">تنفيذ منطق ثقيل في scroll</td>
-                        <td class="px-4 py-2">إطارات مسقطة</td>
-                        <td class="px-4 py-2">debounce أو rAF</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">عدم إزالة المستمع عند تفكيك المكون</td>
-                        <td class="px-4 py-2">تسريب ذاكرة</td>
-                        <td class="px-4 py-2">AbortController</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الخطأ</th>
+                            <th class="px-4 py-2 font-semibold">السبب</th>
+                            <th class="px-4 py-2 font-semibold">الحل</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">استخدام دالة مجهولة ثم محاولة إزالتها</td>
+                            <td class="px-4 py-2">لا يوجد مرجع</td>
+                            <td class="px-4 py-2">استخدم دالة مسماة أو AbortController</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الاعتماد على e.target بدل closest()</td>
+                            <td class="px-4 py-2">النقر قد يقع على ابن</td>
+                            <td class="px-4 py-2">استخدم e.target.closest(".item")</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">خلط preventDefault وstopPropagation</td>
+                            <td class="px-4 py-2">سلوك غير مقصود</td>
+                            <td class="px-4 py-2">افهم الفرق</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">إضافة مستمع داخل حلقة</td>
+                            <td class="px-4 py-2">آلاف المستمعات</td>
+                            <td class="px-4 py-2">استخدم التفويض</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">عدم استخدام passive في scroll</td>
+                            <td class="px-4 py-2">تمرير بطيء</td>
+                            <td class="px-4 py-2"><code>{`{passive: true}`}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تنفيذ منطق ثقيل في scroll</td>
+                            <td class="px-4 py-2">إطارات مسقطة</td>
+                            <td class="px-4 py-2">debounce أو rAF</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">عدم إزالة المستمع عند تفكيك المكون</td>
+                            <td class="px-4 py-2">تسريب ذاكرة</td>
+                            <td class="px-4 py-2">AbortController</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <h2 id="performance">الأداء: كيف تتجنب إبطاء الصفحة؟</h2>
