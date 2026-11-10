@@ -1,18 +1,18 @@
 ---
 import { ads } from "@/data/ads";
 
-const randomIndex = Math.floor(Math.random() * ads.length);
-const ad = ads[randomIndex];
+const ad = ads[0];
 ---
 
 <div class="my-8 flex justify-center">
-    <div class="w-full max-w-3xl">
+    <div class="w-full max-w-3xl" data-ad-container>
         <h2 class="text-center">فاصل اعلاني</h2>
         <a
             href={ad.link}
             target="_blank"
             rel="noopener noreferrer sponsored"
             class="block rounded-xl overflow-hidden transition-colors no-underline group"
+            data-ad-link
         >
             <img
                 src={ad.banner}
@@ -21,13 +21,14 @@ const ad = ads[randomIndex];
                 height=auto
                 class="w-full h-auto mx-auto"
                 loading="lazy"
+                data-ad-banner
             />
         </a>
         <div class="p-4 text-center">
-            <h3>
+            <h3 data-ad-title>
                 {ad.title}
             </h3>
-            <p>
+            <p data-ad-description>
                 {ad.description}
             </p>
             <p>
@@ -35,10 +36,34 @@ const ad = ads[randomIndex];
                     href={ad.link}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
+                    data-ad-link
                 >
                     تصفح العرض
                 </a>
             </p>
         </div>
     </div>
+
+    <script>
+        import { ads } from "@/data/ads";
+
+        const ad = ads[Math.floor(Math.random() * ads.length)];
+
+        document.querySelectorAll<HTMLElement>("[data-ad-container]").forEach((container) => {
+            container.querySelectorAll<HTMLAnchorElement>("[data-ad-link]").forEach((link) => {
+                link.href = ad.link;
+            });
+
+            const banner = container.querySelector<HTMLImageElement>("[data-ad-banner]");
+            const title = container.querySelector<HTMLElement>("[data-ad-title]");
+            const description = container.querySelector<HTMLElement>("[data-ad-description]");
+
+            if (banner) {
+                banner.src = ad.banner;
+                banner.alt = ad.title;
+            }
+            if (title) title.textContent = ad.title;
+            if (description) description.textContent = ad.description;
+        });
+    </script>
 </div>
