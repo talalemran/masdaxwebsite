@@ -1,0 +1,981 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "open-source-databases-complete-guide",
+    title: "قواعد البيانات مفتوحة المصدر: أيها الأفضل في 2026؟ دليل شامل",
+    metaTitle: "قواعد البيانات مفتوحة المصدر: أيها الأفضل في 2026؟ دليل شامل",
+    description:
+        "دليل معمق لقواعد البيانات مفتوحة المصدر: PostgreSQL وMySQL وMariaDB وSQLite وMongoDB وRedis وClickHouse وCassandra. مقارنة شاملة بالأرقام، حالات الاستخدام، الترخيص، وكيف تختار النظام المناسب لمشروعك.",
+    keywords: [
+        "قواعد بيانات مفتوحة المصدر",
+        "PostgreSQL",
+        "MySQL",
+        "MariaDB",
+        "SQLite",
+        "MongoDB",
+        "Redis",
+        "ClickHouse",
+        "Cassandra",
+        "مقارنة قواعد البيانات",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "11 نوفمبر 2026",
+    pubDate: new Date("2026-11-11"),
+    tags: ["قواعد بيانات", "مفتوح المصدر", "PostgreSQL", "MySQL", "SQLite", "NoSQL"],
+    thumbnail: "/images/open-source-databases-complete-guide.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة القادة" },
+    { id: "postgresql", label: "PostgreSQL: الخيار الافتراضي للعصر الحديث" },
+    { id: "mysql-mariadb", label: "MySQL وMariaDB: عمالقة الويب" },
+    { id: "sqlite", label: "SQLite: القوة الخفية في كل مكان" },
+    { id: "mongodb", label: "MongoDB: مرونة المستندات... ضمن حدود" },
+    { id: "redis", label: "Redis وValkey: محرك السرعة" },
+    { id: "specialized", label: "أنظمة متخصصة: ClickHouse وCassandra" },
+    { id: "decision", label: "كيف تختار؟ دليل القرار" },
+    { id: "hybrid", label: "النهج الهجين: لماذا تستخدم أكثر من قاعدة بيانات" },
+    { id: "licensing", label: "التراخيص: ما يجب أن تعرفه" },
+    { id: "best-practices", label: "أفضل الممارسات في الإنتاج" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في عالم قواعد البيانات مفتوحة المصدر، السؤال عن
+            "الأفضل" هو سؤال خاطئ بطبيعته. لا توجد قاعدة بيانات
+            واحدة تتفوق في كل شيء، بل توجد أدوات مختلفة صُممت
+            لحل مشكلات مختلفة. اختيار النظام المناسب هو قرار
+            هندسي يعتمد على طبيعة بياناتك، حجم التوقعات، وفريق
+            العمل لديك.
+        </p>
+
+        <p>
+            هذا الدليل لا يكتفي بقائمة من الأسماء. إنه يفكك
+            المشهد في عام 2026 بالأرقام والحقائق: من يتصدر
+            فعليًا، ولماذا، ومتى يكون الخيار "الأفضل" خيارًا
+            سيئًا لمشروعك. سنمر على <strong>PostgreSQL</strong>
+            و<strong>MySQL</strong> و<strong>MariaDB</strong>
+            و<strong>SQLite</strong> و<strong>MongoDB</strong>
+            و<strong>Redis</strong> و<strong>Valkey</strong>،
+            ثم نتناول الأنظمة المتخصصة مثل
+            <strong>ClickHouse</strong> و<strong>Cassandra</strong>.
+            الهدف أن تخرج بقرار مبني على فهم، لا على شهرة.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة القادة</h2>
+
+        <p>
+            قبل الغوص في التفاصيل، إليك صورة سريعة عن أكثر
+            الأنظمة شيوعًا واعتمادًا في عام 2026:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">النظام</th>
+                            <th class="px-4 py-2 font-semibold">التصنيف</th>
+                            <th class="px-4 py-2 font-semibold">أفضل استخدام</th>
+                            <th class="px-4 py-2 font-semibold">الاعتماد (2026)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>PostgreSQL</strong></td>
+                            <td class="px-4 py-2">علائقي كائني</td>
+                            <td class="px-4 py-2">تطبيقات عامة، استعلامات معقدة، AI</td>
+                            <td class="px-4 py-2">57.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>MySQL</strong></td>
+                            <td class="px-4 py-2">علائقي</td>
+                            <td class="px-4 py-2">تطبيقات ويب تقليدية</td>
+                            <td class="px-4 py-2">35.1%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>SQLite</strong></td>
+                            <td class="px-4 py-2">علائقي مدمج</td>
+                            <td class="px-4 py-2">تطبيقات محلية، Edge</td>
+                            <td class="px-4 py-2">42.1%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>MongoDB</strong></td>
+                            <td class="px-4 py-2">وثائقي (NoSQL)</td>
+                            <td class="px-4 py-2">بيانات غير مهيكلة</td>
+                            <td class="px-4 py-2">~25%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Redis</strong></td>
+                            <td class="px-4 py-2">مفتاح-قيمة في الذاكرة</td>
+                            <td class="px-4 py-2">تخزين مؤقت، طوابير</td>
+                            <td class="px-4 py-2">15.2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            <em>ملاحظة: النسب لـ PostgreSQL وMySQL وSQLite مأخوذة من
+            استبيان Stack Overflow لعام 2026، وتعكس استخدام
+            المطورين لهذه التقنيات.</em>
+        </p>
+
+        <h2 id="postgresql">PostgreSQL: الخيار الافتراضي للعصر الحديث</h2>
+
+        <p>
+            <img
+                src="/images/articles/open-source-databases-complete-guide/01.webp"
+                alt="PostgreSQL"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            إذا كان عليك اختيار قاعدة بيانات واحدة "للمستقبل"،
+            فإن PostgreSQL هي الإجابة الأقوى. لقد تطورت من كونها
+            بديلاً مفتوح المصدر لـ Oracle إلى أن أصبحت المعيار
+            الفعلي للبنية التحتية الحديثة.
+        </p>
+
+        <h3>لماذا تتصدر؟</h3>
+
+        <p>
+            السبب هو <strong>العمق</strong>. PostgreSQL لا تكتفي
+            بتقديم SQL قياسي؛ بل تقدم نظامًا بيئيًا غنيًا من
+            الميزات التي تحل مشكلات معقدة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الامتثال الصارم لـ SQL:</strong> يدعم
+                النوافذ (Window Functions)، والتعبيرات الجدولية
+                الشائعة (CTEs)، والربط الجانبي (Lateral
+                Joins)، مما يجعله مثاليًا للتحليلات المعقدة.
+            </li>
+            <li>
+                <strong>نوع JSONB:</strong> هذا هو "السلاح
+                السري" الذي يسمح لـ PostgreSQL بالتعامل مع
+                البيانات شبه المهيكلة بكفاءة عالية. يمكنك
+                تخزين مستندات JSON كاملة والاستعلام عنها
+                باستخدام فهارس GIN السريعة، والجمع بينها وبين
+                الجداول العلائقية في استعلام واحد مع ضمانات
+                ACID كاملة. هذا يغطي 80-90% من حالات استخدام
+                MongoDB مع مزايا علائقية إضافية.
+            </li>
+            <li>
+                <strong>قابلية التوسع عبر الإضافات:</strong>
+                هذه هي الميزة القاتلة. يمكنك إضافة قدرات كاملة
+                إلى قاعدة البيانات:
+                <ul>
+                    <li>
+                        <strong>PostGIS:</strong> لتحويلها إلى
+                        أقوى قاعدة بيانات جغرافية مكانية في
+                        العالم.
+                    </li>
+                    <li>
+                        <strong>pgvector:</strong> لدعم البحث
+                        عن التشابه المتجهي، مما يجعلها الخيار
+                        الأمثل لتطبيقات الذكاء الاصطناعي
+                        والوكلاء (Agents).
+                    </li>
+                    <li>
+                        <strong>TimescaleDB:</strong> لتحويلها
+                        إلى قاعدة بيانات سلاسل زمنية عالية
+                        الأداء.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <p>
+            باختصار، PostgreSQL هي "سكين الجيش السويسري" لقواعد
+            البيانات. تبدأ بسيطة، لكنها تنمو مع تعقيد تطبيقك دون
+            الحاجة إلى تغيير النظام. لهذا السبب، تتجه معظم
+            المشاريع الجديدة، خاصة في مجالات AI والتحليلات، إلى
+            PostgreSQL كخيار افتراضي.
+        </p>
+
+        <h3>متى لا تختار PostgreSQL؟</h3>
+
+        <p>
+            PostgreSQL ليست مثالية لكل شيء. قد تتردد في اختيارها
+            عندما:
+        </p>
+
+        <ul>
+            <li>
+                تحتاج إلى كتابة موزعة جغرافيًا على نطاق هائل
+                (ملايين العمليات في الثانية) — هنا قد تكون
+                Cassandra أو أنظمة موزعة أخرى أفضل.
+            </li>
+            <li>
+                فريقك يفتقر إلى الخبرة، وتحتاج إلى شيء أبسط —
+                MySQL قد تكون أقل تحديًا في البداية.
+            </li>
+            <li>
+                تتطلب المعالجة التحليلية (OLAP) على مليارات
+                الصفوف — ClickHouse ستفعل ذلك أسرع بمرات.
+            </li>
+        </ul>
+
+        <h2 id="mysql-mariadb">MySQL وMariaDB: عمالقة الويب</h2>
+
+        <p>
+            لطالما كانت MySQL هي قاعدة البيانات التي تشغل معظم
+            الإنترنت. قوتها تكمن في <strong>البساطة
+            والانتشار</strong>. إنها الخيار الأمثل لتطبيقات
+            الويب التقليدية وأنظمة إدارة المحتوى مثل WordPress،
+            وهي سريعة جدًا في أحمال العمل التي تعتمد على القراءة
+            الكثيفة. نظامها البيئي هائل، وتدعمها كل منصات
+            الاستضافة تقريبًا.
+        </p>
+
+        <p>
+            لكن MySQL، المملوكة لشركة Oracle، تواجه تحديات تتعلق
+            بالحوكمة والابتكار. هنا يأتي دور
+            <strong>MariaDB</strong>، وهي شوكة (Fork) أنشأها
+            المطورون الأصليون لـ MySQL بعد استحواذ Oracle عليها.
+            MariaDB تحافظ على التوافق التام مع MySQL، لكنها
+            تقدم مزايا إضافية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>محرك ColumnStore:</strong> للتحليلات
+                على البيانات الكبيرة.
+            </li>
+            <li>
+                <strong>محرك Aria:</strong> لتحسين أداء
+                الجداول المؤقتة.
+            </li>
+            <li>
+                <strong>Galera Cluster:</strong> دعم أفضل
+                للتعددية في الكتابة (Multi-Master).
+            </li>
+            <li>
+                <strong>حوكمة مجتمعية:</strong> مشروع تحت
+                رعاية مؤسسة MariaDB، وليس شركة واحدة.
+            </li>
+        </ul>
+
+        <h3>متى تختار عائلة MySQL؟</h3>
+
+        <p>
+            عندما يكون مشروعك تقليديًا (CRUD أساسي)، وفريقك يعرف
+            MySQL جيدًا، أو عندما تكون منصة الاستضافة لديك لا
+            تدعم سوى MySQL. إنها خيار آمن ومجرب، لكنها لم تعد
+            الخيار الافتراضي للمشاريع الجديدة التي تتطلب ميزات
+            متقدمة. إذا كنت تبدأ مشروعًا جديدًا، فاعلم أن
+            MariaDB تقدم حوكمة أفضل وتطورًا أسرع في السنوات
+            الأخيرة.
+        </p>
+
+        <h2 id="sqlite">SQLite: القوة الخفية في كل مكان</h2>
+
+        <p>
+            قد لا تظن ذلك، لكن SQLite هي <strong>قاعدة البيانات
+            الأكثر انتشارًا في العالم</strong>. إنها ليست
+            منافسًا لـ PostgreSQL أو MySQL، بل هي فئة مختلفة
+            تمامًا. SQLite هي <strong>مكتبة برمجية</strong>
+            تدمج قاعدة بيانات SQL كاملة في ملف واحد داخل
+            تطبيقك. لا يوجد خادم، لا يوجد إعداد، لا يوجد شبكة.
+        </p>
+
+        <h3>متى تستخدم SQLite؟</h3>
+
+        <ul>
+            <li>
+                <strong>التطبيقات المحلية:</strong> تطبيقات
+                سطح المكتب والهواتف الذكية (iOS وAndroid).
+            </li>
+            <li>
+                <strong>الحوسبة الطرفية (Edge Computing):</strong>
+                بفضل سرعتها الفائقة وعدم حاجتها لإعداد، أصبحت
+                مثالية للبيئات الموزعة حيث يتم تخصيص قاعدة
+                بيانات لكل مستخدم (Database per Tenant).
+            </li>
+            <li>
+                <strong>المواقع الصغيرة:</strong> إذا كان
+                موقعك يعتمد على القراءة بشكل أساسي وحركة
+                المرور منخفضة، يمكن لـ SQLite أن يعمل بكفاءة
+                عالية.
+            </li>
+            <li>
+                <strong>الاختبارات (Testing):</strong> سرعة
+                إنشائها وتدميرها تجعلها مثالية لاختبارات
+                التكامل.
+            </li>
+        </ul>
+
+        <p>
+            قيودها واضحة: <strong>كاتب واحد فقط في كل
+            مرة</strong>. هذا يجعلها غير مناسبة للتطبيقات ذات
+            الكتابة العالية أو التي تتطلب وصولاً متزامنًا من
+            عدة خوادم. لكن في عام 2026، وبفضل تحسينات WAL Mode
+            و<i>STRICT tables</i>، أصبحت SQLite قادرة على التعامل
+            مع أحمال كتابة معتدلة بكفاءة مفاجئة.
+        </p>
+
+        <h2 id="mongodb">MongoDB: مرونة المستندات... ضمن حدود</h2>
+
+        <p>
+            تألقت MongoDB في عصر "البيانات غير المهيكلة". نموذجها
+            الوثائقي (Document Model) يسمح لك بتخزين البيانات
+            ككائنات JSON شبيهة، مما يسهل التطوير السريع ويقلل من
+            الحاجة إلى هجرات (Migrations) معقدة. إنها خيار جيد
+            للتطبيقات التي تكون فيها بنية البيانات غير واضحة
+            تمامًا في البداية، أو للبيانات التي تتخذ شكل مستندات
+            كاملة مثل سجلات المحتوى أو بيانات IoT.
+        </p>
+
+        <p>
+            <strong>لكن، في عام 2026، أصبحت الحجة لصالح MongoDB
+            أضعف.</strong> السبب هو <strong>JSONB في
+            PostgreSQL</strong>. لقد سدت PostgreSQL الفجوة
+            الوظيفية تقريبًا، مع مزايا حاسمة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>معاملات ACID:</strong> يمكنك تنفيذ
+                معاملة واحدة تشمل بيانات علائقية وبيانات JSON،
+                مما يضمن الاتساق الكامل.
+            </li>
+            <li>
+                <strong>الاستعلامات العلائقية:</strong> يمكنك
+                ربط مستندات JSON بجداول علائقية أخرى، وهو ما
+                لا يمكنك فعله بنفس السهولة في MongoDB.
+            </li>
+            <li>
+                <strong>ترخيص مفتوح حقًا:</strong> PostgreSQL
+                مرخصة بـ PostgreSQL License (شبيهة بـ MIT)،
+                بينما MongoDB تستخدم SSPL الذي ليس مفتوح
+                المصدر بالمعنى التقليدي.
+            </li>
+        </ul>
+
+        <p>
+            لذا، ما لم تكن بحاجة إلى كتابة موزعة على نطاق واسع
+            جدًا (آلاف العمليات في الثانية) أو كنت تعتمد بشكل
+            كبير على نموذج المستندات الأصلي، فإن PostgreSQL مع
+            JSONB غالبًا ما تكون الخيار الأكثر أمانًا ومرونة.
+        </p>
+
+        <h2 id="redis">Redis وValkey: محرك السرعة</h2>
+
+        <p>
+            Redis هي أيضًا فئة مختلفة. إنها <strong>مخزن بيانات
+            مفتاح-قيمة في الذاكرة</strong>. لا تحاول أن تكون
+            قاعدة بياناتك الأساسية (نظام السجلات). بدلاً من ذلك،
+            هي طبقة سرعة فائقة تعمل أمام قاعدة البيانات
+            الرئيسية.
+        </p>
+
+        <h3>الاستخدامات الأساسية</h3>
+
+        <ul>
+            <li>
+                <strong>التخزين المؤقت (Caching):</strong>
+                تخزين نتائج الاستعلامات المتكررة لتقليل الحمل
+                على قاعدة البيانات الرئيسية.
+            </li>
+            <li>
+                <strong>إدارة الجلسات (Sessions):</strong>
+                تخزين بيانات جلسات المستخدمين.
+            </li>
+            <li>
+                <strong>الطوابق (Queues):</strong> تعمل كوسيط
+                رسائل خفيف بين خدمات تطبيقك.
+            </li>
+            <li>
+                <strong>الهياكل البيانات المتقدمة:</strong>
+                توفر قوائم، ومجموعات مرتبة، ونشر/اشتراك
+                (Pub/Sub)، مما يجعلها أداة متعددة الاستخدامات.
+            </li>
+            <li>
+                <strong>التحليلات الفورية (Real-time
+                Analytics):</strong> عبر Sorted Sets
+                وHyperLogLog.
+            </li>
+        </ul>
+
+        <h3>قضية الترخيص: Redis مقابل Valkey</h3>
+
+        <p>
+            في عام 2024، قامت Redis Labs (المالكة لـ Redis) بتغيير
+            ترخيصها من BSD المتساهل إلى ترخيص أكثر تقييدًا
+            (RSALv2 وSSPLv1). ردًا على ذلك، أنشأ المجتمع
+            <strong>Valkey</strong>، وهو نسخة شوكة (Fork) من
+            Redis تحت رعاية مؤسسة Linux، وتظل مرخصة بـ BSD. لذا،
+            في عام 2026:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Valkey:</strong> الخيار المفضل من حيث
+                الترخيص لمشاريع جديدة، مع دعم كامل من مجتمع
+                Redis الأصلي (بما في ذلك AWS وGoogle Cloud).
+            </li>
+            <li>
+                <strong>Redis:</strong> لا تزال خيارًا قويًا
+                للميزات، خاصة مع خيار AGPLv3 في الإصدار 8
+                الذي عاد إليها في 2025.
+            </li>
+        </ul>
+
+        <p>
+            من الناحية العملية، التوافق بين Redis وValkey عالٍ
+            جدًا. يمكنك التبديل بينهما بأقل تغييرات في الكود.
+        </p>
+
+        <h2 id="specialized">أنظمة متخصصة: ClickHouse وCassandra</h2>
+
+        <p>
+            خارج نطاق "الخمسة الكبار"، توجد أنظمة مصممة لمهام
+            محددة. لا تحاول استخدامها كقاعدة بيانات عامة، لكنها
+            ستتفوق بشكل ساحق في مجالها.
+        </p>
+
+        <h3>ClickHouse: ملك التحليلات</h3>
+
+        <p>
+            إذا كان تطبيقك يحتاج إلى تحليل ملايين أو مليارات
+            الصفوف في أجزاء من الثانية (مثل لوحات المعلومات
+            التحليلية أو تحليلات الأحداث)، فإن ClickHouse هي
+            الملك. إنها <strong>قاعدة بيانات عمودية</strong>
+            مصممة للاستعلامات التحليلية (OLAP) وليس للمعاملات
+            (OLTP).
+        </p>
+
+        <ul>
+            <li>
+                <strong>الأداء:</strong> استعلامات تجميعية على
+                مليارات الصفوف في أقل من ثانية.
+            </li>
+            <li>
+                <strong>الضغط:</strong> ضغط عمودي ممتاز يقلل
+                من تكاليف التخزين بنسبة كبيرة.
+            </li>
+            <li>
+                <strong>الاستخدام المثالي:</strong> سجلات
+                الأحداث، تحليلات الويب، مراقبة التطبيقات
+                (Observability)، وأي لوحة معلومات تحتاج إلى
+                استجابات شبه فورية.
+            </li>
+            <li>
+                <strong>لا تستخدمها:</strong> للمعاملات
+                الفردية أو التحديثات المتكررة على صف واحد.
+            </li>
+        </ul>
+
+        <h3>Apache Cassandra: للكتابة الكثيفة والتوفر العالي</h3>
+
+        <p>
+            إذا كان تطبيقك يواجه معدلات كتابة هائلة (مثل بيانات
+            المستشعرات أو سجلات الأحداث) ويحتاج إلى التوفر
+            العالي عبر مراكز بيانات متعددة، فإن Cassandra هي
+            الخيار. إنها قاعدة بيانات <strong>موزعة (Distributed)
+            وNoSQL</strong> صُممت من الأساس للتوسع الأفقي.
+        </p>
+
+        <ul>
+            <li>
+                <strong>التوسع الأفقي:</strong> إضافة عقد
+                (Nodes) جديدة تزيد السعة والأداء خطيًا تقريبًا.
+            </li>
+            <li>
+                <strong>التوفر العالي:</strong> لا نقطة فشل
+                واحدة (No Single Point of Failure).
+            </li>
+            <li>
+                <strong>الكتابة الكثيفة:</strong> يمكنها
+                استيعاب ملايين الكتابات في الثانية عبر كتلة
+                (Cluster) متوسطة.
+            </li>
+            <li>
+                <strong>التحدي:</strong> عليك تصميم جداولك حول
+                استعلاماتك (Query-Driven Design). لا يمكنك
+                إجراء JOINs معقدة كما في SQL.
+            </li>
+        </ul>
+
+        <h2 id="decision">كيف تختار؟ دليل القرار</h2>
+
+        <p>
+            بدلاً من البحث عن "الأفضل"، اسأل نفسك: <strong>"ما
+            هي المهمة الأساسية لتطبيقي؟"</strong> هذا الجدول
+            يلخص القرار:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">إذا كنت تبني...</th>
+                            <th class="px-4 py-2 font-semibold">فاختر...</th>
+                            <th class="px-4 py-2 font-semibold">لماذا؟</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">تطبيقًا عامًا أو نظام AI</td>
+                            <td class="px-4 py-2"><strong>PostgreSQL</strong></td>
+                            <td class="px-4 py-2">شامل، ينمو معك، pgvector للـAI</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">موقعًا تقليديًا أو مدونة</td>
+                            <td class="px-4 py-2"><strong>MySQL / MariaDB</strong></td>
+                            <td class="px-4 py-2">بسيط، بيئي، مدعوم في كل مكان</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تطبيقًا محليًا أو Edge</td>
+                            <td class="px-4 py-2"><strong>SQLite</strong></td>
+                            <td class="px-4 py-2">بلا خادم، سريع، مدمج</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تسريع تطبيقك</td>
+                            <td class="px-4 py-2"><strong>Redis / Valkey</strong></td>
+                            <td class="px-4 py-2">في الذاكرة، سرعة فائقة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تحليلات فورية ضخمة</td>
+                            <td class="px-4 py-2"><strong>ClickHouse</strong></td>
+                            <td class="px-4 py-2">عمودية، مصممة لـOLAP</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">نظامًا موزعًا بكتابة كثيفة</td>
+                            <td class="px-4 py-2"><strong>Cassandra</strong></td>
+                            <td class="px-4 py-2">توسع أفقي، توفر عالٍ</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">بيانات غير مهيكلة بمرونة قصوى</td>
+                            <td class="px-4 py-2"><strong>MongoDB</strong> (أو PostgreSQL + JSONB)</td>
+                            <td class="px-4 py-2">مستندات، لكن فكر في JSONB أولاً</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="hybrid">النهج الهجين: لماذا تستخدم أكثر من قاعدة بيانات</h2>
+
+        <p>
+            في الأنظمة الحديثة، من الشائع جدًا أن يستخدم نظام
+            واحد أكثر من قاعدة بيانات. هذا ليس تعقيدًا بلا داعٍ،
+            بل استخدام لكل أداة في مكانها الصحيح. مثال شائع
+            لتطبيق ويب حديث في 2026:
+        </p>
+
+        <ul>
+            <li>
+                <strong>PostgreSQL:</strong> لتخزين البيانات
+                الأساسية (المستخدمون، الطلبات، المنتجات).
+                نظام السجلات (System of Record).
+            </li>
+            <li>
+                <strong>Redis/Valkey:</strong> للتخزين المؤقت،
+                وإدارة الجلسات، والطوابير الخفيفة.
+            </li>
+            <li>
+                <strong>ClickHouse:</strong> لتحليلات الأحداث
+                ولوحات المعلومات (Analytics).
+            </li>
+            <li>
+                <strong>SQLite:</strong> على الأجهزة المحمولة
+                أو كتخزين محلي في تطبيقات الهاتف.
+            </li>
+            <li>
+                <strong>S3 أو MinIO:</strong> للبيانات غير
+                المهيكلة الكبيرة (صور، فيديو، نسخ احتياطية).
+            </li>
+        </ul>
+
+        <p>
+            هذا النهج يُعرف بـ <strong>Polyglot
+            Persistence</strong>. الشرط الوحيد: فهم نقاط القوة
+            لكل أداة، والاستعداد لتعقيد إدارة أنظمة متعددة.
+            لا تفعل ذلك لمجرد "التنويع"، بل لأن لكل نظام دورًا
+            واضحًا لا يمكن لغيره أداؤه بنفس الكفاءة.
+        </p>
+
+        <h2 id="licensing">التراخيص: ما يجب أن تعرفه</h2>
+
+        <p>
+            الترخيص ليس تفصيلًا قانونيًا هامشيًا. في عام 2026،
+            أصبح عاملًا حاسمًا في الاختيار، خاصة للمؤسسات
+            والشركات التي تقدم خدمات سحابية.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">النظام</th>
+                            <th class="px-4 py-2 font-semibold">الترخيص</th>
+                            <th class="px-4 py-2 font-semibold">ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">PostgreSQL</td>
+                            <td class="px-4 py-2">PostgreSQL License (MIT-like)</td>
+                            <td class="px-4 py-2">مفتوح بالكامل، بلا قيود</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">MySQL</td>
+                            <td class="px-4 py-2">GPLv2 + تجاري</td>
+                            <td class="px-4 py-2">متاح تحت ترخيص تجاري من Oracle</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">MariaDB</td>
+                            <td class="px-4 py-2">GPLv2</td>
+                            <td class="px-4 py-2">حوكمة مجتمعية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">SQLite</td>
+                            <td class="px-4 py-2">Public Domain</td>
+                            <td class="px-4 py-2">بلا أي قيود</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">MongoDB</td>
+                            <td class="px-4 py-2">SSPL</td>
+                            <td class="px-4 py-2">ليس مفتوح المصدر بالمعنى التقليدي</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Redis</td>
+                            <td class="px-4 py-2">RSALv2/SSPLv1، AGPLv3 (v8+)</td>
+                            <td class="px-4 py-2">تقييدي للاستخدام السحابي</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Valkey</td>
+                            <td class="px-4 py-2">BSD-3-Clause</td>
+                            <td class="px-4 py-2">شوكة Redis، مجتمعية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">ClickHouse</td>
+                            <td class="px-4 py-2">Apache 2.0</td>
+                            <td class="px-4 py-2">مفتوح بالكامل</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Cassandra</td>
+                            <td class="px-4 py-2">Apache 2.0</td>
+                            <td class="px-4 py-2">مفتوح بالكامل</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            <strong>نصيحة عملية:</strong> إذا كنت تبني منتجًا
+            SaaS أو خدمة سحابية، تجنب الأنظمة ذات تراخيص SSPL
+            أو Business Source License (BSL) إن لم تكن مستعدًا
+            لدفع ترخيص تجاري. PostgreSQL وSQLite وValkey
+            وClickHouse وCassandra كلها خيارات آمنة تمامًا.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في الإنتاج</h2>
+
+        <ul>
+            <li>
+                <strong>ابدأ بأبسط نظام يلبي احتياجاتك:</strong>
+                PostgreSQL أو SQLite. لا تقفز إلى نظام موزع
+                معقد قبل أن تحتاج إليه فعلاً.
+            </li>
+            <li>
+                <strong>افهم حمل العمل (Workload):</strong> هل
+                هو قراءة كثيفة (OLTP)، كتابة كثيفة، تحليلي
+                (OLAP)، أم مختلط؟ كل نوع يحتاج قاعدة مختلفة.
+            </li>
+            <li>
+                <strong>النسخ الاحتياطي والاستعادة:</strong>
+                اختبر خطة النسخ الاحتياطي والاستعادة قبل
+                الإنتاج. قاعدة البيانات الجيدة هي التي يمكنك
+                استعادتها.
+            </li>
+            <li>
+                <strong>المراقبة (Monitoring):</strong> راقب
+                الاستعلامات البطيئة، استخدام الفهارس، واستهلاك
+                الذاكرة. أدوات مثل pg_stat_statements (لـ
+                PostgreSQL) وPerformance Schema (لـ MySQL)
+                ضرورية.
+            </li>
+            <li>
+                <strong>الفهارس (Indexes):</strong> لا تضف
+                فهارس على كل شيء، ولا تترك الاستعلامات المتكررة
+                بدونها. راجع خطط التنفيذ (EXPLAIN) بانتظام.
+            </li>
+            <li>
+                <strong>الأمان:</strong> استخدم اتصالات مشفرة
+                (TLS)، وصلاحيات محدودة، ومراجعة دورية
+                للوصول.
+            </li>
+            <li>
+                <strong>لا تخلط قواعد البيانات دون داعٍ:</strong>
+                Polyglot Persistence مفيد عندما يكون لكل نظام
+                دور واضح. إذا لم يكن كذلك، فأنت تخلق تعقيدًا
+                بلا قيمة.
+            </li>
+            <li>
+                <strong>التحديثات:</strong> أنظمة مثل
+                PostgreSQL تقدم إصدارات جديدة سنويًا مع ميزات
+                مهمة. خطط لدورة تحديث منتظمة.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل حددت حمل العمل الأساسي (OLTP / OLAP /
+                مختلط)؟ ← <strong>القرار يبدأ من هنا</strong>
+            </li>
+            <li>
+                هل تحتاج إلى ACID كامل؟ ←
+                <strong>PostgreSQL أو MySQL</strong>
+            </li>
+            <li>
+                هل تحتاج إلى مرونة مستندات + معاملات؟ ←
+                <strong>PostgreSQL + JSONB</strong>
+            </li>
+            <li>
+                هل تحتاج إلى سرعة فائقة في التخزين المؤقت؟ ←
+                <strong>Redis أو Valkey</strong>
+            </li>
+            <li>
+                هل تحتاج إلى تحليلات على مليارات الصفوف؟ ←
+                <strong>ClickHouse</strong>
+            </li>
+            <li>
+                هل تحتاج إلى توسع أفقي عالمي بكتابة كثيفة؟ ←
+                <strong>Cassandra</strong>
+            </li>
+            <li>
+                هل التراخيص تتوافق مع نموذج أعمالك؟ ←
+                <strong>تجنب SSPL/BSL إن لم تكن مستعدًا لدفع ترخيص تجاري</strong>
+            </li>
+            <li>
+                هل لديك خطة نسخ احتياطي واستعادة مُختبرة؟ ←
+                <strong>ضروري قبل الإنتاج</strong>
+            </li>
+            <li>
+                هل لديك مراقبة للاستعلامات البطيئة؟ ←
+                <strong>Performance Schema أو pg_stat_statements</strong>
+            </li>
+            <li>
+                هل اخترت نظامًا واحدًا كبداية بدلاً من خمسة؟ ←
+                <strong>ابدأ بسيطًا وتوسع عند الحاجة</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.postgresql.org/docs/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    PostgreSQL — Official Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/pgvector/pgvector"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    pgvector — Vector similarity search for PostgreSQL
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://dev.mysql.com/doc/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MySQL — Official Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://mariadb.com/kb/en/documentation/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MariaDB — Knowledge Base
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.sqlite.org/docs.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    SQLite — Official Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://valkey.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Valkey — Open Source Redis Fork
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://clickhouse.com/docs"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ClickHouse — Official Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://cassandra.apache.org/doc/latest/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Apache Cassandra — Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://survey.stackoverflow.co/2026"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Stack Overflow Developer Survey 2026
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://db-engines.com/en/ranking"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    DB-Engines Ranking — Database Popularity
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>ما هي أفضل قاعدة بيانات مفتوحة المصدر للمبتدئين؟</h3>
+        <p>
+            <strong>SQLite</strong> هي الأسهل للبدء، لأنها لا
+            تحتاج إلى خادم أو إعداد. بعد أن تفهم SQL، انتقل إلى
+            <strong>PostgreSQL</strong> لأنها الخيار الأكثر
+            قيمة على المدى الطويل. تجنب البدء بقاعدة بيانات
+            موزعة مثل Cassandra، فهي تضيف تعقيدًا كبيرًا.
+        </p>
+
+        <h3>هل PostgreSQL أفضل من MySQL في كل شيء؟</h3>
+        <p>
+            لا. PostgreSQL تتفوق في الميزات المتقدمة
+            (JSONB، Window Functions، الإضافات). MySQL تتفوق
+            في البساطة وسهولة الإعداد الأولي، وفي بعض أحمال
+            القراءة البسيطة. للاستخدامات التقليدية، كلاهما
+            كافٍ. للمشاريع الجديدة التي تتطلب ميزات متقدمة،
+            PostgreSQL هي الخيار الأقوى.
+        </p>
+
+        <h3>هل MongoDB لا تزال خيارًا جيدًا في 2026؟</h3>
+        <p>
+            نعم، لكن لم تعد الخيار الافتراضي. PostgreSQL مع
+            JSONB تغطي معظم حالات استخدام MongoDB مع مزايا
+            علائقية وACID كامل. MongoDB لا تزال مناسبة للبيانات
+            غير المهيكلة تمامًا أو للتطبيقات التي تعتمد بشكل
+            كبير على نموذج المستندات الأصلي.
+        </p>
+
+        <h3>ما الفرق بين Redis وValkey؟</h3>
+        <p>
+            Valkey هي شوكة (Fork) من Redis أنشأها المجتمع بعد
+            تغيير Redis لترخيصها في 2024. من الناحية التقنية،
+            هما متوافقان تقريبًا. من ناحية الترخيص، Valkey
+            مرخصة بـ BSD (مفتوحة بالكامل)، بينما Redis تحولت
+            إلى تراخيص أكثر تقييدًا. للمشاريع الجديدة، Valkey
+            هي الخيار الآمن قانونيًا.
+        </p>
+
+        <h3>هل يمكنني استخدام أكثر من قاعدة بيانات في نفس المشروع؟</h3>
+        <p>
+            نعم، وهذا شائع في الأنظمة الحديثة (Polyglot
+            Persistence). المثال النموذجي: PostgreSQL للبيانات
+            الأساسية، Redis للتخزين المؤقت، ClickHouse
+            للتحليلات. الشرط الأساسي: أن يكون لكل نظام دور
+            واضح ومبرر، وأن تكون مستعدًا لتعقيد إدارة أنظمة
+            متعددة.
+        </p>
+
+        <h3>ما هو الفرق بين OLTP وOLAP؟</h3>
+        <p>
+            <strong>OLTP (Online Transaction Processing):</strong>
+            للمعاملات اليومية (إدراج، تحديث، حذف) على عدد
+            صغير من الصفوف. مثال: تسجيل طلب جديد. قواعد
+            مثل PostgreSQL وMySQL مصممة لهذا.
+            <strong>OLAP (Online Analytical Processing):</strong>
+            للاستعلامات التحليلية على ملايين أو مليارات
+            الصفوف. مثال: تقرير مبيعات سنوي. ClickHouse مصممة
+            لهذا.
+        </p>
+    </PostLayout>
+</BaseLayout>
