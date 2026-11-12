@@ -1,0 +1,949 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-open-source-android-messaging-apps",
+    title: "أفضل تطبيقات أندرويد للتواصل مفتوحة المصدر في 2026: دليل شامل",
+    metaTitle: "أفضل تطبيقات أندرويد للتواصل مفتوحة المصدر 2026",
+    description:
+        "دليل معمق لأفضل تطبيقات أندرويد للتواصل مفتوحة المصدر: Signal وMolly وElement وSession وSimpleX وBriar وDelta Chat. مقارنة في الخصوصية، التشفير، الترخيص، وحالات الاستخدام.",
+    keywords: [
+        "تطبيقات تواصل مفتوحة المصدر",
+        "أفضل تطبيقات أندرويد",
+        "Signal",
+        "Element",
+        "Session",
+        "SimpleX Chat",
+        "Briar",
+        "خصوصية",
+        "تشفير",
+        "بدائل واتساب",
+    ],
+    category: "أندرويد",
+    author: "طلال عمران",
+    date: "12 نوفمبر 2026",
+    pubDate: new Date("2026-11-12"),
+    tags: ["أندرويد", "مفتوح المصدر", "خصوصية", "تشفير", "تطبيقات تواصل"],
+    thumbnail: "/images/best-open-source-android-messaging-apps.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة تطبيقات التواصل" },
+    { id: "signal", label: "Signal: المعيار الذهبي" },
+    { id: "molly", label: "Molly: Signal المُحصَّن" },
+    { id: "element", label: "Element (Matrix): السيادة الرقمية" },
+    { id: "session", label: "Session: بلا رقم هاتف" },
+    { id: "simplex", label: "SimpleX Chat: بلا هوية إطلاقًا" },
+    { id: "briar", label: "Briar: عندما ينقطع الإنترنت" },
+    { id: "delta-chat", label: "Delta Chat: البريد الإلكتروني كتطبيق محادثة" },
+    { id: "conversations", label: "Conversations (XMPP): المعيار المفتوح" },
+    { id: "wire", label: "Wire: للمؤسسات" },
+    { id: "threema", label: "Threema Libre: السويسرية المدفوعة" },
+    { id: "comparison", label: "جدول المقارنة الشامل" },
+    { id: "best-practices", label: "أفضل الممارسات في اختيار التطبيق" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في عام 2026، لم يعد السؤال "هل تطبيق التواصل الذي أستخدمه آمن؟"
+            سؤالًا نظريًا. تسريبات البيانات، وتغيير شروط الخدمة، والاعتماد على
+            خوادم مركزية في بلدان بعينها، كلها تجعل اختيار تطبيق التواصل قرارًا
+            يتعلق
+            <strong>بالخصوصية، والسيادة الرقمية، والثقة</strong>.
+        </p>
+
+        <p>
+            تطبيقات التواصل مفتوحة المصدر تقدم بديلًا مختلفًا جذريًا: الكود متاح
+            للمراجعة، والخوادم قابلة للاستضافة الذاتية في كثير من الحالات،
+            والبروتوكولات موثقة. لكن ليس كل تطبيق "مفتوح المصدر" متساويًا في
+            الخصوصية أو الاستخدام. هذا الدليل يفكك المشهد: من
+            <strong>Signal</strong> المعيار الذهبي إلى
+            <strong>Briar</strong> الذي يعمل بلا إنترنت، مع مقارنة عملية لكل
+            تطبيق.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة تطبيقات التواصل</h2>
+
+        <p>
+            الجدول التالي يلخص التطبيقات التي يغطيها الدليل، مع الفرق الجوهري
+            بينها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">التطبيق</th>
+                            <th class="px-4 py-2 font-semibold">
+                                الفكرة الأساسية
+                            </th>
+                            <th class="px-4 py-2 font-semibold">
+                                يحتاج رقم هاتف؟
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Signal</strong>
+                            </td>
+                            <td class="px-4 py-2">معيار التشفير، تبني واسع</td>
+                            <td class="px-4 py-2">
+                                نعم (مع اسم مستخدم اختياري)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Molly</strong>
+                            </td>
+                            <td class="px-4 py-2">
+                                Signal مُحصَّن، بلا Google
+                            </td>
+                            <td class="px-4 py-2">نعم</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Element</strong>
+                            </td>
+                            <td class="px-4 py-2">لامركزي، استضافة ذاتية</td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Session</strong>
+                            </td>
+                            <td class="px-4 py-2">بلا رقم، شبكة لامركزية</td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>SimpleX</strong>
+                            </td>
+                            <td class="px-4 py-2">بلا هوية على الإطلاق</td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Briar</strong>
+                            </td>
+                            <td class="px-4 py-2">
+                                يعمل بلا إنترنت (Bluetooth/Wi-Fi)
+                            </td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Delta Chat</strong>
+                            </td>
+                            <td class="px-4 py-2">
+                                يعمل فوق البريد الإلكتروني
+                            </td>
+                            <td class="px-4 py-2">لا (بريد فقط)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Conversations</strong>
+                            </td>
+                            <td class="px-4 py-2">XMPP مفتوح، OMEMO</td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="signal">Signal: المعيار الذهبي</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/01.webp"
+                alt="Signal"
+                width="1200"
+                height="800"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Signal هي النقطة المرجعية التي تقاس بها كل تطبيقات التواصل الآمن.
+            بروتوكولها (Signal Protocol) يستخدم في واتساب وGoogle Messages وحتى
+            في تطبيقات أخرى. الكود مفتوح بالكامل، والمؤسسة غير ربحية، ولا تعتمد
+            على الإعلانات.
+        </p>
+
+        <p>
+            الميزة الأكبر لـ Signal هي{" "}
+            <strong>توازنها بين الأمان والسهولة</strong>. التشفير التام من الطرف
+            إلى الطرف (E2EE) مفعّل افتراضيًا لكل رسالة ومكالمة ومجموعة. لا تحتاج
+            إلى إعدادات معقدة. في 2026، أضافت Signal{" "}
+            <strong>أسماء المستخدمين (Usernames)</strong>
+            بحيث يمكنك التواصل دون كشف رقم هاتفك، وهي خطوة مهمة نحو تقليل
+            الاعتماد على المعرفات الشخصية.
+        </p>
+
+        <p>
+            القيد الأساسي: التسجيل يتطلب رقم هاتف، وإن كان يمكن إخفاؤه لاحقًا
+            خلف اسم مستخدم. كما أن Signal تعتمد على خوادم مركزية (وإن كانت موزعة
+            جغرافيًا)، وهذا يعني أنك تثق في المؤسسة بعدم الاحتفاظ بالبيانات —
+            وهي ثقة مدعومة بالكود المفتوح والتدقيق المستقل.
+        </p>
+
+        <h2 id="molly">Molly: Signal المُحصَّن</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/02.webp"
+                alt="Molly"
+                width="1200"
+                height="630"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Molly هي <strong>نسخة محصنة (Hardened Fork) من Signal</strong> لنظام
+            أندرويد. تتصل بنفس خوادم Signal، لذا يمكنك التحدث مع جهات اتصالك في
+            Signal دون تغيير، لكنها تضيف طبقات أمان إضافية غير موجودة في التطبيق
+            الرسمي.
+        </p>
+
+        <ul>
+            <li>
+                <strong>تشفير قاعدة البيانات المحلية:</strong>
+                حماية سجل محادثاتك بكلمة مرور، وهو خيار أزالته Signal الرسمي منذ
+                سنوات.
+            </li>
+            <li>
+                <strong>ماسح الذاكرة العشوائية (RAM Wiper):</strong>
+                يمسح البيانات الحساسة من الذاكرة عند القفل.
+            </li>
+            <li>
+                <strong>قفل تلقائي:</strong> يقفل التطبيق وفق شروط تحددها.
+            </li>
+            <li>
+                <strong>نسخة FOSS بالكامل:</strong> Molly-FOSS تأتي بدون أي
+                مكتبات Google proprietary، وتدعم UnifiedPush للإشعارات بدون
+                Firebase.
+            </li>
+            <li>
+                <strong>دعم Tor/SOCKS:</strong> تمرير حركة الشبكة عبر Orbot.
+            </li>
+        </ul>
+
+        <p>
+            إذا كنت تستخدم Signal بالفعل لكنك تريد مزيدًا من التحكم المحلي، أو
+            تحتاج إلى نسخة تعمل على هاتف "منزوع الجوجل" (De-Googled)، فإن Molly
+            هي الترقية الطبيعية.
+        </p>
+
+        <h2 id="element">Element (Matrix): السيادة الرقمية</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/03.webp"
+                alt="Element"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Element ليس مجرد تطبيق محادثة، بل هو واجهة لشبكة
+            <strong>Matrix</strong> — بروتوكول مفتوح للتواصل اللامركزي. الفكرة
+            المركزية: يمكنك تشغيل خادمك الخاص (Homeserver)، أو الانضمام إلى خادم
+            مجتمعي، والبقاء متصلًا ببقية الشبكة. هذه{" "}
+            <strong>السيادة الرقمية</strong> هي ما يميز Element عن كل ما سبق.
+        </p>
+
+        <p>
+            التشفير التام من الطرف إلى الطرف مفعّل افتراضيًا للمحادثات الفردية
+            والجماعية والمكالمات. في 2026، أصبح التحقق من الأجهزة (Cross-Signed
+            Device Verification) إلزاميًا للرسائل المشفرة، مما يمنع الأجهزة غير
+            الموثوقة من قراءة المحادثات.
+        </p>
+
+        <p>Element مناسبة بشكل خاص لـ:</p>
+
+        <ul>
+            <li>
+                <strong>الفرق والمؤسسات:</strong> بديل مفتوح لـ Slack وMicrosoft
+                Teams، مع استضافة ذاتية كاملة.
+            </li>
+            <li>
+                <strong>المجتمعات:</strong> غرف عامة، ومساحات (Spaces)، وأدوات
+                إشراف قوية.
+            </li>
+            <li>
+                <strong>من يريد التحكم في بياناته:</strong>
+                يمكنك تشغيل Synapse (الخادم المرجعي) أو Dendrite على خادمك
+                الخاص.
+            </li>
+        </ul>
+
+        <p>
+            التحدي: الإعداد الأولي أكثر تعقيدًا من Signal، وواجهة Element X
+            (العميل الأحدث) لا تزال تتطور بسرعة. لكن إذا كانت السيادة على
+            البيانات أولوية، فلا منافس حقيقيًا لها في هذا النطاق.
+        </p>
+
+        <h2 id="session">Session: بلا رقم هاتف</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/04.webp"
+                alt="Session"
+                width="1200"
+                height="676"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            Session تحل مشكلة واحدة بشكل جذري:
+            <strong>لا تحتاج إلى رقم هاتف أو بريد إلكتروني لإنشاء حساب</strong>.
+            عند التثبيت، يتم توليد معرف عشوائي مكون من 66 حرفًا ورقمًا. هذا
+            المعرف هو هويتك، ولا يرتبط بأي معلومة شخصية.
+        </p>
+
+        <p>
+            Session تعمل على <strong>شبكة لامركزية</strong> من العقد (Nodes)
+            التي يديرها مستخدمون حول العالم، وتستخدم{" "}
+            <strong>توجيه البصل (Onion Routing)</strong>
+            على غرار Tor، بحيث لا تعرف العقدة التي تمر عبرها الرسالة هوية المرسل
+            أو المستقبل. لا يتم تسجيل البيانات الوصفية (Metadata)، وعنوان IP
+            الخاص بك لا يُكشف للمحادث.
+        </p>
+
+        <p>
+            الميزة: <strong>إخفاء الهوية (Anonymity)</strong>. العيب: الشبكة
+            أصغر من Signal، وتفتقر إلى بعض الميزات الاجتماعية (لا بحث عن
+            مستخدمين، لا ملفات شخصية غنية). كما أن الاعتماد على شبكة حوافز
+            (Incentivized Nodes) يثير أسئلة لدى بعض الخبراء حول استدامة النموذج
+            على المدى الطويل، رغم أن المؤسسة المشرفة (Session Technology
+            Foundation) سويسرية وغير ربحية.
+        </p>
+
+        <h2 id="simplex">SimpleX Chat: بلا هوية إطلاقًا</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/05.webp"
+                alt="SimpleX Chat"
+                width="1200"
+                height="799"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        </p>
+
+        <p>
+            إذا كانت Session تلغي رقم الهاتف، فإن
+            <strong>
+                SimpleX Chat تذهب أبعد من ذلك: لا توجد أي هوية على الإطلاق
+            </strong>
+            . ليس فقط لا رقم هاتف أو بريد — بل لا معرف مستخدم، ولا حتى رقم
+            عشوائي ثابت. هذا هو أول تطبيق محادثة في العالم بهذا التصميم.
+        </p>
+
+        <p>
+            كيف يعمل؟ بدلاً من أن يكون لك "حساب" يعرفه الخادم، كل محادثة تستخدم{" "}
+            <strong>طوابير رسائل أحادية الاتجاه (Unidirectional Queues)</strong>{" "}
+            على خوادم قد تكون مختلفة. لا يوجد معرف مشترك بين طابور المرسل وطابور
+            المستقبل. هذا يعني أن الخادم — حتى لو أراد — لا يستطيع ربط "من يتحدث
+            مع من".
+        </p>
+
+        <p>
+            SimpleX تدعم التشفير التام مع{" "}
+            <strong>خيار التشفير ما بعد الكمي (Post-Quantum)</strong>،
+            والمكالمات الصوتية والمرئية، والمجموعات. الكود مفتوح بالكامل
+            (AGPL-3.0)، والتطبيق متاح على F-Droid وGoogle Play.
+        </p>
+
+        <p>
+            الثمن: <strong>الشبكة صغيرة</strong>، وتجربة المستخدم أقل صقلًا من
+            Signal. لكن بالنسبة لمن يحتاج إلى حماية قصوى للبيانات الوصفية —
+            صحفيين، ناشطين، أو أي شخص لا يريد أن يعرف أحد أنه يتحدث مع شخص آخر —
+            فإن SimpleX تقدم نموذجًا لا يضاهى.
+        </p>
+
+        <h2 id="briar">Briar: عندما ينقطع الإنترنت</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/06.webp"
+                alt="Briar"
+                width="1200"
+                height="900"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        </p>
+
+        <p>
+            Briar هي التطبيق الوحيد في هذه القائمة الذي
+            <strong>لا يحتاج إلى إنترنت إطلاقًا</strong>. صُمم في الأصل للناشطين
+            والصحفيين في مناطق الرقابة أو انقطاع الشبكة، لكنه أصبح أداة أساسية
+            لأي شخص يريد التواصل في حالات الطوارئ.
+        </p>
+
+        <p>Briar تعمل عبر ثلاث قنوات:</p>
+
+        <ul>
+            <li>
+                <strong>Tor:</strong> عندما يكون الإنترنت متاحًا، تمر الرسائل
+                عبر شبكة Tor، مما يخفي عنوان IP.
+            </li>
+            <li>
+                <strong>Bluetooth:</strong> عندما يكون الإنترنت مقطوعًا، يتزامن
+                Briar مباشرة مع الأجهزة القريبة.
+            </li>
+            <li>
+                <strong>Wi-Fi المحلي:</strong> نفس الفكرة عبر شبكة محلية دون
+                إنترنت.
+            </li>
+        </ul>
+
+        <p>
+            الرسائل مشفرة تامًا من الطرف إلى الطرف، ولا يوجد خادم مركزي. إذا كنت
+            غير متصل، تُخزن الرسالة في
+            <strong>Briar Mailbox</strong> على جهاز آخر حتى تعود. التطبيق يمنع
+            لقطات الشاشة، ولا يطلب الوصول إلى جهات الاتصال — بل يجب إضافة
+            الأشخاص وجهًا لوجه عبر مسح رمز QR.
+        </p>
+
+        <p>
+            القيود: <strong>أندرويد فقط</strong> (لا يوجد إصدار iOS أو سطح
+            مكتب)، ولا مكالمات صوتية أو مرئية، ولا قابلية للاكتشاف. لكن هذه
+            القيود مقصودة: Briar ليست للتواصل الاجتماعي، بل
+            <strong>أداة بقاء واتصال في الظروف القصوى</strong>.
+        </p>
+
+        <h2 id="delta-chat">Delta Chat: البريد الإلكتروني كتطبيق محادثة</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/07.webp"
+                alt="Delta Chat"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        </p>
+
+        <p>
+            Delta Chat فكرة عبقرية بسيطة:{" "}
+            <strong>
+                لا تحتاج إلى خادم جديد — استخدم بريدك الإلكتروني الموجود
+            </strong>
+            . يرسل التطبيق الرسائل عبر IMAP وSMTP، ويشفرها بـ OpenPGP، ويقدم
+            واجهة محادثة حديثة. من منظور المستخدم، يبدو كأي تطبيق محادثة. من
+            منظور البنية التحتية، هو بريد إلكتروني.
+        </p>
+
+        <p>
+            هذا يعني أنك لا تحتاج إلى رقم هاتف، ولا حتى إلى بريد إلكتروني جديد —
+            يمكنك استخدام عنوانك الحالي. البريد الإلكتروني موجود منذ عقود، وبنية
+            تحتية موزعة بالفعل. إذا كان لديك بريد، فلديك تطبيق محادثة.
+        </p>
+
+        <p>
+            Delta Chat يدعم المجموعات، والمرفقات، والمكالمات (عبر WebRTC)،
+            والتطبيقات المصغرة (Webxdc). إنه خيار ممتاز لمن يريد{" "}
+            <strong>لامركزية كاملة دون تعقيد إعداد خادم</strong>، أو لمن يعمل في
+            بيئة يكون فيها البريد الإلكتروني هو القناة الأكثر موثوقية.
+        </p>
+
+        <h2 id="conversations">Conversations (XMPP): المعيار المفتوح</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/08.webp"
+                alt="Conversations"
+                width="1200"
+                height="600"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            XMPP هو بروتوكول المراسلة المفتوح الأقدم والأكثر معيارية، وكان أساس
+            Google Talk سابقًا. تطبيق
+            <strong>Conversations</strong> هو أفضل عميل XMPP على أندرويد: مفتوح
+            المصدر بالكامل، ويستخدم
+            <strong>OMEMO</strong> (تشفير متعدد الأجهزة) أو OpenPGP، ويدعم
+            المكالمات المشفرة (DTLS-SRTP).
+        </p>
+
+        <p>
+            الميزة الكبرى لـ XMPP هي <strong>الفدرالية (Federation)</strong>:
+            يمكنك التسجيل على أي خادم XMPP، وكل خوادم XMPP تتحدث مع بعضها. هذا
+            يعني أنك لست محبوسًا في شبكة شركة واحدة. يمكنك استضافة خادمك (مثل
+            Prosody أو ejabberd) أو الانضمام إلى خادم عام.
+        </p>
+
+        <p>
+            Conversations يوصى به لأولئك الذين يريدون
+            <strong>بديلًا مفتوحًا تمامًا للمعايير</strong>، ويفهمون البنية
+            التحتية للمراسلة. التجربة أقل سلاسة من Signal، لكن الحرية أكبر.
+        </p>
+
+        <h2 id="wire">Wire: للمؤسسات</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/09.webp"
+                alt="Wire"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        </p>
+
+        <p>
+            Wire موجهة بشكل أساسي إلى <strong>الشركات والفرق</strong> التي تحتاج
+            إلى تواصل آمن مع أدوات إدارة. الكود بالكامل — العميل والخادم — مفتوح
+            المصدر، ويخضع لتدقيق أمني مستقل. التشفير التام من الطرف إلى الطرف
+            مفعّل افتراضيًا للمحادثات والمكالمات ومشاركة الملفات.
+        </p>
+
+        <p>
+            Wire تقدم نسخة مجانية للاستخدام الشخصي، لكن قيمتها الحقيقية في
+            النسخة المؤسسية: إدارة مركزية، وتكامل مع أدوات الشركة، واستضافة في
+            الاتحاد الأوروبي. إذا كنت تبحث عن بديل مفتوح لـ Slack أو Teams مع
+            التزام قوي بالخصوصية، فـ Wire خيار جدير بالاعتبار.
+        </p>
+
+        <h2 id="threema">Threema Libre: السويسرية المدفوعة</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-android-messaging-apps/10.webp"
+                alt="Threema Libre"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+
+        </p>
+
+        <p>
+            Threema تطبيق سويسري مدفوع (دفعة واحدة) لا يحتاج إلى رقم هاتف. نسخة{" "}
+            <strong>Threema Libre</strong>
+            متاحة حصريًا على F-Droid، وهي{" "}
+            <strong>100% مفتوحة المصدر وخالية من أي مكتبات proprietary</strong>
+            (بما في ذلك Google Play Services)، على عكس النسخة الموجودة على
+            Google Play.
+        </p>
+
+        <p>
+            الخوادم في سويسرا، والتشفير يستخدم مكتبة NaCl المفتوحة، ويخضع
+            التطبيق لتدقيقات منتظمة. Threema شائعة في أوروبا، خاصة في أوساط
+            الأعمال والقطاع العام. العيب: مدفوعة (حوالي 5 دولارات)، وشبكتها أصغر
+            من Signal. لكن إذا كنت تفضل نموذج "ادفع مرة واحدة، ولا تحاتج إلى رقم
+            هاتف، وخوادم سويسرية"، فهي خيار ممتاز.
+        </p>
+
+        <h2 id="comparison">جدول المقارنة الشامل</h2>
+
+        <p>هذا الجدول يلخص الفروق الجوهرية بين التطبيقات العشرة:</p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">التطبيق</th>
+                            <th class="px-4 py-2 font-semibold">الترخيص</th>
+                            <th class="px-4 py-2 font-semibold">
+                                تشفير افتراضي
+                            </th>
+                            <th class="px-4 py-2 font-semibold">لامركزي؟</th>
+                            <th class="px-4 py-2 font-semibold">أفضل لـ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Signal</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">لا (خوادم مركزية)</td>
+                            <td class="px-4 py-2">الاستخدام اليومي</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Molly</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">مستخدمي Signal المتقدمين</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Element</strong>
+                            </td>
+                            <td class="px-4 py-2">AGPLv3</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">نعم (Matrix)</td>
+                            <td class="px-4 py-2">الفرق والمجتمعات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Session</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">نعم (Onion)</td>
+                            <td class="px-4 py-2">إخفاء الهوية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>SimpleX</strong>
+                            </td>
+                            <td class="px-4 py-2">AGPLv3</td>
+                            <td class="px-4 py-2">نعم + PQ</td>
+                            <td class="px-4 py-2">نعم (طوابير)</td>
+                            <td class="px-4 py-2">حماية البيانات الوصفية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Briar</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">نعم (P2P)</td>
+                            <td class="px-4 py-2">الطوارئ والرقابة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Delta Chat</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3</td>
+                            <td class="px-4 py-2">نعم (OpenPGP)</td>
+                            <td class="px-4 py-2">نعم (بريد)</td>
+                            <td class="px-4 py-2">لامركزية بلا خادم جديد</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Conversations</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3</td>
+                            <td class="px-4 py-2">نعم (OMEMO)</td>
+                            <td class="px-4 py-2">نعم (XMPP)</td>
+                            <td class="px-4 py-2">المعايير المفتوحة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Wire</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3 (AGPL للخادم)</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">اختياري (استضافة ذاتية)</td>
+                            <td class="px-4 py-2">المؤسسات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">
+                                <strong>Threema Libre</strong>
+                            </td>
+                            <td class="px-4 py-2">GPLv3</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">لا (خوادم سويسرية)</td>
+                            <td class="px-4 py-2">من يفضل الدفع لمرة واحدة</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="best-practices">أفضل الممارسات في اختيار التطبيق</h2>
+
+        <p>
+            لا يوجد تطبيق "أفضل" لكل الناس. القرار يعتمد على نموذج التهديد
+            (Threat Model) الخاص بك، ومن تتواصل معهم، وما الذي تريد حمايته
+            بالضبط:
+        </p>
+
+        <ul>
+            <li>
+                <strong>للاستخدام اليومي مع العائلة والأصدقاء:</strong> ابدأ بـ{" "}
+                <strong>Signal</strong>. أكبر شبكة، أسهل إقناعًا للآخرين، وأمان
+                ممتاز.
+            </li>
+            <li>
+                <strong>
+                    إذا كنت منزوع الجوجل أو تريد تحكمًا محليًا أكبر:
+                </strong>{" "}
+                <strong>Molly-FOSS</strong>
+                على نفس شبكة Signal.
+            </li>
+            <li>
+                <strong>للفرق أو المجتمعات أو الاستضافة الذاتية:</strong>{" "}
+                <strong>Element (Matrix)</strong>.
+            </li>
+            <li>
+                <strong>إذا كنت لا تريد كشف رقم هاتفك إطلاقًا:</strong>{" "}
+                <strong>Session</strong> أو
+                <strong>SimpleX</strong>.
+            </li>
+            <li>
+                <strong>
+                    إذا كان نموذج تهديدك يشمل البيانات الوصفية (من يتحدث مع من):
+                </strong>
+                <strong>SimpleX Chat</strong>.
+            </li>
+            <li>
+                <strong>للطوارئ أو المناطق ذات الرقابة الشديدة:</strong>{" "}
+                <strong>Briar</strong>.
+            </li>
+            <li>
+                <strong>
+                    إذا كان لديك بريد إلكتروني وتريد لامركزية فورية:
+                </strong>{" "}
+                <strong>Delta Chat</strong>.
+            </li>
+        </ul>
+
+        <p>
+            <strong>قاعدة ذهبية:</strong> لا تستخدم تطبيقًا واحدًا لكل شيء. من
+            الشائع استخدام Signal للعائلة، وElement للعمل، وBriar كخطة احتياطية.
+            المهم أن تفهم ما يقدمه كل تطبيق وما لا يقدمه.
+        </p>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل حددت نموذج التهديد الخاص بك؟ ←
+                <strong>القرار يبدأ من هنا</strong>
+            </li>
+            <li>
+                هل التطبيق مفتوح المصدر بالكامل (بما في ذلك الخادم إن أمكن)؟ ←{" "}
+                <strong>تحقق من الترخيص</strong>
+            </li>
+            <li>
+                هل التشفير التام من الطرف إلى الطرف مفعّل افتراضيًا؟ ←{" "}
+                <strong>يجب أن يكون نعم</strong>
+            </li>
+            <li>
+                هل يطلب التطبيق رقم هاتف أو بريدًا؟ ←
+                <strong>اختر حسب حاجتك للخصوصية</strong>
+            </li>
+            <li>
+                هل يمكنك استضافة الخادم بنفسك إن أردت؟ ←
+                <strong>مهم للسيادة الرقمية</strong>
+            </li>
+            <li>
+                هل تدعم الشبكة أشخاصًا تتواصل معهم فعلاً؟ ←
+                <strong>الشبكة الفارغة لا تحمي أحدًا</strong>
+            </li>
+            <li>
+                هل جربت Molly-FOSS إذا كنت على Signal؟ ←
+                <strong>تحسين مجاني للخصوصية المحلية</strong>
+            </li>
+            <li>
+                هل لديك خطة احتياطية (Briar أو Delta Chat) لانقطاع الإنترنت؟ ←{" "}
+                <strong>مستحسن</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>فيما يلي روابط رسمية ومراجع يمكنك الرجوع إليها:</p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://signal.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Signal — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://molly.im/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Molly — Hardened Signal Fork
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://element.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Element — Matrix Client
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://getsession.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Session — Private Messenger
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://simplex.chat/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    SimpleX Chat — No Identifiers
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://briarproject.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Briar — Secure Messaging Anywhere
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://delta.chat/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Delta Chat — Email-based Messenger
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://conversations.im/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Conversations — XMPP Client
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://wire.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Wire — Secure Collaboration
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://threema.ch/en/threema-libre"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Threema Libre — 100% Open Source
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>ما الفرق بين Signal وMolly؟</h3>
+        <p>
+            Molly هي نسخة محصنة من Signal تتصل بنفس الشبكة والخوادم. الفرق أن
+            Molly تضيف تشفير قاعدة البيانات المحلية، وماسح ذاكرة، وقفلًا
+            تلقائيًا، ونسخة FOSS خالية من مكتبات Google. إذا كنت تريد مزيدًا من
+            التحكم المحلي دون مغادرة شبكة Signal، فـ Molly هي الخيار.
+        </p>
+
+        <h3>هل Session أكثر خصوصية من Signal؟</h3>
+        <p>
+            تعتمد الإجابة على تعريفك للخصوصية. Session لا تطلب رقم هاتف وتستخدم
+            توجيه البصل، مما يوفر إخفاء هوية أقوى. لكن شبكتها أصغر، ونموذج
+            الحوافز (Incentivized Nodes) يثير أسئلة حول الاستدامة. Signal توفر
+            توازنًا أفضل بين الأمان والاعتماد الواسع. إذا كان نموذج تهديدك يتطلب
+            إخفاء الهوية الكامل، فقد تكون Session أو SimpleX أنسب.
+        </p>
+
+        <h3>هل Briar يعمل حقًا بدون إنترنت؟</h3>
+        <p>
+            نعم. Briar يستخدم Bluetooth وWi-Fi المحلي لمزامنة الرسائل مباشرة بين
+            الأجهزة القريبة، دون أي خادم مركزي أو اتصال بالإنترنت. هذا يجعله
+            مثاليًا للطوارئ والمناطق التي تتعرض لانقطاع الشبكة أو الرقابة. لكنه
+            يتطلب أن يكون الطرفان قريبين جغرافيًا (في نطاق Bluetooth/Wi-Fi) أو
+            استخدام Briar Mailbox.
+        </p>
+
+        <h3>هل يمكنني استخدام Element دون تشغيل خادم؟</h3>
+        <p>
+            نعم. يمكنك التسجيل على خادم Matrix عام (مثل matrix.org) واستخدام
+            Element مباشرة. الاستضافة الذاتية اختيارية لمن يريد تحكمًا كاملًا في
+            البيانات. لكن حتى مع خادم عام، تظل الرسائل مشفرة تامًا من الطرف إلى
+            الطرف، والخادم لا يستطيع قراءتها.
+        </p>
+
+        <h3>ما هو أفضل تطبيق إذا كنت لا أثق بأي خادم مركزي؟</h3>
+        <p>
+            <strong>Briar</strong> هو الخيار الأقوى: لا يوجد خادم مركزي على
+            الإطلاق. إذا كنت بحاجة إلى التواصل عبر الإنترنت، فإن{" "}
+            <strong>SimpleX</strong>
+            (طوابير لا مركزية) أو <strong>Session</strong>
+            (شبكة Onion) تقدم نماذج لامركزية أقوى من Signal أو Wire. لكن لكل
+            منها مقايضات في حجم الشبكة وسهولة الاستخدام.
+        </p>
+    </PostLayout>
+</BaseLayout>
