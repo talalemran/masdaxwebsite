@@ -1,0 +1,905 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-open-source-antivirus-software",
+    title: "أفضل مكافحات الفيروسات مفتوحة المصدر في 2026: دليل شامل",
+    metaTitle: "أفضل مكافحات الفيروسات مفتوحة المصدر 2026",
+    description:
+        "دليل معمق لمكافحات الفيروسات مفتوحة المصدر: ClamAV، ClamTk، ClamWin، Maldet، rkhunter، chkrootkit، Hypatia. ماذا تحمي فعلاً، وما حدودها، ومتى تحتاج إلى حل تجاري، مع مقارنة كاملة.",
+    keywords: [
+        "مكافحات فيروسات مفتوحة المصدر",
+        "ClamAV",
+        "ClamTk",
+        "ClamWin",
+        "Linux Malware Detect",
+        "rkhunter",
+        "chkrootkit",
+        "Hypatia",
+        "مكافح فيروسات لينكس",
+        "أمان مفتوح المصدر",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "14 نوفمبر 2026",
+    pubDate: new Date("2026-11-14"),
+    tags: ["أمن", "مفتوح المصدر", "ClamAV", "لينكس", "مكافحات فيروسات", "خصوصية"],
+    thumbnail: "/images/best-open-source-antivirus-software.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة الأدوات مفتوحة المصدر" },
+    { id: "the-elephant", label: "الفيل في الغرفة: ما الذي تحميه فعلاً؟" },
+    { id: "clamav", label: "ClamAV: المحرك الذي يقوم عليه كل شيء" },
+    { id: "clamtk", label: "ClamTk: واجهة رسومية لـClamAV" },
+    { id: "clamwin", label: "ClamWin: ClamAV على ويندوز" },
+    { id: "maldet", label: "Linux Malware Detect (Maldet): لخوادم الويب" },
+    { id: "rootkit-hunters", label: "rkhunter وchkrootkit: صائدا الجذور الخفية" },
+    { id: "hypatia", label: "Hypatia: مكافح مفتوح المصدر لأندرويد" },
+    { id: "yara", label: "YARA: أداة الباحثين، لا المستخدم العادي" },
+    { id: "comparison", label: "جدول المقارنة الشامل" },
+    { id: "open-vs-commercial", label: "المفتوح مقابل التجاري: الحقيقة بلا مبالغة" },
+    { id: "best-practices", label: "أفضل الممارسات في حماية الأجهزة" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            البحث عن "مكافح فيروسات مفتوح المصدر" غالبًا ما يبدأ
+            بتوقع بسيط: برنامج مجاني، مفتوح الكود، يقوم بنفس ما
+            يفعله Norton أو Kaspersky. ثم تأتي الصدمة: لا يوجد
+            مكافح فيروسات مفتوح المصدر يضاهي أفضل الحلول
+            التجارية في الكشف الوقائي، ولا يوجد حل واحد يغطي كل
+            الاحتياجات.
+        </p>
+
+        <p>
+            هذا الدليل لا يبيعك وهمًا. سيوضح لك ما تفعله الأدوات
+            مفتوحة المصدر <strong>بشكل ممتاز</strong>، وما لا
+            تفعله <strong>على الإطلاق</strong>، ومتى يكون
+            استخدامها <strong>قرارًا هندسيًا ذكيًا</strong>
+            ومتى يكون <strong>خطأً خطيرًا</strong>. من
+            <strong>ClamAV</strong> الذي يشغل ملايين الخوادم،
+            إلى <strong>Hypatia</strong> على أندرويد، إلى
+            <strong>rkhunter</strong> الذي يصطاد الجذور
+            الخفية — سنفكك كل أداة بلا مبالغة.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة الأدوات مفتوحة المصدر</h2>
+
+        <p>
+            الجدول التالي يلخص الأدوات التي يغطيها الدليل، مع
+            الفئة التي تنتمي إليها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الأداة</th>
+                            <th class="px-4 py-2 font-semibold">الفئة</th>
+                            <th class="px-4 py-2 font-semibold">المنصة</th>
+                            <th class="px-4 py-2 font-semibold">أفضل استخدام</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>ClamAV</strong></td>
+                            <td class="px-4 py-2">محرك مكافحة فيروسات</td>
+                            <td class="px-4 py-2">لينكس، ويندوز، macOS</td>
+                            <td class="px-4 py-2">خوادم البريد، الملفات، الفحص عند الطلب</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>ClamTk</strong></td>
+                            <td class="px-4 py-2">واجهة رسومية لـClamAV</td>
+                            <td class="px-4 py-2">لينكس</td>
+                            <td class="px-4 py-2">سطح مكتب لينكس</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>ClamWin</strong></td>
+                            <td class="px-4 py-2">واجهة رسومية لـClamAV</td>
+                            <td class="px-4 py-2">ويندوز</td>
+                            <td class="px-4 py-2">فحص عند الطلب على ويندوز</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Maldet (LMD)</strong></td>
+                            <td class="px-4 py-2">كاشف برمجيات خبيثة للخوادم</td>
+                            <td class="px-4 py-2">لينكس</td>
+                            <td class="px-4 py-2">استضافة مشتركة، خوادم ويب</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>rkhunter</strong></td>
+                            <td class="px-4 py-2">كاشف جذور خفية (Rootkit)</td>
+                            <td class="px-4 py-2">لينكس، يونكس</td>
+                            <td class="px-4 py-2">تحقيق ما بعد الاختراق، الامتثال</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>chkrootkit</strong></td>
+                            <td class="px-4 py-2">كاشف جذور خفية</td>
+                            <td class="px-4 py-2">لينكس، يونكس</td>
+                            <td class="px-4 py-2">فحص سريع للجذور الخفية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Hypatia</strong></td>
+                            <td class="px-4 py-2">مكافح فيروسات لأندرويد</td>
+                            <td class="px-4 py-2">أندرويد</td>
+                            <td class="px-4 py-2">فحص عند الطلب على الهاتف</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>YARA / YARA-X</strong></td>
+                            <td class="px-4 py-2">مطابقة أنماط</td>
+                            <td class="px-4 py-2">متعدد</td>
+                            <td class="px-4 py-2">باحثو الأمن، التحليل الجنائي</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="the-elephant">الفيل في الغرفة: ما الذي تحميه فعلاً؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-antivirus-software/01.webp"
+                alt="مكافحات الفيروسات مفتوحة المصدر"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            قبل الحديث عن الأدوات، يجب توضيح حقيقة أساسية:
+            <strong>لا يوجد مكافح فيروسات مفتوح المصدر يقدم
+            حماية استباقية شاملة (Real-time Protection)
+            بمستوى الحلول التجارية على أجهزة سطح المكتب
+            العامة</strong>. هذا ليس عيبًا في التصميم، بل
+            نتيجة لطبيعة التهديدات.
+        </p>
+
+        <p>
+            الأدوات مفتوحة المصدر مصممة أساسًا لـ:
+        </p>
+
+        <ul>
+            <li>
+                <strong>فحص الملفات عند الطلب (On-Demand):</strong>
+                تحميل ملف، فحص مجلد، فحص خادم.
+            </li>
+            <li>
+                <strong>حماية نقاط النهاية عالية الخطورة:</strong>
+                خوادم البريد، بوابات الملفات، خوادم الويب.
+            </li>
+            <li>
+                <strong>التحليل والتحقيق:</strong> فهم ما
+                حدث، لا مجرد منعه.
+            </li>
+        </ul>
+
+        <p>
+            ما لا تفعله هذه الأدوات — أو لا تفعله جيدًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الحماية الاستباقية على سطح
+                المكتب:</strong> اعتراض الملفات الضارة
+                قبل فتحها، حجب المواقع الخبيثة، تحليل
+                السلوك في الوقت الفعلي.
+            </li>
+            <li>
+                <strong>الكشف القائم على السلوك
+                (Behavioral Detection):</strong> اكتشاف
+                التهديدات الجديدة التي لا تملك توقيعًا
+                معروفًا.
+            </li>
+            <li>
+                <strong>الاستجابة التلقائية للتهديدات
+                (EDR):</strong> عزل الجهاز، إيقاف العملية،
+                رفع تقرير تلقائي.
+            </li>
+        </ul>
+
+        <p>
+            لهذا، من المهم أن يكون توقعك واقعيًا: الأدوات
+            مفتوحة المصدر <strong>طبقة من دفاع متعدد
+            الطبقات</strong>، وليست درعًا وحيدًا. إذا كنت
+            تبحث عن "مكافح فيروسات" لويندوز أو macOS
+            للاستخدام اليومي، فالأدوات المفتوحة ليست
+            البديل الكامل عن Windows Defender أو حل
+            تجاري. إذا كنت تدير خادم لينكس، أو تريد فحصًا
+            عند الطلب، أو تبحث عن أدوات تدقيق — فهي
+            ممتازة.
+        </p>
+
+        <h2 id="clamav">ClamAV: المحرك الذي يقوم عليه كل شيء</h2>
+
+        <p>
+            ClamAV هو <strong>محرك مكافحة الفيروسات
+            مفتوح المصدر الأكثر انتشارًا في العالم</strong>.
+            بدأ في 2001، واستحوذت عليه Sourcefire في 2007،
+            ثم Cisco في 2013. اليوم يطوره فريق
+            <strong>Cisco Talos</strong>، أحد أكبر فرق
+            استخبارات التهديدات في العالم، وآخر إصدار
+            مستقر هو 1.5.2 (مارس 2026).
+        </p>
+
+        <p>
+            ClamAV ليس برنامجًا واحدًا، بل <strong>مجموعة
+            أدوات</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>clamscan:</strong> الماسح
+                التقليدي من سطر الأوامر لفحص ملف أو مجلد
+                أو قرص.
+            </li>
+            <li>
+                <strong>clamd:</strong> خادم (Daemon)
+                متعدد الخيوط يحمل قاعدة التوقيعات في
+                الذاكرة، مما يجعل الفحص شبه فوري. هذا
+                ما يجعله مناسبًا لخوادم البريد الكبيرة.
+            </li>
+            <li>
+                <strong>freshclam:</strong> أداة تحديث
+                قاعدة التوقيعات تلقائيًا. قاعدة التوقيعات
+                تُحدَّث عدة مرات يوميًا، وموقعة رقميًا
+                لمنع التلاعب.
+            </li>
+            <li>
+                <strong>clamonacc:</strong> مكوّن الحماية
+                في الوقت الفعلي (On-Access) على لينكس.
+                يراقب الوصول إلى الملفات ويفحصها عند
+                الفتح.
+            </li>
+        </ul>
+
+        <p>
+            نقاط القوة الحقيقية لـClamAV:
+        </p>
+
+        <ul>
+            <li>
+                <strong>مجاني بالكامل، مفتوح المصدر
+                (GPLv2)</strong>، بلا إعلانات أو نسخة
+                مدفوعة خفية.
+            </li>
+            <li>
+                <strong>مصمم للخوادم:</strong> يعمل
+                بلا واجهة رسومية، ويتكامل مع Postfix
+                وSendmail وأي نظام بريد آخر.
+            </li>
+            <li>
+                <strong>قاعدة توقيعات ضخمة:</strong>
+                ملايين التهديدات، مع تركيز قوي على
+                البرمجيات الخبيثة التي تستهدف ويندوز
+                (وهو ما يهم خوادم البريد التي تمر عبرها
+                مرفقات ويندوز).
+            </li>
+            <li>
+                <strong>يدعم صيغًا معقدة:</strong>
+                الأرشيفات المضغوطة، ملفات Office، PDF،
+                وحتى بعض الصيغ المشفرة.
+            </li>
+        </ul>
+
+        <p>
+            لكن يجب أن نكون صريحين بشأن القيود:
+        </p>
+
+        <ul>
+            <li>
+                <strong>معدل الكشف أقل من الحلول
+                التجارية:</strong> في اختبارات مستقلة،
+                سجل ClamAV معدلات كشف أقل بكثير من
+                Defender وKaspersky على عينات
+                ويندوز الحديثة.
+            </li>
+            <li>
+                <strong>ليس مثاليًا لسطح مكتب
+                ويندوز:</strong> حتى المصادر الموثوقة
+                تقول إنه "ليس الأداة الأنسب لحماية
+                أجهزة ويندوز المنزلية في 2026".
+            </li>
+            <li>
+                <strong>يعتمد على التوقيعات:</strong>
+                لن يكتشف تهديدًا جديدًا تمامًا (Zero-Day)
+                لم يُضف إلى قاعدة التوقيعات بعد.
+            </li>
+        </ul>
+
+        <p>
+            <strong>الخلاصة:</strong> ClamAV هو
+            <strong>المعيار الفعلي لفحص البريد
+            والملفات على الخوادم</strong>، لكنه ليس
+            "مكافح فيروسات" لجهازك الشخصي بالمعنى
+            التجاري. استخدمه حيث صُمم ليعمل.
+        </p>
+
+        <h2 id="clamtk">ClamTk: واجهة رسومية لـClamAV</h2>
+
+        <p>
+            ClamTk هو <strong>واجهة رسومية (GUI)
+            لـClamAV</strong>، مكتوبة بـPerl/GTK، ومصممة
+            لتكون خفيفة وسهلة الاستخدام على لينكس. تتيح
+            لك فحص الملفات والمجلدات بنقرات قليلة، وتحديث
+            التوقيعات، وإدارة الحجر الصحي (Quarantine)،
+            وعرض سجل الفحص.
+        </p>
+
+        <p>
+            في 2026، ظهر بديل أحدث: <strong>clamtk-rs</strong>،
+            واجهة مكتوبة بلغة Rust باستخدام GTK4، تقدم
+            تجربة أكثر حداثة، مع دعم الحجر الصحي وسجل
+            الفحص وإعدادات متقدمة.
+        </p>
+
+        <p>
+            ClamTk مناسب لـ:
+        </p>
+
+        <ul>
+            <li>
+                مستخدمي لينكس الذين يريدون فحص ملفات
+                مشبوهة دون استخدام الطرفية.
+            </li>
+            <li>
+                فحص أرشيفات التنزيلات أو الملفات
+                المستلمة عبر البريد.
+            </li>
+        </ul>
+
+        <p>
+            لكنه <strong>ليس حماية استباقية</strong>.
+            ClamTk يفحص عند الطلب فقط (On-Demand)، ولا
+            يراقب الملفات في الوقت الفعلي. إذا كنت تريد
+            حماية مستمرة على سطح مكتب لينكس، فهذا ليس
+            ما تبحث عنه.
+        </p>
+
+        <h2 id="clamwin">ClamWin: ClamAV على ويندوز</h2>
+
+        <p>
+            ClamWin هو <strong>واجهة رسومية لـClamAV
+            على ويندوز</strong>. يستخدم نفس محرك ClamAV
+            ونفس قاعدة التوقيعات، ويقدم جدولة فحص
+            تلقائية وتحديثات تلقائية.
+        </p>
+
+        <p>
+            متى يكون ClamWin منطقيًا؟
+        </p>
+
+        <ul>
+            <li>
+                كأداة <strong>فحص ثانوية</strong> إلى
+                جانب Windows Defender (للتحقق من ملفات
+                مشبوهة).
+            </li>
+            <li>
+                على أجهزة ويندوز قديمة أو محدودة
+                الموارد، حيث لا تريد حزمة أمنية ثقيلة.
+            </li>
+            <li>
+                لفحص أقراص USB أو ملفات قبل فتحها.
+            </li>
+        </ul>
+
+        <p>
+            ما لا يجب توقعه من ClamWin:
+        </p>
+
+        <ul>
+            <li>
+                <strong>لا حماية في الوقت الفعلي:</strong>
+                لا يفحص الملفات تلقائيًا عند فتحها.
+            </li>
+            <li>
+                <strong>معدل كشف أقل من Defender:</strong>
+                قاعدة توقيعات ClamAV موجهة أساسًا
+                لتهديدات البريد، وليست محسّنة لتهديدات
+                سطح مكتب ويندوز الحديثة.
+            </li>
+        </ul>
+
+        <p>
+            <strong>الحكم:</strong> ClamWin ليس
+            بديلًا عن Windows Defender. لكنه أداة
+            فحص إضافية مجانية ومفتوحة المصدر يمكن أن
+            تكون مفيدة في سيناريوهات محددة.
+        </p>
+
+        <h2 id="maldet">Linux Malware Detect (Maldet): لخوادم الويب</h2>
+
+        <p>
+            Maldet (LMD) ليس مكافح فيروسات بالمعنى
+            التقليدي. إنه <strong>كاشف برمجيات خبيثة
+            مصمم لبيئات الاستضافة المشتركة وخوادم
+            الويب</strong>. يركز على اكتشاف
+            <strong>أكواد PHP الخبيثة، وأصداف الويب
+            (Web Shells)، والملفات التي تُحقن في
+            مواقع الويب</strong>.
+        </p>
+
+        <p>
+            كيف يعمل؟ يستخدم <strong>مزيجًا من
+            التوقيعات السداسية (Hex Signatures)،
+            وتجزئات MD5، ومحرك ClamAV نفسه</strong>
+            لتحليل الملفات. يمكنه مراقبة التغييرات في
+            أنظمة الملفات عبر inotify، وبدء فحص فوري
+            عند تعديل ملف — وهو أمر حيوي لاكتشاف
+            الاختراق في الوقت المناسب.
+        </p>
+
+        <p>
+            Maldet هو الخيار الأول لمديري خوادم
+            الاستضافة الذين يحتاجون إلى:
+        </p>
+
+        <ul>
+            <li>
+                اكتشاف <strong>سكربتات PHP الخبيثة</strong>
+                التي تحقن في مواقع العملاء.
+            </li>
+            <li>
+                عزل الملفات المصابة تلقائيًا
+                (Quarantine).
+            </li>
+            <li>
+                تقارير قابلة للتدقيق لأغراض الامتثال.
+            </li>
+        </ul>
+
+        <p>
+            لكنه <strong>ليس أداة لسطح المكتب</strong>،
+            ولا يغطي تهديدات ويندوز أو الملفات
+            التنفيذية العامة. إنه متخصص، ويؤدي
+            تخصصه جيدًا.
+        </p>
+
+        <h2 id="rootkit-hunters">rkhunter وchkrootkit: صائدا الجذور الخفية</h2>
+
+        <p>
+            الجذور الخفية (Rootkits) هي برمجيات تخفي
+            وجودها ووجود برامج أخرى خبيثة على النظام.
+            هي من أخطر التهديدات لأنها تعمل على مستوى
+            النواة أو أسفلها، ويمكن أن تخفي العمليات
+            والملفات والاتصالات الشبكية. مكافحات
+            الفيروسات التقليدية ليست مصممة لاكتشافها.
+        </p>
+
+        <p>
+            هنا يأتي دور أدوات متخصصة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>rkhunter:</strong> يفحص النظام
+                بحثًا عن علامات الجذور الخفية المعروفة
+                — ملفات مشبوهة، صلاحيات غير طبيعية،
+                عمليات مخفية. مناسب للتحقيق بعد الاختراق
+                ولأغراض الامتثال (SOC 2، PCI DSS).
+            </li>
+            <li>
+                <strong>chkrootkit:</strong> أداة أخف
+                وأسرع، تفحص التوقيعات والسلوكيات
+                المعروفة للجذور الخفية. مناسبة للفحص
+                السريع الدوري.
+            </li>
+        </ul>
+
+        <p>
+            كلاهما <strong>لا يعمل في الوقت الفعلي</strong>
+            — بل يفحص عند الطلب. وهما مكملان لـClamAV،
+            وليسا بديلين عنه. في خادم لينكس جيد
+            التحصين، يمكنك جدولة rkhunter أسبوعيًا،
+            وClamAV يوميًا.
+        </p>
+
+        <h2 id="hypatia">Hypatia: مكافح مفتوح المصدر لأندرويد</h2>
+
+        <p>
+            Hypatia هو <strong>أول مكافح برمجيات خبيثة
+            مفتوح المصدر لأندرويد</strong>. يستخدم
+            قاعدة توقيعات على نمط ClamAV، ويعمل على
+            الأجهزة غير المتصلة بالجوجل (De-Googled)
+            أو عبر F-Droid.
+        </p>
+
+        <p>
+            متى يكون Hypatia مفيدًا؟
+        </p>
+
+        <ul>
+            <li>
+                على أجهزة أندرويد بدون خدمات Google
+                (مثل GrapheneOS أو LineageOS بدون
+                GApps)، حيث لا يتوفر Play Protect.
+            </li>
+            <li>
+                كطبقة فحص إضافية عند تثبيت تطبيقات
+                من مصادر خارج المتجر الرسمي.
+            </li>
+        </ul>
+
+        <p>
+            قيوده: <strong>لا يقدم حماية في الوقت
+            الفعلي</strong> (في معظم إصداراته)، ويعتمد
+            على التوقيعات، وشبكته أصغر بكثير من
+            Play Protect. لكنه يملأ فراغًا حقيقيًا
+            لمن يرفض الاعتماد على البنية التحتية
+            لجوجل.
+        </p>
+
+        <h2 id="yara">YARA: أداة الباحثين، لا المستخدم العادي</h2>
+
+        <p>
+            YARA (وخليفتها YARA-X) ليست مكافح فيروسات
+            للمستخدم النهائي. إنها <strong>أداة
+            مطابقة أنماط (Pattern Matching)</strong>
+            يستخدمها باحثو الأمن ومحللو البرمجيات
+            الخبيثة لكتابة قواعد (Rules) تحدد عائلات
+            البرمجيات الخبيثة بناءً على خصائصها
+            النصية أو الثنائية.
+        </p>
+
+        <p>
+            قد تجد YARA داخل منتجات أخرى (بما في ذلك
+            بعض حلول مكافحة الفيروسات التجارية)، أو
+            تستخدمها بنفسك إذا كنت تحلل عينات مشبوهة.
+            لكنها ليست أداة "ثبّتها وانسها" للمستخدم
+            العادي.
+        </p>
+
+        <h2 id="comparison">جدول المقارنة الشامل</h2>
+
+        <p>
+            هذا الجدول يلخص الفروق الجوهرية بين الأدوات
+            التي ناقشناها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الأداة</th>
+                            <th class="px-4 py-2 font-semibold">حماية وقت فعلي؟</th>
+                            <th class="px-4 py-2 font-semibold">كشف سلوكي؟</th>
+                            <th class="px-4 py-2 font-semibold">مناسب لـ</th>
+                            <th class="px-4 py-2 font-semibold">لا يناسب</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>ClamAV</strong></td>
+                            <td class="px-4 py-2">نعم (clamonacc، لينكس)</td>
+                            <td class="px-4 py-2">لا (توقيعات فقط)</td>
+                            <td class="px-4 py-2">خوادم البريد والملفات</td>
+                            <td class="px-4 py-2">سطح مكتب ويندوز العام</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>ClamTk</strong></td>
+                            <td class="px-4 py-2">لا (فحص عند الطلب)</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">مستخدم لينكس المكتبي</td>
+                            <td class="px-4 py-2">الحماية المستمرة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>ClamWin</strong></td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">فحص ثانوي على ويندوز</td>
+                            <td class="px-4 py-2">بديل Defender</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Maldet</strong></td>
+                            <td class="px-4 py-2">نعم (inotify)</td>
+                            <td class="px-4 py-2">جزئيًا (توقيعات + heuristics)</td>
+                            <td class="px-4 py-2">خوادم ويب واستضافة</td>
+                            <td class="px-4 py-2">سطح المكتب</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>rkhunter</strong></td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">لا (علامات معروفة)</td>
+                            <td class="px-4 py-2">تحقيق وامتثال</td>
+                            <td class="px-4 py-2">الحماية اليومية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>chkrootkit</strong></td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">فحص سريع للجذور</td>
+                            <td class="px-4 py-2">الحماية الشاملة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Hypatia</strong></td>
+                            <td class="px-4 py-2">لا (غالبًا)</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">أندرويد بلا جوجل</td>
+                            <td class="px-4 py-2">أجهزة أندرويد عادية</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="open-vs-commercial">المفتوح مقابل التجاري: الحقيقة بلا مبالغة</h2>
+
+        <p>
+            السؤال الذي يطرحه كثيرون: <strong>"هل يمكن
+            لمكافح مفتوح المصدر أن يحل محل
+            Kaspersky أو Bitdefender أو
+            Defender؟"</strong>
+        </p>
+
+        <p>
+            الإجابة المختصرة: <strong>ليس على سطح
+            المكتب العام</strong>.
+        </p>
+
+        <p>
+            الحلول التجارية تتفوق في:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الكشف القائم على السلوك
+                والتعلم الآلي:</strong> تحليل ما
+                يفعله الملف، لا مجرد توقيعه.
+            </li>
+            <li>
+                <strong>الحماية الاستباقية:</strong>
+                حجب الملفات الضارة قبل تنفيذها،
+                حماية المتصفح، حماية الشبكة.
+            </li>
+            <li>
+                <strong>الاستجابة التلقائية:</strong>
+                عزل الجهاز، حذف التهديد، إشعار
+                المستخدم.
+            </li>
+            <li>
+                <strong>قواعد تهديدات أوسع:</strong>
+                فرق بحث ضخمة تجمع عينات من ملايين
+                المستخدمين.
+            </li>
+        </ul>
+
+        <p>
+            الأدوات المفتوحة تتفوق في:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الشفافية:</strong> يمكنك
+                مراجعة الكود، والتأكد من عدم وجود
+                أبواب خلفية أو تتبع.
+            </li>
+            <li>
+                <strong>التحكم:</strong> أنت تقرر
+                متى يفحص، وماذا يفحص، وأين تذهب
+                النتائج.
+            </li>
+            <li>
+                <strong>التكلفة:</strong> مجانية
+                بالكامل، بلا تراخيص أو اشتراكات.
+            </li>
+            <li>
+                <strong>السيادة على البيانات:</strong>
+                لا إرسال تقارير لخوادم الشركة.
+            </li>
+            <li>
+                <strong>الخوادم:</strong> حيث لا
+                توجد حلول تجارية عملية أصلًا.
+            </li>
+        </ul>
+
+        <p>
+            <strong>الخلاصة:</strong> لا تستخدم
+            ClamAV بديلًا عن Defender على ويندوز.
+            لكن إذا كنت تدير خادم بريد، أو تريد فحص
+            ملفات على لينكس، أو تبحث عن طبقة إضافية
+            شفافة — فهذه الأدوات تؤدي عملها بامتياز.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في حماية الأجهزة</h2>
+
+        <ul>
+            <li>
+                <strong>لا تعتمد على أداة واحدة:</strong>
+                استخدم ClamAV للفحص + rkhunter
+                للجذور + تحديثات النظام + جدار ناري
+                + وعي المستخدم.
+            </li>
+            <li>
+                <strong>حدّث التوقيعات دائمًا:</strong>
+                ClamAV بدون freshclam يعمل بتوقيعات
+                قديمة — وهو عديم الفائدة تقريبًا.
+            </li>
+            <li>
+                <strong>استخدم ClamAV حيث صُمم:</strong>
+                خوادم البريد والملفات، وليس كبديل
+                لمكافح سطح المكتب.
+            </li>
+            <li>
+                <strong>على ويندوز:</strong> اترك
+                Windows Defender يعمل، واستخدم
+                ClamWin كأداة فحص ثانوية عند الشك.
+            </li>
+            <li>
+                <strong>على لينكس المكتبي:</strong>
+                ClamTk أو clamtk-rs للفحص عند الطلب
+                كافٍ لمعظم المستخدمين، لأن فيروسات
+                لينكس المكتبية نادرة.
+            </li>
+            <li>
+                <strong>على الخوادم:</strong> استخدم
+                ClamAV + Maldet + rkhunter، مع
+                جدولة cron منتظمة.
+            </li>
+            <li>
+                <strong>لا تنسَ التحديثات الأمنية
+                للنظام نفسه:</strong> معظم الاختراقات
+                تأتي من ثغرات غير مصححة، لا من
+                فيروسات.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعرف ما الذي تحميه فعلاً؟ ←
+                <strong>ClamAV للخوادم والفحص، لا
+                لسطح المكتب العام</strong>
+            </li>
+            <li>
+                هل تحدّث توقيعات ClamAV يوميًا؟ ←
+                <strong>freshclam ضروري</strong>
+            </li>
+            <li>
+                هل تستخدم حماية في الوقت الفعلي؟ ←
+                <strong>clamonacc على لينكس، لا
+                ClamWin</strong>
+            </li>
+            <li>
+                هل تفحص الجذور الخفية؟ ←
+                <strong>rkhunter أو chkrootkit
+                دوريًا</strong>
+            </li>
+            <li>
+                هل تدير خادم ويب؟ ←
+                <strong>Maldet إضافة ضرورية</strong>
+            </li>
+            <li>
+                هل تستخدم أندرويد بلا جوجل؟ ←
+                <strong>Hypatia يملأ الفراغ</strong>
+            </li>
+            <li>
+                هل تعتمد على أداة واحدة فقط؟ ←
+                <strong>لا، استخدم دفاعًا متعدد
+                الطبقات</strong>
+            </li>
+            <li>
+                هل تعرف متى تحتاج إلى حل
+                تجاري؟ ← <strong>على سطح مكتب
+                ويندوز العام، نعم</strong>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل ClamAV بديل جيد عن Windows Defender؟</h3>
+        <p>
+            <strong>لا.</strong> ClamAV ليس مصممًا
+            لسطح مكتب ويندوز العام، ولا يقدم حماية
+            استباقية بنفس مستوى Defender. معدل كشفه
+            أقل، وقاعدة توقيعاته موجهة أساسًا لتهديدات
+            البريد والملفات على الخوادم. على ويندوز،
+            اترك Defender يعمل، واستخدم ClamWin كأداة
+            فحص ثانوية عند الحاجة.
+        </p>
+
+        <h3>هل أحتاج إلى مكافح فيروسات على لينكس؟</h3>
+        <p>
+            الإجابة تعتمد على الاستخدام. على سطح مكتب
+            لينكس شخصي، الفيروسات الموجهة لنظام لينكس
+            نفسه نادرة جدًا، والاعتماد على تحديثات
+            النظام والوعي كافٍ لمعظم المستخدمين. لكن
+            إذا كنت تشارك ملفات مع أجهزة ويندوز، أو
+            تدير خادمًا، أو تستقبل مرفقات بريد —
+            فاستخدام ClamAV للفحص عند الطلب أو على
+            الخادم ضروري.
+        </p>
+
+        <h3>ما الفرق بين ClamAV وClamTk وClamWin؟</h3>
+        <p>
+            <strong>ClamAV</strong> هو المحرك
+            والأدوات (سطر أوامر). <strong>ClamTk</strong>
+            واجهة رسومية لـClamAV على لينكس.
+            <strong>ClamWin</strong> واجهة رسومية
+            لـClamAV على ويندوز. الثلاثة يستخدمون
+            نفس قاعدة التوقيعات والمحرك، لكن تجربة
+            الاستخدام تختلف حسب المنصة.
+        </p>
+
+        <h3>هل يمكن لمكافح مفتوح المصدر أن يكتشف برامج الفدية (Ransomware)؟</h3>
+        <p>
+            يمكنه اكتشاف برامج الفدية <strong>المعروفة</strong>
+            عبر التوقيعات، لكنه <strong>لن يكتشف
+            هجومًا جديدًا تمامًا</strong> لم يُضف إلى
+            قاعدة التوقيعات. اكتشاف برامج الفدية
+            يتطلب مراقبة سلوكية (تشفير مفاجئ لملفات
+            كثيرة)، وهي قدرة توجد في الحلول التجارية
+            المتقدمة أكثر من الأدوات المفتوحة
+            العامة.
+        </p>
+
+        <h3>هل rkhunter وchkrootkit يكفيان لحماية الخادم؟</h3>
+        <p>
+            لا. هما أداتان متخصصتان لاكتشاف الجذور
+            الخفية (Rootkits)، وليسا مكافحات فيروسات
+            شاملة. لحماية خادم لينكس، تحتاج إلى
+            <strong>ClamAV</strong> لفحص الملفات
+            والبرمجيات الخبيثة العامة،
+            و<strong>Maldet</strong> لخوادم الويب،
+            و<strong>rkhunter</strong> للجذور الخفية،
+            بالإضافة إلى جدار ناري وتحديثات أمنية
+            منتظمة.
+        </p>
+
+        <h3>هل Hypatia يحتاج إلى صلاحيات روت (Root)؟</h3>
+        <p>
+            Hypatia يعمل عادة <strong>بدون صلاحيات
+            روت</strong>، مما يحد من قدرته على فحص
+            مناطق معينة من النظام. هذا مقصود: التطبيق
+            مصمم ليعمل بأقل صلاحيات ممكنة، وفحصه
+            يركز على الملفات والتطبيقات القابلة
+            للوصول. للحصول على فحص أعمق، قد تحتاج
+            إلى أدوات أخرى على جهاز مُروّت، لكن
+            هذا يقلل من الأمان العام.
+        </p>
+    </PostLayout>
+</BaseLayout>
