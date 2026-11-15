@@ -1,0 +1,940 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "fedora-repository-management-dnf5-guide",
+    title: "إدارة المستودعات في فيدورا: دليل شامل من dnf5 إلى COPR",
+    metaTitle: "إدارة المستودعات في فيدورا: دليل dnf5 وCOPR الشامل",
+    description:
+        "دليل معمق لإدارة المستودعات في فيدورا 2026: بنية dnf5، إضافة وإزالة المستودعات عبر config-manager، RPM Fusion وCOPR، المستودعات المحلية، أولويات المستودعات، استكشاف الأخطاء، وأفضل الممارسات.",
+    keywords: [
+        "إدارة المستودعات فيدورا",
+        "dnf5",
+        "Fedora repository management",
+        "dnf config-manager",
+        "Fedora COPR",
+        "RPM Fusion",
+        "dnf5 reposync",
+        "yum.repos.d",
+        "Fedora package manager",
+        "مستودعات RPM",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "15 نوفمبر 2026",
+    pubDate: new Date("2026-11-15"),
+    tags: ["فيدورا", "لينكس", "dnf5", "مستودعات", "RPM", "COPR"],
+    thumbnail: "/images/fedora-repository-management-dnf5-guide.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة إدارة المستودعات في فيدورا" },
+    { id: "dnf5-revolution", label: "dnf5: الثورة الهادئة في إدارة الحزم" },
+    { id: "repo-anatomy", label: "تشريح المستودع: ما هو ملف .repo؟" },
+    { id: "config-manager", label: "config-manager: الأداة الموحدة لإدارة المستودعات" },
+    { id: "third-party", label: "المستودعات الخارجية: RPM Fusion وCOPR" },
+    { id: "copr-deep-dive", label: "COPR بعمق: التحقق قبل التفعيل" },
+    { id: "local-mirror", label: "المستودعات المحلية وreposync" },
+    { id: "priorities", label: "الأولويات والاستثناءات: عندما تتصادم المستودعات" },
+    { id: "troubleshooting", label: "استكشاف الأخطاء: الأخطاء الشائعة وحلولها" },
+    { id: "best-practices", label: "أفضل الممارسات في إدارة المستودعات" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في فيدورا، كل شيء يبدأ وينتهي بالمستودعات. من تحديث
+            النظام إلى تثبيت حزمة صغيرة، يمر كل شيء عبر نظام
+            المستودعات. ومع ذلك، فإن كثيرين يتعاملون مع
+            <code>dnf</code> كصندوق أسود: يكتبون الأمر، وينتظرون
+            النتيجة. عندما يتعطل شيء — خطأ GPG، تعارض في
+            الحزم، مستودع لا يستجيب — يبدأ الارتباك.
+        </p>
+
+        <p>
+            هذا الدليل يفكك النظام من الداخل. منذ أن أصبح
+            <strong>dnf5</strong> هو المدير الافتراضي في فيدورا
+            41، تغيرت أشياء كثيرة: مسارات ملفات المستودعات،
+            وطريقة إضافة المستودعات وإزالتها، وحتى سلوك
+            الأوامر. سنمر على <strong>بنية dnf5</strong>،
+            و<strong>config-manager</strong> الجديد،
+            و<strong>COPR</strong> و<strong>RPM Fusion</strong>،
+            والمستودعات المحلية عبر <code>reposync</code>،
+            والأولويات، واستكشاف الأخطاء — حتى تتعامل مع
+            المستودعات <strong>كمهندس نظام، لا كمستخدم
+            عابر</strong>.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة إدارة المستودعات في فيدورا</h2>
+
+        <p>
+            الجدول التالي يلخص المفاهيم والأدوات الأساسية التي
+            يغطيها الدليل، مع الفرق الجوهري بينها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المفهوم / الأداة</th>
+                            <th class="px-4 py-2 font-semibold">الوظيفة</th>
+                            <th class="px-4 py-2 font-semibold">مثال</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>ملف .repo</strong></td>
+                            <td class="px-4 py-2">تعريف مستودع واحد أو أكثر</td>
+                            <td class="px-4 py-2"><code>/etc/yum.repos.d/*.repo</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>dnf5 config-manager</strong></td>
+                            <td class="px-4 py-2">إضافة، إزالة، تعديل المستودعات</td>
+                            <td class="px-4 py-2"><code>dnf config-manager addrepo</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>dnf5 copr</strong></td>
+                            <td class="px-4 py-2">إدارة مستودعات COPR المجتمعية</td>
+                            <td class="px-4 py-2"><code>dnf copr enable owner/project</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>RPM Fusion</strong></td>
+                            <td class="px-4 py-2">حزم غير حرة (Free/Nonfree)</td>
+                            <td class="px-4 py-2">تثبيت حزمة RPM الرسمية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>reposync</strong></td>
+                            <td class="px-4 py-2">مزامنة مستودع كامل محليًا</td>
+                            <td class="px-4 py-2"><code>dnf reposync --repo=fedora</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>setopt</strong></td>
+                            <td class="px-4 py-2">تعديل خيارات المستودع دون لمس الملف</td>
+                            <td class="px-4 py-2"><code>dnf config-manager setopt repo.enabled=0</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>priority</strong></td>
+                            <td class="px-4 py-2">ترتيب أولوية المستودعات</td>
+                            <td class="px-4 py-2"><code>priority=10</code> (أعلى أولوية)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>gpgcheck</strong></td>
+                            <td class="px-4 py-2">التحقق من توقيع الحزم</td>
+                            <td class="px-4 py-2"><code>gpgcheck=1</code> (إلزامي)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="dnf5-revolution">dnf5: الثورة الهادئة في إدارة الحزم</h2>
+
+        <p>
+            <img
+                src="/images/articles/fedora-repository-management-dnf5-guide/01.webp"
+                alt="dnf5 في فيدورا"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>dnf5</strong> ليس مجرد تحديث لـdnf القديم. إنه
+            <strong>إعادة كتابة كاملة</strong> بلغة C++ (C++20)
+            لتحسين الأداء وتقليل الاعتماديات الخارجية.
+            يتكون من عدة مكونات: <code>dnf5</code> (سطر
+            الأوامر)، <code>libdnf5</code> (المكتبة الأساسية)،
+            <code>libdnf5-cli</code> (مساعد سطر الأوامر)،
+            ونظام إضافات (Plugins) من طبقتين، بالإضافة إلى
+            <code>dnf5daemon</code> (خدمة D-Bus).
+        </p>
+
+        <p>
+            متى أصبح dnf5 هو الافتراضي؟ في <strong>فيدورا
+            41</strong>، أصبح <code>/usr/bin/dnf</code>
+            مجرد رابط رمزي (Symlink) إلى <code>dnf5</code>.
+            هذا يعني أن كل أمر تكتبه بصيغة <code>dnf</code>
+            يُنفَّذ فعليًا عبر dnf5. لكن هذا
+            التغيير لم يكن مجرد تغيير في الاسم؛ فقد جاء
+            بتغييرات جوهرية في السلوك:
+        </p>
+
+        <ul>
+            <li>
+                <strong>ملفات الحالة مختلفة:</strong> سجل
+                المعاملات (Transaction History) في dnf5
+                لا يُرحَّل تلقائيًا من dnf4. إذا كنت
+                تستخدم <code>dnf history</code>، فستبدأ
+                من جديد بعد الترقية إلى dnf5.
+            </li>
+            <li>
+                <strong>الخيارات العامة مقابل الخاصة
+                بالأمر:</strong> في dnf5، هناك تمييز
+                واضح بين الخيارات العامة (مثل
+                <code>--disable-repo</code>) التي يمكن
+                وضعها قبل أو بعد الأمر، والخيارات
+                الخاصة بالأمر (مثل <code>--downloadonly</code>)
+                التي يجب أن تأتي بعد اسم الأمر
+                فقط.
+            </li>
+            <li>
+                <strong>سلوك أكثر صرامة:</strong> إذا
+                مررت معرف مستودع غير صالح إلى
+                <code>--disable-repo</code>، فسيفشل
+                الأمر بدلاً من تجاهله بصمت.
+            </li>
+            <li>
+                <strong>الأداء:</strong> في المعايير
+                النموذجية، dnf5 أسرع <strong>2-3 مرات</strong>
+                في تحديث البيانات الوصفية (Metadata)
+                وحل الاعتماديات (Dependency Resolution)
+                مقارنة بـdnf4.
+            </li>
+        </ul>
+
+        <p>
+            نقطة مهمة أخرى: في <strong>فيدورا 45</strong>،
+            نُقلت ملفات المستودعات الرسمية من
+            <code>/etc/yum.repos.d/</code> إلى
+            <code>/usr/share/dnf5/repos.d/</code>، ومفاتيح
+            التوقيع من <code>/etc/pki/rpm-gpg/</code> إلى
+            <code>/usr/share/pki/rpm-gpg/</code>.
+            هذا يعني أن السكربتات القديمة التي تبحث عن ملفات
+            المستودعات في المسار القديم قد تتوقف عن العمل.
+            المستودعات التي تضيفها أنت (عبر config-manager
+            أو COPR) تبقى في <code>/etc/yum.repos.d/</code>
+            كما هي.
+        </p>
+
+        <h2 id="repo-anatomy">تشريح المستودع: ما هو ملف .repo؟</h2>
+
+        <p>
+            كل مستودع في فيدورا يُعرَّف بملف نصي بامتداد
+            <code>.repo</code>. هذا الملف يخبر dnf5 بأربعة
+            أشياء أساسية: <strong>أين</strong> يوجد
+            المستودع، <strong>كيف</strong> يتحقق من صحة
+            الحزم، <strong>هل</strong> هو مفعّل،
+            و<strong>ما</strong> أولويته.
+        </p>
+
+        <p>
+            البنية الأساسية لملف <code>.repo</code> تبدو
+            هكذا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`[fedora]
+name=Fedora $releasever - $basearch
+# baseurl=http://mirror.example.com/fedora/$releasever/$basearch/
+metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+priority=99`}</code></pre>
+
+        <p>شرح الحقول الأساسية:</p>
+
+        <ul>
+            <li>
+                <strong><code>[fedora]</code>:</strong>
+                معرف المستودع (Repo ID). يجب أن يكون
+                فريدًا. هذا هو الاسم الذي تستخدمه في
+                أوامر مثل <code>--repo=fedora</code>.
+            </li>
+            <li>
+                <strong><code>name</code>:</strong>
+                اسم وصفي يظهر في <code>dnf repolist</code>.
+            </li>
+            <li>
+                <strong><code>baseurl</code> أو
+                <code>metalink</code>:</strong>
+                عنوان المستودع. <code>metalink</code>
+                يوجه dnf5 إلى قائمة مرايا ديناميكية،
+                وهو المفضل للمستودعات الكبيرة.
+            </li>
+            <li>
+                <strong><code>enabled=1</code>:</strong>
+                تفعيل المستودع. <code>enabled=0</code>
+                يعني أنه معطّل.
+            </li>
+            <li>
+                <strong><code>gpgcheck=1</code>:</strong>
+                إلزامي للمستودعات الخارجية. يتحقق
+                dnf5 من توقيع كل حزمة قبل تثبيتها.
+            </li>
+            <li>
+                <strong><code>gpgkey</code>:</strong>
+                مسار أو رابط مفتاح GPG العام للمستودع.
+            </li>
+            <li>
+                <strong><code>priority</code>:</strong>
+                اختياري. رقم أقل يعني أولوية أعلى.
+                يُستخدم عندما تحتوي مستودعات متعددة
+                على نفس الحزمة.
+            </li>
+        </ul>
+
+        <p>
+            يمكنك وضع عدة أقسام في ملف <code>.repo</code>
+            واحد، كل قسم لمستودع مختلف. هذا شائع في ملفات
+            RPM Fusion التي تحتوي على أقسام <code>[rpmfusion-free]</code>
+            و<code>[rpmfusion-nonfree]</code> معًا.
+        </p>
+
+        <h2 id="config-manager">config-manager: الأداة الموحدة لإدارة المستودعات</h2>
+
+        <p>
+            في dnf5، أصبح <code>dnf config-manager</code> هو
+            الطريقة الرسمية والموحدة لإدارة المستودعات.
+            الأوامر القديمة مثل <code>--add-repo</code>
+            و<code>--set-enabled</code> لم تعد مدعومة
+            بالطريقة السابقة. بدلاً من ذلك، هناك أوامر
+            فرعية (Subcommands) واضحة:
+        </p>
+
+        <h3>إضافة مستودع من ملف .repo</h3>
+
+        <p>
+            الطريقة الأساسية لإضافة مستودع هي عبر
+            <code>addrepo</code> مع الخيار
+            <code>--from-repofile</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf config-manager addrepo --from-repofile=https://example.com/repo.repo`}</code></pre>
+
+        <p>
+            هذا الأمر ينسخ ملف <code>.repo</code> من الرابط
+            إلى <code>/etc/yum.repos.d/</code> (أو أول مسار
+            في خيار <code>reposdir</code>) دون تغيير
+            محتواه. إذا أردت تحديد اسم الملف،
+            استخدم <code>--save-filename</code>. وإذا كان
+            الملف موجودًا مسبقًا وتريد استبداله، أضف
+            <code>--overwrite</code>.
+        </p>
+
+        <h3>إضافة مستودع يدويًا عبر خيارات</h3>
+
+        <p>
+            يمكنك أيضًا تعريف مستودع دون ملف
+            <code>.repo</code> جاهز، باستخدام
+            <code>--set</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf config-manager addrepo \
+  --id=my-repo \
+  --set=baseurl=https://repo.example.com/fedora/ \
+  --set=gpgcheck=1 \
+  --set=gpgkey=https://repo.example.com/RPM-GPG-KEY`}</code></pre>
+
+        <p>
+            يجب أن تحدد واحدًا على الأقل من
+            <code>baseurl</code> أو <code>mirrorlist</code>
+            أو <code>metalink</code>. معرف
+            المستودع (<code>--id</code>) اختياري؛ إذا لم
+            تحدده، يُولَّد من الرابط.
+        </p>
+
+        <h3>تفعيل وتعطيل المستودعات</h3>
+
+        <p>
+            بدلاً من الخيارات القديمة
+            <code>--set-enabled</code> و<code>--set-disabled</code>،
+            يستخدم dnf5 الأمر <code>setopt</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# تعطيل مستودع
+sudo dnf config-manager setopt fedora.enabled=0
+
+# تفعيل مستودع
+sudo dnf config-manager setopt fedora.enabled=1`}</code></pre>
+
+        <p>
+            هذا الأمر لا يعدّل ملف <code>.repo</code>
+            الأصلي. بدلاً من ذلك، يكتب التعديل في ملف
+            <code>99-config_manager.repo</code> داخل
+            <code>/etc/dnf/repos.override.d/</code>.
+            هذا الملف يُقرأ <strong>بعد</strong> ملفات
+            المستودعات الأصلية، لذا فإن تعديله هو الذي
+            يسري. الميزة: يمكنك تعطيل
+            مستودع مؤقتًا دون العبث بملفه الأصلي، وهو
+            مفيد بشكل خاص للمستودعات التي تأتي من حزم
+            RPM (مثل RPM Fusion) والتي قد يُعاد كتابة
+            ملفاتها عند التحديث.
+        </p>
+
+        <h3>إزالة مستودع</h3>
+
+        <p>
+            لإزالة مستودع، يمكنك ببساطة حذف ملف
+            <code>.repo</code> الخاص به:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo rm /etc/yum.repos.d/repo-file.repo`}</code></pre>
+
+        <p>
+            إذا كنت لا تعرف اسم الملف، يمكنك البحث عن
+            معرف المستودع:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`grep -E "^\[.*]" /etc/yum.repos.d/*.repo`}</code></pre>
+
+        <p>
+            هذا سيطبع قائمة بكل معرفات المستودعات
+            وملفاتها.
+        </p>
+
+        <h2 id="third-party">المستودعات الخارجية: RPM Fusion وCOPR</h2>
+
+        <p>
+            المستودعات الرسمية في فيدورا لا تحتوي على كل
+            شيء. هناك سببان رئيسيان: بعض البرامج لا تتوافق
+            مع ترخيص فيدورا (مثل برامج الوسائط المتعددة
+            التي تحتوي على براءات اختراع)، وبعض البرامج
+            أحدث من أن تصل إلى المستودعات الرسمية بسرعة.
+            هنا يأتي دور المستودعات الخارجية.
+        </p>
+
+        <h3>RPM Fusion: الحزم غير الحرة</h3>
+
+        <p>
+            RPM Fusion هو المستودع الخارجي الأكثر شيوعًا.
+            يوفر حزمًا لا يمكن لفيدورا تضمينها لأسباب
+            قانونية أو ترخيصية — برامج مثل مشغلات
+            الفيديو (codecs)، وبعض برامج الرسوميات،
+            وأدوات multimedia. له فرعان:
+            <strong>free</strong> (مفتوح المصدر لكن ليس
+            في فيدورا) و<strong>nonfree</strong> (غير
+            مفتوح المصدر).
+        </p>
+
+        <p>
+            الطريقة الموصى بها لإضافته هي عبر حزمة RPM
+            الرسمية، وليس بكتابة ملف <code>.repo</code>
+            يدويًا:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf install \
+  https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm`}</code></pre>
+
+        <p>
+            هذه الحزمة تضع ملفات <code>.repo</code> في
+            المكان الصحيح، وتستورد مفاتيح GPG تلقائيًا،
+            وتتعامل مع متغير <code>$releasever</code>
+            تلقائيًا. لا تحتاج إلى إعادة تشغيل؛ فقط
+            شغّل <code>sudo dnf upgrade --refresh</code>
+            لتحديث البيانات الوصفية.
+        </p>
+
+        <h3>COPR: مستودعات المجتمع</h3>
+
+        <p>
+            COPR (Cool Other Package Repo) هو خدمة بناء
+            حزم مجتمعية تستضيفها فيدورا. أي مستخدم لديه
+            حساب Fedora يمكنه بناء حزم ونشرها. هذا يجعله
+            مشابهًا لـPPA في أوبونتو، لكنه يبقى داخل
+            نظام DNF.
+        </p>
+
+        <p>
+            لتفعيل مستودع COPR، استخدم:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf copr enable username/project-name`}</code></pre>
+
+        <p>
+            هذا الأمر يقوم بأمرين: ينزّل ملف
+            <code>.repo</code> من خادم COPR ويضعه في
+            <code>/etc/yum.repos.d/</code>، ويستورد مفتاح
+            GPG الخاص بالمشروع تلقائيًا.
+        </p>
+
+        <p>
+            للتعامل مع COPR بأمان، يجب أن تفهم الفرق بين
+            ثلاثة أوامر تبدو متشابهة لكنها مختلفة
+            جذريًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong><code>dnf copr disable</code>:</strong>
+                يعطّل المستودع (يجعل
+                <code>enabled=0</code>) لكنه
+                <strong>يبقي الملف على القرص</strong>.
+                يمكنك إعادة تفعيله لاحقًا.
+            </li>
+            <li>
+                <strong><code>dnf copr remove</code>:</strong>
+                <strong>يحذف الملف بالكامل</strong> من
+                <code>/etc/yum.repos.d/</code>. هذا هو
+                الخيار الأنظف إذا كنت متأكدًا أنك لن
+                تحتاج المستودع مجددًا.
+            </li>
+            <li>
+                <strong><code>dnf copr list</code>:</strong>
+                يعرض كل مستودعات COPR المفعّلة على
+                نظامك.
+            </li>
+        </ul>
+
+        <h2 id="copr-deep-dive">COPR بعمق: التحقق قبل التفعيل</h2>
+
+        <p>
+            مشكلة COPR الأساسية هي <strong>التحقق</strong>.
+            ليس كل مشروع COPR نشطًا أو محدثًا. عندما
+            تفرّع فيدورا إصدارًا جديدًا، يقوم COPR بنسخ
+            آخر بناء ناجح من rawhide لكل مشروع إلى
+            chroot الإصدار الجديد <strong>دون إعادة
+            بناء</strong>. هذا يعني أن مشروعًا لم يُلمس
+            منذ سنوات قد يبدو "مدعومًا" لأنه يملك
+            chroot للإصدار الجديد، لكن الحزمة فيه قد
+            تكون قديمة جدًا.
+        </p>
+
+        <p>
+            قبل تفعيل أي COPR، تحقق من حالة البناء
+            الفعلية. يمكنك استخدام COPR API:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`OWNER=username
+PROJECT=project-name
+curl -fsSL "https://copr.fedorainfracloud.org/api_3/monitor?ownername=\${OWNER}&projectname=\${PROJECT}" \
+  | jq -r '.packages[] | .name as $n | .chroots | to_entries[] \
+  | select(.key|test("fedora-(rawhide|'"$(rpm -E %fedora)"')-x86_64")) \
+  | "\($n) \(.key) \(.value.state) \(.value.pkg_version) build \(.value.build_id)"'`}</code></pre>
+
+        <p>
+            ابحث عن حالة <code>succeeded</code> (نجح
+            البناء) وليس <code>forked</code> (نُسخ دون
+            إعادة بناء). إذا كانت الحالة
+            <code>forked</code>، فالحزمة قد تكون قديمة
+            أو غير متوافقة مع إصدارك الحالي من
+            فيدورا.
+        </p>
+
+        <h2 id="local-mirror">المستودعات المحلية وreposync</h2>
+
+        <p>
+            في البيئات المؤسسية، أو عندما تكون الشبكة
+            محدودة، أو عندما تريد اختبار التحديثات قبل
+            نشرها، قد تحتاج إلى <strong>مرآة محلية
+            (Local Mirror)</strong> للمستودعات. هذا
+            يسمح لك بتقديم تحديثات فيدورا من بنيتك
+            التحتية الخاصة.
+        </p>
+
+        <p>
+            الأداة الأساسية هي <code>dnf reposync</code>،
+            والتي تأتي من حزمة <code>dnf5-plugins</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf install dnf5-plugins`}</code></pre>
+
+        <p>
+            ثم، لمزامنة مستودعي <code>fedora</code>
+            و<code>updates</code> إلى مسار محلي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf reposync --repo=fedora --repo=updates --download-path=/var/www/html/mirror`}</code></pre>
+
+        <p>
+            يمكنك تقييد المزامنة بمعماريات محددة
+            لتوفير المساحة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf reposync --repo=fedora --repo=updates \
+  --download-path=/var/www/html/mirror \
+  --arch=x86_64 --arch=noarch`}</code></pre>
+
+        <p>
+            ولإزالة الحزم التي لم تعد موجودة في المستودع
+            البعيد:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf reposync --repo=fedora --repo=updates \
+  --download-path=/var/www/html/mirror --delete`}</code></pre>
+
+        <p>
+            بعد المزامنة، تحتاج إلى خادم ويب (مثل Apache
+            أو nginx) لتقديم المحتوى. ثم، على كل جهاز
+            عميل، أنشئ ملف <code>.repo</code> يشير إلى
+            المرآة المحلية، مع تعطيل المستودعات
+            الافتراضية.
+        </p>
+
+        <p>
+            <strong>تحذير مهم:</strong> المزامنة الأولى
+            تنزّل المستودع كاملًا وقد تستغرق وقتًا طويلًا
+            وتعتمد على مساحة قرص كبيرة. قد تنمو
+            المستودعات بنسبة <strong>30% أو أكثر</strong>
+            خلال دورة حياة الإصدار، لذا خطط لمساحة
+            إضافية.
+        </p>
+
+        <h2 id="priorities">الأولويات والاستثناءات: عندما تتصادم المستودعات</h2>
+
+        <p>
+            عندما تحتوي عدة مستودعات على نفس الحزمة
+            (أو إصدارات مختلفة منها)، يحتاج dnf5 إلى
+            طريقة لتحديد أيها يختار. هنا يأتي دور
+            <strong>أولويات المستودعات (Repository
+            Priorities)</strong>.
+        </p>
+
+        <p>
+            الأولوية في فيدورا تُضبط عبر إضافة
+            <code>priority=N</code> إلى قسم المستودع
+            في ملف <code>.repo</code>. القاعدة بسيطة:
+            <strong>الرقم الأصغر يعني أولوية أعلى</strong>.
+            إذا كان لديك مستودعان يحتويان على نفس
+            الحزمة، والمستودع A له <code>priority=10</code>
+            والمستودع B له <code>priority=20</code>،
+            فسيختار dnf5 الحزمة من A.
+        </p>
+
+        <p>
+            الأولوية الافتراضية هي <code>99</code>.
+            يمكنك تغييرها عبر <code>config-manager
+            setopt</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf config-manager setopt my-repo.priority=10`}</code></pre>
+
+        <p>
+            لكن الأولوية ليست الأداة الوحيدة. هناك
+            أيضًا <strong>الاستثناءات (Excludes)</strong>،
+            والتي تمنع حزمًا معينة من التثبيت أو
+            التحديث. يمكنك استثناء حزمة من مستودع
+            معين:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo dnf config-manager setopt my-repo.exclude=package-name`}</code></pre>
+
+        <p>
+            أو استثناء حزمة على مستوى النظام كله عبر
+            <code>/etc/dnf/dnf.conf</code>:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`[main]
+exclude=package-name other-package`}</code></pre>
+
+        <p>
+            <strong>تحذير:</strong> كن حذرًا مع
+            الاستثناءات. إذا استثنيت حزمة يعتمد عليها
+            نظامك، فقد تمنع تحديثات أمنية مهمة أو تسبب
+            كسر الاعتماديات.
+        </p>
+
+        <h2 id="troubleshooting">استكشاف الأخطاء: الأخطاء الشائعة وحلولها</h2>
+
+        <p>
+            حتى مع الإعداد الصحيح، قد تواجه أخطاء.
+            إليك أكثر الأخطاء شيوعًا في إدارة المستودعات
+            وكيفية إصلاحها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الخطأ</th>
+                            <th class="px-4 py-2 font-semibold">السبب</th>
+                            <th class="px-4 py-2 font-semibold">الحل</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">"GPG key not found"</td>
+                            <td class="px-4 py-2">مفتاح المستودع غير مستورد</td>
+                            <td class="px-4 py-2">تأكد من صحة <code>gpgkey</code> أو استورد المفتاح يدويًا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">"Failed to synchronize cache"</td>
+                            <td class="px-4 py-2">مشكلة شبكة أو رابط مستودع خاطئ</td>
+                            <td class="px-4 py-2"><code>sudo dnf clean all</code> ثم <code>sudo dnf makecache</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">"Repository ID is not unique"</td>
+                            <td class="px-4 py-2">تعريف نفس المعرف في ملفين</td>
+                            <td class="px-4 py-2">ابحث عن الملف المكرر بـ <code>grep -r "\[repo-id\]" /etc/yum.repos.d/</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">"Unknown argument --add-repo"</td>
+                            <td class="px-4 py-2">استخدام صيغة dnf4 القديمة في dnf5</td>
+                            <td class="px-4 py-2">استخدم <code>config-manager addrepo --from-repofile</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">"Chroot not found" (COPR)</td>
+                            <td class="px-4 py-2">المشروع لا يدعم إصدار فيدورا لديك</td>
+                            <td class="px-4 py-2">تحقق من chroots المتاحة عبر COPR API</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تعارض اعتماديات (Dependency Conflict)</td>
+                            <td class="px-4 py-2">مستودعان يقدمان إصدارات متضاربة</td>
+                            <td class="px-4 py-2">استخدم <code>priority</code> أو <code>--allowerasing</code> بحذر</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">"Nothing provides ..."</td>
+                            <td class="px-4 py-2">حزمة مطلوبة غير موجودة في أي مستودع مفعّل</td>
+                            <td class="px-4 py-2">فعّل المستودع الذي يحتويها (RPM Fusion غالبًا)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">"Metadata expired"</td>
+                            <td class="px-4 py-2">بيانات مستودع قديمة</td>
+                            <td class="px-4 py-2"><code>sudo dnf --refresh upgrade</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            <strong>نصيحة تشخيصية:</strong> عندما تواجه
+            مشكلة في مستودع معين، ابدأ بـ
+            <code>dnf repolist --all</code> لرؤية كل
+            المستودعات وحالتها. ثم استخدم
+            <code>dnf repoinfo repo-id</code> لرؤية
+            تفاصيل المستودع (الحجم، آخر تحديث، الحزم).
+            وأخيرًا، <code>dnf --refresh makecache</code>
+            لإعادة بناء ذاكرة التخزين المؤقت.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في إدارة المستودعات</h2>
+
+        <ul>
+            <li>
+                <strong>لا تخلط بين dnf4 وdnf5:</strong>
+                إذا كنت تستخدم فيدورا 41 أو أحدث،
+                فاعتمد على أوامر dnf5. الصيغ القديمة
+                مثل <code>--add-repo</code> قد تفشل
+                بصمت أو برسائل خطأ غير واضحة.
+            </li>
+            <li>
+                <strong>استخدم config-manager
+                دائمًا:</strong> بدلاً من تحرير ملفات
+                <code>.repo</code> يدويًا (إلا إذا
+                كنت تعرف ما تفعله). <code>setopt</code>
+                يحفظ تعديلاتك في ملف منفصل، مما يسهل
+                التراجع عنها.
+            </li>
+            <li>
+                <strong>تحقق من COPR قبل التفعيل:</strong>
+                لا تفعّل مشروعًا لمجرد أنه يحتوي على
+                chroot لإصدارك. استخدم COPR API
+                للتحقق من حالة البناء الفعلية.
+            </li>
+            <li>
+                <strong>استخدم RPM Fusion عند الحاجة
+                فقط:</strong> ليس كل نظام يحتاج إلى
+                RPM Fusion. إذا كنت لا تحتاج إلى
+                codecs أو برامج nonfree، فتجنبه.
+            </li>
+            <li>
+                <strong>اضبط الأولويات بحذر:</strong>
+                الأولويات القوية جدًا (مثل
+                <code>priority=1</code> لمستودع
+                خارجي) يمكن أن تمنعك من الحصول على
+                تحديثات أمنية من فيدورا. ابدأ
+                بقيم متحفظة (مثل 50 للمستودعات
+                الخارجية).
+            </li>
+            <li>
+                <strong>نظّف ذاكرة التخزين المؤقت
+                بانتظام:</strong> <code>sudo dnf
+                clean all</code> يزيل البيانات
+                القديمة ويمنع مشاكل "Metadata
+                expired".
+            </li>
+            <li>
+                <strong>احتفظ بسجل للتغييرات:</strong>
+                إذا أضفت مستودعات متعددة، اكتب
+                ملاحظات عن سبب إضافة كل واحد.
+                بعد أشهر، لن تتذكر لماذا أضفت
+                COPR معين.
+            </li>
+            <li>
+                <strong>لا تستخدم <code>--nogpgcheck</code>:</strong>
+                هذا الخيار يعطل التحقق من التوقيعات،
+                وهو خطر أمني كبير. إذا كان مستودع
+                لا يوفر مفاتيح GPG، فابحث عن بديل
+                أكثر أمانًا.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعرف الفرق بين dnf4 وdnf5؟ ←
+                <strong>dnf5 هو الافتراضي منذ
+                فيدورا 41</strong>
+            </li>
+            <li>
+                هل تستخدم <code>config-manager
+                addrepo</code> بدلاً من
+                <code>--add-repo</code>؟ ←
+                <strong>نعم، الصيغة القديمة لم تعد
+                تعمل</strong>
+            </li>
+            <li>
+                هل تتحقق من COPR عبر API قبل
+                التفعيل؟ ← <strong>ضروري لتجنب حزم
+                قديمة</strong>
+            </li>
+            <li>
+                هل تفهم الفرق بين <code>copr
+                disable</code> و<code>copr remove</code>؟ ←
+                <strong>disable يعطّل، remove
+                يحذف</strong>
+            </li>
+            <li>
+                هل تستخدم <code>setopt</code>
+                لتعطيل المستودعات بدلاً من تحرير
+                الملفات؟ ← <strong>أفضل وأأمن</strong>
+            </li>
+            <li>
+                هل تضبط أولويات المستودعات عند
+                وجود تعارض؟ ← <strong>نعم، لكن
+                بحذر</strong>
+            </li>
+            <li>
+                هل تستخدم <code>gpgcheck=1</code>
+                دائمًا؟ ← <strong>إلزامي
+                للمستودعات الخارجية</strong>
+            </li>
+            <li>
+                هل تعرف كيف تزامن مستودعًا محليًا
+                بـ<code>reposync</code>؟ ←
+                <strong>مفيد للبيئات
+                المؤسسية</strong>
+            </li>
+            <li>
+                هل تنظف ذاكرة التخزين المؤقت عند
+                حدوث أخطاء؟ ← <strong>dnf clean
+                all</strong>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>ما الفرق بين dnf وdnf5؟</h3>
+        <p>
+            <strong>dnf5</strong> هو الجيل الجديد من
+            مدير الحزم، مكتوب بلغة C++ لأداء أفضل.
+            منذ <strong>فيدورا 41</strong>، أصبح
+            <code>/usr/bin/dnf</code> مجرد رابط رمزي
+            إلى <code>dnf5</code>، لذا كل أمر
+            <code>dnf</code> يُنفَّذ عبر dnf5. الفرق
+            ليس في الاسم فقط: هناك تغييرات في
+            الخيارات المتاحة، ومسارات ملفات
+            المستودعات، وسلوك الأوامر.
+        </p>
+
+        <h3>لماذا لا يعمل الأمر <code>dnf config-manager --add-repo</code>؟</h3>
+        <p>
+            لأن dnf5 غيّر واجهة الأوامر. الخيار
+            <code>--add-repo</code> القديم لم يعد
+            مدعومًا. بدلاً من ذلك، استخدم الأمر
+            الفرعي الجديد:
+            <code>dnf config-manager addrepo
+            --from-repofile=URL</code>. هذا التغيير
+            مقصود لجعل الأوامر أكثر وضوحًا وأقل
+            عرضة للأخطاء.
+        </p>
+
+        <h3>كيف أتحقق من أن COPR معين آمن قبل تفعيله؟</h3>
+        <p>
+            لا يمكنك التأكد من "أمان" مشروع COPR
+            بشكل مطلق، لكن يمكنك التحقق من
+            <strong>نشاطه</strong> و<strong>حداثة
+            بنائه</strong>. استخدم COPR API للتحقق
+            من حالة البناء: ابحث عن
+            <code>succeeded</code> بدلاً من
+            <code>forked</code>. المشاريع التي
+            حالتها <code>forked</code> فقط لم تُبنَ
+            خصيصًا لإصدارك الحالي، وقد تحتوي على
+            حزم قديمة.
+        </p>
+
+        <h3>ما الفرق بين <code>dnf copr disable</code> و<code>dnf copr remove</code>؟</h3>
+        <p>
+            <code>disable</code> يعطّل المستودع
+            (يجعل <code>enabled=0</code>) لكنه
+            <strong>يبقي ملف .repo على القرص</strong>.
+            يمكنك إعادة تفعيله لاحقًا. أما
+            <code>remove</code> فيحذف الملف
+            بالكامل. استخدم <code>disable</code>
+            إذا كنت تريد الاحتفاظ بالخيار،
+            و<code>remove</code> إذا كنت متأكدًا
+            أنك لن تحتاج المستودع مجددًا.
+        </p>
+
+        <h3>كيف أضيف مستودعًا محليًا (Mirror) في فيدورا؟</h3>
+        <p>
+            استخدم <code>dnf reposync</code>
+            (من حزمة <code>dnf5-plugins</code>)
+            لمزامنة المستودع إلى مسار محلي، ثم
+            قدّمه عبر خادم ويب (Apache أو nginx).
+            على العملاء، أنشئ ملف <code>.repo</code>
+            يشير إلى المرآة المحلية باستخدام
+            <code>baseurl</code>، وعطّل المستودعات
+            الافتراضية بتعيين <code>enabled=0</code>
+            في ملفاتها.
+        </p>
+
+        <h3>ماذا أفعل عند تعارض الاعتماديات بين مستودعين؟</h3>
+        <p>
+            أولاً، حدد المستودع الذي يجب أن
+            تكون له الأولوية. استخدم
+            <code>priority</code> في ملف
+            <code>.repo</code> (رقم أقل = أولوية
+            أعلى). إذا كنت لا تريد حذف أي مستودع،
+            يمكنك استخدام <code>--allowerasing</code>
+            مع <code>dnf install</code> للسماح
+            لـdnf5 بإزالة الحزم المتعارضة. لكن
+            استخدم هذا الخيار بحذر، لأنه قد يزيل
+            حزمًا تعتمد عليها.
+        </p>
+    </PostLayout>
+</BaseLayout>
