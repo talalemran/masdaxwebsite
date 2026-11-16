@@ -1,0 +1,777 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "nvidia-linux-gaming-guide-2026",
+    title: "هل يمكنني استخدام Nvidia على لينكس للألعاب؟ دليل شامل 2026",
+    metaTitle: "Nvidia على لينكس للألعاب: دليل شامل 2026",
+    description:
+        "دليل معمق لاستخدام بطاقات Nvidia في الألعاب على لينكس 2026: الفرق بين التعريف المفتوح والمغلق، أداء Wayland مقابل X11، DLSS وNVK، أفضل التوزيعات، الأدوات، الأخطاء الشائعة، وأفضل الممارسات.",
+    keywords: [
+        "Nvidia Linux gaming",
+        "Nvidia على لينكس",
+        "Nvidia open kernel modules",
+        "NVK Vulkan",
+        "Nvidia Wayland gaming",
+        "Proton Nvidia",
+        "Bazzite Nvidia",
+        "Pop!_OS Nvidia",
+        "Nvidia Linux performance",
+        "DLSS Linux",
+    ],
+    category: "ألعاب وترفيه",
+    author: "طلال عمران",
+    date: "16 نوفمبر 2026",
+    pubDate: new Date("2026-11-16"),
+    tags: ["Nvidia", "لينكس", "ألعاب", "Wayland", "Proton", "مفتوح المصدر"],
+    thumbnail: "/images/nvidia-linux-gaming-guide-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة Nvidia على لينكس" },
+    { id: "driver-landscape", label: "التعريفات: المفتوح مقابل المغلق" },
+    { id: "performance-reality", label: "الأداء: الحقيقة مقابل ويندوز" },
+    { id: "wayland-x11", label: "Wayland أم X11؟" },
+    { id: "distributions", label: "أفضل التوزيعات لبطاقات Nvidia" },
+    { id: "tools-stack", label: "الأدوات: Proton وLutris وMangoHud" },
+    { id: "dlss-raytracing", label: "DLSS وتتبع الأشعة على لينكس" },
+    { id: "troubleshooting", label: "استكشاف الأخطاء: المشاكل الشائعة" },
+    { id: "best-practices", label: "أفضل الممارسات" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            الجواب المباشر: <strong>نعم، يمكنك استخدام Nvidia على
+            لينكس للألعاب في 2026 — لكن التجربة ليست متطابقة
+            تمامًا مع AMD.</strong> التعريفات أصبحت أنضج،
+            وWayland تجاوز X11 في الأداء، وDLSS يعمل (وإن كان
+            تجريبيًا على التعريف المفتوح)، ومعظم ألعاب Steam
+            تعمل عبر Proton. لكن هناك ثمن: أداء أقل من ويندوز في
+            بعض الألعاب، خصوصًا عناوين DirectX 12، وتعقيدات
+            خاصة ببطاقات Nvidia لا توجد مع AMD.
+        </p>
+
+        <p>
+            هذا الدليل لا يجيب بنعم أو لا. إنه يفكك المشهد كما
+            هو في نهاية 2026: <strong>الفرق بين التعريف المفتوح
+            والمغلق</strong>، <strong>أداء Wayland مقابل
+            X11</strong>، <strong>NVK وDLSS</strong>،
+            <strong>أفضل التوزيعات</strong>، و<strong>الأخطاء
+            التي ستواجهها فعلاً</strong>. الهدف أن تعرف بالضبط
+            ما الذي تدخل فيه قبل أن تشتري بطاقة Nvidia أو تنقل
+            جهازك إلى لينكس.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة Nvidia على لينكس</h2>
+
+        <p>
+            الجدول التالي يلخص الفروق الجوهرية بين خيارات
+            التعريفات والبرامج التي ستتعامل معها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المكوّن</th>
+                            <th class="px-4 py-2 font-semibold">ما هو؟</th>
+                            <th class="px-4 py-2 font-semibold">الأداء</th>
+                            <th class="px-4 py-2 font-semibold">التوصية</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>التعريف المغلق</strong></td>
+                            <td class="px-4 py-2">Nvidia proprietary driver</td>
+                            <td class="px-4 py-2">الأفضل عمومًا</td>
+                            <td class="px-4 py-2">للبطاقات القديمة (GTX 900/10) وبعض الحالات الحرجة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>التعريف المفتوح</strong></td>
+                            <td class="px-4 py-2">nvidia-open (kernel modules)</td>
+                            <td class="px-4 py-2">شبه متطابق (Turing+)</td>
+                            <td class="px-4 py-2">الافتراضي في التوزيعات الحديثة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>NVK + Nouveau</strong></td>
+                            <td class="px-4 py-2">تعريف Mesa مفتوح بالكامل</td>
+                            <td class="px-4 py-2">أقل من الرسمي في الألعاب الحديثة</td>
+                            <td class="px-4 py-2">للتجربة فقط، ليس للألعاب الجادة بعد</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Wayland</strong></td>
+                            <td class="px-4 py-2">خادم العرض الحديث</td>
+                            <td class="px-4 py-2">يعادل أو يتفوق على X11 (مع 555+)</td>
+                            <td class="px-4 py-2">الافتراضي في معظم التوزيعات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>X11</strong></td>
+                            <td class="px-4 py-2">خادم العرض القديم</td>
+                            <td class="px-4 py-2">لا يزال يعمل، لكنه في طريقه للزوال</td>
+                            <td class="px-4 py-2">احتياطي إذا فشل Wayland</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Proton</strong></td>
+                            <td class="px-4 py-2">طبقة توافق Steam</td>
+                            <td class="px-4 py-2">80%+ من مكتبة Steam تعمل</td>
+                            <td class="px-4 py-2">ضروري لألعاب Windows</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>DLSS</strong></td>
+                            <td class="px-4 py-2">تقنية رفع الدقة بالذكاء الاصطناعي</td>
+                            <td class="px-4 py-2">يعمل على التعريف المغلق، تجريبي على NVK</td>
+                            <td class="px-4 py-2">ميزة حقيقية لـNvidia</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>MangoHud</strong></td>
+                            <td class="px-4 py-2">عدّاد أداء شاشي</td>
+                            <td class="px-4 py-2">لا يؤثر</td>
+                            <td class="px-4 py-2">ضروري لقياس الأداء</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="driver-landscape">التعريفات: المفتوح مقابل المغلق</h2>
+
+        <p>
+            <img
+                src="/images/articles/nvidia-linux-gaming-guide-2026/01.webp"
+                alt="تعريفات Nvidia على لينكس"
+                width="1200"
+                height="646"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            في 2026، لم يعد السؤال "هل أستخدم التعريف المفتوح أم
+            المغلق؟" بسيطًا كما كان. Nvidia أطلقت وحدات نواة
+            مفتوحة المصدر (Open Kernel Modules) في 2022،
+            واعتمدتها التوزيعات تدريجيًا. لكن <strong>التعريف
+            المفتوح ليس بديلاً كاملاً عن المغلق</strong> — إنه
+            يعتمد على نفس برنامج الفلاش (Firmware) والجزء
+            المساحي (Userspace) من التعريف الرسمي، لكن وحدات
+            النواة مفتوحة.
+        </p>
+
+        <h3>ما الفرق الفعلي؟</h3>
+
+        <ul>
+            <li>
+                <strong>التعريف المفتوح (nvidia-open):</strong>
+                يدعم <strong>Turing (GTX 16xx، RTX 20xx) وما
+                بعده</strong>. Nvidia توصي به رسميًا
+                للبطاقات الحديثة، والتوزيعات مثل Fedora وCachyOS
+                تجعله الافتراضي. الأداء شبه متطابق مع المغلق
+                على هذه البطاقات[reference:0][reference:1].
+            </li>
+            <li>
+                <strong>التعريف المغلق (nvidia):</strong> لا يزال
+                ضروريًا لبطاقات <strong>Maxwell وPascal (GTX
+                900/10)</strong>، وبعض الحالات التي يظهر فيها
+                المفتوح عدم استقرار. مستخدم على CachyOS أفاد بأن
+                "التعريف المغلق أكثر استقرارًا في الألعاب من
+                وحدة النواة المفتوحة" لبطاقة RTX 2070 Super
+                [reference:2].
+            </li>
+            <li>
+                <strong>NVK + Nouveau:</strong> هذا تعريف
+                <strong>مفتوح بالكامل</strong> (Mesa)، لا يحتاج
+                أي مكون من Nvidia. الأداء يتحسن، لكنه لا يزال
+                متأخرًا في الألعاب الحديثة مقارنة بالتعريف
+                الرسمي. في Serious Sam 2017 الأداء قريب جدًا،
+                لكن في الألعاب الأحدث الفجوة كبيرة
+                [reference:3]. في 2026، أصبح NVK يدعم DLSS
+                تجريبيًا (عبر متغير
+                <code>NVK_EXPERIMENTAL=dlss</code>)، لكنه
+                ليس جاهزًا كبديل يومي
+                [reference:4][reference:5].
+            </li>
+        </ul>
+
+        <p>
+            <strong>القاعدة العملية:</strong> إذا كانت بطاقتك
+            Turing أو أحدث، ابدأ بالتعريف المفتوح. إذا واجهت
+            مشاكل، جرّب المغلق. إذا كانت بطاقتك قديمة (GTX 900/10)،
+            فالمغلق هو خيارك الوحيد. NVK للتجربة، لا
+            للاستخدام اليومي.
+        </p>
+
+        <h2 id="performance-reality">الأداء: الحقيقة مقابل ويندوز</h2>
+
+        <p>
+            هنا يجب أن نكون صريحين: <strong>Nvidia على لينكس
+            ليست بنفس سرعة Nvidia على ويندوز</strong>. الأرقام
+            من 2026 واضحة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>RTX 5080:</strong> أداء 1% Low ينخفض من
+                99.3 إطارًا على ويندوز إلى 77.5–78.7 إطارًا على
+                لينكس[reference:6].
+            </li>
+            <li>
+                <strong>RTX 5090:</strong> في Gothic Remake،
+                الأداء على لينكس <strong>81.2 إطارًا</strong>
+                مقابل <strong>108.1 إطارًا</strong> على ويندوز
+                (دقة 1080p) — انخفاض بنحو 25%
+                [reference:7].
+            </li>
+            <li>
+                <strong>المتوسط العام:</strong> ألعاب DirectX 12
+                عبر Proton تخسر أداءً أكبر على Nvidia مقارنة
+                بـAMD. بعض الألعاب تخسر 5–20%
+                [reference:8][reference:9].
+            </li>
+        </ul>
+
+        <p>
+            لماذا هذا الفارق؟ Proton يحول DirectX إلى Vulkan،
+            وتحويل DX12 معقد. تعريف Nvidia على لينكس ليس محسّنًا
+            بنفس عمق تعريف AMD المفتوح (RADV) لهذا المسار.
+            النتيجة: <strong>AMD لا تزال أسرع نسبيًا على لينكس
+            في الألعاب التي تعتمد على DX12</strong>، بينما Nvidia
+            تتفوق في <strong>تتبع الأشعة وDLSS</strong> — لكن
+            هذه الميزات لا تعوض الفارق في كل لعبة.
+        </p>
+
+        <p>
+            <strong>هل هذا يعني أن Nvidia غير قابلة للاستخدام؟</strong>
+            لا. معظم الألعاب تعمل، وكثير منها يعمل بفارق ضئيل.
+            لكن إذا كان هدفك هو <strong>أقصى عدد إطارات ممكن</strong>
+            في الألعاب الحديثة، فAMD لا تزال الخيار الأكثر
+            انسجامًا مع لينكس. إذا كنت تحتاج DLSS أو تتبع
+            الأشعة أو CUDA، فإن Nvidia خيارك رغم الفارق.
+        </p>
+
+        <h2 id="wayland-x11">Wayland أم X11؟</h2>
+
+        <p>
+            قبل 2024، كان X11 هو الخيار الآمن لألعاب Nvidia على
+            لينكس. Wayland كان يعاني من مشاكل في التزامن
+            (Sync) تؤدي إلى وميض وانهيارات. في 2026، انقلبت
+            الصورة.
+        </p>
+
+        <p>
+            <strong>التعريف 555+ غيّر كل شيء.</strong> أضاف دعم
+            "التزامن الصريح" (Explicit Sync)، مما حل مشكلة
+            الوميض والانهيارات التي كانت تلاحق Wayland مع
+            Nvidia[reference:10][reference:11]. بعد ذلك:
+        </p>
+
+        <ul>
+            <li>
+                <strong>KDE Plasma 6.7:</strong> اختبارات
+                Phoronix على CachyOS مع RTX 5090 أظهرت أن
+                Wayland <strong>يعادل أو يتفوق</strong> على
+                X11 في الأداء[reference:12][reference:13].
+            </li>
+            <li>
+                <strong>DiRT Rally 2:</strong> Wayland كان
+                <strong>أفضل باستمرار</strong> من X11
+                [reference:14].
+            </li>
+            <li>
+                <strong>GravityMark:</strong> تحسن ملحوظ في
+                Wayland[reference:15].
+            </li>
+        </ul>
+
+        <p>
+            لكن Wayland ليس مثاليًا. بعض الحالات (خاصة مع
+            إعدادات معينة أو ألعاب قديمة) قد تعمل بشكل أفضل على
+            X11. أيضًا، <strong>X11 في طريقه للزوال</strong> —
+            Plasma 6.8 سيتخلى عن جلسة X11 نهائيًا
+            [reference:16]. لذا، Wayland هو المستقبل، لكن إذا
+            واجهت مشكلة في لعبة معينة، جرّب X11 كاختبار سريع
+            لتحديد ما إذا كانت المشكلة متعلقة بخادم العرض
+            [reference:17].
+        </p>
+
+        <p>
+            <strong>الخلاصة:</strong> استخدم Wayland
+            افتراضيًا. تأكد من أن تعريفك 555 أو أحدث. إذا واجهت
+            وميضًا أو انهيارًا، فحدّث التعريف أولًا، ثم جرّب
+            X11 للتشخيص.
+        </p>
+
+        <h2 id="distributions">أفضل التوزيعات لبطاقات Nvidia</h2>
+
+        <p>
+            ليست كل التوزيعات تتعامل مع Nvidia بنفس السهولة.
+            إليك الخيارات الأفضل في 2026:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Bazzite:</strong> التوزيع الأبرز
+                للألعاب على Nvidia. مبني على Fedora (نسخة
+                غير قابلة للتغيير)، ويدعم بطاقات Nvidia
+                "خارج الصندوق" مع تعريفات حديثة. يوفر تجربة
+                شبيهة بـSteamOS لكن مع سطح مكتب كامل
+                [reference:18][reference:19].
+            </li>
+            <li>
+                <strong>Pop!_OS:</strong> يوفر <strong>صورة
+                تثبيت خاصة بـNvidia</strong> يتضمن التعريف
+                المغلق مسبقًا. بعد التثبيت، كل شيء يعمل دون
+                خطوات إضافية[reference:20].
+            </li>
+            <li>
+                <strong>CachyOS:</strong> مبني على Arch،
+                ويستخدم أداة <code>chwd</code> لاكتشاف
+                البطاقة وتثبيت التعريف المفتوح افتراضيًا.
+                أداء ممتاز، لكنه يتطلب بعض الخبرة
+                [reference:21].
+            </li>
+            <li>
+                <strong>Nobara:</strong> مبني على Fedora،
+                مع تركيز على الألعاب وتحسينات لـNvidia.
+                خيار جيد لمن يريد تجربة Fedora معدلة
+                [reference:22].
+            </li>
+            <li>
+                <strong>Fedora (مع RPM Fusion):</strong>
+                يتطلب خطوة إضافية: تمكين RPM Fusion ثم
+                تثبيت <code>akmod-nvidia</code>. بعد ذلك
+                يعمل بثبات[reference:23].
+            </li>
+        </ul>
+
+        <p>
+            <strong>ما لا يجب اختياره:</strong> SteamOS
+            <strong>لا يدعم Nvidia</strong> رسميًا
+            [reference:24]. إذا كان لديك بطاقة Nvidia، فلا
+            تتجه إلى SteamOS؛ Bazzite هو البديل
+            المنطقي.
+        </p>
+
+        <h2 id="tools-stack">الأدوات: Proton وLutris وMangoHud</h2>
+
+        <p>
+            بمجرد أن يعمل التعريف، تحتاج إلى طبقة التشغيل
+            والأدوات:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Steam + Proton:</strong> الأساس.
+                فعّل "Steam Play" لكل الألعاب، وجرّب
+                <strong>Proton-GE</strong> (نسخة مجتمعية من
+                Proton) للألعاب التي لا تعمل مع Proton
+                الرسمي[reference:25].
+            </li>
+            <li>
+                <strong>Lutris:</strong> لإدارة ألعاب
+                GOG وEpic وAmazon والألعاب القديمة.
+                يوفر بادئات (Prefixes) جاهزة لكل لعبة
+                [reference:26].
+            </li>
+            <li>
+                <strong>Heroic Games Launcher:</strong> بديل
+                مفتوح لـEpic Games Launcher وGOG Galaxy
+                [reference:27].
+            </li>
+            <li>
+                <strong>MangoHud:</strong> عدّاد أداء شاشي
+                (FPS، استهلاك GPU/CPU، درجات الحرارة).
+                ضروري لمعرفة ما إذا كانت اللعبة تعمل
+                بالشكل الأمثل[reference:28].
+            </li>
+            <li>
+                <strong>GameMode:</strong> يفعّل تلقائيًا
+                وضع الأداء عند تشغيل لعبة (يرفع ترددات
+                المعالج، يعطل خدمات الخلفية)
+                [reference:29].
+            </li>
+            <li>
+                <strong>Gamescope:</strong> مُركّب مصغّر
+                (Micro-compositor) من Valve، يسمح بتشغيل
+                الألعاب بدقة مختلفة عن دقة الشاشة، ويحسّن
+                الإدخال والتأخير. مع Nvidia، يحتاج إلى
+                تعريف حديث وإعداد
+                <code>nvidia_drm.modeset=1</code>
+                [reference:30].
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# تثبيت الأدوات الأساسية على Fedora/Bazzite
+sudo dnf install mangohud gamemode
+
+# على Arch/CachyOS
+sudo pacman -S mangohud gamemode
+
+# تفعيل MangoHud مع لعبة في Steam
+# في خيارات التشغيل (Launch Options):
+mangohud %command%
+
+# مع GameMode أيضًا:
+gamemoderun mangohud %command%`}</code></pre>
+
+        <h2 id="dlss-raytracing">DLSS وتتبع الأشعة على لينكس</h2>
+
+        <p>
+            هذه هي الميزة التي قد تبرر اختيار Nvidia على لينكس
+            رغم الأداء الأقل في DX12: <strong>DLSS وتتبع
+            الأشعة</strong>.
+        </p>
+
+        <p>
+            على التعريف المغلق والمفتوح (الرسمي)، DLSS يعمل
+            عبر Proton في الألعاب المدعومة. لا يحتاج إعدادًا
+            خاصًا عادةً — فقط فعّل DLSS داخل اللعبة. تتبع
+            الأشعة يعمل أيضًا، لكن الأداء يعتمد على اللعبة
+            والتعريف.
+        </p>
+
+        <p>
+            على NVK (المفتوح بالكامل)، أصبح DLSS مدعومًا
+            <strong>تجريبيًا</strong> في Mesa 26.2. لتفعيله،
+            تحتاج إلى تعيين متغير بيئة:
+            <code>NVK_EXPERIMENTAL=dlss</code>
+            [reference:31]. هذا ليس جاهزًا للاستخدام اليومي
+            بعد، لكنه مؤشر على أن التعريف المفتوح بالكامل
+            يتحرك في الاتجاه الصحيح.
+        </p>
+
+        <p>
+            <strong>ملاحظة:</strong> DLSS على لينكس لا يزال
+            أقل استقرارًا من ويندوز في بعض الألعاب. إذا كانت
+            اللعبة تعتمد على DLSS كجزء أساسي من الأداء،
+            فاختبر قبل الاعتماد عليه.
+        </p>
+
+        <h2 id="troubleshooting">استكشاف الأخطاء: المشاكل الشائعة</h2>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المشكلة</th>
+                            <th class="px-4 py-2 font-semibold">السبب المرجح</th>
+                            <th class="px-4 py-2 font-semibold">الحل</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">وميض الشاشة أو انهيار اللعبة</td>
+                            <td class="px-4 py-2">تعريف أقدم من 555 (مشكلة التزامن)</td>
+                            <td class="px-4 py-2">حدّث إلى 555 أو أحدث، وأعد التشغيل[reference:32]</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">"No Suitable Graphics Device" في Steam/Lutris</td>
+                            <td class="px-4 py-2">عدم تطابق بين تعريف Flatpak وتعريف النظام</td>
+                            <td class="px-4 py-2">استخدم أداة إصلاح مثل Fix-Nvidia-Linux-Driver-Mismatch أو أعد تثبيت تعريف Flatpak[reference:33]</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الشاشة سوداء بعد التثبيت</td>
+                            <td class="px-4 py-2">Secure Boot يمنع تحميل وحدة النواة</td>
+                            <td class="px-4 py-2">عطّل Secure Boot أو وقّع وحدة النواة (kmod)[reference:34]</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">أداء منخفض في ألعاب DX12</td>
+                            <td class="px-4 py-2">قيود Proton مع Nvidia</td>
+                            <td class="px-4 py-2">جرّب Proton-GE، أو استخدم X11، أو اقبل الفارق</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Gamescope لا يعمل</td>
+                            <td class="px-4 py-2">لم يتم تفعيل <code>nvidia_drm.modeset=1</code></td>
+                            <td class="px-4 py-2">أضف المعامل إلى إعدادات النواة (GRUB) وأعد التشغيل[reference:35]</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Xid 79 (GPU has fallen off the bus)</td>
+                            <td class="px-4 py-2">مشكلة عتاد (طاقة، كابل، PCI)</td>
+                            <td class="px-4 py-2">افحص مصدر الطاقة والكابلات، جرّب فتحة PCI أخرى</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            <strong>نصيحة تشخيصية:</strong> ابدأ دائمًا بـ
+            <code>nvidia-smi</code> للتأكد من أن التعريف
+            محمّل. ثم استخدم <code>mangohud %command%</code>
+            لرؤية الأداء داخل اللعبة. إذا كانت المشكلة في
+            لعبة معينة، ابحث في
+            <strong>ProtonDB</strong> عن إعدادات مقترحة —
+            غالبًا ما يشارك مستخدمون آخرون حلولاً جاهزة.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات</h2>
+
+        <ul>
+            <li>
+                <strong>استخدم تعريفًا 555 أو أحدث:</strong>
+                هذا هو الخط الفاصل بين Wayland غير المستقر
+                وWayland المستقر[reference:37].
+            </li>
+            <li>
+                <strong>فضّل التعريف المفتوح على Turing
+                وأحدث:</strong> Nvidia توصي به، والتوزيعات
+                الحديثة تجعله الافتراضي. لا حاجة للمغلق إلا
+                إذا واجهت مشكلة[reference:38].
+            </li>
+            <li>
+                <strong>لا تتوقع أداءً مطابقًا لويندوز:</strong>
+                اقبل فارق 5–20% في بعض الألعاب، خاصة
+                DX12. إذا كان هذا غير مقبول، فAMD خيار
+                أفضل على لينكس.
+            </li>
+            <li>
+                <strong>استخدم Wayland افتراضيًا:</strong>
+                مع 555+، Wayland يعادل أو يتفوق على X11.
+                X11 احتياطي للتشخيص فقط.
+            </li>
+            <li>
+                <strong>اختر توزيعة تدعم Nvidia
+                بوضوح:</strong> Bazzite أو Pop!_OS
+                (صورة Nvidia) أو CachyOS. تجنب
+                التوزيعات التي تتطلب خطوات معقدة.
+            </li>
+            <li>
+                <strong>استخدم MangoHud وGameMode:</strong>
+                لقياس الأداء وتحسينه تلقائيًا.
+            </li>
+            <li>
+                <strong>تحقق من ProtonDB قبل الشراء:</strong>
+                إذا كانت لعبة معينة هي سببك لشراء بطاقة
+                Nvidia، تأكد من أنها تعمل جيدًا عبر
+                Proton.
+            </li>
+            <li>
+                <strong>لا تستخدم NVK للألعاب الجادة
+                بعد:</strong> رغم تقدمه، لا يزال متأخرًا
+                عن التعريف الرسمي في الألعاب الحديثة
+                [reference:39].
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل بطاقتك Turing (GTX 16xx/RTX 20xx) أو
+                أحدث؟ ← <strong>نعم، التعريف المفتوح
+                يعمل</strong>
+            </li>
+            <li>
+                هل تستخدم تعريفًا 555 أو أحدث؟ ←
+                <strong>ضروري لاستقرار Wayland</strong>
+            </li>
+            <li>
+                هل تعرف أن الأداء قد يكون أقل من ويندوز
+                في DX12؟ ← <strong>نعم، قرار واعٍ</strong>
+            </li>
+            <li>
+                هل اخترت توزيعة تدعم Nvidia؟ ←
+                <strong>Bazzite أو Pop!_OS أو CachyOS</strong>
+            </li>
+            <li>
+                هل تستخدم Wayland بدل X11؟ ←
+                <strong>نعم، مع 555+</strong>
+            </li>
+            <li>
+                هل لديك MangoHud لقياس الأداء؟ ←
+                <strong>مفيد جدًا</strong>
+            </li>
+            <li>
+                هل تعرف كيف تتحقق من ProtonDB؟ ←
+                <strong>قبل الاعتماد على لعبة معينة</strong>
+            </li>
+            <li>
+                هل تحتاج DLSS أو تتبع الأشعة بشدة؟ ←
+                <strong>إذا نعم، Nvidia قد تستحق
+                الفارق</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع
+            إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.nvidia.com/en-us/drivers/unix/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Nvidia — Unix Driver Archive
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/NVIDIA/open-gpu-kernel-modules"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Nvidia Open GPU Kernel Modules — GitHub
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.mesa3d.org/drivers/nvk.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Mesa NVK — Open-Source Vulkan Driver
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.protondb.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    ProtonDB — Game Compatibility Database
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/GloriousEggroll/proton-ge-custom"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Proton-GE — Custom Proton Build
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/flightlessmango/MangoHud"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MangoHud — Performance Overlay
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://bazzite.gg/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Bazzite — Gaming Linux Distribution
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://pop.system76.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Pop!_OS — Nvidia-Ready Linux
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل Nvidia على لينكس "تعمل فقط" مثل AMD؟</h3>
+        <p>
+            <strong>لا.</strong> AMD تتفوق على لينكس لأن
+            تعريفها مفتوح ومدمج في النواة وMesa. Nvidia
+            تتطلب تعريفًا منفصلاً (وإن كان مفتوحًا الآن)،
+            وأداؤها في DX12 عبر Proton أقل من ويندوز. لكن
+            "تعمل فقط" بمعنى "قابلة للاستخدام" — نعم،
+            خاصة مع التوزيعات مثل Bazzite وPop!_OS.
+        </p>
+
+        <h3>هل يجب أن أستخدم التعريف المفتوح أم المغلق؟</h3>
+        <p>
+            إذا كانت بطاقتك Turing (GTX 16xx/RTX 20xx)
+            أو أحدث، ابدأ بالمفتوح. Nvidia توصي به،
+            والتوزيعات الحديثة تجعله الافتراضي. إذا واجهت
+            عدم استقرار، جرّب المغلق. لبطاقات GTX 900/10،
+            المغلق هو الخيار الوحيد.
+        </p>
+
+        <h3>هل Wayland جاهز للألعاب مع Nvidia؟</h3>
+        <p>
+            نعم، مع تعريف 555 أو أحدث. أضاف 555 دعم
+            التزامن الصريح (Explicit Sync)، مما حل مشاكل
+            الوميض والانهيارات. اختبارات 2026 تظهر أن
+            Wayland يعادل أو يتفوق على X11 في الأداء
+            [reference:40][reference:41]. لكن إذا واجهت
+            مشكلة في لعبة معينة، جرّب X11 للتشخيص.
+        </p>
+
+        <h3>هل DLSS يعمل على لينكس؟</h3>
+        <p>
+            نعم، على التعريف الرسمي (المغلق أو المفتوح)
+            عبر Proton. على NVK (المفتوح بالكامل)، أصبح
+            DLSS مدعومًا تجريبيًا في Mesa 26.2، ويتطلب
+            <code>NVK_EXPERIMENTAL=dlss</code>. لكن
+            الاستقرار يختلف من لعبة لأخرى.
+        </p>
+
+        <h3>ما أفضل توزيعة لبطاقة Nvidia للألعاب؟</h3>
+        <p>
+            <strong>Bazzite</strong> هي الخيار الأبرز:
+            تدعم Nvidia خارج الصندوق، مبنية على Fedora،
+            وتوفر تجربة شبيهة بـSteamOS مع سطح مكتب كامل.
+            <strong>Pop!_OS</strong> (صورة Nvidia) خيار
+            ممتاز آخر. <strong>CachyOS</strong> لمن يريد
+            Arch مع أداء محسّن.
+        </p>
+
+        <h3>هل يمكنني استخدام NVK (التعريف المفتوح بالكامل) للألعاب؟</h3>
+        <p>
+            يمكنك، لكنه ليس جاهزًا كبديل يومي. الأداء في
+            الألعاب الحديثة لا يزال أقل من التعريف الرسمي
+            [reference:42]. استخدمه للتجربة أو إذا كنت
+            ترفض أي مكون من Nvidia، لكن لا تعتمد عليه
+            للألعاب الجادة بعد.
+        </p>
+    </PostLayout>
+</BaseLayout>
