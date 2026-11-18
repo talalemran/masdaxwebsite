@@ -1,0 +1,768 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "chatgpt-vs-nano-banana-ai-image-generation",
+    title: "صراع توليد الصور بالذكاء الاصطناعي: ChatGPT في مواجهة Nano Banana",
+    metaTitle: "ChatGPT أم Nano Banana؟ مقارنة شاملة لتوليد الصور 2026",
+    description:
+        "مقارنة معمقة بين ChatGPT Images 2.0 وNano Banana 2 وPro: النصوص، الاتساق، التحرير، الدقة، السرعة، السعر، ودعم العربية. من يفوز ولماذا؟",
+    keywords: [
+        "ChatGPT Images 2.0",
+        "Nano Banana",
+        "Nano Banana 2",
+        "Nano Banana Pro",
+        "توليد الصور بالذكاء الاصطناعي",
+        "مقارنة توليد الصور",
+        "GPT Image",
+        "Gemini image generation",
+        "دعم العربية في توليد الصور",
+        "أفضل مولّد صور AI",
+    ],
+    category: "ذكاء اصطناعي",
+    author: "طلال عمران",
+    date: "18 نوفمبر 2026",
+    pubDate: new Date("2026-11-18"),
+    tags: ["ذكاء اصطناعي", "توليد الصور", "ChatGPT", "Nano Banana", "Gemini", "مقارنات"],
+    thumbnail: "/images/chatgpt-vs-nano-banana-ai-image-generation.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: من يفوز في ماذا؟" },
+    { id: "contenders", label: "المتنافسان: من هو ChatGPT Images 2.0 ومن هي Nano Banana؟" },
+    { id: "thinking-vs-speed", label: "الفلسفة: نموذج 'يفكر' مقابل نموذج 'ينفّذ بسرعة'" },
+    { id: "text-rendering", label: "النصوص: حيث تغيّرت القواعد" },
+    { id: "consistency-editing", label: "الاتساق والتحرير: أقوى سلاح لـNano Banana" },
+    { id: "resolution-knowledge", label: "الدقة والمعرفة: 4K مقابل 2K، والبحث الحيّ" },
+    { id: "speed-price", label: "السرعة والسعر: الفارق الذي يحدد الاستخدام" },
+    { id: "safety-watermarks", label: "الأمان والعلامات المائية والرقابة" },
+    { id: "arabic", label: "العربية: الاختبار الحقيقي الذي لا يجتازه أحد بعد" },
+    { id: "who-should-use", label: "من يستخدم ماذا؟ دليل القرار" },
+    { id: "best-practices", label: "أفضل الممارسات في العمل مع المولّدين" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في 2026، لم يعد السؤال عن مولّد الصور "أيهما أجمل؟". الصور
+            الجميلة أصبحت سلعة رخيصة. السؤال الحقيقي هو: <strong>أيهما
+            ينتج صورة قابلة للاستخدام الفعلي؟</strong> صورة تحمل نصًا
+            صحيحًا، وتحافظ على نفس الشخص في خمس لقطات، ويمكن تعديلها
+            دون أن يفقد المشهد هويته، وتصلح للنشر على منصة حقيقية
+            دون عشرات المحاولات.
+        </p>
+
+        <p>
+            هنا يبدأ الصراع بين <strong>ChatGPT Images 2.0</strong>،
+            الذي أطلقته OpenAI في أبريل 2026 كأول نموذج صور "يفكر"،
+            و<strong>Nano Banana</strong> من Google DeepMind، الذي بدأ
+            كظاهرة في أغسطس 2025، ثم تطوّر إلى <strong>Nano Banana
+            Pro</strong> في نوفمبر، ثم <strong>Nano Banana 2</strong>
+            في فبراير 2026 ليصبح الخيار المجاني السريع الذي يهدد كل
+            المنافسين. هذا الدليل لا يكتفي بجدول مقارنة. إنه يفكك
+            الفرق بين النموذجين من الداخل، ويشرح <strong>لماذا يتفوق
+            كل منهما في نوع مختلف من المهام</strong>، وأين تقف
+            <strong>اللغة العربية</strong> في هذا كله.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: من يفوز في ماذا؟</h2>
+
+        <p>
+            الجدول التالي يلخص الفروق الجوهرية كما تظهر في الاختبارات
+            العملية في نهاية 2026:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المعيار</th>
+                            <th class="px-4 py-2 font-semibold">ChatGPT Images 2.0</th>
+                            <th class="px-4 py-2 font-semibold">Nano Banana 2</th>
+                            <th class="px-4 py-2 font-semibold">الفائز</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">جودة الصورة العامة</td>
+                            <td class="px-4 py-2">واقعية شديدة، تفاصيل دقيقة</td>
+                            <td class="px-4 py-2">ممتازة، إضاءة ومواد غنية</td>
+                            <td class="px-4 py-2">تعادل تقريبي</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">النص الإنجليزي</td>
+                            <td class="px-4 py-2">شبه مثالي، حتى في الخط الصغير</td>
+                            <td class="px-4 py-2">تحسّن كبير، لكن أقل دقة</td>
+                            <td class="px-4 py-2">ChatGPT</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">اتساق الشخصية</td>
+                            <td class="px-4 py-2">حتى 8 مخرجات متسقة</td>
+                            <td class="px-4 py-2">حتى 5 شخصيات و14 عنصرًا</td>
+                            <td class="px-4 py-2">Nano Banana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">التحرير التكراري</td>
+                            <td class="px-4 py-2">جيد، لكنه ليس جوهر النموذج</td>
+                            <td class="px-4 py-2">مصمم للتحرير والحفاظ على المشهد</td>
+                            <td class="px-4 py-2">Nano Banana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الدقة القصوى</td>
+                            <td class="px-4 py-2">2K عبر API</td>
+                            <td class="px-4 py-2">حتى 4K</td>
+                            <td class="px-4 py-2">Nano Banana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">البحث الحيّ</td>
+                            <td class="px-4 py-2">مدعوم، معرفة حتى ديسمبر 2025</td>
+                            <td class="px-4 py-2">بحث ويب في الوقت الفعلي</td>
+                            <td class="px-4 py-2">Nano Banana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">السرعة</td>
+                            <td class="px-4 py-2">أبطأ (نموذج تفكير)</td>
+                            <td class="px-4 py-2">ثوانٍ قليلة</td>
+                            <td class="px-4 py-2">Nano Banana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">السعر</td>
+                            <td class="px-4 py-2">أعلى، مع حدود صارمة</td>
+                            <td class="px-4 py-2">مجاني، و0.067 دولار للصورة 1K</td>
+                            <td class="px-4 py-2">Nano Banana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الشفافية والعلامات</td>
+                            <td class="px-4 py-2">C2PA، لكن ثغرة أمنية موثقة</td>
+                            <td class="px-4 py-2">SynthID من Google</td>
+                            <td class="px-4 py-2">Nano Banana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">دعم العربية</td>
+                            <td class="px-4 py-2">ضعيف في النص، جيد في الفهم</td>
+                            <td class="px-4 py-2">ضعيف في النص، جيد في الفهم</td>
+                            <td class="px-4 py-2">لا أحد</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="contenders">المتنافسان: من هو ChatGPT Images 2.0 ومن هي Nano Banana؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/chatgpt-vs-nano-banana-ai-image-generation/01.webp"
+                alt="مقارنة ChatGPT Images 2.0 وNano Banana"
+                width="1200"
+                height="670"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            <strong>ChatGPT Images 2.0</strong> ليس مجرد تحديث لـDALL-E.
+            إنه نموذج مختلف جذريًا. OpenAI تصفه بأنه <strong>أول نموذج
+            صور لديها "يفكر"</strong>: يبني خطة قبل الرسم، يستخدم
+            الاستدلال لفهم الطلب، ويمكنه البحث على الويب لجمع
+            معلومات حديثة قبل إنشاء الصورة. أطلق في أبريل 2026،
+            وتصدّر لوحة Image Arena بفارق <strong>242 نقطة</strong>
+            عن أقرب منافس في مهام النص إلى الصورة. يدعم حتى
+            <strong>8 مخرجات من طلب واحد</strong>، ويحافظ على
+            استمرارية الشخصيات والعناصر بينها. في API، يصل إلى
+            دقة <strong>2K</strong>، ويدعم نسب عرض من 3:1 إلى 1:3.
+        </p>
+
+        <p>
+            <strong>Nano Banana</strong> هو الاسم الشعبي الذي أطلقته
+            Google على نموذجها لتوليد وتحرير الصور داخل Gemini.
+            بدأ في أغسطس 2025 كأداة تحرير صور غيرت قواعد اللعبة:
+            لأول مرة، يمكنك رفع صورة وتعديلها بأوامر نصية مع
+            الحفاظ على هوية الشخص والمشهد. ثم جاء
+            <strong>Nano Banana Pro</strong> في نوفمبر 2025
+            بقدرات "استوديو" وأربع دقائق من الدقة العالية. ثم
+            <strong>Nano Banana 2</strong> في فبراير 2026:
+            نسخة تجمع سرعة Flash مع قدرات Pro، وتصبح
+            <strong>مجانية</strong> في تطبيق Gemini وAI Studio،
+            وبسعر API يبلغ <strong>0.067 دولار للصورة 1K</strong>
+            — نصف سعر Pro. في اختبارات Google، تفوقت Nano Banana 2
+            على Pro في الجودة العامة والدقة المعلوماتية.
+        </p>
+
+        <p>
+            الفرق في الهوية مهم: <strong>ChatGPT Images 2.0 يبيع
+            "الفهم والاستدلال"</strong>، بينما <strong>Nano Banana
+            يبيع "التحرير والسرعة والاتساق"</strong>. هذا الفرق
+            يفسر كل شيء تقريبًا في المقارنة.
+        </p>
+
+        <h2 id="thinking-vs-speed">الفلسفة: نموذج "يفكر" مقابل نموذج "ينفّذ بسرعة"</h2>
+
+        <p>
+            عندما تطلب من ChatGPT Images 2.0 صورة، فإنه لا يبدأ
+            بالرسم فورًا. يبني تمثيلًا داخليًا للمشهد، ويسأل نفسه
+            أسئلة ضمنية: ما العلاقة بين العناصر؟ أي نص يجب أن يظهر؟
+            هل هناك تناقض في الطلب؟ ثم يبحث إن لزم الأمر. هذه
+            العملية تجعله <strong>أبطأ</strong> من Nano Banana،
+            لكنها تنتج صورًا أكثر تماسكًا منطقيًا في المشاهد
+            المعقدة.
+        </p>
+
+        <p>
+            Nano Banana 2 يسلك طريقًا مختلفًا. هو مبني على
+            <strong>Gemini 3.1 Flash Image</strong>، أي نموذج
+            "Flash" مصمم للسرعة أولًا. لا يبني خطة طويلة؛ بل
+            يستجيب للطلب بسرعة، مع الاعتماد على قدرات تحرير
+            قوية وفهم عميق للصورة المدخلة. النتيجة:
+            <strong>ثوانٍ قليلة لكل صورة</strong>، وهو ما يجعله
+            مناسبًا للاستخدام اليومي والتجريب السريع.
+        </p>
+
+        <p>
+            هذا لا يعني أن أحدهما "أفضل" بشكل مطلق. إذا كنت
+            تحتاج إلى <strong>صورة واحدة معقدة ومنطقية</strong>،
+            فقد يتفوق ChatGPT. إذا كنت تحتاج إلى <strong>عشر
+            محاولات سريعة</strong> لتختار منها، أو إلى
+            <strong>تحرير صورة موجودة</strong>، فNano Banana
+            هو الأداة العملية.
+        </p>
+
+        <h2 id="text-rendering">النصوص: حيث تغيّرت القواعد</h2>
+
+        <p>
+            لسنوات، كان النص في الصور المولّدة كارثة: حروف مشوهة،
+            كلمات مبتورة، ولغات غير لاتينية تتحول إلى رموز عشوائية.
+            هذا تغيّر في 2026، لكن ليس بالدرجة نفسها في النموذجين.
+        </p>
+
+        <p>
+            <strong>ChatGPT Images 2.0</strong> أحدث قفزة نوعية في
+            النص الإنجليزي. اختبره صحفيون بكتابة عبارة صغيرة على
+            رأس دبوس معدني، فظهرت واضحة. أنتج لافتات، وصفحات
+            امتحانات، وواجهات بث مباشر، ونصوصًا طويلة نسبيًا
+            دون أخطاء فادحة. هذا يجعله الأفضل حاليًا
+            <strong>للنصوص اللاتينية الدقيقة</strong>. لكن
+            الاختبارات نفسها كشفت أن النص <strong>غير الإنجليزي</strong>
+            لا يزال يعاني: في تجربة صينية، ظهرت حروف مشوهة
+            ومختلطة، وأقر النموذج نفسه بوجود أخطاء.
+        </p>
+
+        <p>
+            <strong>Nano Banana 2</strong> حسّن "العرض الدقيق
+            للنص والترجمة" مقارنة بالإصدارات السابقة، لكنه لا
+            يصل إلى دقة ChatGPT في النص الإنجليزي الطويل. قوته
+            الحقيقية في <strong>النص القصير داخل سياق بصري</strong>:
+            عنوان على غلاف، كلمة على قميص، لافتة صغيرة. أما
+            الفقرات الطويلة أو الخطوط الدقيقة جدًا، فما زال
+            ChatGPT متقدمًا.
+        </p>
+
+        <p>
+            <strong>الخلاصة العملية:</strong> إذا كان النص هو
+            جوهر الصورة (بوستر، إعلان، واجهة، مستند)، فـChatGPT
+            Images 2.0 هو الخيار الأول. إذا كان النص عنصرًا
+            ثانويًا في مشهد تحريري، فNano Banana كافٍ وأسرع.
+        </p>
+
+        <h2 id="consistency-editing">الاتساق والتحرير: أقوى سلاح لـNano Banana</h2>
+
+        <p>
+            هنا يبتعد Nano Banana عن ChatGPT بمسافة واضحة.
+            <strong>Nano Banana 2 يمكنه الحفاظ على اتساق حتى
+            5 شخصيات و14 عنصرًا في سير عمل واحد</strong>. هذا
+            يعني أنك تستطيع بناء قصة مصورة من عدة لقطات، ويظل
+            بطل القصة بالوجه نفسه والملابس نفسها. هذا ما يجعله
+            أداة عملية لصنّاع المحتوى، لا مجرد مولّد صور.
+        </p>
+
+        <p>
+            الأهم أن Nano Banana وُلد أصلًا كـ<strong>أداة
+            تحرير</strong>. يمكنك رفع صورة، وطلب تغيير خلفية،
+            أو إضافة عنصر، أو تعديل إضاءة، أو إزالة شخص، مع
+            الحفاظ على ما تبقى من المشهد. هذا النمط —
+            <strong>التحرير التكراري (Iterative Editing)</strong>
+            — هو الاستخدام اليومي الحقيقي لمعظم الناس. ChatGPT
+            Images 2.0 يمكنه التحرير أيضًا، لكنه ليس مصممًا
+            حوله بنفس العمق.
+        </p>
+
+        <p>
+            ChatGPT يعوّض ذلك جزئيًا عبر <strong>8 مخرجات من
+            طلب واحد</strong> مع استمرارية بينها. هذا مفيد
+            للتجريب واستكشاف الاتجاهات، لكنه ليس بديلًا عن
+            تحرير صورة موجودة والحفاظ على هويتها عبر جلسات
+            متعددة.
+        </p>
+
+        <p>
+            <strong>الحكم:</strong> للمشاريع التي تحتاج إلى
+            شخصية ثابتة عبر لقطات، أو تحرير صور حقيقية،
+            <strong>Nano Banana 2 هو الفائز بلا منافس
+            قريب</strong>.
+        </p>
+
+        <h2 id="resolution-knowledge">الدقة والمعرفة: 4K مقابل 2K، والبحث الحيّ</h2>
+
+        <p>
+            من حيث الدقة الخام، يتفوق Nano Banana 2. يدعم
+            <strong>نسب عرض متعددة ودقة تصل إلى 4K</strong>،
+            بما في ذلك صور بانورامية بنسبة 4:1. هذا يجعله
+            مناسبًا للطباعة واللافتات الكبيرة. ChatGPT
+            Images 2.0 يصل في API إلى <strong>2K</strong>،
+            وهو كافٍ لمعظم استخدامات الويب، لكنه أقل من
+            Nano Banana للطباعة عالية الدقة.
+        </p>
+
+        <p>
+            في المعرفة، كلاهما يتصل بالويب، لكن بطريقتين
+            مختلفتين. ChatGPT Images 2.0 لديه
+            <strong>معرفة حتى ديسمبر 2025</strong>، ويمكنه
+            البحث لجمع معلومات حديثة. Nano Banana 2
+            يستخدم <strong>البحث الحيّ في الوقت الفعلي</strong>،
+            مما يجعله أقدر على التعامل مع أحداث أو منتجات
+            ظهرت للتو. في اختبارات Google، تفوقت Nano Banana 2
+            على Pro في "الدقة المعلوماتية" بفضل هذا البحث.
+        </p>
+
+        <p>
+            لكن ChatGPT يتفوق في <strong>التماسك المنطقي
+            للمشهد</strong>. عندما تطلب مشهدًا معقدًا فيه
+            علاقات سببية أو ترتيب زمني، فإن "تفكيره" المسبق
+            ينتج صورة أكثر اتساقًا. Nano Banana أسرع، لكنه
+            قد ينتج تفاصيل متناقضة إذا كان الطلب معقدًا
+            جدًا.
+        </p>
+
+        <h2 id="speed-price">السرعة والسعر: الفارق الذي يحدد الاستخدام</h2>
+
+        <p>
+            السرعة ليست رفاهية؛ إنها تغيّر طريقة العمل.
+            Nano Banana 2 ينتج صورة في <strong>ثوانٍ
+            قليلة</strong>، بينما ChatGPT Images 2.0
+            يحتاج وقتًا أطول لأنه "يفكر" قبل الرسم. في
+            جلسة تصميم، هذا الفارق يعني أنك تستطيع تجربة
+            عشر أفكار مع Nano Banana في الوقت الذي تنتج
+            فيه صورة أو صورتين مع ChatGPT.
+        </p>
+
+        <p>
+            السعر هو الفارق الأكثر دراماتيكية.
+            <strong>Nano Banana 2 مجاني في تطبيق Gemini
+            وAI Studio</strong>، وسعر API يبلغ
+            <strong>0.067 دولار للصورة 1K</strong> — أي
+            نصف سعر Nano Banana Pro. ChatGPT Images 2.0
+            متاح في ChatGPT وCodex وAPI، لكنه يأتي
+            بحدود استخدام صارمة وخطة أسعار أعلى. إذا
+            كنت تبني منتجًا أو سير عمل آليًا، فإن فارق
+            السعر يتراكم بسرعة.
+        </p>
+
+        <p>
+            <strong>المعادلة:</strong> Nano Banana 2
+            يقدم "قيمة كبيرة مقابل سعر منخفض جدًا".
+            ChatGPT Images 2.0 يقدم "جودة استدلالية
+            مقابل سعر أعلى". أي منهما "أفضل" يعتمد على
+            ما إذا كنت تدفع مقابل <strong>الكم</strong>
+            أم <strong>النوع</strong>.
+        </p>
+
+        <h2 id="safety-watermarks">الأمان والعلامات المائية والرقابة</h2>
+
+        <p>
+            كلما زادت واقعية الصور، زادت مخاطر سوء
+            الاستخدام. هنا يظهر فرق مهم في النهج.
+        </p>
+
+        <p>
+            <strong>ChatGPT Images 2.0</strong> يستخدم
+            <strong>C2PA</strong>، وهو معيار بيانات
+            وصفية يضع علامة غير مرئية على الصور
+            المولّدة. نظريًا، هذا يسمح بتتبع الصورة
+            ومعرفة أنها مولّدة. لكن الاختبارات الصحفية
+            كشفت <strong>ثغرة أمنية خطيرة</strong>:
+            عند رفع صورة بطاقة هوية وطلب تعديلها، لم
+            يمنع النموذج العملية، بل غيّر الوجه
+            والاسم وتاريخ الميلاد. هذا يثير أسئلة
+            جدية حول فلاتر الأمان.
+        </p>
+
+        <p>
+            <strong>Nano Banana</strong> يعتمد على
+            <strong>SynthID</strong> من Google، وهو
+            علامة مائية غير مرئية مدمجة في عملية
+            التوليد. تجربة Google مع Gemini تجعل
+            الرقابة أكثر صرامة على المحتوى الحساس،
+            لكنها أيضًا قد ترفض طلبات مشروعة بسبب
+            التصنيف الآلي. لا يوجد نظام مثالي، لكن
+            SynthID يعتبر معيارًا قويًا في الصناعة.
+        </p>
+
+        <p>
+            <strong>نصيحة:</strong> لا تعتمد على أي
+            أداة لإنتاج صور "موثوقة" دون التحقق
+            البشري. العلامات المائية تساعد، لكنها
+            ليست درعًا كاملًا ضد التضليل.
+        </p>
+
+        <h2 id="arabic">العربية: الاختبار الحقيقي الذي لا يجتازه أحد بعد</h2>
+
+        <p>
+            هذا هو الجزء الذي يهم القارئ العربي أكثر من
+            غيره، وللأسف الإجابة صريحة:
+            <strong>لا ChatGPT Images 2.0 ولا Nano Banana
+            يتقنان النص العربي بعد</strong>. كلاهما يفهم
+            الطلب العربي ويولد مشاهد مناسبة ثقافيًا
+            بدرجة معقولة، لكن عندما يُطلب منهما
+            <strong>كتابة كلمات عربية داخل الصورة</strong>،
+            تظهر المشاكل:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الحروف المتصلة:</strong> العربية
+                تكتب متصلة، وأي خطأ في ربط الحروف ينتج
+                كلمة مشوهة. النماذج لا تزال تتعثر في
+                هذا.
+            </li>
+            <li>
+                <strong>الاتجاه من اليمين إلى اليسار:</strong>
+                ترتيب الحروف أو الكلمات قد ينعكس،
+                خاصة في العبارات الطويلة.
+            </li>
+            <li>
+                <strong>التشكيل والخطوط:</strong> النماذج
+                تخلط بين أنماط الخطوط العربية، وتفقد
+                التشكيل أو تضعطه بشكل غير صحيح.
+            </li>
+        </ul>
+
+        <p>
+            ChatGPT Images 2.0 أظهر تحسنًا في بعض
+            اللغات غير الإنجليزية (مثل الصينية
+            والهندية) لكنه لا يزال ينتج حروفًا
+            مشوهة أو "شبه صحيحة". Nano Banana 2
+            يدعم "الترجمة" داخل الصورة، لكن جودة
+            النص العربي النهائي تعتمد على الخط
+            والسياق، وغالبًا ما تحتاج إلى تدخل
+            يدوي.
+        </p>
+
+        <p>
+            <strong>ماذا يعني هذا عمليًا؟</strong> إذا
+            كنت تصمم بوسترًا عربيًا أو لافتة أو غلافًا،
+            فالأفضل أن تستخدم النموذج لتوليد
+            <strong>الخلفية والعناصر البصرية</strong>،
+            ثم تضيف النص العربي يدويًا في Canva أو
+            Photoshop أو Figma. هذا ليس تراجعًا عن
+            استخدام الذكاء الاصطناعي، بل استخدامه
+            في المكان الذي يتفوق فيه.
+        </p>
+
+        <p>
+            <strong>أيهما أفضل للعربية؟</strong> لا
+            يوجد فائز واضح. ChatGPT قد يفهم الطلب
+            العربي المعقد بشكل أفضل قليلًا بفضل
+            "تفكيره"، لكن كلاهما ليس موثوقًا للنص
+            العربي المطبوع. الاختبار الشخصي هو
+            الحكم الوحيد.
+        </p>
+
+        <h2 id="who-should-use">من يستخدم ماذا؟ دليل القرار</h2>
+
+        <p>
+            بعد كل هذه المقارنة، القرار ليس "أيهما
+            أفضل" بل "أيهما يناسب مهمتك":
+        </p>
+
+        <ul>
+            <li>
+                <strong>استخدم ChatGPT Images 2.0 إذا:</strong>
+                كنت تحتاج إلى نصوص إنجليزية دقيقة داخل
+                الصورة، أو مشاهد معقدة منطقيًا، أو
+                صورًا واقعية جدًا لشخصيات وأماكن، أو
+                كنت تبني تطبيقًا يحتاج إلى فهم عميق
+                للطلب أكثر من السرعة.
+            </li>
+            <li>
+                <strong>استخدم Nano Banana 2 إذا:</strong>
+                كنت تحتاج إلى سرعة، أو تحرير صور
+                موجودة، أو الحفاظ على شخصية عبر عدة
+                لقطات، أو دقة 4K، أو ميزانية محدودة،
+                أو تكاملًا مع Gemini وGoogle Workspace.
+            </li>
+            <li>
+                <strong>استخدم كليهما إذا:</strong>
+                كنت محترفًا. ولّد الأفكار بسرعة مع
+                Nano Banana، ثم اختر أفضل اتجاه
+                واطلبه بجودة أعلى من ChatGPT. أو
+                استخدم ChatGPT للمشهد المعقد، ثم
+                حرّره وأضف النص العربي يدويًا.
+            </li>
+        </ul>
+
+        <p>
+            لا يوجد ولاء ضروري لنموذج واحد. الأدوات
+            تتغير كل أشهر، والمرونة هي المهارة
+            الحقيقية.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في العمل مع المولّدين</h2>
+
+        <ul>
+            <li>
+                <strong>اكتب الطلب كوصف مشهد، لا
+                كقائمة كلمات:</strong> النماذج
+                الحديثة تفهم الجمل الكاملة والعلاقات
+                بين العناصر أفضل من الكلمات المتقطعة.
+            </li>
+            <li>
+                <strong>حدد النص بدقة:</strong> إذا
+                أردت نصًا داخل الصورة، ضعه بين
+                علامات اقتباس، وحدد الخط واللون
+                والمكان إن أمكن.
+            </li>
+            <li>
+                <strong>استخدم التحرير التكراري:</strong>
+                لا تطلب الصورة المثالية من أول
+                محاولة. اطلب صورة قريبة، ثم عدّلها
+                خطوة بخطوة مع Nano Banana.
+            </li>
+            <li>
+                <strong>لا تعتمد على النص العربي
+                الآلي:</strong> أضفه يدويًا بعد
+                توليد الخلفية. هذا يوفر وقتًا
+                ويضمن جودة أعلى.
+            </li>
+            <li>
+                <strong>احتفظ بسجل للطلبات الناجحة:</strong>
+                النماذج تتغير، والطلب الذي يعمل
+                اليوم قد لا يعمل غدًا. احفظ
+                الصيغ التي أعطتك نتائج جيدة.
+            </li>
+            <li>
+                <strong>تحقق من الحقوق والتراخيص:</strong>
+                الصور المولّدة قد تخضع لشروط
+                استخدام مختلفة بين المنصات،
+                خاصة للاستخدام التجاري.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تحتاج نصًا إنجليزيًا دقيقًا داخل
+                الصورة؟ ← <strong>ChatGPT</strong>
+            </li>
+            <li>
+                هل تحتاج نصًا عربيًا؟ ←
+                <strong>لا تعتمد على أي منهما، أضفه
+                يدويًا</strong>
+            </li>
+            <li>
+                هل تحتاج اتساق شخصية عبر لقطات؟ ←
+                <strong>Nano Banana</strong>
+            </li>
+            <li>
+                هل تحتاج تحرير صورة موجودة؟ ←
+                <strong>Nano Banana</strong>
+            </li>
+            <li>
+                هل تحتاج دقة 4K؟ ← <strong>Nano
+                Banana</strong>
+            </li>
+            <li>
+                هل تحتاج مشهدًا معقدًا منطقيًا؟ ←
+                <strong>ChatGPT</strong>
+            </li>
+            <li>
+                هل الميزانية محدودة؟ ←
+                <strong>Nano Banana 2 مجاني
+                تقريبًا</strong>
+            </li>
+            <li>
+                هل تحتاج سرعة في التجريب؟ ←
+                <strong>Nano Banana</strong>
+            </li>
+            <li>
+                هل تحتاج علامة مائية موثوقة؟ ←
+                <strong>Nano Banana (SynthID) أو
+                ChatGPT (C2PA، مع تحفظ)</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومصادر يمكنك الرجوع
+            إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://openai.com/index/introducing-4o-image-generation/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    OpenAI — Image Generation in ChatGPT
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://platform.openai.com/docs/guides/image-generation"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    OpenAI — Image Generation API Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Google — Nano Banana 2 Announcement
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://deepmind.google/models/gemini-image/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Google DeepMind — Gemini Image Models
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://gemini.google.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Gemini — Official App
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://aistudio.google.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Google AI Studio
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.c2pa.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    C2PA — Content Provenance Standard
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://deepmind.google/technologies/synthid/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Google DeepMind — SynthID
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل Nano Banana أفضل من ChatGPT لتوليد الصور؟</h3>
+        <p>
+            ليس بشكل مطلق. Nano Banana أفضل في
+            <strong>التحرير والاتساق والسرعة
+            والسعر</strong>، بينما ChatGPT أفضل في
+            <strong>النصوص الإنجليزية الدقيقة
+            والمشاهد المنطقية المعقدة</strong>.
+            الاختيار يعتمد على المهمة.
+        </p>
+
+        <h3>هل يمكن لـNano Banana كتابة نص عربي صحيح؟</h3>
+        <p>
+            ليس بشكل موثوق. مثل ChatGPT، يفهم
+            الطلب العربي ويولد مشهدًا مناسبًا،
+            لكن النص العربي المطبوع داخل الصورة
+            غالبًا يظهر بحروف مشوهة أو ترتيب
+            خاطئ. الأفضل توليد الخلفية وإضافة
+            النص يدويًا.
+        </p>
+
+        <h3>هل ChatGPT Images 2.0 مجاني؟</h3>
+        <p>
+            متاح بدرجة محدودة في خطة ChatGPT
+            المجانية، لكن الحدود صارمة. الاستخدام
+            المكثف أو التجاري يتطلب خطة مدفوعة
+            أو استخدام API، وهو أعلى تكلفة من
+            Nano Banana 2.
+        </p>
+
+        <h3>ما الفرق بين Nano Banana وNano Banana 2؟</h3>
+        <p>
+            Nano Banana هو الاسم الأولي لنموذج
+            Google لتوليد وتحرير الصور. Nano
+            Banana 2 هو الإصدار الأحدث (فبراير
+            2026)، ويجمع سرعة Flash مع قدرات
+            Pro، ويدعم 4K، ويحافظ على اتساق
+            5 شخصيات، وهو مجاني تقريبًا.
+        </p>
+
+        <h3>أيهما أكثر أمانًا من ناحية التزييف؟</h3>
+        <p>
+            كلاهما يستخدم علامات مائية (C2PA
+            وSynthID)، لكن الاختبارات كشفت ثغرة
+            في ChatGPT Images 2.0 تسمح بتعديل
+            صور حساسة مثل بطاقات الهوية. لا
+            يوجد نظام آمن تمامًا، والتحقق البشري
+            ضروري.
+        </p>
+    </PostLayout>
+</BaseLayout>
