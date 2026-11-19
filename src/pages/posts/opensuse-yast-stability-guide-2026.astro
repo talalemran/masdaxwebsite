@@ -1,0 +1,807 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "opensuse-yast-stability-guide-2026",
+    title: "السر وراء ثبات openSUSE وقوة أداة YaST: هل يستحق التجربة في 2026؟",
+    metaTitle: "openSUSE وYaST في 2026: سر الثبات وهل يستحق التجربة؟",
+    description:
+        "تحليل معمق لسر ثبات openSUSE في 2026: فلسفة التوزيعة، Leap وTumbleweed وSlowroll، نهاية عصر YaST وولادة Agama وCockpit وMyrlyn، Btrfs وSnapper وZypper، ولماذا قد تكون الخيار الأكثر استقرارًا.",
+    keywords: [
+        "openSUSE",
+        "YaST",
+        "openSUSE Leap 16",
+        "openSUSE Tumbleweed",
+        "openSUSE Slowroll",
+        "Agama installer",
+        "Btrfs snapshots",
+        "Zypper",
+        "أفضل توزيعة لينكس 2026",
+        "استقرار لينكس",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "19 نوفمبر 2026",
+    pubDate: new Date("2026-11-19"),
+    tags: ["openSUSE", "لينكس", "YaST", "استقرار", "توزيعات", "مفتوح المصدر"],
+    thumbnail: "/images/opensuse-yast-stability-guide-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة openSUSE في 2026" },
+    { id: "philosophy", label: "الفلسفة: لماذا وُلدت openSUSE مختلفة؟" },
+    { id: "three-editions", label: "ثلاثة إصدارات لثلاث فلسفات: Leap وTumbleweed وSlowroll" },
+    { id: "leap-16", label: "Leap 16.1: حين يوحد الثابت والمتغير" },
+    { id: "yast-legacy", label: "YaST: أسطورة عمرها 30 عامًا... ونهايتها المدروسة" },
+    { id: "agama", label: "Agama: المثبّت الذي وُلد من رحم YaST" },
+    { id: "successors", label: "الورثة: Cockpit وMyrlyn ومنظومة الإدارة الجديدة" },
+    { id: "stability-secrets", label: "أسرار الثبات: Btrfs وSnapper وZypper وOBS" },
+    { id: "who-should-use", label: "لمن تصلح openSUSE في 2026؟ دليل القرار" },
+    { id: "best-practices", label: "أفضل الممارسات قبل التجربة" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            منذ التسعينيات، كانت <strong>openSUSE</strong> اسماً
+            يتردد في أروقة الشركات والجامعات أكثر من منتديات
+            المبتدئين. لم تكن أبداً "التوزيعة الشعبية" التي
+            يحتفل بها الجميع، لكنها كانت دائماً "التوزيعة التي
+            تعمل". في 2026، مع نهاية عصر <strong>YaST</strong>
+            وولادة <strong>Agama</strong>، ودمج
+            <strong>Leap Micro</strong> في
+            <strong>Leap 16.1</strong>، وتعدد الإصدارات بين
+            الثابت والمتداول، أصبح السؤال أكثر إلحاحاً: هل
+            تستحق openSUSE التجربة اليوم؟ وما هو "السر" الذي
+            يجعلها ثابتة إلى هذا الحد؟
+        </p>
+
+        <p>
+            هذا الدليل لا يبيعك مزايا نظرية. إنه يفكك
+            <strong>الفلسفة الهندسية</strong> التي تجعل
+            openSUSE مختلفة: من نظام الملفات
+            <strong>Btrfs</strong> مع لقطات
+            <strong>Snapper</strong> التي تسمح بالتراجع عن
+            أي تحديث كارثي، إلى مدير الحزم
+            <strong>Zypper</strong> الذي لا يزال أحد أكثر
+            مديري الحزم كفاءة، إلى <strong>OBS (Open Build
+            Service)</strong> الذي يبني آلاف الحزم لعشرات
+            التوزيعات. وسنمر على <strong>YaST</strong> — ليس
+            لتمجيده، بل لفهم لماذا أُوقف تطويره، وكيف
+            يولد <strong>Agama</strong> من رحمه، وما الذي
+            يعنيه هذا للمستخدم في 2026.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة openSUSE في 2026</h2>
+
+        <p>
+            الجدول التالي يلخص الفروق الجوهرية بين إصدارات
+            openSUSE الثلاثة، والأدوات التي تحل محل YaST،
+            والميزات التي تحدد تجربة كل إصدار:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المفهوم</th>
+                            <th class="px-4 py-2 font-semibold">الوظيفة</th>
+                            <th class="px-4 py-2 font-semibold">الوضع في 2026</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>openSUSE Leap 16.1</strong></td>
+                            <td class="px-4 py-2">إصدار ثابت (Fixed Release) مع وضع Immutable</td>
+                            <td class="px-4 py-2">مبني على SLES 16.1، دعم طويل، KDE 6.6</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>openSUSE Tumbleweed</strong></td>
+                            <td class="px-4 py-2">إصدار متداول (Rolling Release)</td>
+                            <td class="px-4 py-2">أحدث الحزم، مع لقطات Btrfs للرجوع</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>openSUSE Slowroll</strong></td>
+                            <td class="px-4 py-2">إصدار متداول بوتيرة أبطأ</td>
+                            <td class="px-4 py-2">تحديثات شهرية مجمعة، لا يزال "بيتا"</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>YaST</strong></td>
+                            <td class="px-4 py-2">أداة الإعداد والإدارة التاريخية</td>
+                            <td class="px-4 py-2">مُهمَل (Deprecated)، صيانة دنيا فقط</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Agama</strong></td>
+                            <td class="px-4 py-2">المثبّت الجديد المعتمد على API</td>
+                            <td class="px-4 py-2">افتراضي في Leap، قادم إلى Tumbleweed</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Cockpit</strong></td>
+                            <td class="px-4 py-2">إدارة النظام عبر الويب</td>
+                            <td class="px-4 py-2">البديل الأساسي لوحدات YaST</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Myrlyn</strong></td>
+                            <td class="px-4 py-2">مدير حزم رسومي جديد</td>
+                            <td class="px-4 py-2">بديل واجهة YaST للحزم</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Btrfs + Snapper</strong></td>
+                            <td class="px-4 py-2">لقطات نظام للملفات والتراجع</td>
+                            <td class="px-4 py-2">مفعّل افتراضيًا، سر الثبات</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="philosophy">الفلسفة: لماذا وُلدت openSUSE مختلفة؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/opensuse-yast-stability-guide-2026/01.webp"
+                alt="openSUSE وYaST"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            openSUSE ليست مجرد توزيعة لينكس أخرى. إنها
+            <strong>مشروع مجتمعي</strong> ترعاه SUSE، لكنه
+            يحتفظ باستقلالية كبيرة. هذه العلاقة الغريبة —
+            شركة تجارية تدعم مشروعًا مجتمعيًا مفتوحًا — أنتجت
+            فلسفة هندسية فريدة: <strong>الاستقرار قبل
+            الحداثة، والأدوات المدمجة قبل الحلول المجزأة</strong>.
+        </p>
+
+        <p>
+            الفرق الجوهري بين openSUSE وFedora، على سبيل
+            المثال، ليس في الجودة، بل في <strong>الافتراضات
+            المسبقة</strong>. Fedora تفترض أنك تريد أحدث
+            التقنيات، وتقبل بعض المخاطرة. openSUSE تفترض أنك
+            تريد نظامًا <strong>لا يفاجئك</strong>. لهذا
+            كانت دائمًا توزيعة "المؤسسات الصغيرة" و"المطورين
+            الذين لا يريدون إضاعة الوقت في إصلاح النظام".
+        </p>
+
+        <p>
+            هذا لا يعني أن openSUSE بطيئة. <strong>Tumbleweed</strong>
+            هي واحدة من أسرع التوزيعات في تبني الحزم الجديدة،
+            لكنها تفعل ذلك ضمن إطار <strong>اختبار آلي صارم
+            (openQA)</strong> ولقطات نظام تسمح بالتراجع. هذا
+            المزيج — الجدة مع شبكة أمان — هو ما يجعلها مختلفة.
+        </p>
+
+        <h2 id="three-editions">ثلاثة إصدارات لثلاث فلسفات: Leap وTumbleweed وSlowroll</h2>
+
+        <p>
+            في 2026، لم تعد openSUSE "توزيعة واحدة". أصبحت
+            <strong>عائلة من ثلاث فلسفات</strong>، وكل منها
+            يخدم جمهورًا مختلفًا. الاختيار بينها هو أول قرار
+            ستتخذه، وهو قرار يحدد كل شيء لاحقًا.
+        </p>
+
+        <h3>Leap 16.1: الثابت الذي لا يمل</h3>
+
+        <p>
+            Leap هو الإصدار <strong>الثابت (Fixed Release)</strong>،
+            المبني على نفس أكواد SUSE Linux Enterprise Server
+            (SLES). هذا يعني أن كل حزمة فيه اختُبرت في بيئات
+            مؤسسية، وأن دورة حياته طويلة ومعلنة. Leap 16.0
+            سيُدعم حتى أكتوبر 2027 على الأقل، وLeap 16.1
+            (نوفمبر 2026) هو أول إصدار ثانوي في السلسلة.
+        </p>
+
+        <p>
+            ما الجديد في 16.1؟ <strong>دمج Leap Micro</strong>
+            (الإصدار المتغير سابقًا) كـ"وضع Immutable" داخل
+            Leap نفسه. هذا يعني أنك تثبّت نفس صورة Leap، ثم
+            تختار في المثبّت Agama: هل تريد نظامًا تقليديًا
+            (قابل للكتابة)، أم نظامًا <strong>بجذر للقراءة
+            فقط (Read-Only Root)</strong> مع تحديثات معاملاتية
+            (Transactional Updates)؟ هذه خطوة جريئة: توزيعة
+            واحدة تخدم سطح المكتب، والخادم التقليدي، ومضيف
+            الحاويات، والأجهزة الطرفية.
+        </p>
+
+        <p>
+            Leap 16.1 يأتي أيضًا بـ<strong>KDE Plasma
+            6.6</strong> و<strong>GNOME 48</strong>، ونواة
+            Linux 6.12 LTS، وQEMU 11.0، وPodman 5.8، وAppArmor
+            4.1، وPressure Stall Information (PSI) مفعّلة
+            افتراضيًا. لكن الأهم من الأرقام هو أن Leap أصبح
+            الآن <strong>الإصدار الذي يختار فيه المستخدم
+            فلسفة الاستقرار الخاصة به</strong>.
+        </p>
+
+        <h3>Tumbleweed: المتداول الذي يحترم عقلك</h3>
+
+        <p>
+            Tumbleweed هي الإصدار <strong>المتداول (Rolling
+            Release)</strong>، لكنها ليست "Arch بأخرى". الفرق
+            الجوهري هو <strong>openQA</strong>: نظام اختبار
+            آلي يختبر كل لقطة (Snapshot) قبل إصدارها. إذا
+            فشلت اللقطة في اختبارات التثبيت أو الإقلاع أو
+            سطح المكتب، لا تصل إليك. هذا لا يجعلها خالية من
+            المشاكل، لكنه يقلل احتمال "الانهيار الكارثي"
+            الذي تشتهر به التوزيعات المتداولة الأخرى.
+        </p>
+
+        <p>
+            Tumbleweed هي الخيار لمن يريد <strong>أحدث
+            النواة، وأحدث سطح مكتب، وأحدث أدوات
+            التطوير</strong>، دون أن يضطر إلى إصلاح نظامه
+            يدويًا كل أسبوع. في 2026، لا تزال "ملك
+            التوزيعات المتداولة المستقرة"، كما يصفها
+            مستخدموها.
+        </p>
+
+        <h3>Slowroll: الوسط الذي لم يجد جمهوره بعد</h3>
+
+        <p>
+            Slowroll هي محاولة لخلق <strong>توزيعة متداولة
+            بوتيرة أبطأ</strong>. بدلاً من لقطات يومية أو
+            شبه يومية، تجمع التغييرات الكبيرة وتصدرها
+            شهريًا تقريبًا، مع استمرار تحديثات الأمان
+            بينها. الفكرة: حزم أحدث من Leap، لكن دون
+            "ضجيج" Tumbleweed.
+        </p>
+
+        <p>
+            المشكلة أن Slowroll لا تزال <strong>موسومة
+            "بيتا"</strong> في الوثائق الرسمية، ولا يزال
+            جمهورها غير واضح. من يريد الاستقرار يختار
+            Leap. من يريد الحداثة يختار Tumbleweed. من
+            يريد "الوسط" قد يجد أن Slowroll تضيف تعقيدًا
+            إداريًا (تحديثات متداولة) دون مكسب واضح.
+            إنها خيار مثير للاهتمام، لكنها ليست الخيار
+            الافتراضي لأحد بعد.
+        </p>
+
+        <h2 id="leap-16">Leap 16.1: حين يوحد الثابت والمتغير</h2>
+
+        <p>
+            قرار دمج Leap Micro في Leap 16.1 هو أكثر قرار
+            هندسي مثير للاهتمام في 2026. قبل ذلك، كان
+            المستخدم يختار بين Leap (تقليدي) وLeap Micro
+            (متغير). الآن، صورة واحدة، وخيار واحد في
+            المثبّت: <strong>تقليدي أم Immutable؟</strong>.
+        </p>
+
+        <p>
+            الوضع المتغير (Immutable Mode) يعني أن الجذر
+            (/) للقراءة فقط، وكل تحديث ينشئ لقطة جديدة.
+            إذا فشل التحديث، أمر واحد يعيد النظام إلى
+            اللقطة السابقة. البرامج الإضافية تُستهلك عبر
+            الحاويات (Podman أو Distrobox) أو Flatpak.
+            هذا النموذج — الذي يشبه Fedora Silverblue
+            وopenSUSE MicroOS — أصبح المعيار للتوزيعات
+            الموجهة للخوادم والأجهزة الطرفية.
+        </p>
+
+        <p>
+            لكن الميزة الحقيقية هي أنك <strong>لا تحتاج
+            إلى اختيار مسبق</strong>. تثبّت Leap 16.1، وإذا
+            أردت لاحقًا التحول إلى الوضع المتغير (أو
+            العكس)، فالمسار موجود. هذا المرونة لا توجد
+            في معظم التوزيعات.
+        </p>
+
+        <h2 id="yast-legacy">YaST: أسطورة عمرها 30 عامًا... ونهايتها المدروسة</h2>
+
+        <p>
+            لا يمكن الحديث عن openSUSE دون الحديث عن
+            <strong>YaST (Yet another Setup Tool)</strong>.
+            بدأت في 1995، وأصبحت الأداة التي تعرّف بها
+            المستخدمون على SuSE ثم openSUSE. كانت
+            <strong>مركز تحكم موحدًا</strong> لكل شيء:
+            تثبيت الحزم، إعداد الشبكة، الجدار الناري،
+            الأقسام، الطابعات، خدمات النظام. في عصر كانت
+            فيه أدوات الإدارة مجزأة، كانت YaST
+            "المدير التنفيذي" للنظام.
+        </p>
+
+        <p>
+            لكن التاريخ لا يرحم. في 2026، أعلن المشروع
+            رسميًا أن <strong>YaST لم يعد تحت التطوير
+            النشط</strong>، ويتلقى "صيانة دنيا" فقط.
+            الأسباب واضحة: الكود مكتوب بلغة Ruby،
+            والاعتماديات تتغير بسرعة، وفريق التطوير
+            تقلص. استمرار الاعتماد على YaST أصبح
+            "خطرًا متزايدًا" مع تغير النظام البيئي
+            المحيط به.
+        </p>
+
+        <p>
+            هذا لا يعني أن YaST "فشلت". يعني أن مهمتها
+            انتهت. الأداة التي صُممت لعالم 1995 —
+            حيث كان المسؤول الوحيد هو من يثبّت النظام
+            ويضبط كل شيء يدويًا — لم تعد مناسبة لعالم
+            2026، حيث تُدار الأنظمة عبر واجهات ويب،
+            ووكلاء آليين، وبنية تحتية ككود.
+        </p>
+
+        <h2 id="agama">Agama: المثبّت الذي وُلد من رحم YaST</h2>
+
+        <p>
+            <strong>Agama</strong> ليس مجرد "مثبّت جديد".
+            إنه <strong>إعادة تفكير كاملة</strong> في
+            معنى تثبيت نظام تشغيل. بدلاً من واجهة
+            رسومية ثقيلة (Qt) تقودك خطوة بخطوة،
+            Agama هو <strong>خدمة (Service) مع واجهة
+            ويب وAPI HTTP</strong>. يمكنك تثبيت
+            openSUSE من المتصفح، أو من سطر الأوامر،
+            أو عبر سكربت آلي.
+        </p>
+
+        <p>
+            هذا التصميم يجعله مناسبًا للعالم الحديث:
+            <strong>التثبيت كجزء من خط أنابيب آلي</strong>.
+            إذا كنت تدير عشرات الخوادم أو أجهزة
+            طرفية، يمكنك كتابة ملف تعريف (Profile)
+            واستخدام Agama لتثبيتها جميعًا بنفس
+            الإعدادات. هذا ما كان YaST يحاول فعله
+            عبر AutoYaST، لكن Agama يفعله كفلسفة
+            أساسية، لا كإضافة لاحقة.
+        </p>
+
+        <p>
+            Agama بدأ كخيار افتراضي في Leap 16.0،
+            ثم انتقل إلى Tumbleweed في نهاية 2026.
+            الإصدارات 18 و19 و25 (2026) أضافت دعم
+            LVM، وتحسينات في إدارة التخزين، ودعم
+            الأنظمة المتغيرة (Immutable). لا يزال
+            هناك جدل حول ما إذا كان Agama يقدم نفس
+            "التحكم الدقيق" الذي كان يقدمه YaST في
+            إدارة الأقسام والحزم، لكن الاتجاه
+            واضح: <strong>Agama هو المستقبل، وYaST
+            هو الماضي</strong>.
+        </p>
+
+        <h2 id="successors">الورثة: Cockpit وMyrlyn ومنظومة الإدارة الجديدة</h2>
+
+        <p>
+            YaST لم يُستبدل بأداة واحدة، بل
+            <strong>بمنظومة من الأدوات المتخصصة</strong>.
+            هذا انعكاس لفلسفة "أدوات Unix" — كل أداة
+            تفعل شيئًا واحدًا جيدًا — بدلاً من
+            "الأداة الواحدة لكل شيء".
+        </p>
+
+        <ul>
+            <li>
+                <strong>Cockpit:</strong> واجهة ويب
+                لإدارة النظام. تعرض حالة المعالج
+                والذاكرة والشبكة والتخزين والخدمات.
+                يمكنك إدارة الحاويات والآلات
+                الافتراضية والمستخدمين. إنها
+                "لوحة تحكم" حديثة، تعمل من أي
+                متصفح، محليًا أو عن بُعد. هذا هو
+                الوريث الأساسي لوحدات YaST
+                الإدارية.
+            </li>
+            <li>
+                <strong>Myrlyn:</strong> مدير حزم
+                رسومي جديد مبني على مكتبة
+                <strong>libzypp</strong> (نفس محرك
+                Zypper). يقدم واجهة حديثة لإدارة
+                الحزم والمستودعات، بديلاً عن واجهة
+                YaST للحزم. لا يزال في مرحلة
+                التطوير المبكر، لكنه يبشر بنهاية
+                عصر "مدير الحزم المدمج في
+                مركز التحكم".
+            </li>
+            <li>
+                <strong>Zypper:</strong> مدير الحزم
+                من سطر الأوامر. لم يتغير، ولم
+                يحتج إلى تغيير. لا يزال أحد أسرع
+                وأكثر مديري الحزم كفاءة في عالم
+                RPM، مع دعم التنزيلات المتوازية
+                في Leap 16.
+            </li>
+        </ul>
+
+        <p>
+            هذا الانتقال — من مركز تحكم واحد
+            إلى منظومة أدوات — قد يبدو تراجعًا
+            لمن اعتاد YaST. لكنه في الواقع
+            <strong>تحسين للاستدامة</strong>:
+            كل أداة يمكن تطويرها بشكل مستقل،
+            دون أن يتوقف النظام كله عن العمل
+            إذا تأخر تحديث أحد المكونات.
+        </p>
+
+        <h2 id="stability-secrets">أسرار الثبات: Btrfs وSnapper وZypper وOBS</h2>
+
+        <p>
+            الثبات الذي تشتهر به openSUSE ليس
+            صدفة. إنه نتيجة <strong>أربع طبقات
+            هندسية</strong> تعمل معًا:
+        </p>
+
+        <h3>1. Btrfs + Snapper: شبكة الأمان</h3>
+
+        <p>
+            openSUSE هي التوزيعة الرئيسية الوحيدة
+            التي تستخدم <strong>Btrfs</strong>
+            كنظام ملفات افتراضي على سطح المكتب
+            والخادم. مع <strong>Snapper</strong>،
+            يتم إنشاء لقطة (Snapshot) تلقائيًا
+            قبل كل تحديث. إذا فشل التحديث أو
+            تسبب في مشكلة، يمكنك الإقلاع من
+            لقطة سابقة في ثوانٍ. هذا ليس
+            "نسخًا احتياطيًا" — إنه <strong>تراجع
+            فوري</strong>.
+        </p>
+
+        <h3>2. Zypper: مدير الحزم الذي لا يخذل</h3>
+
+        <p>
+            Zypper ليس الأسرع في كل الحالات،
+            لكنه <strong>الأكثر موثوقية</strong>.
+            يستخدم libzypp مع محلل SAT، مما
+            يجعله دقيقًا في حل الاعتماديات.
+            في Leap 16، أضاف دعم التنزيلات
+            المتوازية، مما حسّن سرعة التثبيت
+            والتحديث. في Tumbleweed، التعامل
+            معه يوميًا عبر <code>zypper dup</code>
+            أصبح تجربة ناضجة ومتوقعة.
+        </p>
+
+        <h3>3. openQA: الاختبار الآلي قبل البشر</h3>
+
+        <p>
+            كل لقطة Tumbleweed تمر عبر
+            <strong>openQA</strong>، نظام اختبار
+            آلي يثبّت النظام في أجهزة افتراضية،
+            ويشغّل سطح المكتب، ويفتح التطبيقات،
+            ويتحقق من عدم وجود أخطاء كارثية.
+            إذا فشلت اللقطة، لا تُنشر. هذا
+            لا يمنع كل الأخطاء، لكنه يمنع
+            "الانهيار الكامل" الذي تشتهر به
+            التوزيعات المتداولة.
+        </p>
+
+        <h3>4. OBS: البنية التحتية للبناء</h3>
+
+        <p>
+            <strong>Open Build Service (OBS)</strong>
+            هو نظام بناء وتوزيع حزم تديره openSUSE.
+            يبني حزمًا لعشرات التوزيعات (openSUSE،
+            Fedora، Debian، Ubuntu، Arch) من
+            نفس المصدر. هذا يعني أن الحزم التي
+            تستخدمها في openSUSE تُبنى في بيئة
+            نظيفة وقابلة للتكرار، مما يقلل
+            احتمال الأخطاء ويضمن التوافق.
+        </p>
+
+        <h2 id="who-should-use">لمن تصلح openSUSE في 2026؟ دليل القرار</h2>
+
+        <ul>
+            <li>
+                <strong>اختر Leap 16.1 إذا:</strong>
+                كنت تدير خوادم أو محطات عمل تحتاج
+                إلى استقرار طويل الأمد، أو تريد
+                نظامًا "يثبت وينسى"، أو تحتاج
+                إلى دعم مؤسسي غير مباشر عبر SLES.
+            </li>
+            <li>
+                <strong>اختر Tumbleweed إذا:</strong>
+                كنت مطورًا أو مغامرًا تقنيًا يريد
+                أحدث النواة والأدوات، لكنك لا
+                تريد المخاطرة بنظام غير مختبر.
+                مع Snapper، المخاطرة منخفضة.
+            </li>
+            <li>
+                <strong>اختر Slowroll إذا:</strong>
+                كنت تريد حزمًا أحدث من Leap دون
+                "ضجيج" Tumbleweed، وتقبل أن
+                التوزيعة لا تزال في مرحلة
+                "بيتا".
+            </li>
+            <li>
+                <strong>لا تختر openSUSE إذا:</strong>
+                كنت تبحث عن "توزيعة للمبتدئين
+                تمامًا" (Ubuntu أو Mint أسهل)،
+                أو تحتاج إلى دعم تجاري رسمي
+                (استخدم SLES أو RHEL)، أو
+                تعتمد على برامج لا تتوفر إلا
+                في مستودعات توزيعة أخرى.
+            </li>
+        </ul>
+
+        <h2 id="best-practices">أفضل الممارسات قبل التجربة</h2>
+
+        <ul>
+            <li>
+                <strong>جرّب Live USB أولًا:</strong>
+                Tumbleweed وLeap يوفّران صور
+                Live للتجربة دون تثبيت.
+            </li>
+            <li>
+                <strong>على Tumbleweed، استخدم
+                <code>zypper dup</code> دائمًا:</strong>
+                لا تستخدم <code>zypper update</code>
+                في Tumbleweed. <code>dup</code>
+                هو الأمر الصحيح للتحديث الكامل.
+            </li>
+            <li>
+                <strong>راقب لقطات Snapper:</strong>
+                تعرّف على <code>snapper list</code>
+                و<code>snapper rollback</code> قبل
+                أن تحتاجهما. معرفة كيفية التراجع
+                تمنحك ثقة أكبر في التحديث.
+            </li>
+            <li>
+                <strong>لا تعطّل Secure Boot إلا
+                إذا لزم الأمر:</strong>
+                openSUSE يدعم Secure Boot
+                افتراضيًا. إذا واجهت مشكلة
+                مع تعريف Nvidia، فقد تحتاج
+                إلى تعطيله مؤقتًا.
+            </li>
+            <li>
+                <strong>استخدم Agama للتثبيت
+                الآلي:</strong> إذا كنت تثبّت
+                أكثر من جهاز، اكتب ملف تعريف
+                (Profile) واستخدمه عبر API.
+            </li>
+            <li>
+                <strong>افهم الفرق بين الوضع
+                التقليدي والمتغير:</strong>
+                إذا اخترت Immutable Mode،
+                فتذكّر أن تثبيت الحزم يتم
+                عبر الحاويات أو Flatpak، وليس
+                عبر Zypper مباشرة.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعرف الفرق بين Leap
+                وTumbleweed وSlowroll؟ ←
+                <strong>نعم، اختر حسب حاجتك
+                للاستقرار أو الحداثة</strong>
+            </li>
+            <li>
+                هل تعرف أن YaST في طريقه
+                للزوال؟ ← <strong>نعم،
+                Agama وCockpit هما
+                المستقبل</strong>
+            </li>
+            <li>
+                هل تستخدم Btrfs مع
+                Snapper؟ ← <strong>نعم،
+                إنه سر الثبات</strong>
+            </li>
+            <li>
+                هل تعرف كيف تتراجع عن
+                تحديث سيئ؟ ← <strong>نعم،
+                <code>snapper rollback</code></strong>
+            </li>
+            <li>
+                هل تحتاج إلى دعم تجاري؟ ←
+                <strong>إذا نعم، فكّر في
+                SLES أو RHEL</strong>
+            </li>
+            <li>
+                هل تريد تجربة openSUSE
+                قبل التثبيت؟ ←
+                <strong>استخدم Live
+                USB</strong>
+            </li>
+            <li>
+                هل اخترت الإصدار المناسب
+                لخبرتك؟ ← <strong>Leap
+                للمبتدئين، Tumbleweed
+                للمتقدمين</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك
+            الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.opensuse.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    openSUSE — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://get.opensuse.org/leap/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    openSUSE Leap — Download
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://get.opensuse.org/tumbleweed/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    openSUSE Tumbleweed — Download
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://en.opensuse.org/Portal:Slowroll"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    openSUSE Slowroll — Official Portal
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://agama-project.github.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Agama — Official Project Site
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://en.opensuse.org/Portal:YaST"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    YaST — openSUSE Portal
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://cockpit-project.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Cockpit — Web-based System Management
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/openSUSE/myrlyn"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Myrlyn — Graphical Package Manager
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://openbuildservice.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Open Build Service (OBS)
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل YaST ماتت فعلاً؟</h3>
+        <p>
+            YaST لم "تمت"، لكنها <strong>أُهملت
+            رسميًا</strong>. لم يعد هناك تطوير
+            نشط للميزات الجديدة، وتتلقى صيانة
+            دنيا فقط. في Leap 16.0، أُزيلت
+            واجهة Qt، وبقي واجهة ncurses
+            النصية. الأدوات التي تحل محلها
+            (Agama، Cockpit، Myrlyn) هي
+            المستقبل.
+        </p>
+
+        <h3>ما الفرق بين Leap وTumbleweed؟</h3>
+        <p>
+            <strong>Leap</strong> إصدار ثابت
+            مبني على SLES، مع دورة حياة
+            طويلة وحزم مختبرة مؤسسيًا.
+            <strong>Tumbleweed</strong> إصدار
+            متداول يحصل على أحدث الحزم، لكن
+            مع اختبار آلي (openQA) ولقطات
+            Btrfs للتراجع. Leap للاستقرار،
+            Tumbleweed للحداثة مع أمان.
+        </p>
+
+        <h3>هل Slowroll بديل جيد لـLeap؟</h3>
+        <p>
+            Slowroll ليست بديلاً عن Leap.
+            إنها <strong>إصدار متداول
+            بوتيرة أبطأ</strong>، مشتق من
+            Tumbleweed. لا تزال موسومة
+            "بيتا"، ولا تقدم نفس ضمانات
+            الاستقرار طويلة الأمد التي
+            يقدمها Leap. اخترها فقط إذا
+            كنت تريد حزمًا أحدث من Leap
+            وتقبل إدارة نظام متداول.
+        </p>
+
+        <h3>هل يمكنني ترقية Leap إلى Tumbleweed؟</h3>
+        <p>
+            نعم، لكنها ليست عملية
+            "ترقية" بالمعنى التقليدي.
+            تحتاج إلى تغيير المستودعات
+            إلى مستودعات Tumbleweed، ثم
+            تشغيل <code>zypper dup</code>.
+            العملية موثقة، لكنها تتطلب
+            نسخًا احتياطيًا وفهمًا
+            للمخاطر. إذا كنت تريد
+            الانتقال، فالأفضل عمل
+            تثبيت جديد مع الاحتفاظ
+            بملفاتك الشخصية.
+        </p>
+
+        <h3>هل openSUSE مناسبة للمبتدئين في 2026؟</h3>
+        <p>
+            Leap <strong>مناسبة</strong>
+            للمبتدئين الذين يريدون
+            نظامًا مستقرًا ولا يمانعون
+            تعلم بعض المفاهيم. لكنها
+            ليست "سهلة" مثل Ubuntu أو
+            Mint. Tumbleweed أقل
+            ملاءمة للمبتدئين بسبب
+            وتيرة التحديث. إذا كنت
+            جديدًا تمامًا على لينكس،
+            فقد يكون البدء بـMint أو
+            Ubuntu أسهل، ثم الانتقال
+            إلى openSUSE لاحقًا.
+        </p>
+    </PostLayout>
+</BaseLayout>
