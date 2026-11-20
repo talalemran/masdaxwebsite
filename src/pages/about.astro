@@ -3,44 +3,119 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="حول الموقع"
-  description="مصدر إكس هي منصة عربية متخصصة في أخبار البرمجيات مفتوحة المصدر، تأسست بهدف نشر الوعي التقني وتغطية أحدث التطورات في عالم التقنيات مفتوحة المصدر."
-  keywords={["حول", "مصدر إكس", "حول الموقع", "منصة مفتوحة المصدر"]}
+  title="حول مصدر إكس | دليل البرمجيات مفتوحة المصدر ولينكس"
+  description="تعرّف على منصة مصدر إكس، مرجعك العربي للأدلة التقنية، شروحات توزيعات لينكس، مقارنات البرمجيات مفتوحة المصدر، وأدوات التطوير والذكاء الاصطناعي."
+  keywords={[
+    "حول مصدر إكس",
+    "مصدر إكس",
+    "برمجيات مفتوحة المصدر",
+    "لينكس بالعربية",
+    "أدلة تقنية",
+  ]}
   canonical="/about/"
   ogType="website"
 >
   <article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h1 class="font-heading text-3xl sm:text-4xl font-extrabold text-navy dark:text-white mb-6">
-      حول الموقع
-    </h1>
-
-    <div class="post-content font-body text-base text-navy-700 dark:text-zinc-300 max-w-none">
-      <p>
-        أُسست مصدر إكس بواسطة <a href="https://www.talalemran.com" target="_blank" rel="noopener noreferrer" class="text-accent font-bold no-underline hover:underline">طلال عمران</a>، مطور ومصمم الويب، بهدف تقديم منصة إخبارية عربية متخصصة في البرمجيات مفتوحة المصدر والتقنيات الحديثة. نسعى إلى تقديم محتوى تقني دقيق وموثوق باللغة العربية، يساعد المطورين والمهتمين على متابعة أحدث التطورات في عالم المصادر المفتوحة.
+    <header class="mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-6">
+      <p class="text-sm font-semibold text-accent mb-2">عن المنصة</p>
+      <h1 class="font-heading text-3xl sm:text-4xl font-extrabold text-navy dark:text-white mb-4">
+        حول مصدر إكس
+      </h1>
+      <p class="font-body text-base sm:text-lg text-navy-700 dark:text-zinc-300 leading-relaxed max-w-3xl">
+        منصة عربية متخصصة تقدم شروحات عملية، مقارنات تقنية، وأدلة معمّقة حول البرمجيات مفتوحة المصدر، أنظمة لينكس، وأدوات التطوير والذكاء الاصطناعي.
       </p>
+    </header>
 
-      <h2 class="font-heading text-2xl font-bold text-navy dark:text-white">رسالتنا</h2>
-      <p>
-        نسعى في مصدر إكس إلى سد الفجوة في المحتوى التقني العربي من خلال تقديم
-        أخبار دقيقة، تحليلات معمقة، وشروحات مبسطة لأحدث التقنيات مفتوحة المصدر.
-        نؤمن بأن المعرفة التقنية يجب أن تكون متاحة للجميع، وأن المصادر المفتوحة
-        هي مستقبل التكنولوجيا.
-      </p>
+    <div class="post-content font-body text-base text-navy-700 dark:text-zinc-300 max-w-none space-y-8">
+      <section>
+        <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-3">
+          من يقف خلف مصدر إكس؟
+        </h2>
+        <p class="leading-relaxed">
+          أُسست <strong>مصدر إكس</strong> بواسطة{" "}
+          <a
+            href="https://www.talalemran.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-accent font-bold no-underline hover:underline"
+          >
+            طلال عمران
+          </a>
+          ، مطور ومصمم ويب وصانع محتوى تقني يمتلك خبرة عملية طويلة في بناء المواقع، إدارة الأنظمة، وتجربة توزيعات لينكس والأدوات مفتوحة المصدر. الهدف الأساسي من المنصة هو توفير مرجع عربي موثوق يجمع بين الدقة التقنية والوضوح العملي بعيداً عن الحشو أو الترجمة الآلية السطحية.
+        </p>
+      </section>
 
-      <h2 class="font-heading text-2xl font-bold text-navy dark:text-white">قيمنا</h2>
-      <ul>
-        <li>الشفافية والمصداقية في جميع المحتويات المنشورة</li>
-        <li>الدعم القوي لمجتمع المصادر المفتوحة</li>
-        <li>الالتزام بالحيادية والموضوعية في التغطية</li>
-        <li>تقديم محتوى عربي أصيل عالي الجودة</li>
-      </ul>
+      <section>
+        <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-3">
+          رسالتنا وما الذي نقدمه
+        </h2>
+        <p class="leading-relaxed mb-4">
+          نسعى في مصدر إكس إلى إثراء المحتوى التقني العربي بدلائل مرجعية ومقالات تطبيقية تساعد المطورين، طلاب البرمجة، ومستخدمي أنظمة التشغيل الحرة على اتخاذ قرارات تقنية مدروسة. نركّز بشكل خاص على:
+        </p>
+        <ul class="space-y-2 list-disc pr-6">
+          <li>
+            <strong>أنظمة لينكس وبيئات العمل:</strong> شروحات التوزيعات، أدوات إدارة النظام، وتجارب الاستخدام العملية على مختلف الأجهزة.
+          </li>
+          <li>
+            <strong>البرمجيات والمشاريع مفتوحة المصدر:</strong> استعراض البدائل الحرة والمجانية للبرامج الاحتكارية وأدوات الويب الحديثة.
+          </li>
+          <li>
+            <strong>المقارنات والأدلة الشاملة:</strong> موازنات موضوعية بين الأدوات والتقنيات لمساعدتك على اختيار الأنسب لمشروعك أو سير عملك.
+          </li>
+          <li>
+            <strong>الذكاء الاصطناعي والبرمجة:</strong> شروحات مبسطة ومباشرة لأدوات التطوير والنماذج والحلول العملية.
+          </li>
+        </ul>
+      </section>
 
-      <h2 class="font-heading text-2xl font-bold text-navy dark:text-white">سياسات الموقع</h2>
-      <ul>
-        <li><a href="/terms/">شروط الاستخدام</a></li>
-        <li><a href="/privacy/">سياسة الخصوصية</a></li>
-      </ul>
+      <section>
+        <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-3">
+          منهجيتنا وقيمنا التحريرية
+        </h2>
+        <ul class="space-y-2 list-disc pr-6">
+          <li>
+            <strong>الوضوح والدقة العملية:</strong> نُعنى بشرح المفاهيم والخطوات بلغة عربية واضحة ومباشرة قابلة للتطبيق الفعلي.
+          </li>
+          <li>
+            <strong>الموضوعية والحياد:</strong> نعرض مزايا كل أداة أو توزيعة وحدودها بواقعية دون ترويج مبالغ فيه.
+          </li>
+          <li>
+            <strong>التحديث والمراجعة المستمرة:</strong> نحرص على تحديث المحتوى المرجعي وتنظيم الأقسام لتبقى تجربة القراءة سريعة وسلسة.
+          </li>
+          <li>
+            <strong>احترام خصوصية القارئ:</strong> نحافظ على تجربة تصفح نظيفة وخالية من التشتيت أو العناصر المزعجة.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold text-navy dark:text-white mb-3">
+          الشفافية والسياسات
+        </h2>
+        <p class="leading-relaxed mb-4">
+          نلتزم بالشفافية الكاملة تجاه زوارنا فيما يخص طريقة استخدام البيانات، شروط الاستفادة من المحتوى، ووسائل التواصل:
+        </p>
+        <ul class="space-y-2 list-disc pr-6">
+          <li>
+            <a href="/privacy/" class="text-accent font-semibold no-underline hover:underline">
+              سياسة الخصوصية
+            </a>
+            — توضح كيفية التعامل مع بيانات الزيارة وملفات تعريف الارتباط.
+          </li>
+          <li>
+            <a href="/terms/" class="text-accent font-semibold no-underline hover:underline">
+              شروط الاستخدام
+            </a>
+            — تحدد ضوابط استخدام محتوى الموقع والروابط المرتبطة به.
+          </li>
+          <li>
+            <a href="/contact/" class="text-accent font-semibold no-underline hover:underline">
+              اتصل بنا
+            </a>
+            — للتواصل المباشر، الإبلاغ عن ملاحظة تقنية، أو اقتراح مواضيع جديدة.
+          </li>
+        </ul>
+      </section>
     </div>
-
   </article>
 </BaseLayout>
