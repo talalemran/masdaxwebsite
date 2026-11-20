@@ -1,0 +1,860 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "best-open-source-web-browsers-2026",
+    title: "أفضل متصفحات الويب مفتوحة المصدر في 2026: دليل شامل",
+    metaTitle: "أفضل متصفحات ويب مفتوحة المصدر 2026: مقارنة شاملة",
+    description:
+        "دليل معمق لأفضل المتصفحات مفتوحة المصدر في 2026: Firefox وBrave وTor وLibreWolf وUngoogled Chromium وFalkon وMidori وZen وWaterfox وMullvad. الخصوصية، الأداء، الترخيص، والاختيار الصحيح.",
+    keywords: [
+        "أفضل متصفحات مفتوحة المصدر",
+        "Firefox",
+        "Brave",
+        "Tor Browser",
+        "LibreWolf",
+        "Ungoogled Chromium",
+        "Falkon",
+        "Midori",
+        "Zen Browser",
+        "Waterfox",
+        "Mullvad Browser",
+        "متصفحات ويب 2026",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "20 نوفمبر 2026",
+    pubDate: new Date("2026-11-20"),
+    tags: ["متصفحات", "مفتوح المصدر", "خصوصية", "Firefox", "Brave", "Tor"],
+    thumbnail: "/images/best-open-source-web-browsers-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة المتصفحات مفتوحة المصدر" },
+    { id: "why-open-source", label: "لماذا المتصفح مفتوح المصدر؟ الشفافية كأساس للثقة" },
+    { id: "firefox", label: "Firefox: العملاق المستقل الذي لا يزال يقاوم" },
+    { id: "brave", label: "Brave: الخصوصية كميزة تجارية" },
+    { id: "tor", label: "Tor Browser: المعيار الذهبي لإخفاء الهوية" },
+    { id: "librewolf", label: "LibreWolf: Firefox بأقصى درجات التحصين" },
+    { id: "ungoogled", label: "Ungoogled Chromium: كروم بدون جوجل" },
+    { id: "lightweight", label: "Falkon وMidori: المتصفحات الخفيفة" },
+    { id: "newcomers", label: "Zen وWaterfox وMullvad: البدائل الصاعدة" },
+    { id: "comparison", label: "جدول المقارنة الشامل" },
+    { id: "how-to-choose", label: "كيف تختار المتصفح المناسب؟" },
+    { id: "best-practices", label: "أفضل الممارسات في أمان المتصفح" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            المتصفح هو أكثر برنامج تستخدمه على جهازك، وأكثر برنامج يعرف عنك.
+            كل نقرة، كل بحث، كل تسجيل دخول، كل ثانية تقضيها في قراءة صفحة —
+            كلها تمر عبره. ومع ذلك، معظم الناس يستخدمون متصفحًا واحدًا
+            لأنهم "اعتادوا عليه"، دون أن يسألوا: <strong>ماذا يفعل هذا
+            المتصفح ببياناتي؟</strong>
+        </p>
+
+        <p>
+            المتصفحات مفتوحة المصدر تقدم إجابة مختلفة. ليس لأنها "مجانية"
+            (معظم المتصفحات التجارية مجانية أيضًا)، بل لأن
+            <strong>كودها متاح للتدقيق</strong>. يمكنك أن ترى ما يفعله
+            المتصفح فعلاً، لا ما تقوله صفحة التسويق. في 2026، هذا
+            الفرق أصبح جوهريًا: مع تصاعد التشريعات حول الخصوصية، وتزايد
+            هجمات بصمة المتصفح (Fingerprinting)، أصبح اختيار متصفح
+            مفتوح المصدر قرارًا أمنيًا وليس ترفًا تقنيًا.
+        </p>
+
+        <p>
+            هذا الدليل لا يكتفي بقائمة أسماء. إنه يفكك كل متصفح من
+            الداخل: <strong>Firefox</strong> كعملاق مستقل،
+            <strong>Brave</strong> كخصوصية تجارية،
+            <strong>Tor</strong> كمعيار إخفاء الهوية،
+            <strong>LibreWolf</strong> كتحصين أقصى،
+            <strong>Ungoogled Chromium</strong> ككروم منزوع الجوجل،
+            <strong>Falkon</strong> و<strong>Midori</strong> كخيارات
+            خفيفة، و<strong>Zen</strong> و<strong>Waterfox</strong>
+            و<strong>Mullvad</strong> كبدائل صاعدة. الهدف أن تختار
+            متصفحًا تعرف بالضبط لماذا اخترته.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة المتصفحات مفتوحة المصدر</h2>
+
+        <p>
+            الجدول التالي يلخص المتصفحات التي يغطيها الدليل، مع
+            الفئة التي تنتمي إليها والمحرك الذي تستخدمه:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المتصفح</th>
+                            <th class="px-4 py-2 font-semibold">الفئة</th>
+                            <th class="px-4 py-2 font-semibold">المحرك</th>
+                            <th class="px-4 py-2 font-semibold">الترخيص</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>Firefox</strong></td>
+                            <td class="px-4 py-2">عام / مستقل</td>
+                            <td class="px-4 py-2">Gecko</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Brave</strong></td>
+                            <td class="px-4 py-2">خصوصية / Chromium</td>
+                            <td class="px-4 py-2">Blink</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Tor Browser</strong></td>
+                            <td class="px-4 py-2">إخفاء هوية</td>
+                            <td class="px-4 py-2">Gecko (Firefox ESR)</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>LibreWolf</strong></td>
+                            <td class="px-4 py-2">خصوصية متطرفة</td>
+                            <td class="px-4 py-2">Gecko (Firefox fork)</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Ungoogled Chromium</strong></td>
+                            <td class="px-4 py-2">Chromium نقي</td>
+                            <td class="px-4 py-2">Blink</td>
+                            <td class="px-4 py-2">BSD-3-Clause</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Falkon</strong></td>
+                            <td class="px-4 py-2">خفيف / KDE</td>
+                            <td class="px-4 py-2">QtWebEngine (Chromium)</td>
+                            <td class="px-4 py-2">GPL-3.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Midori</strong></td>
+                            <td class="px-4 py-2">خفيف / خصوصية</td>
+                            <td class="px-4 py-2">Gecko (حديثًا)</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Zen Browser</strong></td>
+                            <td class="px-4 py-2">إنتاجية / Firefox fork</td>
+                            <td class="px-4 py-2">Gecko</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Waterfox</strong></td>
+                            <td class="px-4 py-2">خصوصية / Firefox fork</td>
+                            <td class="px-4 py-2">Gecko</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Mullvad Browser</strong></td>
+                            <td class="px-4 py-2">مقاومة البصمة</td>
+                            <td class="px-4 py-2">Gecko (Firefox ESR)</td>
+                            <td class="px-4 py-2">MPL-2.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="why-open-source">لماذا المتصفح مفتوح المصدر؟ الشفافية كأساس للثقة</h2>
+
+        <p>
+            <img
+                src="/images/articles/best-open-source-web-browsers-2026/01.webp"
+                alt="متصفحات مفتوحة المصدر"
+                width="1200"
+                height="805"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            المتصفح ليس مجرد نافذة على الويب. إنه
+            <strong>نظام تشغيل مصغر</strong>: يشغّل JavaScript، ويدير
+            ملفات تعريف الارتباط، ويتعامل مع الشهادات الرقمية، ويتصل
+            بمئات الخوادم يوميًا. عندما تستخدم متصفحًا مغلق المصدر،
+            فأنت تثق في الشركة التي بنته بأنها لا تسيء استخدام هذه
+            القدرات. عندما تستخدم متصفحًا مفتوح المصدر، فأنت لا
+            تحتاج إلى الثقة — يمكنك <strong>التحقق</strong>.
+        </p>
+
+        <p>
+            هذا لا يعني أن كل متصفح مفتوح المصدر آمن أو خاص بشكل
+            تلقائي. هناك متصفحات مفتوحة المصدر ترسل بيانات
+            تليمترية، وأخرى لا. هناك متصفحات مفتوحة المصدر تعاني
+            من ثغرات أمنية ببطء في الإصلاح، وأخرى تُحدَّث يوميًا.
+            <strong>الانفتاح شرط ضروري، لكنه ليس كافيًا</strong>.
+            لهذا يجب أن تنظر إلى عوامل أخرى: من يدير المشروع،
+            وما هي سياسته في الإفصاح عن الثغرات، وما مدى سرعة
+            تحديثاته الأمنية.
+        </p>
+
+        <p>
+            في 2026، أصبح هذا التمييز مهمًا بشكل خاص لأن
+            <strong>معظم المتصفحات مبنية على Chromium</strong>،
+            وهو مشروع مفتوح المصدر تديره Google. هذا يعني أن
+            المتصفح قد يكون "مفتوح المصدر" في واجهته، لكنه
+            يعتمد على محرك يتحكم فيه لاعب واحد. المتصفحات
+            المستقلة — مثل Firefox — تلعب دورًا حيويًا في
+            الحفاظ على تنوع الويب ومنع احتكار محرك واحد.
+        </p>
+
+        <h2 id="firefox">Firefox: العملاق المستقل الذي لا يزال يقاوم</h2>
+
+        <p>
+            Firefox هو <strong>آخر متصفح رئيسي يستخدم محركًا
+            مستقلًا (Gecko)</strong>، وليس Chromium. هذا وحده
+            يجعله مهمًا. في 2026، يبلغ نصيبه من سوق سطح
+            المكتب حوالي 7.38%، وهو رقم صغير لكنه يعني ملايين
+            المستخدمين الذين يعتمدون على بديل حقيقي.
+        </p>
+
+        <p>
+            Firefox 147 (يناير 2026) حسّن تشغيل الفيديو على
+            بطاقات AMD من خلال تمكين "النسخ الصفري" (Zero-Copy
+            Playback) للفيديو المفكوك عتاديًا، ليصل إلى
+            التكافؤ مع Intel وNVIDIA. Firefox 159 (أكتوبر
+            2026) أضاف ميزات ذكاء اصطناعي لمساعدة المستخدم
+            على تتبع الصفحات، ودعم البحث في التبويبات
+            المفتوحة عبر <code>Ctrl+Shift+A</code>. كما
+            تحسنت سرعة تحميل المحتوى الرئيسي بنسبة 9% خلال
+            العام الماضي، وأصبح عارض PDF أسرع بنسبة تصل
+            إلى 45% في بعض السيناريوهات.
+        </p>
+
+        <p>
+            Firefox هو الخيار <strong>المتوازن</strong>:
+            مفتوح المصدر بالكامل، مستقل عن Google، يدعم
+            آلاف الإضافات، ويقدم خصوصية أفضل من الافتراضي
+            في المتصفحات التجارية. لكنه ليس "متصفح خصوصية
+            متطرفة" — فهو يحتوي على بعض التليمترية
+            (يمكن تعطيلها)، ويستخدم Google كمحرك بحث
+            افتراضي في بعض المناطق. لمن يريد أساسًا
+            متينًا يمكن تحصينه، Firefox هو نقطة البداية.
+        </p>
+
+        <h2 id="brave">Brave: الخصوصية كميزة تجارية</h2>
+
+        <p>
+            Brave هو متصفح مفتوح المصدر مبني على Chromium،
+            لكنه يزيل الكثير من اتصالات Google ويضيف طبقة
+            حماية قوية. يقدم <strong>حظر إعلانات ومتتبعات
+            مدمجًا</strong> (Brave Shields)، وحماية من
+            بصمة المتصفح، ووضع تصفح خاص يدمج شبكة Tor
+            (اختياري). إنه من أكثر المتصفحات شعبية بين
+            من يريدون "خصوصية جاهزة" دون إعدادات معقدة.
+        </p>
+
+        <p>
+            لكن Brave ليس بلا انتقادات. نموذجه التجاري
+            يقوم على الإعلانات التي يحل محل الإعلانات
+            التقليدية (Brave Ads)، وعلى اشتراكات
+            اختيارية مثل Brave VPN وBrave Leo (مساعد
+            ذكاء اصطناعي). هذا يجعله <strong>مشروعًا
+            تجاريًا</strong>، وليس مشروعًا مجتمعيًا
+            خالصًا. الكود مفتوح، لكن القرارات تُتخذ
+            في شركة. إذا كنت تريد خصوصية قوية مع
+            تجربة "تعمل فورًا"، فBrave خيار ممتاز.
+            إذا كنت تريد استقلالًا كاملًا عن أي نموذج
+            تجاري، فقد تبحث في مكان آخر.
+        </p>
+
+        <h2 id="tor">Tor Browser: المعيار الذهبي لإخفاء الهوية</h2>
+
+        <p>
+            Tor Browser ليس "متصفحًا خاصًا" بالمعنى
+            التقليدي. إنه <strong>أداة إخفاء هوية</strong>.
+            يوجّه كل حركة المرور عبر شبكة Tor (ثلاثة
+            عقد عشوائية حول العالم)، ويجعل كل مستخدمي
+            Tor يبدون متطابقين من منظور المواقع، مما
+            يمنع بصمة المتصفح. لا يعرف الموقع من
+            أنت، ولا يعرف مزود خدمة الإنترنت ما
+            تتصفحه.
+        </p>
+
+        <p>
+            الثمن هو السرعة. تحميل الصفحات عبر Tor
+            أبطأ بكثير من المتصفحات العادية، وكثير
+            من المواقع تحجب مستخدمي Tor أو تطلب
+            اختبارات CAPTCHA لا نهائية. إنه ليس
+            متصفحًا للاستخدام اليومي (التسوق،
+            البث، البنوك)، بل للبحث الحساس،
+            والصحافة، والنشاط السياسي، وأي
+            موقف تحتاج فيه إلى إخفاء هويتك
+            حقًا. Tor Browser 16.0 (نوفمبر
+            2026) يستند إلى Firefox ESR 153،
+            ويظل الخيار الأول لمن يحتاج إلى
+            أعلى مستوى من الخصوصية.
+        </p>
+
+        <h2 id="librewolf">LibreWolf: Firefox بأقصى درجات التحصين</h2>
+
+        <p>
+            LibreWolf هو <strong>نسخة معدلة من Firefox</strong>
+            تزيل كل التليمترية، وتقطع الاتصال بخدمات
+            Mozilla، وتطبق إعدادات خصوصية صارمة
+            افتراضيًا. لا يوجد به Pocket، ولا
+            رعاية، ولا اقتراحات، ولا مزامنة
+            Firefox (افتراضيًا). يأتي مع
+            <strong>uBlock Origin</strong> مثبتًا
+            مسبقًا، ويعطل WebGL لمنع بصمة
+            بطاقة الرسوميات، ويمسح الكوكيز
+            وبيانات الموقع عند الإغلاق.
+        </p>
+
+        <p>
+            هذه الصرامة تأتي بثمن. مواقع مثل
+            YouTube أو بعض تطبيقات الويب
+            المعقدة قد "تنكسر" وتحتاج إلى
+            إعدادات إضافية. LibreWolf ليس
+            مصممًا لمن يريد "تصفحًا سلسًا بلا
+            تفكير"؛ إنه مصمم لمن يقبل بعض
+            الإزعاج مقابل خصوصية قصوى. إذا
+            كنت من هذا النوع، فهو من أفضل
+            الخيارات المتاحة.
+        </p>
+
+        <h2 id="ungoogled">Ungoogled Chromium: كروم بدون جوجل</h2>
+
+        <p>
+            Ungoogled Chromium ليس "متصفحًا جديدًا" بقدر
+            ما هو <strong>Chromium نقي مع إزالة كل
+            اتصالات Google</strong>. لا توجد به
+            خدمات Google، ولا تليمترية، ولا
+            "Google Safe Browsing" (يمكن
+            إضافته يدويًا إن أردت). الهدف:
+            الحفاظ على تجربة Chromium الافتراضية
+            قدر الإمكان، لكن دون الاعتماد على
+            خدمات Google.
+        </p>
+
+        <p>
+            هذا يعني أنك تحصل على <strong>توافق
+            واسع مع المواقع</strong> (لأنه Chromium)،
+            لكن دون الطبقات التي تضيفها Google.
+            العيب: بعض الميزات التي تعتمد على
+            Google (مثل الترجمة التلقائية أو
+            مزامنة الإشارات) تحتاج إلى إعداد
+            يدوي أو بدائل. كما أن التحديثات
+            تعتمد على متطوعين، وقد تتأخر أحيانًا
+            عن تحديثات Chromium الرسمية. إنه
+            خيار جيد لمن يريد "كروم دون جوجل"،
+            لكنه ليس للمبتدئين تمامًا.
+        </p>
+
+        <h2 id="lightweight">Falkon وMidori: المتصفحات الخفيفة</h2>
+
+        <p>
+            ليس كل مستخدم يحتاج إلى "متصفح كامل
+            الميزات". على الأجهزة القديمة أو
+            البيئات المكتبية الخفيفة، المتصفحات
+            الثقيلة تكون عبئًا. هنا يأتي دور
+            المتصفحات الخفيفة.
+        </p>
+
+        <p>
+            <strong>Falkon</strong> هو متصفح KDE
+            مبني على QtWebEngine (محرك Chromium).
+            يقدم تكاملًا ممتازًا مع KDE Plasma،
+            وحظر إعلانات مدمجًا، وواجهة خفيفة.
+            لكنه يعتمد على دورة تحديث Chromium
+            الخاصة بـQtWebEngine، مما يعني أن
+            تحديثات الأمان قد تتأخر مقارنة
+            بمتصفحات Chromium الرئيسية. إنه
+            خيار جيد لمستخدمي KDE الذين يريدون
+            متصفحًا "يشعر بأنه جزء من النظام".
+        </p>
+
+        <p>
+            <strong>Midori</strong> تحول في 2026
+            إلى استخدام محرك Gecko (بدلاً من
+            WebKit)، وأصبح يقدم <strong>Midori
+            Sync</strong> — خدمة مزامنة مفتوحة
+            المصدر بتشفير من الطرف إلى الطرف.
+            يهدف إلى أن يكون خفيفًا وسريعًا
+            ويهتم بالخصوصية، مع دعم متعدد
+            المنصات. لكنه لا يزال أقل نضجًا
+            من Firefox أو Brave، وقد يواجه
+            مشاكل توافق مع بعض المواقع الحديثة.
+        </p>
+
+        <h2 id="newcomers">Zen وWaterfox وMullvad: البدائل الصاعدة</h2>
+
+        <p>
+            بعيدًا عن الخيارات الرئيسية، هناك
+            متصفحات أحدث تجذب جمهورًا متخصصًا:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Zen Browser:</strong> مبني
+                على Firefox، ويستعير أفضل أفكار
+                Arc (شريط جانبي، تبويبات عمودية،
+                تقسيم الشاشة) دون ذكاء اصطناعي
+                أو تعقيد. مفتوح المصدر بترخيص
+                MPL-2.0، ويركز على الإنتاجية
+                والهدوء البصري. إنه خيار ممتاز
+                لمن يحب فكرة Arc لكنه يريد
+                متصفحًا مفتوح المصدر وخاليًا
+                من الاشتراكات.
+            </li>
+            <li>
+                <strong>Waterfox:</strong> من
+                أقدم فروع Firefox. في 2026،
+                يقدم حظر إعلانات مدمجًا،
+                وOblivious DNS، ومزامنة،
+                وتخصيصًا عاليًا (بما في
+                ذلك تبويبات عمودية أصلية).
+                يستهدف من يريد "Firefox
+                بدون تليمترية" لكن مع
+                تحديثات منتظمة وتجربة
+                يومية سلسة. عيبه: لا يوجد
+                محدث تلقائي على Windows
+                وLinux (يجب تحديثه يدويًا).
+            </li>
+            <li>
+                <strong>Mullvad Browser:</strong>
+                ثمرة تعاون بين Mullvad VPN
+                وTor Project. يقدم
+                <strong>تحصين Tor دون
+                شبكة Tor</strong>. يأتي
+                مع uBlock Origin وNoScript
+                مثبتين مسبقًا، ويجعل
+                كل المستخدمين يبدون
+                متطابقين لمقاومة البصمة.
+                لكنه <strong>لا يخفي عنوان
+                IP</strong> — تحتاج إلى
+                VPN أو Tor لذلك. إنه
+                لمن يريد مقاومة بصمة
+                قوية مع سرعة متصفح
+                عادي.
+            </li>
+        </ul>
+
+        <h2 id="comparison">جدول المقارنة الشامل</h2>
+
+        <p>
+            هذا الجدول يلخص الفروق الجوهرية بين
+            المتصفحات التي ناقشناها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المتصفح</th>
+                            <th class="px-4 py-2 font-semibold">الخصوصية</th>
+                            <th class="px-4 py-2 font-semibold">السرعة</th>
+                            <th class="px-4 py-2 font-semibold">التوافق</th>
+                            <th class="px-4 py-2 font-semibold">مناسب لـ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>Firefox</strong></td>
+                            <td class="px-4 py-2">جيدة (قابلة للتحسين)</td>
+                            <td class="px-4 py-2">جيدة</td>
+                            <td class="px-4 py-2">ممتاز</td>
+                            <td class="px-4 py-2">الاستخدام اليومي المستقل</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Brave</strong></td>
+                            <td class="px-4 py-2">قوية افتراضيًا</td>
+                            <td class="px-4 py-2">سريع</td>
+                            <td class="px-4 py-2">ممتاز (Chromium)</td>
+                            <td class="px-4 py-2">خصوصية جاهزة بلا إعداد</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Tor Browser</strong></td>
+                            <td class="px-4 py-2">قصوى (إخفاء هوية)</td>
+                            <td class="px-4 py-2">بطيء</td>
+                            <td class="px-4 py-2">متوسط (حجب/CAPTCHA)</td>
+                            <td class="px-4 py-2">الحساسية والإخفاء</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>LibreWolf</strong></td>
+                            <td class="px-4 py-2">قصوى (تحصين)</td>
+                            <td class="px-4 py-2">جيدة</td>
+                            <td class="px-4 py-2">قد تنكسر بعض المواقع</td>
+                            <td class="px-4 py-2">خصوصية متطرفة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Ungoogled Chromium</strong></td>
+                            <td class="px-4 py-2">جيدة (بدون جوجل)</td>
+                            <td class="px-4 py-2">سريع</td>
+                            <td class="px-4 py-2">ممتاز</td>
+                            <td class="px-4 py-2">كروم نقي</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Falkon</strong></td>
+                            <td class="px-4 py-2">متوسطة</td>
+                            <td class="px-4 py-2">خفيف</td>
+                            <td class="px-4 py-2">جيد (Chromium)</td>
+                            <td class="px-4 py-2">مستخدمو KDE</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Midori</strong></td>
+                            <td class="px-4 py-2">جيدة</td>
+                            <td class="px-4 py-2">خفيف</td>
+                            <td class="px-4 py-2">متوسط</td>
+                            <td class="px-4 py-2">الأجهزة القديمة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Zen</strong></td>
+                            <td class="px-4 py-2">جيدة</td>
+                            <td class="px-4 py-2">جيدة</td>
+                            <td class="px-4 py-2">جيد</td>
+                            <td class="px-4 py-2">الإنتاجية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Waterfox</strong></td>
+                            <td class="px-4 py-2">قوية</td>
+                            <td class="px-4 py-2">جيدة</td>
+                            <td class="px-4 py-2">جيد</td>
+                            <td class="px-4 py-2">Firefox بدون تليمترية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Mullvad Browser</strong></td>
+                            <td class="px-4 py-2">قصوى (بصمة)</td>
+                            <td class="px-4 py-2">جيدة (بدون Tor)</td>
+                            <td class="px-4 py-2">قد يحتاج إعداد</td>
+                            <td class="px-4 py-2">مقاومة البصمة</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="how-to-choose">كيف تختار المتصفح المناسب؟</h2>
+
+        <p>
+            لا يوجد "أفضل متصفح" للجميع. الاختيار يعتمد على
+            <strong>نموذج التهديد</strong> الخاص بك،
+            واستعدادك لتحمل بعض الإزعاج مقابل الخصوصية:
+        </p>
+
+        <ul>
+            <li>
+                <strong>إذا كنت تريد توازنًا بين الخصوصية
+                والاستخدام اليومي:</strong> ابدأ بـ
+                <strong>Firefox</strong> مع إضافات مثل
+                uBlock Origin، أو <strong>Brave</strong>
+                إذا كنت تريد حماية جاهزة دون إعداد.
+            </li>
+            <li>
+                <strong>إذا كنت تريد أقصى خصوصية مع
+                استخدام يومي:</strong> <strong>LibreWolf</strong>
+                أو <strong>Mullvad Browser</strong> (مع
+                VPN).
+            </li>
+            <li>
+                <strong>إذا كنت تحتاج إلى إخفاء هوية
+                حقيقي:</strong> <strong>Tor Browser</strong>
+                هو الخيار الوحيد الجاد.
+            </li>
+            <li>
+                <strong>إذا كنت تريد كروم بدون
+                جوجل:</strong> <strong>Ungoogled
+                Chromium</strong> أو <strong>Brave</strong>.
+            </li>
+            <li>
+                <strong>إذا كنت على جهاز قديم أو
+                بيئة خفيفة:</strong> <strong>Falkon</strong>
+                (على KDE) أو <strong>Midori</strong>.
+            </li>
+            <li>
+                <strong>إذا كنت تريد إنتاجية
+                وتنظيمًا:</strong> <strong>Zen
+                Browser</strong>.
+            </li>
+        </ul>
+
+        <p>
+            لا تتردد في استخدام أكثر من متصفح. كثيرون
+            يستخدمون Firefox أو Brave للاستخدام
+            اليومي، وTor Browser للبحث الحساس،
+            وLibreWolf لفتح حسابات حساسة. المرونة
+            أفضل من الولاء لمتصفح واحد.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في أمان المتصفح</h2>
+
+        <ul>
+            <li>
+                <strong>حدّث متصفحك دائمًا:</strong>
+                معظم الاختراقات تحدث عبر ثغرات معروفة
+                لم تُصلح. لا تؤجل التحديثات.
+            </li>
+            <li>
+                <strong>لا تثبت إضافات عشوائية:</strong>
+                كل إضافة تطلب صلاحيات. راجع
+                الصلاحيات قبل التثبيت، وأزل
+                الإضافات التي لا تستخدمها.
+            </li>
+            <li>
+                <strong>استخدم مدير كلمات مرور:</strong>
+                لا تعتمد على ذاكرة المتصفح وحده.
+                مدير كلمات مرور مفتوح المصدر
+                مثل KeePassXC أو Bitwarden
+                أفضل.
+            </li>
+            <li>
+                <strong>افهم البصمة (Fingerprinting):</strong>
+                حتى بدون كوكيز، يمكن التعرف
+                عليك من خلال خصائص متصفحك.
+                متصفحات مثل Mullvad وTor
+                تحارب هذا، لكنها ليست
+                مطلقة.
+            </li>
+            <li>
+                <strong>لا تعتمد على "الوضع
+                الخاص" كحل سحري:</strong>
+                الوضع الخاص يمسح البيانات
+                المحلية، لكنه لا يخفيك عن
+                المواقع أو مزود الإنترنت.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعرف ما إذا كان متصفحك يستخدم
+                محركًا مستقلًا أم Chromium؟ ←
+                <strong>مهم للتنوع والاستقلال</strong>
+            </li>
+            <li>
+                هل راجعت سياسة الخصوصية
+                والتليمترية؟ ← <strong>حتى
+                المتصفحات المفتوحة قد
+                ترسل بيانات</strong>
+            </li>
+            <li>
+                هل تحتاج إلى إخفاء هوية أم
+                خصوصية عادية؟ ← <strong>Tor
+                للإخفاء، LibreWolf/Brave
+                للخصوصية</strong>
+            </li>
+            <li>
+                هل جهازك قديم؟ ← <strong>فكر
+                في Falkon أو Midori</strong>
+            </li>
+            <li>
+                هل تريد حماية بصمة قوية؟ ←
+                <strong>Mullvad Browser أو
+                Tor</strong>
+            </li>
+            <li>
+                هل تحدّث متصفحك تلقائيًا؟ ←
+                <strong>تأكد، خاصة مع
+                Waterfox</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع
+            إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.mozilla.org/firefox/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Mozilla Firefox — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://brave.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Brave Browser — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.torproject.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Tor Project — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://librewolf.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    LibreWolf — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/ungoogled-software/ungoogled-chromium"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Ungoogled Chromium — GitHub
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.falkon.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Falkon — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://astian.org/midori-browser/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Midori Browser — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://zen-browser.app/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Zen Browser — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.waterfox.net/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Waterfox — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://mullvad.net/en/browser"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Mullvad Browser — Official Website
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل Firefox لا يزال مفتوح المصدر بالكامل؟</h3>
+        <p>
+            نعم. Firefox مرخص بـMPL-2.0، وكوده متاح
+            للتدقيق. لكنه يحتوي على بعض المكونات
+            التي قد تكون مغلقة (مثل بعض خدمات
+            Mozilla الاختيارية)، ويمكن تعطيلها
+            أو إزالتها. المشروع الأساسي مفتوح
+            بالكامل.
+        </p>
+
+        <h3>هل Brave أفضل من Firefox للخصوصية؟</h3>
+        <p>
+            يعتمد على تعريفك للخصوصية. Brave
+            يحظر الإعلانات والمتتبعات افتراضيًا
+            بشكل أقوى من Firefox الافتراضي.
+            لكن Firefox يمكن تحصينه ليصبح
+            مشابهًا أو أفضل (عبر LibreWolf
+            مثلًا). كما أن Firefox مستقل عن
+            Chromium، وهو مكسب للتنوع
+            والاستقلال عن Google.
+        </p>
+
+        <h3>هل Tor Browser بطيء جدًا للاستخدام اليومي؟</h3>
+        <p>
+            نعم، عادةً. شبكة Tor تمر عبر
+            ثلاث عقد حول العالم، مما يضيف
+            تأخيرًا كبيرًا. إذا كنت تحتاج
+            إلى تصفح سريع، فاستخدم متصفحًا
+            آخر. Tor Browser مخصص للخصوصية
+            والإخفاء، وليس للاستخدام
+            اليومي.
+        </p>
+
+        <h3>ما الفرق بين Ungoogled Chromium وBrave؟</h3>
+        <p>
+            كلاهما مبني على Chromium. Brave
+            يضيف طبقات خصوصية (Shields،
+            حظر إعلانات، حماية بصمة) ويقدم
+            نموذجًا تجاريًا. Ungoogled
+            Chromium يزيل اتصالات Google
+            لكنه يحتفظ بتجربة Chromium
+            الافتراضية، ويتطلب منك إعداد
+            الحماية بنفسك. Brave أسهل
+            للمبتدئين، وUngoogled
+            Chromium أنقى.
+        </p>
+
+        <h3>هل يمكنني استخدام أكثر من متصفح في نفس الوقت؟</h3>
+        <p>
+            نعم، وهذا مستحسن. يمكنك استخدام
+            Firefox أو Brave للاستخدام
+            اليومي، وTor أو LibreWolf
+            للبحث الحساس، وMidori أو
+            Falkon على الأجهزة القديمة.
+            لا يوجد سبب للولاء لمتصفح
+            واحد.
+        </p>
+    </PostLayout>
+</BaseLayout>
