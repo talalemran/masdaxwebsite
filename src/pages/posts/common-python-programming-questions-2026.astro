@@ -1,0 +1,915 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "common-python-programming-questions-2026",
+    title: "أسئلة برمجية شائعة في بايثون: دليل شامل مع أمثلة كود ومخططات",
+    metaTitle: "أسئلة بايثون الشائعة 2026: أمثلة كود ومخططات",
+    description:
+        "دليل معمق لأكثر أسئلة بايثون البرمجية شيوعًا: الفروق بين List وTuple وSet وDict، وis مقابل ==، والمتغيرات مقابل غير المتغيرة، والمزخرفات والمولدات، وGIL والتزامن، والأخطاء الشائعة، مع أمثلة كود ومخططات.",
+    keywords: [
+        "أسئلة بايثون الشائعة",
+        "Python interview questions",
+        "List vs Tuple",
+        "is vs ==",
+        "decorators Python",
+        "generators Python",
+        "Python GIL",
+        "asyncio",
+        "Python common mistakes",
+        "بايثون 2026",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "21 نوفمبر 2026",
+    pubDate: new Date("2026-11-21"),
+    tags: ["بايثون", "برمجة", "أسئلة شائعة", "أداء", "تزامن", "أخطاء شائعة"],
+    thumbnail: "/images/common-python-programming-questions-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة الأسئلة الأكثر شيوعًا" },
+    { id: "data-structures", label: "هياكل البيانات: List وTuple وSet وDict" },
+    { id: "mutability", label: "المتغير مقابل غير المتغير: أساس كل شيء" },
+    { id: "is-vs-eq", label: "is مقابل ==: الفرق الذي يخلط الجميع" },
+    { id: "args-kwargs", label: "*args و**kwargs: المرونة في الدوال" },
+    { id: "decorators", label: "المزخرفات (Decorators): تغليف السلوك" },
+    { id: "generators", label: "المولدات (Generators): ذاكرة لا تنفد" },
+    { id: "oop-questions", label: "أسئلة الكائنات: __init__ وMRO وsuper()" },
+    { id: "concurrency", label: "التزامن: GIL وThreading وMultiprocessing وAsyncio" },
+    { id: "performance", label: "الأداء: القياس قبل التحسين" },
+    { id: "common-mistakes", label: "الأخطاء الشائعة: ما لا يظهر في الأخطاء" },
+    { id: "best-practices", label: "أفضل الممارسات في كتابة بايثون" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            بايثون ليست لغة "تعلمها مرة واحدة". كل مستوى خبرة يكشف
+            طبقة جديدة من الأسئلة: لماذا يعمل هذا الكود بهذه
+            الطريقة؟ لماذا هذا الأداء بطيء؟ لماذا يظهر خطأ في
+            مكان لا علاقة له بالسبب؟ الأسئلة الشائعة في بايثون
+            ليست مجرد أسئلة مقابلات؛ إنها نقاط التحول التي تفصل
+            بين من "يكتب بايثون" ومن "يفهم بايثون".
+        </p>
+
+        <p>
+            هذا الدليل يجمع أكثر الأسئلة البرمجية شيوعًا في 2026،
+            من الفروق الأساسية بين هياكل البيانات إلى أعماق
+            <strong>GIL</strong> و<strong>asyncio</strong>، مع
+            أمثلة كود قابلة للتشغيل ومخططات توضح المفاهيم
+            البصرية. الهدف ليس حفظ الإجابات، بل فهم
+            <strong>لماذا</strong> الإجابة صحيحة، ومتى تنطبق.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة الأسئلة الأكثر شيوعًا</h2>
+
+        <p>
+            الجدول التالي يلخص الأسئلة التي يغطيها الدليل، مع
+            الفئة التي تنتمي إليها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">السؤال</th>
+                            <th class="px-4 py-2 font-semibold">الفئة</th>
+                            <th class="px-4 py-2 font-semibold">لماذا يهم؟</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">List vs Tuple vs Set vs Dict</td>
+                            <td class="px-4 py-2">هياكل البيانات</td>
+                            <td class="px-4 py-2">اختيار الهيكل الخاطئ يقتل الأداء</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Mutable vs Immutable</td>
+                            <td class="px-4 py-2">أنواع البيانات</td>
+                            <td class="px-4 py-2">سبب أخطاء "القيمة تتغير دون تفسير"</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>is</code> vs <code>==</code></td>
+                            <td class="px-4 py-2">المقارنة</td>
+                            <td class="px-4 py-2">خطأ صامت في المقارنات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>*args</code> و<code>**kwargs</code></td>
+                            <td class="px-4 py-2">الدوال</td>
+                            <td class="px-4 py-2">مرونة الواجهات البرمجية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">المزخرفات (Decorators)</td>
+                            <td class="px-4 py-2">دوال متقدمة</td>
+                            <td class="px-4 py-2">تغليف السلوك دون تكرار</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">المولدات (Generators)</td>
+                            <td class="px-4 py-2">ذاكرة</td>
+                            <td class="px-4 py-2">معالجة بيانات ضخمة دون استهلاك ذاكرة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">GIL والتزامن</td>
+                            <td class="px-4 py-2">أداء</td>
+                            <td class="px-4 py-2">اختيار نموذج التزامن الصحيح</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الأخطاء الصامتة</td>
+                            <td class="px-4 py-2">تصحيح</td>
+                            <td class="px-4 py-2">البرنامج يعمل لكن النتيجة خاطئة</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="data-structures">هياكل البيانات: List وTuple وSet وDict</h2>
+
+        <p>
+            <img
+                src="/images/articles/common-python-programming-questions-2026/01.webp"
+                alt="هياكل البيانات في بايثون"
+                width="1200"
+                height="773"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            أول سؤال يواجه كل متعلم بايثون: "ما الفرق بين List
+            وTuple وSet وDict؟" الإجابة السطحية: "List قابلة
+            للتعديل، Tuple غير قابلة، Set بدون تكرار، Dict
+            مفاتيح وقيم". لكن السؤال الحقيقي: <strong>متى
+            تستخدم أي واحد؟</strong>
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الهيكل</th>
+                            <th class="px-4 py-2 font-semibold">قابل للتعديل؟</th>
+                            <th class="px-4 py-2 font-semibold">تكرار؟</th>
+                            <th class="px-4 py-2 font-semibold">الوصول</th>
+                            <th class="px-4 py-2 font-semibold">التعقيد</th>
+                            <th class="px-4 py-2 font-semibold">أفضل استخدام</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>List</strong></td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">فهرس (O(1))</td>
+                            <td class="px-4 py-2">بحث O(n)</td>
+                            <td class="px-4 py-2">تسلسل عام</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Tuple</strong></td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">فهرس (O(1))</td>
+                            <td class="px-4 py-2">بحث O(n)</td>
+                            <td class="px-4 py-2">بيانات ثابتة، مفاتيح Dict</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Set</strong></td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">لا</td>
+                            <td class="px-4 py-2">عضو O(1)</td>
+                            <td class="px-4 py-2">إضافة/حذف O(1)</td>
+                            <td class="px-4 py-2">إزالة التكرار، اختبار العضوية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Dict</strong></td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">مفاتيح لا</td>
+                            <td class="px-4 py-2">مفتاح O(1)</td>
+                            <td class="px-4 py-2">إدراج/حذف O(1)</td>
+                            <td class="px-4 py-2">خرائط، عدّادات، كاش</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            القاعدة العملية: إذا كنت تبحث عن عضو في مجموعة
+            بشكل متكرر، فاستخدم <code>set</code> أو
+            <code>dict</code> (تعقيد O(1)) بدلًا من
+            <code>list</code> (O(n)). إذا كنت تحتاج إلى ترتيب
+            ثابت وتعديل، فـ<code>list</code>. إذا كنت تحتاج
+            إلى بيانات لا تتغير (مثل إحداثيات أو مفاتيح)،
+            فـ<code>tuple</code>.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`import time
+
+# اختبار سريع: العضوية في List مقابل Set
+n = 1_000_000
+my_list = list(range(n))
+my_set = set(range(n))
+
+start = time.perf_counter()
+_ = n - 1 in my_list
+list_time = time.perf_counter() - start
+
+start = time.perf_counter()
+_ = n - 1 in my_set
+set_time = time.perf_counter() - start
+
+print(f"List: {list_time:.6f}s")
+print(f"Set:  {set_time:.6f}s")
+# النتيجة النموذجية: Set أسرع بآلاف المرات`}</code></pre>
+
+        <h2 id="mutability">المتغير مقابل غير المتغير: أساس كل شيء</h2>
+
+        <p>
+            فهم الفرق بين الأنواع المتغيرة (Mutable) وغير
+            المتغيرة (Immutable) يفسر كثيرًا من السلوك
+            "الغريب" في بايثون. الأنواع غير المتغيرة:
+            <code>int</code>، <code>float</code>،
+            <code>str</code>، <code>tuple</code>،
+            <code>bool</code>، <code>frozenset</code>.
+            الأنواع المتغيرة: <code>list</code>،
+            <code>dict</code>، <code>set</code>،
+            ومعظم الكائنات المخصصة.
+        </p>
+
+        <p>
+            لماذا هذا مهم؟ لأن <strong>المتغير في بايثون
+            ليس "صندوقًا" يحمل القيمة، بل "بطاقة" تشير إلى
+            كائن</strong>. عندما تعدل كائنًا متغيرًا، فأنت
+            تعدل الكائن نفسه، وكل من يشير إليه يرى التغيير.
+            عندما "تعدل" كائنًا غير متغير، فأنت تنشئ كائنًا
+            جديدًا.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# خطأ شائع: قائمة كقيمة افتراضية
+def add_item(item, my_list=[]):
+    my_list.append(item)
+    return my_list
+
+print(add_item("a"))  # ['a']
+print(add_item("b"))  # ['a', 'b'] — ليس ['b']!
+
+# الحل: None كقيمة افتراضية
+def add_item_safe(item, my_list=None):
+    if my_list is None:
+        my_list = []
+    my_list.append(item)
+    return my_list
+
+print(add_item_safe("a"))  # ['a']
+print(add_item_safe("b"))  # ['b']`}</code></pre>
+
+        <p>
+            السبب: القيمة الافتراضية <code>[]</code> تُنشأ
+            <strong>مرة واحدة</strong> عند تعريف الدالة،
+            وليس عند كل استدعاء. هذا واحد من أشهر الأخطاء
+            الصامتة في بايثون، ويظهر في كود المبتدئين
+            والمحترفين على حد سواء.
+        </p>
+
+        <h2 id="is-vs-eq">is مقابل ==: الفرق الذي يخلط الجميع</h2>
+
+        <p>
+            <code>==</code> يقارن <strong>القيم</strong>.
+            <code>is</code> يقارن <strong>الهوية</strong>
+            (ما إذا كان المتغيران يشيران إلى نفس الكائن في
+            الذاكرة). الفرق يبدو أكاديميًا حتى يظهر في
+            كود حقيقي.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`a = [1, 2, 3]
+b = [1, 2, 3]
+c = a
+
+print(a == b)  # True — نفس القيمة
+print(a is b)  # False — كائنان مختلفان
+print(a is c)  # True — نفس الكائن
+
+# تحذير: CPython قد "يدمج" الأعداد الصغيرة والسلاسل القصيرة
+x = 256
+y = 256
+print(x is y)  # True (بسبب التخزين المؤقت)
+
+x = 257
+y = 257
+print(x is y)  # False (خارج نطاق التخزين المؤقت)`}</code></pre>
+
+        <p>
+            القاعدة: استخدم <code>==</code> لمقارنة القيم
+            دائمًا. استخدم <code>is</code> فقط للمقارنة مع
+            <code>None</code> (مثل <code>if x is None</code>)
+            أو عندما تريد التحقق من الهوية الحقيقية
+            (نادرًا). لا تستخدم <code>is</code> لمقارنة
+            الأعداد أو السلاسل.
+        </p>
+
+        <h2 id="args-kwargs">*args و**kwargs: المرونة في الدوال</h2>
+
+        <p>
+            <code>*args</code> يسمح للدالة باستقبال عدد
+            غير محدد من الوسائط الموضعية (كـ tuple).
+            <code>**kwargs</code> يسمح باستقبال وسائط
+            مسماة غير محددة (كـ dict). هذا ضروري لبناء
+            دوال عامة (مثل المزخرفات) أو واجهات برمجية
+            مرنة.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`def log_message(level, *args, **kwargs):
+    print(f"[{level}]", *args)
+    for key, value in kwargs.items():
+        print(f"  {key}: {value}")
+
+log_message("INFO", "User logged in", user="Ali", ip="192.168.1.1")
+# [INFO] User logged in
+#   user: Ali
+#   ip: 192.168.1.1`}</code></pre>
+
+        <p>
+            الترتيب في تعريف الدالة: الوسائط العادية، ثم
+            <code>*args</code>، ثم الوسائط المسماة الاختيارية،
+            ثم <code>**kwargs</code>. عند الاستدعاء، يمكنك
+            تمرير وسائط موضعية، ثم <code>*</code> لفك
+            تسلسل، ثم وسائط مسماة، ثم <code>**</code> لفك
+            قاموس.
+        </p>
+
+        <h2 id="decorators">المزخرفات (Decorators): تغليف السلوك</h2>
+
+        <p>
+            المزخرف هو دالة تأخذ دالة أخرى وتعيد دالة جديدة،
+            عادةً لإضافة سلوك قبل أو بعد الدالة الأصلية
+            دون تعديل كودها. هذا هو أساس أشياء مثل
+            <code>@property</code>، <code>@staticmethod</code>،
+            وتسجيل الوقت، والتحقق من الصلاحيات.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`import time
+from functools import wraps
+
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        print(f"{func.__name__} took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+@timer
+def slow_function():
+    time.sleep(0.5)
+
+slow_function()  # slow_function took 0.5003s`}</code></pre>
+
+        <p>
+            لاحظ استخدام <code>@wraps(func)</code> داخل
+            المزخرف. هذا يحافظ على اسم الدالة الأصلية
+            ووثائقها، وهو ضروري إذا كنت تستخدم أدوات
+            مثل <code>help()</code> أو أدوات التوثيق
+            التلقائي.
+        </p>
+
+        <h2 id="generators">المولدات (Generators): ذاكرة لا تنفد</h2>
+
+        <p>
+            المولد هو دالة تستخدم <code>yield</code> بدلًا
+            من <code>return</code>. عند استدعائها، لا تُنفَّذ
+            بالكامل، بل تُعيد مكررًا (Iterator) ينتج قيمة
+            واحدة في كل مرة. هذا يسمح بمعالجة بيانات ضخمة
+            (ملايين السجلات) دون تحميلها كلها في الذاكرة.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# بدون مولد: يستهلك ذاكرة هائلة
+def read_all_lines(file_path):
+    with open(file_path) as f:
+        return f.readlines()
+
+# مع مولد: يستهلك ذاكرة ثابتة
+def read_lines_lazy(file_path):
+    with open(file_path) as f:
+        for line in f:
+            yield line.strip()
+
+# يمكنك معالجة ملف بحجم جيجابايت دون مشاكل
+for line in read_lines_lazy("huge_file.txt"):
+    if "ERROR" in line:
+        print(line)`}</code></pre>
+
+        <p>
+            الفرق في الذاكرة ليس نظريًا. معالجة ملف 10
+            جيجابايت عبر <code>readlines()</code> قد تستهلك
+            10 جيجابايت من الذاكرة، بينما المولد يستهلك
+            بضعة كيلوبايتات فقط، بغض النظر عن حجم الملف.
+        </p>
+
+        <h2 id="oop-questions">أسئلة الكائنات: __init__ وMRO وsuper()</h2>
+
+        <p>
+            أسئلة البرمجة الكائنية (OOP) في بايثون شائعة
+            جدًا، وأكثرها إثارة للالتباس:
+        </p>
+
+        <ul>
+            <li>
+                <strong><code>__init__</code>:</strong>
+                ليس "المُنشئ" (Constructor) بالمعنى
+                الدقيق. المُنشئ الحقيقي هو
+                <code>__new__</code>، الذي ينشئ
+                الكائن. <code>__init__</code> يهيئ
+                الكائن بعد إنشائه.
+            </li>
+            <li>
+                <strong>MRO (Method Resolution Order):</strong>
+                ترتيب البحث عن الدوال في حالة الوراثة
+                المتعددة. بايثون يستخدم خوارزمية
+                C3-Linearization. يمكنك رؤيته عبر
+                <code>ClassName.__mro__</code>.
+            </li>
+            <li>
+                <strong><code>super()</code>:</strong>
+                لا يعني "الأب" حرفيًا، بل "التالي في
+                MRO". هذا مهم في الوراثة المتعددة،
+                حيث قد يكون "التالي" ليس الأب
+                المباشر.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class A:
+    def greet(self):
+        print("A")
+
+class B(A):
+    def greet(self):
+        print("B")
+        super().greet()
+
+class C(A):
+    def greet(self):
+        print("C")
+        super().greet()
+
+class D(B, C):
+    def greet(self):
+        print("D")
+        super().greet()
+
+D().greet()
+# D
+# B
+# C
+# A
+
+print(D.__mro__)
+# (<class 'D'>, <class 'B'>, <class 'C'>, <class 'A'>, <class 'object'>)`}</code></pre>
+
+        <p>
+            لاحظ ترتيب <code>D → B → C → A</code>. هذا
+            هو MRO. لو استخدمت <code>A.greet(self)</code>
+            مباشرة بدلًا من <code>super()</code>،
+            لانكسر تسلسل الوراثة وتعطلت C.
+        </p>
+
+        <h2 id="concurrency">التزامن: GIL وThreading وMultiprocessing وAsyncio</h2>
+
+        <p>
+            هذا هو السؤال الذي يفصل المستوى المتوسط عن
+            المتقدم. الإجابة المختصرة:
+            <strong>GIL يمنع تنفيذ أكثر من خيط (Thread)
+            واحد لكود بايثون في نفس الوقت</strong>، لكنه
+            لا يمنع التزامن في مهام الإدخال/الإخراج
+            (I/O-Bound). لفهم متى تستخدم أي نموذج، انظر
+            إلى المخطط التالي:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# مخطط مبسط لاختيار نموذج التزامن
+
+                    ┌─────────────────┐
+                    │  ما نوع المهمة؟  │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┴──────────────┐
+              │                             │
+        ┌─────▼─────┐                 ┌─────▼─────┐
+        │ CPU-Bound │                 │ I/O-Bound │
+        └─────┬─────┘                 └─────┬─────┘
+              │                             │
+              │                   ┌─────────┴─────────┐
+              │                   │                   │
+        ┌─────▼─────┐       ┌─────▼─────┐       ┌─────▼─────┐
+        │ Multiprocessing │       │ Threading │       │  Asyncio  │
+        │ (عمليات)        │       │ (خيوط)     │       │ (أحداث)    │
+        └─────────────┘       └───────────┘       └───────────┘
+              │                   │                   │
+        ┌─────▼─────┐       ┌─────▼─────┐       ┌─────▼─────┐
+        │ عمليات منفصلة     │       │ خيوط خفيفة │       │ حلقة أحداث  │
+        │ لكل نواة          │       │ مع GIL     │       │ غير محجوبة  │
+        └─────────────┘       └───────────┘       └───────────┘`}</code></pre>
+
+        <p>
+            <strong>Threading:</strong> مناسب لمهام
+            الإدخال/الإخراج (شبكة، ملفات، قواعد بيانات).
+            عندما ينتظر خيط عملية إدخال/إخراج، يحرر GIL،
+            فيستطيع خيط آخر التنفيذ. لكنه لا يسرع المهام
+            الحسابية (CPU-Bound).
+        </p>
+
+        <p>
+            <strong>Multiprocessing:</strong> يتجاوز GIL
+            لأن كل عملية (Process) لها مفسرها الخاص
+            وGIL الخاص بها. مناسب للمهام الحسابية
+            الثقيلة. الثمن: تكلفة إنشاء العمليات
+            والاتصال بينها أعلى من الخيوط.
+        </p>
+
+        <p>
+            <strong>Asyncio:</strong> نموذج تعاوني
+            (Cooperative) يعتمد على حلقة أحداث (Event
+            Loop). خيط واحد يدير آلاف المهام المتزامنة،
+            لكن يجب ألا تحجب الحلقة أبدًا بعمليات
+            متزامنة ثقيلة. مناسب للخوادم عالية التزامن
+            (آلاف الاتصالات).
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`import asyncio
+import aiohttp
+
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def main():
+    urls = [f"https://httpbin.org/delay/1?i={i}" for i in range(10)]
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+    print(f"Fetched {len(results)} pages concurrently")
+
+asyncio.run(main())`}</code></pre>
+
+        <h2 id="performance">الأداء: القياس قبل التحسين</h2>
+
+        <p>
+            السؤال الشائع: "كيف أسرع كود بايثون؟" الإجابة
+            الصحيحة ليست "استخدم NumPy" أو "اكتب بلغة
+            أخرى"، بل <strong>"قِس أولًا"</strong>.
+            التحسين الأعمى يضيع الوقت وقد يضر بالقراءة.
+        </p>
+
+        <p>
+            الأدوات الأساسية:
+        </p>
+
+        <ul>
+            <li>
+                <strong><code>cProfile</code>:</strong>
+                إحصاءات على مستوى الدوال. يخبرك أين
+                يقضي البرنامج معظم الوقت.
+            </li>
+            <li>
+                <strong><code>line_profiler</code>:</strong>
+                قياس سطر بسطر داخل دالة معينة.
+            </li>
+            <li>
+                <strong><code>py-spy</code>:</strong>
+                أخذ لقطات (Profiling) من عملية قيد
+                التشغيل في الإنتاج، دون إعادة تشغيل
+                أو تعديل الكود.
+            </li>
+            <li>
+                <strong><code>memory_profiler</code>:</strong>
+                تتبع استهلاك الذاكرة سطرًا بسطر.
+            </li>
+        </ul>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`import cProfile
+import pstats
+
+def slow_function():
+    total = 0
+    for i in range(10_000_000):
+        total += i * i
+    return total
+
+cProfile.run("slow_function()", "profile_output")
+stats = pstats.Stats("profile_output")
+stats.sort_stats("cumtime").print_stats(10)`}</code></pre>
+
+        <p>
+            بعد القياس، التحسينات الشائعة: استبدال
+            <code>list</code> بـ<code>set</code> أو
+            <code>dict</code> للبحث، استخدام المولدات
+            للبيانات الضخمة، تجنب تسلسل السلاسل في
+            الحلقات (استخدم <code>"".join()</code>)،
+            واستخدام دوال مدمجة (مثل <code>sum</code>،
+            <code>min</code>، <code>max</code>) بدلًا
+            من حلقات يدوية.
+        </p>
+
+        <h2 id="common-mistakes">الأخطاء الشائعة: ما لا يظهر في الأخطاء</h2>
+
+        <p>
+            أخطر أخطاء بايثون ليست تلك التي ترمي
+            استثناءات (Exceptions)، بل تلك التي تجعل
+            البرنامج يعمل وينتج نتائج خاطئة بصمت. هذه
+            قائمة بأكثرها شيوعًا:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">العرض</th>
+                            <th class="px-4 py-2 font-semibold">السبب الخفي</th>
+                            <th class="px-4 py-2 font-semibold">الفحص الأول</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">pip يثبت لكن import يفشل</td>
+                            <td class="px-4 py-2">مفسران مختلفان</td>
+                            <td class="px-4 py-2"><code>print(sys.executable)</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">import يجد شيئًا خاطئًا</td>
+                            <td class="px-4 py-2">اسم ملفك يحجب الوحدة</td>
+                            <td class="px-4 py-2"><code>print(module.__file__)</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">البرنامج يكمل دون مخرجات</td>
+                            <td class="px-4 py-2"><code>except Exception: pass</code></td>
+                            <td class="px-4 py-2">أعد رفع الاستثناء أو اطبعه</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">حلقة تتخطى عناصر</td>
+                            <td class="px-4 py-2">تعديل القائمة أثناء التكرار</td>
+                            <td class="px-4 py-2">كرر على نسخة: <code>for x in lst[:]</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">متغير يصبح None</td>
+                            <td class="px-4 py-2"><code>list.sort()</code> يعيد None</td>
+                            <td class="px-4 py-2">استخدم <code>sorted(lst)</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>zip()</code> يفقد سجلًا</td>
+                            <td class="px-4 py-2">يتوقف عند أقصر مكرر</td>
+                            <td class="px-4 py-2"><code>zip(..., strict=True)</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            خطأ <code>except Exception: pass</code> هو
+            الأخطر لأنه يخفي المشكلة بدلًا من حلها.
+            إذا كنت لا تعرف كيف تتعامل مع الاستثناء،
+            فاتركه يظهر. على الأقل ستعرف أن هناك
+            مشكلة.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في كتابة بايثون</h2>
+
+        <ul>
+            <li>
+                <strong>استخدم <code>python -m venv</code>
+                دائمًا:</strong> لا تثبت الحزم على
+                مستوى النظام. كل مشروع في بيئته
+                الافتراضية.
+            </li>
+            <li>
+                <strong>لا تستخدم قوائم أو قواميس
+                كقيم افتراضية:</strong> استخدم
+                <code>None</code> ثم أنشئ الكائن
+                داخل الدالة.
+            </li>
+            <li>
+                <strong>استخدم <code>is None</code>
+                وليس <code>== None</code>:</strong>
+                أوضح وأسرع.
+            </li>
+            <li>
+                <strong>لا تعدل قائمة أثناء
+                التكرار عليها:</strong> كرر على نسخة
+                أو استخدم قائمة جديدة.
+            </li>
+            <li>
+                <strong>استخدم المولدات للبيانات
+                الضخمة:</strong> <code>yield</code>
+                بدلًا من بناء قائمة كاملة في
+                الذاكرة.
+            </li>
+            <li>
+                <strong>قِس قبل أن تحسّن:</strong>
+                لا تفترض أين المشكلة. استخدم
+                <code>cProfile</code> أو
+                <code>py-spy</code>.
+            </li>
+            <li>
+                <strong>لا تستخدم <code>except:
+                pass</code> أبدًا:</strong> إذا
+                التقطت استثناءً، فتعامل معه أو
+                اتركه يظهر.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعرف الفرق بين List وTuple
+                وSet وDict من حيث التعقيد
+                والاستخدام؟ ← <strong>نعم،
+                اختر حسب العملية</strong>
+            </li>
+            <li>
+                هل تفهم لماذا القائمة الافتراضية
+                في الدالة مشكلة؟ ← <strong>نعم،
+                استخدم None</strong>
+            </li>
+            <li>
+                هل تستخدم <code>is</code> فقط
+                مع <code>None</code>؟ ←
+                <strong>نعم، وليس مع القيم</strong>
+            </li>
+            <li>
+                هل تعرف متى تستخدم المزخرفات
+                والمولدات؟ ← <strong>نعم،
+                لتغليف السلوك وتوفير
+                الذاكرة</strong>
+            </li>
+            <li>
+                هل تفهم GIL ومتى يكون Threading
+                أو Multiprocessing أو Asyncio
+                مناسبًا؟ ← <strong>نعم، حسب
+                نوع المهمة</strong>
+            </li>
+            <li>
+                هل تقيس الأداء قبل التحسين؟ ←
+                <strong>نعم، باستخدام
+                cProfile</strong>
+            </li>
+            <li>
+                هل تتجنب الأخطاء الصامتة مثل
+                <code>except: pass</code>؟ ←
+                <strong>نعم، لا تخفِ
+                الاستثناءات</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع
+            إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://docs.python.org/3/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Python — Official Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/library/asyncio.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Python — asyncio Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.python.org/3/library/multiprocessing.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Python — multiprocessing Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://realpython.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Real Python — Tutorials and Podcast
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.kdnuggets.com/7-python-mistakes-beginners-make-and-what-to-do-instead"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    KDnuggets — 7 Python Mistakes Beginners Make
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Python Packaging — pip and venv Guide
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل بايثون مفسرة أم مترجمة؟</h3>
+        <p>
+            بايثون <strong>مفسرة (Interpreted)</strong>
+            بالمعنى العملي: الكود يُنفَّذ سطرًا بسطر
+            عبر المفسر. لكنه internally يُحوَّل إلى
+            بايت كود (Bytecode) ثم يُنفَّذ. يمكنك
+            رؤية البايت كود عبر <code>dis</code>.
+        </p>
+
+        <h3>لماذا تُسمى بايثون "ديناميكية النوع"؟</h3>
+        <p>
+            لأن نوع المتغير لا يُحدد مسبقًا، بل
+            يُستنتج في وقت التشغيل. يمكنك تعيين
+            <code>x = 5</code> ثم <code>x = "hello"</code>
+            دون خطأ. هذا يمنح مرونة، لكنه يعني
+            أيضًا أن أخطاء النوع تظهر في وقت
+            التشغيل، وليس في وقت الترجمة.
+        </p>
+
+        <h3>هل يمكن استخدام بايثون للبرمجة المتزامنة؟</h3>
+        <p>
+            نعم، بثلاث طرق: <strong>Threading</strong>
+            للإدخال/الإخراج، <strong>Multiprocessing</strong>
+            للمهام الحسابية، و<strong>Asyncio</strong>
+            للتزامن التعاوني عالي الكفاءة. الاختيار
+            يعتمد على ما إذا كانت المهمة محكومة
+            بالمعالج (CPU-Bound) أم بالإدخال/الإخراج
+            (I/O-Bound).
+        </p>
+
+        <h3>ما أفضل طريقة لتعلم بايثون؟</h3>
+        <p>
+            ابدأ بالأساسيات (الأنواع، الحلقات،
+            الدوال)، ثم انتقل إلى هياكل البيانات
+            والمولدات والمزخرفات. بعد ذلك، اختر
+            مجالًا (ويب، بيانات، أتمتة) وابنِ
+            مشاريع صغيرة. لا تحاول تعلم كل شيء
+            دفعة واحدة؛ بايثون لغة تُتقن
+            بالممارسة، لا بالحفظ.
+        </p>
+    </PostLayout>
+</BaseLayout>
