@@ -1,0 +1,780 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "typescript-vs-javascript-comparison-2026",
+    title: "مقارنة بين TypeScript وJavaScript: أيهما الأفضل في 2026؟",
+    metaTitle: "TypeScript أم JavaScript؟ المقارنة الشاملة لعام 2026",
+    description:
+        "مقارنة معمقة بين TypeScript وJavaScript في 2026: نظام الأنواع، الأداء، تجربة المطور، إحصائيات التبني، أدوات الذكاء الاصطناعي، ومتى تختار كلًا منهما، مع أمثلة كود وجداول ومخططات.",
+    keywords: [
+        "TypeScript vs JavaScript",
+        "مقارنة TypeScript وJavaScript",
+        "أفضل لغة برمجة 2026",
+        "TypeScript adoption 2026",
+        "JavaScript ES2026",
+        "tsc-go compiler",
+        "static typing vs dynamic typing",
+        "TypeScript performance",
+        "متى تستخدم TypeScript",
+        "تطوير الويب 2026",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "22 نوفمبر 2026",
+    pubDate: new Date("2026-11-22"),
+    tags: ["TypeScript", "JavaScript", "برمجة", "مقارنات", "تطوير الويب", "أنواع البيانات"],
+    thumbnail: "/images/typescript-vs-javascript-comparison-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: أيهما يفوز في ماذا؟" },
+    { id: "core-difference", label: "الفرق الجوهري: أين تُلتقط الأخطاء؟" },
+    { id: "type-system", label: "نظام الأنواع: القوة الحقيقية لـTypeScript" },
+    { id: "performance", label: "الأداء: لا فرق في وقت التشغيل، لكن وقت البناء يتغير" },
+    { id: "developer-experience", label: "تجربة المطور: الإكمال التلقائي وإعادة الهيكلة" },
+    { id: "ai-impact", label: "الذكاء الاصطناعي: لماذا يفضّل الوكلاء TypeScript؟" },
+    { id: "adoption-stats", label: "أرقام 2026: من يستخدم ماذا؟" },
+    { id: "when-to-use", label: "متى تستخدم TypeScript ومتى تبقى مع JavaScript؟" },
+    { id: "migration", label: "الهجرة التدريجية: كيف تنتقل دون انقطاع؟" },
+    { id: "es2026", label: "JavaScript في 2026: هل تحتاج TypeScript أصلًا؟" },
+    { id: "best-practices", label: "أفضل الممارسات في كلا العالمين" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في 2026، لم يعد السؤال "هل أستخدم TypeScript أم JavaScript؟" سؤالًا
+            بسيطًا. قبل خمس سنوات، كان الجواب الافتراضي لأي مشروع جديد هو
+            JavaScript. اليوم، <strong>40% من المطورين يكتبون TypeScript
+            حصريًا</strong>، و<strong>66% من إعلانات الوظائف تطلب TypeScript
+            أو تفضّله</strong>. لكن هذا لا يعني أن JavaScript ماتت. إنها لا
+            تزال اللغة الأكثر استخدامًا في العالم، وأصبحت أقوى في 2026
+            بميزات ES2026 التي كانت حكرًا على TypeScript سابقًا.
+        </p>
+
+        <p>
+            هذا الدليل لا يختار طرفًا. إنه يفكك الفرق بين اللغتين من
+            الداخل: <strong>أين يُلتقط الخطأ؟</strong>،
+            <strong>ماذا يحدث للأداء؟</strong>، <strong>كيف تتغير تجربة
+            المطور؟</strong>، و<strong>لماذا يعمل الذكاء الاصطناعي
+            بشكل أفضل مع TypeScript؟</strong>. الهدف أن تخرج بقرار
+            مبني على احتياج مشروعك، لا على ضجيج الترند.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: أيهما يفوز في ماذا؟</h2>
+
+        <p>
+            الجدول التالي يلخص الفروق الجوهرية كما تظهر في المشاريع
+            الحقيقية في نهاية 2026:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المعيار</th>
+                            <th class="px-4 py-2 font-semibold">JavaScript</th>
+                            <th class="px-4 py-2 font-semibold">TypeScript</th>
+                            <th class="px-4 py-2 font-semibold">الفائز</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">سرعة البدء</td>
+                            <td class="px-4 py-2">فورية، بدون إعداد</td>
+                            <td class="px-4 py-2">تتطلب tsconfig وبعض الإعداد</td>
+                            <td class="px-4 py-2">JavaScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">اكتشاف الأخطاء</td>
+                            <td class="px-4 py-2">وقت التشغيل</td>
+                            <td class="px-4 py-2">وقت الترجمة (قبل التشغيل)</td>
+                            <td class="px-4 py-2">TypeScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الأداء في وقت التشغيل</td>
+                            <td class="px-4 py-2">نفس الشيء</td>
+                            <td class="px-4 py-2">نفس الشيء (الأنواع تُمحى)</td>
+                            <td class="px-4 py-2">تعادل</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">سرعة البناء</td>
+                            <td class="px-4 py-2">لا يوجد بناء</td>
+                            <td class="px-4 py-2">أبطأ (لكن tsc-go يحسّن)</td>
+                            <td class="px-4 py-2">JavaScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الإكمال التلقائي</td>
+                            <td class="px-4 py-2">أساسي</td>
+                            <td class="px-4 py-2">غني ودقيق</td>
+                            <td class="px-4 py-2">TypeScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">إعادة الهيكلة</td>
+                            <td class="px-4 py-2">بحث واستبدال يدوي</td>
+                            <td class="px-4 py-2">مُتحقَّق منه آليًا</td>
+                            <td class="px-4 py-2">TypeScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">التوافق مع المكتبات</td>
+                            <td class="px-4 py-2">كل شيء</td>
+                            <td class="px-4 py-2">يحتاج @types لبعض المكتبات</td>
+                            <td class="px-4 py-2">JavaScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الذكاء الاصطناعي</td>
+                            <td class="px-4 py-2">جيد</td>
+                            <td class="px-4 py-2">ممتاز (أنواع = سياق أفضل)</td>
+                            <td class="px-4 py-2">TypeScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">المشاريع الصغيرة</td>
+                            <td class="px-4 py-2">مثالي</td>
+                            <td class="px-4 py-2">قد يكون مبالغة</td>
+                            <td class="px-4 py-2">JavaScript</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">المشاريع الكبيرة</td>
+                            <td class="px-4 py-2">يصبح هشًا</td>
+                            <td class="px-4 py-2">مصمم للتحمل</td>
+                            <td class="px-4 py-2">TypeScript</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="core-difference">الفرق الجوهري: أين تُلتقط الأخطاء؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/typescript-vs-javascript-comparison-2026/01.webp"
+                alt="TypeScript مقابل JavaScript"
+                width="1200"
+                height="800"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            الفرق الأساسي بين اللغتين ليس في "القوة" أو "السرعة"، بل في
+            <strong>مكان وزمان اكتشاف الخطأ</strong>. JavaScript لغة
+            <strong>ديناميكية الأنواع</strong>: نوع المتغير يُحدد في
+            وقت التشغيل. TypeScript لغة <strong>ثابتة الأنواع</strong>
+            (في وقت الترجمة): النوع يُحدد ويُتحقق منه قبل تشغيل
+            الكود.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// JavaScript: الخطأ لا يظهر حتى التشغيل
+function greet(user) {
+    return "Hello, " + user.name.toUpperCase();
+}
+
+greet({ name: "Ali" });   // "Hello, ALI" — يعمل
+greet({ username: "Ali" }); // TypeError: Cannot read property 'toUpperCase' of undefined
+// الخطأ يظهر فقط عندما ينفّذ المستخدم هذا المسار
+
+// TypeScript: الخطأ يظهر في المحرر فورًا
+interface User {
+    name: string;
+}
+
+function greet(user: User): string {
+    return "Hello, " + user.name.toUpperCase();
+}
+
+greet({ username: "Ali" });
+// ❌ خطأ في وقت الترجمة: 'username' غير موجود في النوع 'User'`}</code></pre>
+
+        <p>
+            الدراسات تشير إلى أن TypeScript يمنع حوالي
+            <strong>15% إلى 38%</strong> من الأخطاء التي كانت ستصل
+            إلى الإنتاج. هذا لا يعني أن TypeScript "تضمن" عدم وجود
+            أخطاء — فالأخطاء المنطقية تبقى موجودة — لكنها تزيل فئة
+            كاملة من الأخطاء الشائعة: <code>undefined is not a
+            function</code>، <code>Cannot read property of
+            undefined</code>، تمرير الوسائط الخاطئة.
+        </p>
+
+        <h2 id="type-system">نظام الأنواع: القوة الحقيقية لـTypeScript</h2>
+
+        <p>
+            TypeScript ليست مجرد "إضافة أنواع" إلى JavaScript. إنها
+            <strong>نظام أنواع كامل</strong> قادر على التعبير عن
+            قيود معقدة، وهو ما يجعلها أداة نمذجة بقدر ما هي لغة
+            برمجة. في 2026، أصبح نظام الأنواع أكثر ذكاءً:
+        </p>
+
+        <ul>
+            <li>
+                <strong>Inferred Type Predicates (5.5):</strong>
+                دوال مثل <code>.filter(x => x !== undefined)</code>
+                تستنتج تلقائيًا أن الناتج <code>T[]</code> بدلًا
+                من <code>(T | undefined)[]</code>.
+            </li>
+            <li>
+                <strong><code>using</code> و<code>await using</code>
+                (5.2):</strong> تنظيف موارد حتمي دون
+                <code>try/finally</code>.
+            </li>
+            <li>
+                <strong>Standard Decorators (5.0):</strong>
+                مزخرفات متوافقة مع معيار TC39، دون الحاجة إلى
+                أعلام تجريبية.
+            </li>
+            <li>
+                <strong><code>satisfies</code> (4.9/5.x):</strong>
+                تحقق من النوع دون توسيع النوع المستنتج.
+            </li>
+            <li>
+                <strong><code>const</code> Type Parameters
+                (5.0):</strong> استنتاج دقيق ل literals دون
+                الحاجة إلى <code>as const</code> في كل مكان.
+            </li>
+        </ul>
+
+        <p>
+            هذه الميزات لا تجعل الكود "أكثر أمانًا" فقط، بل تجعله
+            <strong>أكثر تعبيرًا</strong>. يمكنك ترميز قواعد العمل
+            داخل نظام الأنواع، بحيث يمنع المترجم انتهاكها قبل أن
+            تصل إلى الاختبارات.
+        </p>
+
+        <h2 id="performance">الأداء: لا فرق في وقت التشغيل، لكن وقت البناء يتغير</h2>
+
+        <p>
+            أحد أكثر الأسئلة شيوعًا: "هل TypeScript أبطأ من
+            JavaScript؟" الإجابة الدقيقة: <strong>لا في وقت
+            التشغيل، نعم في وقت البناء</strong>.
+        </p>
+
+        <p>
+            TypeScript <strong>تُمحى أنواعها بالكامل</strong> عند
+            الترجمة. ملف <code>.ts</code> يتحول إلى
+            <code>.js</code> عادي، بدون أي بيانات أنواع إضافية.
+            النتيجة: <strong>صفر تأثير على أداء وقت التشغيل</strong>.
+            المتصفح أو Node.js ينفّذ نفس كود JavaScript في
+            الحالتين.
+        </p>
+
+        <p>
+            لكن <strong>وقت البناء</strong> يتأثر. مشاريع
+            TypeScript الكبيرة كانت تعاني من بطء
+            <code>tsc</code> واستهلاك ذاكرة مرتفع. هذا تغيّر
+            جذريًا في 2026 مع <strong>tsc-go</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>TypeScript 7.0 (Beta، أبريل 2026):</strong>
+                نقل كامل لمنطق التحقق من الأنواع إلى مترجم
+                مكتوب بلغة Go.
+            </li>
+            <li>
+                <strong>تحسن 10x في سرعة البناء:</strong> بفضل
+                تعدد خيوط Go، أصبح فحص الأنواع في المشاريع
+                الكبيرة أسرع بعشر مرات من TypeScript 6.0.
+            </li>
+            <li>
+                <strong>اختبارات مبكرة في Slack وGoogle
+                وFigma وVercel:</strong> تؤكد التحسن
+                دون كسر التوافق.
+            </li>
+        </ul>
+
+        <p>
+            هذا لا يعني أن مشاكل الأداء اختفت تمامًا. المشاريع
+            التي لا تضبط <code>tsconfig</code> جيدًا (glob
+            واسع، barrel files، أنواع معقدة) قد تظل بطيئة.
+            الحل: <strong>تقسيم المشروع إلى مراجع (Project
+            References)</strong>، و<strong>تجنيد
+            <code>types: []</code></strong>، وتجنب
+            <strong>ملفات index.ts التي تعيد تصدير كل
+            شيء</strong>.
+        </p>
+
+        <h2 id="developer-experience">تجربة المطور: الإكمال التلقائي وإعادة الهيكلة</h2>
+
+        <p>
+            هذا هو الفرق الذي <strong>يشعر به المطور
+            يوميًا</strong>. في JavaScript، المحرر يخمّن
+            نوع المتغير بناءً على قيمته الحالية. في
+            TypeScript، المحرر <strong>يعرف</strong> النوع
+            بدقة، ويقدم إكمالًا تلقائيًا مطابقًا، ويظهر
+            الأخطاء قبل التشغيل.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المهمة</th>
+                            <th class="px-4 py-2 font-semibold">JavaScript</th>
+                            <th class="px-4 py-2 font-semibold">TypeScript</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">إعادة تسمية دالة</td>
+                            <td class="px-4 py-2">بحث واستبدال يدوي، قد يفوتك مكان</td>
+                            <td class="px-4 py-2">المترجم يحدد كل مكان ويحدّثه</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تغيير توقيع دالة</td>
+                            <td class="px-4 py-2">قد تنكسر الاستدعاءات بصمت</td>
+                            <td class="px-4 py-2">كل الاستدعاءات غير المتوافقة تُعلَّم</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">فهم كود قديم</td>
+                            <td class="px-4 py-2">قراءة يدوية وتجريب</td>
+                            <td class="px-4 py-2">الأنواع تعمل كوثائق حية</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">إضافة ميزة جديدة</td>
+                            <td class="px-4 py-2">احتمال كسر شيء دون علم</td>
+                            <td class="px-4 py-2">المترجم يمنع الانتهاكات قبل الاختبار</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            هذا لا يعني أن JavaScript "سيئة". بالنسبة لمشروع
+            صغير أو نموذج أولي (Prototype)، فإن سرعة البدء
+            التي توفرها JavaScript قد تكون أهم من الأمان
+            الذي تقدمه TypeScript. لكن مع نمو المشروع،
+            تتحول TypeScript من "عبء إضافي" إلى
+            <strong>أداة بقاء</strong>.
+        </p>
+
+        <h2 id="ai-impact">الذكاء الاصطناعي: لماذا يفضّل الوكلاء TypeScript؟</h2>
+
+        <p>
+            هذا هو التحول الجديد في 2026. أدوات البرمجة
+            بالذكاء الاصطناعي (مثل Cursor وGitHub Copilot
+            وClaude Code) تعمل <strong>بشكل أفضل بكثير</strong>
+            مع TypeScript. السبب بسيط: <strong>الأنواع توفر
+            سياقًا غنيًا للنموذج</strong>. عندما يعرف
+            النموذج أن الدالة تستقبل <code>User</code> وتعيد
+            <code>Promise&lt;Order&gt;</code>، فإنه يولد كودًا أكثر
+            دقة.
+        </p>
+
+        <p>
+            الأرقام تدعم ذلك: <strong>94% من أخطاء الترجمة
+            التي يرتكبها نموذج لغوي كبير (LLM) هي أخطاء
+            أنواع</strong>. عندما يكون الكود مكتوبًا
+            بـTypeScript، يستطيع النموذج رؤية هذه الأخطاء
+            وتصحيحها تلقائيًا، أو تجنبها من البداية. مع
+            JavaScript، يفتقر النموذج إلى هذا السياق، وتزيد
+            احتمالية توليد كود يعمل ظاهريًا لكنه ينكسر
+            لاحقًا.
+        </p>
+
+        <p>
+            لهذا، كثير من الفرق التي تتبنى أدوات برمجة
+            بالذكاء الاصطناعي تتحول إلى TypeScript ليس
+            لأنها "تحب الأنواع"، بل لأن <strong>الأدوات
+            التي تستخدمها تعمل بشكل أفضل معها</strong>.
+            هذا يخلق حلقة تغذية راجعة: TypeScript تزيد
+            من فعالية الذكاء الاصطناعي، والذكاء الاصطناعي
+            يزيد من قيمة TypeScript.
+        </p>
+
+        <h2 id="adoption-stats">أرقام 2026: من يستخدم ماذا؟</h2>
+
+        <p>
+            الأرقام لا تكذب، لكنها تحتاج إلى سياق. إليك
+            صورة التبني في 2026:
+        </p>
+
+        <ul>
+            <li>
+                <strong>JavaScript:</strong> 66% من
+                المطورين يستخدمونها (Stack Overflow
+                2026)، وهي لا تزال اللغة الأكثر
+                استخدامًا للعام الحادي عشر على التوالي.
+            </li>
+            <li>
+                <strong>TypeScript:</strong> 43.6% من
+                المطورين يستخدمونها، لكن <strong>40%
+                يكتبونها حصريًا</strong> (State of JS
+                2026)، و<strong>72.4%</strong> من
+                مستخدميها "يُعجبون بها" مقابل 58%
+                لـJavaScript.
+            </li>
+            <li>
+                <strong>GitHub:</strong> TypeScript أصبحت
+                <strong>اللغة الأولى من حيث نمو
+                المساهمين</strong> في أغسطس 2026، بـ2.6
+                مليون مساهم شهريًا ونمو 66% سنويًا.
+            </li>
+            <li>
+                <strong>الوظائف:</strong> 67% من إعلانات
+                الوظائف تطلب TypeScript أو تفضّلها.
+            </li>
+        </ul>
+
+        <p>
+            التفسير: JavaScript لا تزال <strong>لغة
+            الأساس</strong> — كل مطور TypeScript هو
+            أيضًا مطور JavaScript. لكن TypeScript أصبحت
+            <strong>لغة المشاريع الجادة</strong>. الفرق
+            بين "أستخدم JavaScript" و"أكتب TypeScript
+            حصريًا" هو الفرق بين من يتعلم، ومن يبني
+            أنظمة تحتاج إلى صيانة لسنوات.
+        </p>
+
+        <h2 id="when-to-use">متى تستخدم TypeScript ومتى تبقى مع JavaScript؟</h2>
+
+        <p>
+            لا يوجد "أفضل" مطلق. القرار يعتمد على
+            <strong>حجم المشروع، وعمره المتوقع، وحجم
+            الفريق، ونوع المهمة</strong>:
+        </p>
+
+        <ul>
+            <li>
+                <strong>استخدم JavaScript إذا:</strong>
+                تكتب سكربتًا قصيرًا، أو نموذجًا أوليًا
+                (Prototype)، أو تتعلم البرمجة لأول مرة،
+                أو تحتاج إلى تشغيل كود في بيئة لا تدعم
+                البناء (مثل بعض أدوات CI البسيطة).
+            </li>
+            <li>
+                <strong>استخدم TypeScript إذا:</strong>
+                تبني مشروعًا سيعيش أكثر من بضعة أشهر،
+                أو يعمل عليه أكثر من شخص، أو تحتاج إلى
+                إعادة هيكلة آمنة، أو تستخدم أدوات
+                ذكاء اصطناعي في التطوير، أو تريد توثيقًا
+                حيًا لواجهات API.
+            </li>
+            <li>
+                <strong>ابدأ بـJavaScript وانتقل
+                لاحقًا:</strong> إذا كنت غير متأكد،
+                ابدأ بـJavaScript. عندما تشعر أن
+                الأخطاء تتكرر، أو أن إعادة الهيكلة
+                أصبحت مخيفة، فهذا هو الوقت المناسب
+                للانتقال إلى TypeScript.
+            </li>
+        </ul>
+
+        <h2 id="migration">الهجرة التدريجية: كيف تنتقل دون انقطاع؟</h2>
+
+        <p>
+            الهجرة إلى TypeScript لا تحتاج أن تكون
+            "كل شيء أو لا شيء". في 2026، أفضل
+            الممارسات هي <strong>الهجرة التدريجية</strong>:
+        </p>
+
+        <ol>
+            <li>
+                <strong>أضف TypeScript إلى المشروع
+                دون تغيير الملفات:</strong> يمكنك
+                تثبيت <code>typescript</code> وضبط
+                <code>tsconfig.json</code> مع
+                <code>allowJs: true</code>. الملفات
+                <code>.js</code> تبقى كما هي.
+            </li>
+            <li>
+                <strong>ابدأ بالملفات الجديدة:</strong>
+                اكتب الملفات الجديدة بـ<code>.ts</code>
+                أو <code>.tsx</code>، واترك القديمة
+                كما هي.
+            </li>
+            <li>
+                <strong>حوّل الملفات الحرجة أولًا:</strong>
+                ابدأ بالملفات التي تحتوي على منطق
+                العمل (Business Logic) أو واجهات
+                API.
+            </li>
+            <li>
+                <strong>لا تسعَ إلى "تغطية 100%"
+                فورًا:</strong> استخدم <code>any</code>
+                مؤقتًا عند الحاجة، ثم استبدله
+                بأنواع دقيقة لاحقًا.
+            </li>
+            <li>
+                <strong>شغّل <code>tsc --noEmit</code>
+                في CI:</strong> لضمان عدم تراجع
+                التغطية مع الوقت.
+            </li>
+        </ol>
+
+        <p>
+            هذا النهج يقلل المخاطرة، ويسمح للفريق
+            بالتعلم أثناء العمل، دون توقف المشروع.
+        </p>
+
+        <h2 id="es2026">JavaScript في 2026: هل تحتاج TypeScript أصلًا؟</h2>
+
+        <p>
+            JavaScript في 2026 ليست نفس JavaScript في
+            2020. ميزات ES2026 تجعل اللغة أقوى:
+        </p>
+
+        <ul>
+            <li>
+                <strong><code>using</code> و<code>await
+                using</code>:</strong> تنظيف موارد
+                حتمي، مشابه لما في TypeScript 5.2.
+            </li>
+            <li>
+                <strong>Iterator Helpers:</strong>
+                <code>.map()</code>، <code>.filter()</code>،
+                <code>.take()</code> مباشرة على
+                المكررات، دون تحويلها إلى مصفوفات.
+            </li>
+            <li>
+                <strong>Temporal API:</strong> بديل
+                حديث لـ<code>Date</code>، يعالج
+                المناطق الزمنية والتواريخ بدقة.
+            </li>
+            <li>
+                <strong>Import Defer:</strong> تأجيل
+                تقييم الوحدات الثقيلة.
+            </li>
+        </ul>
+
+        <p>
+            هذه الميزات تقلل الفجوة بين اللغتين، لكنها
+            <strong>لا تغلقها</strong>. JavaScript
+            لا تزال ديناميكية الأنواع، ولا تقدم فحصًا
+            ثابتًا. TypeScript لا تزال تقدم ما لا
+            تقدمه JavaScript: <strong>عقودًا قابلة
+            للتحقق، وإعادة هيكلة آمنة، وتوثيقًا
+            حيًا</strong>.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في كلا العالمين</h2>
+
+        <ul>
+            <li>
+                <strong>لا تخلط بين <code>.js</code>
+                و<code>.ts</code> في نفس المشروع دون
+                سبب:</strong> إذا اخترت TypeScript،
+                فاجعل الملفات الجديدة <code>.ts</code>
+                دائمًا.
+            </li>
+            <li>
+                <strong>على TypeScript، استخدم
+                <code>strict: true</code>:</strong>
+                ابدأ صارمًا من اليوم الأول، بدلًا من
+                تفعيل الصرامة لاحقًا (قد يكون مؤلمًا).
+            </li>
+            <li>
+                <strong>تجنب <code>any</code> غير
+                الضروري:</strong> استخدم
+                <code>unknown</code> إذا كنت لا تعرف
+                النوع، ثم ضيّقه.
+            </li>
+            <li>
+                <strong>على JavaScript، استخدم
+                JSDoc:</strong> يمكنك الحصول على بعض
+                فوائد الأنواع دون TypeScript، عبر
+                تعليقات <code>@param</code> و
+                <code>@returns</code>.
+            </li>
+            <li>
+                <strong>لا تحوّل مشروعًا كاملًا في
+                يوم واحد:</strong> الهجرة التدريجية
+                أكثر أمانًا واستدامة.
+            </li>
+            <li>
+                <strong>قِس أثر TypeScript على سرعة
+                البناء:</strong> استخدم
+                <code>tsc --diagnostics</code> لمعرفة
+                أين يقضي المترجم وقته.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل مشروعك سيعيش أكثر من بضعة أشهر؟ ←
+                <strong>فكّر في TypeScript</strong>
+            </li>
+            <li>
+                هل يعمل على المشروع أكثر من شخص؟ ←
+                <strong>TypeScript يقلل التنسيق
+                المطلوب</strong>
+            </li>
+            <li>
+                هل تحتاج إلى إعادة هيكلة آمنة؟ ←
+                <strong>TypeScript</strong>
+            </li>
+            <li>
+                هل تستخدم أدوات ذكاء اصطناعي؟ ←
+                <strong>TypeScript يعمل بشكل أفضل
+                معها</strong>
+            </li>
+            <li>
+                هل تكتب سكربتًا قصيرًا أو نموذجًا
+                أوليًا؟ ← <strong>JavaScript
+                أسرع</strong>
+            </li>
+            <li>
+                هل تعرف كيف تهاجر تدريجيًا؟ ←
+                <strong>نعم، ابدأ بالملفات
+                الجديدة</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع
+            إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.typescriptlang.org/docs/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    TypeScript — Official Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.typescriptlang.org/docs/handbook/2/types-from-types.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    TypeScript — Types from Types (Handbook)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — JavaScript Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/tc39/proposals"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    TC39 — ECMAScript Proposals
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://survey.stackoverflow.co/2026/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Stack Overflow Developer Survey 2026
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://2025.stateofjs.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    State of JS 2025 Survey Results
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل TypeScript أبطأ من JavaScript في وقت التشغيل؟</h3>
+        <p>
+            لا. TypeScript تُمحى أنواعها بالكامل عند
+            الترجمة، وينتج عنها كود JavaScript عادي. لا
+            يوجد أي عبء إضافي في وقت التشغيل. الفرق
+            الوحيد هو وقت البناء.
+        </p>
+
+        <h3>هل يمكنني استخدام TypeScript دون تعلمه بالكامل؟</h3>
+        <p>
+            نعم. TypeScript هي مجموعة فرعية من JavaScript،
+            لذا أي كود JavaScript صالح هو كود TypeScript
+            صالح. يمكنك البدء بكتابة JavaScript عادي في
+            ملفات <code>.ts</code>، ثم إضافة الأنواع
+            تدريجيًا.
+        </p>
+
+        <h3>هل JavaScript "تموت" بسبب TypeScript؟</h3>
+        <p>
+            لا. JavaScript لا تزال اللغة الأكثر استخدامًا،
+            وكل كود TypeScript يتحول إلى JavaScript في
+            النهاية. العلاقة ليست تنافسية، بل
+            <strong>تكميلية</strong>. TypeScript تضيف
+            طبقة أمان فوق JavaScript.
+        </p>
+
+        <h3>ما هو tsc-go وما علاقته بالأداء؟</h3>
+        <p>
+            tsc-go هو المترجم الجديد لـTypeScript،
+            المكتوب بلغة Go. أُطلق في TypeScript 7.0
+            (Beta، 2026)، ويقدم تحسنًا يصل إلى
+            <strong>10x في سرعة البناء</strong> مقارنة
+            بالمترجم القديم المكتوب بـJavaScript/TypeScript.
+        </p>
+
+        <h3>هل TypeScript مناسبة للمبتدئين؟</h3>
+        <p>
+            يمكن للمبتدئ تعلم JavaScript أولًا، ثم
+            الانتقال إلى TypeScript. البدء مباشرة
+            بـTypeScript قد يكون مربكًا بسبب المفاهيم
+            الإضافية (الأنواع، الواجهات، الأدوية
+            الجنيسة). لكن إذا كان الهدف هو بناء مشروع
+            جاد، فإن تعلم TypeScript من البداية قد
+            يوفر وقتًا لاحقًا.
+        </p>
+    </PostLayout>
+</BaseLayout>
