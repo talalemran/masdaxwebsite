@@ -1,0 +1,748 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "what-is-the-linux-kernel-2026",
+    title: "ما هي نواة لينكس؟ تشريح كامل لأهم قطعة برمجية في العالم",
+    metaTitle: "ما هي نواة لينكس؟ دليل شامل 2026",
+    description:
+        "دليل معمق لنواة لينكس في 2026: ما تفعله، لماذا هي monolithic، الأنظمة الفرعية الخمسة، System Calls، الوحدات القابلة للتحميل، الإصدارات 6.x و7.x، دخول Rust، ونموذج التطوير المفتوح.",
+    keywords: [
+        "نواة لينكس",
+        "Linux kernel",
+        "kernel architecture",
+        "Linux subsystems",
+        "monolithic kernel",
+        "loadable kernel modules",
+        "system calls",
+        "Linux 7.0",
+        "Rust in Linux kernel",
+        "نواة لينكس شرح",
+    ],
+    category: "لينكس",
+    author: "طلال عمران",
+    date: "23 نوفمبر 2026",
+    pubDate: new Date("2026-11-23"),
+    tags: ["لينكس", "نواة", "أنظمة تشغيل", "kernel", "Rust", "مفتوح المصدر"],
+    thumbnail: "/images/what-is-the-linux-kernel-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة نواة لينكس" },
+    { id: "what-is-kernel", label: "ما هي النواة؟ الطبقة التي لا يراها أحد" },
+    { id: "why-monolithic", label: "لماذا نواة لينكس monolithic؟" },
+    { id: "five-subsystems", label: "الأنظمة الفرعية الخمسة: مملكة داخل النواة" },
+    { id: "scheduler", label: "مجduول العمليات: من يحصل على المعالج؟" },
+    { id: "memory", label: "إدارة الذاكرة: وهم لا ينكسر" },
+    { id: "vfs", label: "نظام الملفات الافتراضي: كل شيء ملف" },
+    { id: "networking", label: "حزمة الشبكة: من المقبس إلى الحزمة" },
+    { id: "ipc", label: "الاتصال بين العمليات: كيف تتحدث المكونات؟" },
+    { id: "syscalls", label: "System Calls: الباب الوحيد بين العالمين" },
+    { id: "modules", label: "الوحدات القابلة للتحميل: مرونة داخل الصلابة" },
+    { id: "versions", label: "الإصدارات: من 6.19 إلى 7.x ودخول Rust" },
+    { id: "development", label: "نموذج التطوير: كيف يُبنى أكبر مشروع مفتوح؟" },
+    { id: "best-practices", label: "أفضل الممارسات في التعامل مع النواة" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            كل شيء تفعله على جهاز يعمل بلينكس — من فتح تطبيق إلى حفظ ملف
+            إلى إرسال حزمة شبكة — يمر عبر قطعة برمجية واحدة لا تراها
+            أبدًا: <strong>نواة لينكس (Linux Kernel)</strong>. إنها
+            الطبقة التي تتوسط بين العتاد (المعالج، الذاكرة، الأقراص،
+            الشبكة) والبرامج التي تستخدمها. بدونها، لا يمكن لأي تطبيق
+            أن يعمل، ولا لأي جهاز أن يستجيب.
+        </p>
+
+        <p>
+            لكن "النواة" ليست مجرد برنامج. إنها <strong>أكبر مشروع
+            برمجي مفتوح المصدر في التاريخ</strong>، بأكثر من 30 مليون
+            سطر من الكود في 2026، يعمل على مليارات الأجهزة: من
+            الهواتف (أندرويد) إلى الخوادم العملاقة (Top500 كلها
+            تعمل بلينكس) إلى أجهزة التوجيه والسيارات وأجهزة
+            الاستشعار. هذا الدليل يفكك النواة من الداخل: ماذا
+            تفعل، ولماذا صُممت بهذه الطريقة، وما هي أنظمتها
+            الفرعية، وكيف تتطور في 2026.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة نواة لينكس</h2>
+
+        <p>
+            الجدول التالي يلخص المفاهيم الأساسية التي يغطيها الدليل:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المفهوم</th>
+                            <th class="px-4 py-2 font-semibold">الوظيفة</th>
+                            <th class="px-4 py-2 font-semibold">المثال</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>النواة</strong></td>
+                            <td class="px-4 py-2">إدارة العتاد وتوفير واجهات موحدة</td>
+                            <td class="px-4 py-2">الوسط بين التطبيق والمعالج</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Monolithic</strong></td>
+                            <td class="px-4 py-2">كل الخدمات في مساحة نواة واحدة</td>
+                            <td class="px-4 py-2">أداء أعلى، عزل أقل</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>System Call</strong></td>
+                            <td class="px-4 py-2">الباب الرسمي من التطبيق إلى النواة</td>
+                            <td class="px-4 py-2"><code>read()</code>، <code>write()</code>، <code>open()</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>LKM</strong></td>
+                            <td class="px-4 py-2">وحدات تُحمَّل وتُزال دون إعادة تشغيل</td>
+                            <td class="px-4 py-2">تعريفات الأجهزة، أنظمة الملفات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>VFS</strong></td>
+                            <td class="px-4 py-2">واجهة موحدة لكل أنظمة الملفات</td>
+                            <td class="px-4 py-2">ext4، Btrfs، NFS تظهر بنفس الشكل</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Rust</strong></td>
+                            <td class="px-4 py-2">لغة ثانية رسمية للنواة (2026)</td>
+                            <td class="px-4 py-2">أمان الذاكرة دون تكلفة أداء</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="what-is-kernel">ما هي النواة؟ الطبقة التي لا يراها أحد</h2>
+
+        <p>
+            <img
+                src="/images/articles/what-is-the-linux-kernel-2026/01.webp"
+                alt="نواة لينكس"
+                width="1200"
+                height="655"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            النواة هي <strong>القلب النابض لنظام التشغيل</strong>. إنها
+            أول برنامج يُحمَّل عند إقلاع الجهاز، وآخر من يتوقف عند
+            إطفائه. وظيفتها الأساسية ثلاثية: <strong>إدارة
+            الموارد</strong> (من يحصل على المعالج، ومتى، وكم من
+            الذاكرة)، <strong>توفير التجريدات</strong> (الملفات،
+            العمليات، المقابس الشبكية)، و<strong>فرض الحماية</strong>
+            (منع تطبيق من العبث بذاكرة تطبيق آخر أو بذاكرة
+            النواة نفسها).
+        </p>
+
+        <p>
+            بدون نواة، سيكون على كل تطبيق أن يعرف تفاصيل كل قطعة
+            عتاد في الجهاز. برنامج معالجة النصوص سيكون مضطرًا
+            لمعرفة كيف يكتب على القرص الصلب من نوع معين، وكيف
+            يرسل بيانات عبر بطاقة شبكة من طراز آخر. هذا مستحيل
+            عمليًا. النواة تقدم <strong>واجهة موحدة</strong>:
+            التطبيق يقول "اكتب هذه البيانات في هذا الملف"، والنواة
+            تتولى الباقي، بغض النظر عن نوع القرص أو نظام
+            الملفات.
+        </p>
+
+        <p>
+            هذا الفصل بين "ما تريده" و"كيف يحدث" هو ما يجعل
+            البرامج قابلة للنقل. نفس الكود يعمل على خادم
+            بقرص NVMe، وعلى هاتف بذاكرة فلاش، وعلى جهاز
+            بقرص دوار. النواة هي التي تخفي هذا الاختلاف.
+        </p>
+
+        <h2 id="why-monolithic">لماذا نواة لينكس monolithic؟</h2>
+
+        <p>
+            هذا سؤال جوهري، والإجابة تكمن في قرار هندسي اتخذه
+            لينوس تورفالدس في 1991، وما زال يحدد شكل لينكس
+            حتى اليوم. في <strong>النواة الأحادية
+            (Monolithic Kernel)</strong>، كل الخدمات الأساسية
+            — إدارة العمليات، الذاكرة، أنظمة الملفات، تعريفات
+            الأجهزة، حزمة الشبكة — تعمل في <strong>مساحة
+            عنوان واحدة</strong> و<strong>حلقة معالج
+            واحدة (Ring 0)</strong>، وهي أعلى مستوى
+            صلاحيات في المعالج.
+        </p>
+
+        <p>
+            هذا يختلف عن <strong>النواة الدقيقة
+            (Microkernel)</strong>، حيث تعمل الخدمات في
+            مساحة المستخدم (User Space) كعمليات منفصلة،
+            ولا تبقى في النواة إلا الوظائف الدنيا (جدولة،
+            اتصال بين العمليات، إدارة الذاكرة الأساسية).
+            النواة الدقيقة توفر عزلاً أفضل (إذا انهار
+            تعريف جهاز، لا ينهار النظام كله)، لكنها
+            تدفع ثمنًا في الأداء بسبب <strong>تكلفة
+            الاتصال بين العمليات (IPC)</strong> في كل
+            عملية.
+        </p>
+
+        <p>
+            تورفالدس اختار الأحادية لأنها <strong>أبسط في
+            التنفيذ وأسرع في الأداء</strong>. في 1992،
+            جادل أندرو تانينباوم بأن النواة الدقيقة هي
+            "الطريق الصحيح"، لكن التاريخ أثبت أن
+            اختيار تورفالدس كان عمليًا: لينكس سيطر
+            على الخوادم والأجهزة المدمجة والهواتف
+            لأن أداءه وكفاءته كانا كافيين، ونظامه
+            البيئي نما بشكل لم يستطع المنافسون
+            مجاراته.
+        </p>
+
+        <p>
+            لكن "أحادية" لا تعني "جامدة". لينكس يدعم
+            <strong>الوحدات القابلة للتحميل (Loadable
+            Kernel Modules)</strong>، وهي طريقة لإضافة
+            وظائف إلى النواة أثناء التشغيل، دون إعادة
+            بناء أو إعادة تشغيل. هذا يمنحها مرونة
+            تشبه النوى الدقيقة، لكن دون التضحية
+            بالأداء.
+        </p>
+
+        <h2 id="five-subsystems">الأنظمة الفرعية الخمسة: مملكة داخل النواة</h2>
+
+        <p>
+            نواة لينكس ليست كتلة واحدة غير منظمة. إنها مقسمة
+            إلى <strong>خمسة أنظمة فرعية رئيسية</strong>،
+            لكل منها مسؤولية واضحة، ومع ذلك تتواصل مع
+            بعضها عبر واجهات محددة. هذا
+            التقسيم هو ما يجعل 30 مليون سطر من الكود
+            قابلة للإدارة والتطوير.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">النظام الفرعي</th>
+                            <th class="px-4 py-2 font-semibold">المسؤولية</th>
+                            <th class="px-4 py-2 font-semibold">المجلد في الكود</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>مجduول العمليات</strong></td>
+                            <td class="px-4 py-2">توزيع وقت المعالج بين العمليات</td>
+                            <td class="px-4 py-2"><code>kernel/sched/</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>إدارة الذاكرة</strong></td>
+                            <td class="px-4 py-2">الذاكرة الافتراضية، التبديل، الحماية</td>
+                            <td class="px-4 py-2"><code>mm/</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>نظام الملفات الافتراضي</strong></td>
+                            <td class="px-4 py-2">واجهة موحدة لكل أنظمة الملفات</td>
+                            <td class="px-4 py-2"><code>fs/</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>حزمة الشبكة</strong></td>
+                            <td class="px-4 py-2">TCP/IP، المقابس، التوجيه</td>
+                            <td class="px-4 py-2"><code>net/</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>الاتصال بين العمليات</strong></td>
+                            <td class="px-4 py-2">الأنابيب، الإشارات، الذاكرة المشتركة</td>
+                            <td class="px-4 py-2"><code>ipc/</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>تعريفات الأجهزة</strong></td>
+                            <td class="px-4 py-2">التواصل مع العتاد</td>
+                            <td class="px-4 py-2"><code>drivers/</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="scheduler">مجduول العمليات: من يحصل على المعالج؟</h2>
+
+        <p>
+            في أي لحظة، قد يكون هناك مئات العمليات "جاهزة" للتنفيذ،
+            لكن المعالج (أو أنويته) لا يستطيع تشغيل إلا عددًا
+            محدودًا منها في نفس الوقت. <strong>مجduول
+            العمليات (Process Scheduler)</strong> هو المسؤول
+            عن اختيار العملية التالية، وتحديد كم من الوقت
+            ستحصل عليه. في لينكس 2026، يستخدم المجduول
+            خوارزمية <strong>EEVDF (Earliest Eligible
+            Virtual Deadline First)</strong>، التي حلت محل
+            CFS (Completely Fair Scheduler) القديم في
+            الإصدار 6.6. الفكرة: كل عملية لها "موعد
+            افتراضي" يعتمد على وزنها (أولوية لطيفة،
+            Nice value)، والمجduول يختار العملية ذات
+            الموعد الأقرب.
+        </p>
+
+        <p>
+            هذا يضمن <strong>العدالة</strong>: لا تجوع
+            عملية، ولا تسيطر عملية واحدة على المعالج
+            إلى الأبد. كما يدعم المجduول <strong>الاستباقية
+            (Preemption)</strong>: يمكنه مقاطعة عملية
+            قيد التنفيذ إذا وصلت عملية أعلى أولوية.
+            هذا ضروري للحفاظ على استجابة النظام (UI
+            لا يتجمد عندما يعمل برنامج ثقيل في
+            الخلفية).
+        </p>
+
+        <h2 id="memory">إدارة الذاكرة: وهم لا ينكسر</h2>
+
+        <p>
+            كل تطبيق يعتقد أن لديه ذاكرة خاصة به، تبدأ من
+            العنوان صفر، وتمتد بقدر ما يشاء. هذا وهم
+            جميل تخلقه <strong>إدارة الذاكرة الافتراضية
+            (Virtual Memory)</strong>. النواة تعطي كل
+            عملية <strong>فضاء عنوان افتراضيًا</strong>،
+            وتترجم العناوين الافتراضية إلى عناوين
+            فيزيائية عبر <strong>وحدة إدارة الذاكرة
+            (MMU)</strong>. هذا يسمح لعدة عمليات بمشاركة
+            الذاكرة الفيزيائية دون أن ترى إحداها الأخرى،
+            ويسمح للنظام بتشغيل برامج أكبر من الذاكرة
+            الفيزيائية عبر <strong>التبديل (Swapping)</strong>
+            إلى القرص.
+        </p>
+
+        <p>
+            إدارة الذاكرة في لينكس مسؤولة أيضًا عن
+            <strong>الترحيل عند الطلب (Demand Paging)</strong>:
+            لا تُحمَّل الصفحات من القرص إلا عند الحاجة
+            إليها، مما يسرع بدء التطبيقات. و<strong>النسخ
+            عند الكتابة (Copy-on-Write)</strong>:
+            عند إنشاء عملية جديدة (Fork)، تُشارك
+            الصفحات مع الأب، ولا تُنسخ إلا عند الكتابة.
+            هذا يجعل إنشاء العمليات رخيصًا.
+        </p>
+
+        <h2 id="vfs">نظام الملفات الافتراضي: كل شيء ملف</h2>
+
+        <p>
+            هذا هو أحد أجمل تجريدات لينكس. مهما كان نوع
+            التخزين — قرص صلب، ذاكرة فلاش، مشاركة شبكية،
+            حتى جهاز — فإنه يظهر للتطبيق كـ<strong>ملف</strong>.
+            <strong>نظام الملفات الافتراضي (VFS)</strong>
+            هو الطبقة التي توفر هذه الواجهة الموحدة:
+            <code>open()</code>، <code>read()</code>،
+            <code>write()</code>، <code>close()</code>
+            تعمل بنفس الطريقة بغض النظر عما إذا كان
+            الملف على ext4 أو Btrfs أو NFS أو حتى
+            <code>/proc</code> (نظام ملفات وهمي يعرض
+            معلومات النواة).
+        </p>
+
+        <p>
+            هذا يعني أنك تستطيع تركيب (Mount) قرص USB
+            أو مشاركة شبكية أو أرشيف مضغوط، وستظهر
+            جميعها في شجرة ملفات واحدة، ويمكنك التعامل
+            معها بأدوات عادية. VFS هو ما يجعل هذا
+            ممكنًا.
+        </p>
+
+        <h2 id="networking">حزمة الشبكة: من المقبس إلى الحزمة</h2>
+
+        <p>
+            عندما يفتح تطبيق اتصالًا شبكيًا، فإنه يستخدم
+            <strong>مقبسًا (Socket)</strong>. هذا
+            المقبس هو واجهة يوفرها <strong>النظام
+            الفرعي للشبكة</strong>. خلف هذه الواجهة
+            البسيطة، هناك طبقات معقدة: بروتوكولات
+            TCP/IP، وتوجيه، وجودة الخدمة (QoS)،
+            وجدار ناري (Netfilter)، وترجمة عناوين
+            الشبكة (NAT)، وتعريف بطاقة الشبكة.
+        </p>
+
+        <p>
+            حزمة الشبكة في النواة مسؤولة عن كل شيء:
+            من استقبال الحزم من العتاد، إلى فك
+            تغليفها، إلى تمريرها إلى التطبيق
+            الصحيح. في 2026، تدعم النواة
+            بروتوكولات حديثة مثل WireGuard
+            (VPN) وMPTCP (Multipath TCP) و
+            QUIC (عبر مساحة المستخدم، لكن
+            مع دعم متزايد في النواة).
+        </p>
+
+        <h2 id="ipc">الاتصال بين العمليات: كيف تتحدث المكونات؟</h2>
+
+        <p>
+            العمليات معزولة عن بعضها، لكنها تحتاج
+            إلى التواصل. <strong>نظام الاتصال بين
+            العمليات (IPC)</strong> يوفر الآليات:
+            <strong>الأنابيب (Pipes)</strong> للتدفق
+            أحادي الاتجاه، <strong>الإشارات
+            (Signals)</strong> لإخطار عملية بحدث،
+            <strong>الذاكرة المشتركة (Shared
+            Memory)</strong> لأسرع تبادل بيانات
+            (لأنها لا تحتاج نسخًا)، و<strong>الطوابير
+            (Message Queues)</strong> و<strong>السمافورات
+            (Semaphores)</strong> للمزامنة.
+        </p>
+
+        <h2 id="syscalls">System Calls: الباب الوحيد بين العالمين</h2>
+
+        <p>
+            التطبيقات لا تستطيع استدعاء دوال النواة مباشرة.
+            هذا لحماية النظام. بدلاً من ذلك، تستخدم
+            <strong>System Calls</strong>، وهي نقطة
+            الدخول الرسمية الوحيدة من مساحة المستخدم
+            إلى مساحة النواة. عندما ينفذ تطبيق
+            <code>read()</code>، فإنه لا ينفذ كود
+            القراءة بنفسه، بل يطلب من النواة أن تفعل
+            ذلك نيابة عنه. المعالج ينتقل من
+            <strong>Ring 3</strong> (وضع المستخدم)
+            إلى <strong>Ring 0</strong> (وضع النواة)
+            عبر تعليمة خاصة، ثم تعود النواة بالنتيجة.
+        </p>
+
+        <p>
+            هناك مئات من System Calls في لينكس (أكثر من
+            400 في 2026). أشهرها: <code>read</code>،
+            <code>write</code>، <code>open</code>،
+            <code>close</code>، <code>fork</code>،
+            <code>execve</code>، <code>mmap</code>،
+            <code>socket</code>، <code>ioctl</code>.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`#include <unistd.h>
+#include <fcntl.h>
+
+int main() {
+    int fd = open("file.txt", O_RDONLY);  // System Call
+    char buffer[100];
+    ssize_t bytes = read(fd, buffer, sizeof(buffer));  // System Call
+    write(STDOUT_FILENO, buffer, bytes);  // System Call
+    close(fd);  // System Call
+    return 0;
+}`}</code></pre>
+
+        <h2 id="modules">الوحدات القابلة للتحميل: مرونة داخل الصلابة</h2>
+
+        <p>
+            رغم أن النواة أحادية، إلا أنها تدعم <strong>الوحدات
+            القابلة للتحميل (LKMs)</strong>. هذه ملفات
+            كائنة (<code>.ko</code>) تحتوي على كود يمكن
+            إضافته إلى النواة أثناء التشغيل، أو إزالته
+            منها، دون إعادة بناء أو إعادة تشغيل. هذا
+            هو ما يسمح للنواة بدعم آلاف قطع العتاد
+            وأنظمة الملفات دون أن تحملها كلها في
+            الذاكرة دائمًا.
+        </p>
+
+        <p>
+            لكن الوحدات ليست معزولة. عند تحميلها، تعمل
+            <strong>بصلاحيات كاملة</strong> (Ring 0)،
+            ويمكنها الوصول إلى كل ذاكرة النواة. هذا
+            يجعلها سطح هجوم خطير: تعريف جهاز معطوب
+            (خاصة من طرف ثالث) يمكن أن يسبب انهيار
+            النظام أو ثغرة أمنية. لهذا توقّع النواة
+            الوحدات رقميًا (Module Signature) لمنع
+            تحميل وحدات غير موثوقة.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# عرض الوحدات المحملة حاليًا
+lsmod | head -20
+
+# معلومات عن وحدة معينة
+modinfo ext4
+
+# تحميل وحدة
+sudo modprobe wireguard
+
+# إزالة وحدة
+sudo modprobe -r wireguard`}</code></pre>
+
+        <h2 id="versions">الإصدارات: من 6.19 إلى 7.x ودخول Rust</h2>
+
+        <p>
+            في 2026، ودّعت نواة لينكس سلسلة 6.x نهائيًا. كان
+            <strong>Linux 6.19</strong> (فبراير 2026) آخر
+            إصدار في السلسلة، وافتتح <strong>Linux
+            7.0</strong> (أبريل 2026) حقبة جديدة. أهم
+            تغيير في 7.0: <strong>إنهاء "الفترة
+            التجريبية" للغة Rust</strong>، وإعلانها
+            لغة مدعومة رسميًا في النواة، إلى جانب C
+            وAssembly. هذا لا يعني أن النواة أُعيدت
+            كتابتها بـRust، لكنه يعني أن المطورين
+            يمكنهم الآن كتابة أجزاء جديدة (خاصة
+            التعريفات والأنظمة الفرعية الحساسة)
+            بـRust، مع ضمانات أمان الذاكرة التي
+            تمنع فئات كاملة من الثغرات (مثل
+            Use-After-Free وBuffer Overflow).
+        </p>
+
+        <p>
+            في 2026 أيضًا، استمرت النواة في دعم عتاد
+            جديد: معالجات Intel Nova Lake وDiamond
+            Rapids، وAMD Zen 6، وQualcomm Snapdragon
+            X2. وأضافت تحسينات في أنظمة الملفات،
+            ودعم Apple USB Type-C PHY، وتحسينات
+            أداء متعددة. كما شهدت 2026 كشف عدة
+            ثغرات أمنية عالية الخطورة (مثل Bad
+            Epoll وGhostLock وRefluXFS)، مما يؤكد
+            أن النواة، رغم نضجها، تظل هدفًا
+            رئيسيًا للباحثين عن الثغرات.
+        </p>
+
+        <h2 id="development">نموذج التطوير: كيف يُبنى أكبر مشروع مفتوح؟</h2>
+
+        <p>
+            نواة لينكس ليست مشروعًا لشخص واحد. إنها
+            <strong>مجتمع عالمي</strong> من آلاف
+            المطورين، يعملون تحت قيادة لينوس
+            تورفالدس (أو خلفائه في المستقبل —
+            فقد وضعت Linux Foundation خطة
+            استمرارية رسمية في 2026). التطوير
+            يمر عبر <strong>نوافذ الدمج (Merge
+            Windows)</strong> كل بضعة أشهر، حيث
+            تُدمج آلاف التغييرات من مئات
+            المطورين، بعد مراجعة دقيقة من
+            المشرفين (Maintainers) على كل
+            نظام فرعي.
+        </p>
+
+        <p>
+            هذا النموذج ينتج <strong>نواة مستقرة
+            وقابلة للتطوير</strong>، لكنه يعني
+            أيضًا أن التغييرات تستغرق وقتًا.
+            الميزة الجديدة قد تستغرق سنوات
+            من الفكرة إلى النواة الرئيسية.
+            هذا ثمن الجودة والاتساق.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في التعامل مع النواة</h2>
+
+        <ul>
+            <li>
+                <strong>لا تعِد بناء النواة إلا
+                إذا كنت تعرف لماذا:</strong>
+                معظم المستخدمين لا يحتاجون
+                إلى ذلك. النواة الافتراضية
+                في توزيعتك مختبرة ومحسّنة.
+            </li>
+            <li>
+                <strong>حدّث النواة بانتظام:</strong>
+                التحديثات الأمنية للنواة
+                حرجة. لا تؤجلها.
+            </li>
+            <li>
+                <strong>استخدم وحدات موثوقة
+                فقط:</strong> تجنب تحميل
+                وحدات من مصادر غير معروفة
+                (خاصة التعريفات الاحتكارية
+                من طرف ثالث).
+            </li>
+            <li>
+                <strong>راقب <code>dmesg</code>:</strong>
+                سجل النواة هو أول مكان
+                تبحث فيه عند حدوث مشكلة
+                في العتاد أو التعريفات.
+            </li>
+            <li>
+                <strong>لا تعبث بـ<code>sysctl</code>
+                دون فهم:</strong> تغيير
+                إعدادات النواة قد يحسّن
+                الأداء، لكنه قد يسبب
+                عدم استقرار إذا لم تفهم
+                الأثر.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعرف الفرق بين النواة
+                الأحادية والدقيقة؟ ←
+                <strong>لينكس أحادية مع
+                وحدات قابلة للتحميل</strong>
+            </li>
+            <li>
+                هل تعرف الأنظمة الفرعية
+                الخمسة؟ ← <strong>الجدولة،
+                الذاكرة، VFS، الشبكة، IPC</strong>
+            </li>
+            <li>
+                هل تعرف ما هو System
+                Call؟ ← <strong>الباب
+                الوحيد من المستخدم إلى
+                النواة</strong>
+            </li>
+            <li>
+                هل تعرف لماذا Rust مهم
+                في 2026؟ ← <strong>أمان
+                الذاكرة دون تكلفة أداء</strong>
+            </li>
+            <li>
+                هل تحدّث نواتك بانتظام؟ ←
+                <strong>ضروري للأمان</strong>
+            </li>
+            <li>
+                هل تعرف كيف تقرأ
+                <code>dmesg</code>؟ ←
+                <strong>أساسي لتشخيص
+                مشاكل العتاد</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع
+            إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.kernel.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    The Linux Kernel Archives — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://docs.kernel.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    The Linux Kernel Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://git.kernel.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Linux Kernel Git Repository
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.kernel.org/doc/html/latest/process/development-process.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Linux Kernel Development Process
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://en.wikipedia.org/wiki/Linux_kernel"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Wikipedia — Linux Kernel
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/torvalds/linux"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    GitHub — Linux Kernel Mirror
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل نواة لينكس هي نفسها نظام لينكس؟</h3>
+        <p>
+            لا. النواة هي <strong>الجزء الأساسي</strong>
+            من نظام التشغيل، لكن النظام الكامل يتضمن
+            أيضًا مكتبات (مثل glibc)، وأدوات (مثل
+            Bash وcoreutils)، وواجهة رسومية،
+            وتطبيقات. عندما نقول "لينكس" عادةً،
+            نقصد التوزيعة الكاملة، وليس النواة
+            وحدها.
+        </p>
+
+        <h3>هل يمكن أن تعمل النواة بدون وحدات؟</h3>
+        <p>
+            نعم، يمكن بناء نواة "أحادية" تحتوي على
+            كل شيء مدمجًا (Monolithic build)،
+            لكن هذا يعني حجمًا أكبر وذاكرة أكبر،
+            وفقدان مرونة تحميل التعريفات عند
+            الحاجة. معظم التوزيعات تستخدم
+            الوحدات لتقليل الحجم وتحسين
+            المرونة.
+        </p>
+
+        <h3>ما هي أكبر مخاطر النواة الأحادية؟</h3>
+        <p>
+            <strong>سطح هجوم أكبر</strong>: أي ثغرة
+            في أي نظام فرعي (تعريف USB، نظام
+            ملفات، بروتوكول شبكة) يمكن أن
+            تؤدي إلى اختراق كامل للنواة.
+            لهذا تستثمر النواة في تقنيات
+            مثل KASLR وSMEP وSMAP و
+            التحقق من توقيع الوحدات.
+        </p>
+
+        <h3>هل Rust ستستبدل C في نواة لينكس؟</h3>
+        <p>
+            ليس في المستقبل القريب. C لا تزال
+            اللغة الأساسية، و30 مليون سطر
+            من الكود مكتوبة بها. Rust
+            تُستخدم في <strong>أجزاء
+            جديدة</strong> (خاصة التعريفات
+            والأنظمة الفرعية الحساسة)،
+            لكن استبدال كل شيء ليس
+            عمليًا. الهدف هو تقليل
+            فئات معينة من الثغرات،
+            وليس إعادة كتابة النواة.
+        </p>
+    </PostLayout>
+</BaseLayout>
