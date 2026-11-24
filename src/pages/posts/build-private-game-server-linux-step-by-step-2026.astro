@@ -1,0 +1,743 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "build-private-game-server-linux-step-by-step-2026",
+    title: "كيف تبني خادم ألعاب خاص بك على لينكس خطوة بخطوة؟ دليل شامل 2026",
+    metaTitle: "بناء خادم ألعاب على لينكس 2026: دليل خطوة بخطوة",
+    description:
+        "دليل معمق لبناء خادم ألعاب خاص على لينكس في 2026: اختيار العتاد، تثبيت Ubuntu، الأمان، SteamCMD، Docker/Podman، systemd، تحسين الأداء، النسخ الاحتياطي، Pterodactyl، واستكشاف الأخطاء، مع أوامر جاهزة.",
+    keywords: [
+        "خادم ألعاب لينكس",
+        "game server Linux",
+        "SteamCMD",
+        "Minecraft server Linux",
+        "Valheim server Docker",
+        "Pterodactyl panel",
+        "Linux game server setup",
+        "DDoS protection game server",
+        "systemd game server",
+        "خادم ماينكرافت لينكس",
+        "سيرفر ألعاب خاص",
+    ],
+    category: "أنظمة تشغيل",
+    author: "طلال عمران",
+    date: "24 نوفمبر 2026",
+    pubDate: new Date("2026-11-24"),
+    tags: ["لينكس", "خوادم ألعاب", "Docker", "SteamCMD", "Minecraft", "Valheim", "أمان"],
+    thumbnail: "/images/build-private-game-server-linux-step-by-step-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة بناء خادم الألعاب" },
+    { id: "why-private-server", label: "لماذا تبني خادمك الخاص بدلًا من استئجار واحد؟" },
+    { id: "hardware-os", label: "العتاد ونظام التشغيل: الأساس الذي لا يُرى" },
+    { id: "initial-security", label: "التحصين الأولي: المستخدم، SSH، الجدار الناري" },
+    { id: "installation-methods", label: "طرق التثبيت: SteamCMD أم Docker أم Podman؟" },
+    { id: "steamcmd-guide", label: "SteamCMD: تثبيت خادم CS2 أو Palworld خطوة بخطوة" },
+    { id: "docker-guide", label: "Docker وPodman: تشغيل Minecraft وValheim في حاويات" },
+    { id: "systemd-management", label: "systemd: إدارة الخادم كخدمة نظام" },
+    { id: "performance-tuning", label: "تحسين الأداء: النواة، الذاكرة، الشبكة" },
+    { id: "backups", label: "النسخ الاحتياطي: خطة النجاة" },
+    { id: "panels", label: "لوحات التحكم: Pterodactyl وCrafty" },
+    { id: "security-ddos", label: "الحماية من DDoS والاختراق" },
+    { id: "troubleshooting", label: "استكشاف الأخطاء: المشاكل الشائعة وحلولها" },
+    { id: "best-practices", label: "أفضل الممارسات في تشغيل خادم الألعاب" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            لطالما حلمت بخادم ألعاب خاص بك: عالمك الخاص في Minecraft، أو سيرفر
+            Valheim مع أصدقائك، أو خادم CS2 بقواعدك الخاصة. الاستئجار من مزود
+            خارجي خيار سهل، لكنه يضعك تحت رحمة سياساتهم وقيودهم. بناء خادمك
+            الخاص على لينكس يمنحك <strong>التحكم الكامل</strong> — في
+            الإضافات، والأداء، والبيانات، والتكلفة على المدى الطويل.
+        </p>
+
+        <p>
+            لكن بناء خادم ألعاب ليس مجرد تثبيت لعبة. إنه مشروع هندسي صغير:
+            تحتاج إلى اختيار العتاد المناسب، وتأمين النظام، وإعداد التثبيت
+            الصحيح، وضبط الأداء، وبناء خطة نسخ احتياطي، وحماية الخادم من
+            الهجمات. هذا الدليل يمر بك عبر كل خطوة، من شراء VPS إلى تشغيل
+            الخادم كخدمة systemd، مع أوامر جاهزة للنسخ واللصق، ونصائح
+            مستخلصة من تجارب 2026.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة بناء خادم الألعاب</h2>
+
+        <p>
+            الجدول التالي يلخص المراحل الرئيسية التي يغطيها الدليل، والوقت
+            المتوقع لكل منها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المرحلة</th>
+                            <th class="px-4 py-2 font-semibold">ما تفعله</th>
+                            <th class="px-4 py-2 font-semibold">الوقت المتوقع</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>التخطيط والعتاد</strong></td>
+                            <td class="px-4 py-2">اختيار VPS، نظام التشغيل، المواصفات</td>
+                            <td class="px-4 py-2">30 دقيقة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>التحصين الأولي</strong></td>
+                            <td class="px-4 py-2">مستخدم غير جذري، SSH، جدار ناري</td>
+                            <td class="px-4 py-2">20 دقيقة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>التثبيت</strong></td>
+                            <td class="px-4 py-2">SteamCMD أو Docker/Podman</td>
+                            <td class="px-4 py-2">20–40 دقيقة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>الإدارة</strong></td>
+                            <td class="px-4 py-2">systemd، بدء تلقائي، مراقبة</td>
+                            <td class="px-4 py-2">20 دقيقة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>الأداء والأمان</strong></td>
+                            <td class="px-4 py-2">sysctl، DDoS، نسخ احتياطي</td>
+                            <td class="px-4 py-2">30 دقيقة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>لوحة التحكم (اختياري)</strong></td>
+                            <td class="px-4 py-2">Pterodactyl أو Crafty</td>
+                            <td class="px-4 py-2">45 دقيقة</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="why-private-server">لماذا تبني خادمك الخاص بدلًا من استئجار واحد؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/build-private-game-server-linux-step-by-step-2026/01.webp"
+                alt="بناء خادم ألعاب على لينكس"
+                width="1200"
+                height="723"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            استئجار خادم ألعاب من مزود مثل Shockbyte أو Nitrado يبدو أسهل، لكنه
+            يأتي بقيود: قد لا تستطيع تثبيت إضافات معينة، أو تعديل ملفات
+            الخادم، أو الوصول إلى سجلات النظام. كما أن التكلفة الشهرية
+            تتراكم. بناء خادمك الخاص على VPS يمنحك:
+        </p>
+
+        <ul>
+            <li>
+                <strong>التحكم الكامل:</strong> تثبّت ما تريد، وتعدل ما
+                تريد، وتصل إلى كل ملف.
+            </li>
+            <li>
+                <strong>الخصوصية:</strong> بيانات اللاعبين والعالم تبقى
+                على خادمك، وليس على خادم مشترك.
+            </li>
+            <li>
+                <strong>التكلفة:</strong> VPS بمواصفات جيدة قد يكلف أقل من
+                استئجار خادم ألعاب مُدار، خاصة إذا كنت تشغّل أكثر من
+                لعبة.
+            </li>
+            <li>
+                <strong>التعلم:</strong> تبني مهارات لينكس والشبكات
+                والأمان التي تفيدك خارج الألعاب.
+            </li>
+        </ul>
+
+        <p>
+            العيب الوحيد: أنت المسؤول عن كل شيء. إذا تعطل الخادم في منتصف
+            الليل، فأنت من يجب أن يصلحه. لهذا هذا الدليل يركز على
+            <strong>الأتمتة والنسخ الاحتياطي والمراقبة</strong> بقدر ما
+            يركز على التثبيت.
+        </p>
+
+        <h2 id="hardware-os">العتاد ونظام التشغيل: الأساس الذي لا يُرى</h2>
+
+        <p>
+            أول قرار هو اختيار VPS. الألعاب تختلف في متطلباتها، لكن هناك
+            قواعد عامة:
+        </p>
+
+        <ul>
+            <li>
+                <strong>المعالج (CPU):</strong> الألعاب تعتمد غالبًا على
+                <strong>أداء نواة واحدة</strong> (Single-Thread) أكثر من
+                عدد الأنوية. اختر معالجًا بترددات عالية (مثل AMD Ryzen
+                7000/9000 أو Intel Core i5/i7 حديث) بدلًا من معالج
+                بخمسين نواة بطيئة.
+            </li>
+            <li>
+                <strong>الذاكرة (RAM):</strong> القاعدة: 512 ميجابايت
+                لكل لاعب، مع حد أدنى 2–4 جيجابايت للخادم نفسه. Minecraft
+                مع 10 لاعبين يحتاج 4–6 جيجابايت. Valheim مع 10 لاعبين
+                يحتاج 4 جيجابايت. لا تخصص كل ذاكرة الخادم للعبة — اترك
+                1–2 جيجابايت للنظام.
+            </li>
+            <li>
+                <strong>التخزين:</strong> SSD أو NVMe ضروري. الأقراص
+                الدوارة تسبب تأخيرًا في تحميل العالم وحفظه.
+            </li>
+            <li>
+                <strong>الشبكة:</strong> اختر مركز بيانات قريبًا من
+                لاعبيك. زمن الوصول (Ping) أهم من عرض النطاق في معظم
+                الألعاب.
+            </li>
+        </ul>
+
+        <p>
+            نظام التشغيل: <strong>Ubuntu 24.04 LTS</strong> هو الخيار
+            الأكثر شيوعًا وأفضل دعمًا. Debian 12 أيضًا ممتاز. تجنب
+            أنظمة التشغيل القديمة أو غير المدعومة.
+        </p>
+
+        <h2 id="initial-security">التحصين الأولي: المستخدم، SSH، الجدار الناري</h2>
+
+        <p>
+            قبل تثبيت أي لعبة، أمّن الخادم. هذه الخطوة غير قابلة
+            للتفاوض.
+        </p>
+
+        <h3>1. إنشاء مستخدم غير جذري</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`adduser gameserver
+usermod -aG sudo gameserver
+su - gameserver`}</code></pre>
+
+        <p>
+            لا تشغّل الخادم كـroot. إذا اختُرق الخادم، فسيكون المخترق
+            محصورًا في صلاحيات المستخدم العادي.
+        </p>
+
+        <h3>2. تأمين SSH</h3>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# على جهازك المحلي: انسخ مفتاحك العام
+ssh-copy-id gameserver@your-server-ip
+
+# على الخادم: عدّل /etc/ssh/sshd_config
+sudo nano /etc/ssh/sshd_config
+
+# غيّر هذه القيم:
+PermitRootLogin no
+PasswordAuthentication no
+Port 2222   # اختياري: غيّر المنفذ الافتراضي
+
+sudo systemctl restart sshd`}</code></pre>
+
+        <h3>3. الجدار الناري</h3>
+
+        <p>
+            استخدم <code>ufw</code> (Ubuntu) أو <code>firewalld</code>.
+            افتح فقط المنافذ التي تحتاجها:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo ufw allow 22/tcp          # SSH (أو 2222 إذا غيرته)
+sudo ufw allow 25565/tcp       # Minecraft
+sudo ufw allow 2456:2458/udp   # Valheim
+sudo ufw allow 27015/udp       # CS2
+sudo ufw enable
+sudo ufw status verbose`}</code></pre>
+
+        <p>
+            لا تفتح نطاقًا كاملًا من المنافذ "لأنها قد تحتاجها". كل منفذ
+            مفتوح هو سطح هجوم.
+        </p>
+
+        <h2 id="installation-methods">طرق التثبيت: SteamCMD أم Docker أم Podman؟</h2>
+
+        <p>
+            هناك ثلاث طرق رئيسية لتثبيت خادم لعبة على لينكس، وكل منها
+            لها جمهورها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الطريقة</th>
+                            <th class="px-4 py-2 font-semibold">الأنسب لـ</th>
+                            <th class="px-4 py-2 font-semibold">الميزة</th>
+                            <th class="px-4 py-2 font-semibold">العيب</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>SteamCMD</strong></td>
+                            <td class="px-4 py-2">ألعاب Steam (CS2، Palworld، Valheim)</td>
+                            <td class="px-4 py-2">تحكم كامل، أداء أصلي</td>
+                            <td class="px-4 py-2">إدارة يدوية للتحديثات</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Docker</strong></td>
+                            <td class="px-4 py-2">Minecraft، Valheim، Terraria</td>
+                            <td class="px-4 py-2">عزل، تحديث تلقائي، نسخ احتياطي</td>
+                            <td class="px-4 py-2">حجم أكبر، تعقيد إضافي</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Podman</strong></td>
+                            <td class="px-4 py-2">مثل Docker، مع أمان أعلى</td>
+                            <td class="px-4 py-2">يعمل دون root، تكامل systemd</td>
+                            <td class="px-4 py-2">توثيق أقل من Docker</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="steamcmd-guide">SteamCMD: تثبيت خادم CS2 أو Palworld خطوة بخطوة</h2>
+
+        <p>
+            SteamCMD هو أداة Valve الرسمية لتنزيل خوادم الألعاب. إنه
+            الطريقة الأكثر مباشرة لألعاب Steam.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# 1. تثبيت الاعتماديات (Ubuntu 24.04)
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install -y lib32gcc-s1 lib32stdc++6 steamcmd
+
+# 2. إنشاء مجلد الخادم
+mkdir -p ~/cs2-server
+cd ~/cs2-server
+
+# 3. تنزيل ملفات CS2 (App ID: 730)
+steamcmd +force_install_dir ~/cs2-server +login anonymous +app_update 730 validate +quit
+
+# 4. تشغيل الخادم
+./game/cs2.sh`}</code></pre>
+
+        <p>
+            لـPalworld، App ID هو <code>2394010</code>، ولـValheim
+            هو <code>896660</code>. يمكنك البحث عن App ID لأي لعبة
+            على SteamDB.
+        </p>
+
+        <h2 id="docker-guide">Docker وPodman: تشغيل Minecraft وValheim في حاويات</h2>
+
+        <p>
+            الحاويات هي الطريقة الحديثة لتشغيل خوادم الألعاب. تحصل على
+            <strong>عزل</strong> (كل خادم في بيئته)، و<strong>تحديث
+            تلقائي</strong> (عبر صورة جديدة)، و<strong>نسخ احتياطي
+            منظم</strong> عبر وحدات التخزين (Volumes).
+        </p>
+
+        <p>
+            أفضل الصور لـMinecraft هي <code>itzg/minecraft-server</code>،
+            ولـValheim <code>lloesche/valheim-server</code>.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# مثال: تشغيل Minecraft (Paper) مع Docker
+docker run -d \
+  --name minecraft \
+  -p 25565:25565 \
+  -e EULA=TRUE \
+  -e TYPE=PAPER \
+  -e MEMORY=4G \
+  -e MAX_PLAYERS=20 \
+  -v /srv/games/minecraft:/data \
+  --restart unless-stopped \
+  itzg/minecraft-server:latest`}</code></pre>
+
+        <p>
+            لـValheim:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`docker run -d \
+  --name valheim \
+  -p 2456-2458:2456-2458/udp \
+  -e SERVER_NAME="My Valheim" \
+  -e WORLD_NAME="MyWorld" \
+  -e SERVER_PASS="strongpassword" \
+  -v /srv/games/valheim:/config \
+  --restart unless-stopped \
+  lloesche/valheim-server:latest`}</code></pre>
+
+        <h2 id="systemd-management">systemd: إدارة الخادم كخدمة نظام</h2>
+
+        <p>
+            إذا لم تستخدم Docker، فأنت بحاجة إلى إدارة الخادم كخدمة
+            systemd. هذا يضمن بدء التشغيل التلقائي عند الإقلاع، وإعادة
+            التشغيل عند الانهيار.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo nano /etc/systemd/system/minecraft.service
+
+[Unit]
+Description=Minecraft Server
+After=network.target
+
+[Service]
+Type=simple
+User=gameserver
+WorkingDirectory=/home/gameserver/minecraft
+ExecStart=/usr/bin/java -Xmx4G -Xms4G -jar server.jar nogui
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+# ثم:
+sudo systemctl daemon-reload
+sudo systemctl enable --now minecraft
+sudo systemctl status minecraft`}</code></pre>
+
+        <h2 id="performance-tuning">تحسين الأداء: النواة، الذاكرة، الشبكة</h2>
+
+        <p>
+            لينكس يحتاج إلى بعض الضبط ليعطي الألعاب أفضل أداء. هذه
+            التعديلات لا تستهلك موارد إضافية، لكنها تقلل التأخير
+            وتمنع الاختناقات.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo tee /etc/sysctl.d/99-gameserver.conf <<EOF
+# زيادة أحجام مخازن UDP (مهم لألعاب الإطلاق)
+net.core.rmem_max = 26214400
+net.core.wmem_max = 26214400
+net.core.rmem_default = 1048576
+net.core.wmem_default = 1048576
+
+# تقليل التبديل (Swapping) — الألعاب لا تحب القرص
+vm.swappiness = 10
+
+# زيادة عدد الملفات المفتوحة
+fs.file-max = 100000
+
+# تحسين جدولة الشبكة
+net.core.somaxconn = 65535
+net.ipv4.tcp_max_syn_backlog = 65535
+EOF
+
+sudo sysctl --system
+
+# ضبط حاكم المعالج على performance
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`}</code></pre>
+
+        <p>
+            لا تنسَ: <strong>لا تخصص كل ذاكرة الخادم للعبة</strong>.
+            اترك 1–2 جيجابايت للنظام وDocker وصفحة الذاكرة المؤقتة
+            (Page Cache).
+        </p>
+
+        <h2 id="backups">النسخ الاحتياطي: خطة النجاة</h2>
+
+        <p>
+            عالم Minecraft أو Valheim قد يمثل مئات الساعات. لا تعتمد على
+            "لن يحدث شيء". استخدم <code>rsync</code> أو
+            <code>borgbackup</code> لنسخ احتياطي يومي، واحفظ النسخ
+            على قرص منفصل أو خادم بعيد.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`# نسخ احتياطي بسيط يوميًا (cron)
+0 3 * * * rsync -avz /srv/games/minecraft/world /backup/minecraft/world-$(date +\%F)
+
+# نسخ احتياطي مضغوط ومشفر
+tar -czf /backup/minecraft-$(date +\%F).tar.gz -C /srv/games/minecraft world
+gpg --encrypt --recipient your@email.com /backup/minecraft-*.tar.gz`}</code></pre>
+
+        <h2 id="panels">لوحات التحكم: Pterodactyl وCrafty</h2>
+
+        <p>
+            إذا كنت تدير أكثر من خادم، أو تريد واجهة ويب لإدارة
+            الخوادم، فإن <strong>Pterodactyl</strong> هو المعيار
+            مفتوح المصدر. يوفر لوحة ويب لإدارة خوادم متعددة، مع
+            صلاحيات مستخدمين، ونسخ احتياطي، ومراقبة. يتطلب تثبيتًا
+            أكثر تعقيدًا (Panel + Wings daemon)، لكنه يستحق ذلك
+            لمن يدير بيئة متعددة الخوادم.
+        </p>
+
+        <p>
+            بديل أبسط هو <strong>Crafty Controller</strong> (لـMinecraft
+            أساسًا) أو <strong>AMP</strong> (تجاري). إذا كنت
+            تشغّل خادمًا واحدًا فقط، فقد لا تحتاج إلى لوحة تحكم —
+            systemd وSSH كافيان.
+        </p>
+
+        <h2 id="security-ddos">الحماية من DDoS والاختراق</h2>
+
+        <p>
+            خوادم الألعاب أهداف شائعة لهجمات DDoS. الحماية تبدأ من
+            الجدار الناري وتحديد المعدل (Rate Limiting). إذا كان
+            هجومك متوقعًا، ففكر في <strong>خادم عكسي (Reverse
+            Proxy)</strong> أو مزود استضافة يوفر حماية DDoS على
+            الطبقة الرابعة (Layer 4) — وهذا يتطلب عادةً خدمة
+            مدفوعة مثل OVH Game DDoS Protection أو Cloudflare
+            Spectrum، لأن حماية Cloudflare المجانية لا تغطي
+            بروتوكولات الألعاب UDP.
+        </p>
+
+        <p>
+            على مستوى الخادم، استخدم <code>ufw</code> مع قواعد
+            <code>limit</code> لتقييد محاولات الاتصال:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`sudo ufw limit 22/tcp
+sudo ufw limit 25565/tcp`}</code></pre>
+
+        <h2 id="troubleshooting">استكشاف الأخطاء: المشاكل الشائعة وحلولها</h2>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المشكلة</th>
+                            <th class="px-4 py-2 font-semibold">السبب المرجح</th>
+                            <th class="px-4 py-2 font-semibold">الحل</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">الخادم لا يبدأ</td>
+                            <td class="px-4 py-2">ملف JAR خاطئ، Java غير مثبت، EULA</td>
+                            <td class="px-4 py-2">تحقق من <code>journalctl -u minecraft</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">لا يمكن الاتصال</td>
+                            <td class="px-4 py-2">منفذ مغلق، جدار ناري، عنوان IP خاطئ</td>
+                            <td class="px-4 py-2"><code>ss -tunp</code> للتحقق من المنافذ المستمعة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تأخير عالٍ (Lag)</td>
+                            <td class="px-4 py-2">ذاكرة غير كافية، CPU مزدحم، Swap</td>
+                            <td class="px-4 py-2">راقب <code>htop</code> و<code>free -h</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">خطأ <code>steamclient.so</code></td>
+                            <td class="px-4 py-2">مكتبة Steam مفقودة</td>
+                            <td class="px-4 py-2">انسخها إلى مجلد الخادم أو ثبّت SteamCMD</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Docker: permission denied</td>
+                            <td class="px-4 py-2">المستخدم ليس في مجموعة docker</td>
+                            <td class="px-4 py-2"><code>sudo usermod -aG docker $USER</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="best-practices">أفضل الممارسات في تشغيل خادم الألعاب</h2>
+
+        <ul>
+            <li>
+                <strong>لا تشغّل الخادم كـroot:</strong> استخدم
+                مستخدمًا مخصصًا دائمًا.
+            </li>
+            <li>
+                <strong>راقب الأداء قبل أن يشتكي اللاعبون:</strong>
+                استخدم <code>htop</code> و<code>nethogs</code> و
+                <code>iostat</code> بانتظام.
+            </li>
+            <li>
+                <strong>اختبر النسخ الاحتياطي:</strong> لا تكتفِ
+                بإنشائه؛ جرّب استعادته على خادم اختباري.
+            </li>
+            <li>
+                <strong>حدّث الخادم والنظام دوريًا:</strong> ثغرات
+                الخادم تُستغل، والتحديثات ليست رفاهية.
+            </li>
+            <li>
+                <strong>لا تفتح منافذ أكثر من اللازم:</strong> كل
+                منفذ إضافي هو مخاطرة.
+            </li>
+            <li>
+                <strong>استخدم حاويات إذا كنت تدير أكثر من خادم:</strong>
+                العزل يمنع خادمًا واحدًا من إسقاط الآخرين.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل اخترت VPS بمعالج عالي التردد وذاكرة كافية؟ ←
+                <strong>نعم</strong>
+            </li>
+            <li>
+                هل أنشأت مستخدمًا غير جذري وأمنت SSH؟ ←
+                <strong>نعم</strong>
+            </li>
+            <li>
+                هل فعّلت الجدار الناري وفتحت المنافذ الضرورية فقط؟ ←
+                <strong>نعم</strong>
+            </li>
+            <li>
+                هل ثبّت الخادم عبر SteamCMD أو Docker؟ ←
+                <strong>نعم</strong>
+            </li>
+            <li>
+                هل أعدت تشغيله كخدمة systemd أو مع restart policy؟ ←
+                <strong>نعم</strong>
+            </li>
+            <li>
+                هل طبّقت تحسينات sysctl وCPU governor؟ ←
+                <strong>نعم</strong>
+            </li>
+            <li>
+                هل لديك خطة نسخ احتياطي مجدولة ومختبرة؟ ←
+                <strong>نعم</strong>
+            </li>
+            <li>
+                هل تعرف كيف تقرأ سجلات الخادم عند حدوث خطأ؟ ←
+                <strong>journalctl وdocker logs</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://developer.valvesoftware.com/wiki/SteamCMD"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Valve — SteamCMD Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/itzg/docker-minecraft-server"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    itzg/docker-minecraft-server — Docker Image
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/lloesche/valheim-server"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    lloesche/valheim-server — Docker Image
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://pterodactyl.io/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Pterodactyl — Game Server Management Panel
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    systemd.service — Official Manual
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://ubuntu.com/server/docs"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Ubuntu Server — Official Documentation
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل أحتاج إلى VPS أم يمكنني استخدام جهازي المنزلي؟</h3>
+        <p>
+            يمكنك استخدام جهازك المنزلي، لكنك ستحتاج إلى فتح منافذ
+            في الراوتر، ومواجهة مشاكل عنوان IP الديناميكي، وترك
+            الجهاز يعمل 24/7. VPS يوفر عنوان IP ثابتًا، واتصالًا
+            مستقرًا، وبيئة معزولة، وهو الخيار العملي لمعظم الناس.
+        </p>
+
+        <h3>ما أفضل لعبة للبدء بها؟</h3>
+        <p>
+            <strong>Minecraft</strong> هي الأسهل: مجتمع ضخم، أدوات
+            وفيرة، وصور Docker جاهزة. <strong>Valheim</strong>
+            أيضًا ممتازة. <strong>CS2</strong> أكثر تعقيدًا قليلًا
+            (تحتاج GSLT)، لكنها موثقة جيدًا.
+        </p>
+
+        <h3>هل Docker أفضل من التثبيت المباشر؟</h3>
+        <p>
+            Docker أفضل للعزل والإدارة والتحديث. التثبيت المباشر
+            أفضل إذا كنت تريد أقصى أداء (بدون طبقة حاويات) أو
+            تحتاج إلى تحكم دقيق في النظام. لكلا الخيارين
+            مكانهما.
+        </p>
+
+        <h3>كيف أحمي خادمي من DDoS؟</h3>
+        <p>
+            استخدم جدارًا ناريًا مع <code>limit</code>، وفكّر في
+            خادم عكسي أو مزود استضافة يوفر حماية DDoS على
+            الطبقة الرابعة. حماية Cloudflare المجانية لا
+            تغطي بروتوكولات الألعاب UDP.
+        </p>
+
+        <h3>هل يمكنني تشغيل أكثر من لعبة على نفس الخادم؟</h3>
+        <p>
+            نعم، بشرط أن توزع الموارد (CPU، RAM) بشكل صحيح. استخدم
+            Docker Compose أو حاويات منفصلة مع حدود موارد لكل
+            حاوية. اترك دائمًا 1–2 جيجابايت للنظام.
+        </p>
+    </PostLayout>
+</BaseLayout>
