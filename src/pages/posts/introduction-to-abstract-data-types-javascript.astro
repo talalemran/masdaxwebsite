@@ -1,0 +1,963 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "introduction-to-abstract-data-types-javascript",
+    title: "مقدمة في أنواع البيانات المجردة في جافا سكريبت: دليل شامل",
+    metaTitle: "أنواع البيانات المجردة في جافا سكريبت: دليل شامل 2026",
+    description:
+        "دليل معمق لأنواع البيانات المجردة (ADTs) في جافا سكريبت: المكدس، الطابور، القائمة المرتبطة، جدول التجزئة، المجموعة، الشجرة، والرسم البياني، مع تطبيقات عملية وأمثلة كود وأداء.",
+    keywords: [
+        "أنواع البيانات المجردة",
+        "Abstract Data Types",
+        "JavaScript ADT",
+        "Stack in JavaScript",
+        "Queue in JavaScript",
+        "Linked List JavaScript",
+        "Hash Table JavaScript",
+        "Set JavaScript",
+        "Binary Search Tree JavaScript",
+        "Graph JavaScript",
+        "هياكل البيانات جافا سكريبت",
+    ],
+    category: "برمجة",
+    author: "طلال عمران",
+    date: "25 نوفمبر 2026",
+    pubDate: new Date("2026-11-25"),
+    tags: ["جافا سكريبت", "هياكل البيانات", "برمجة", "ADT", "خوارزميات", "أداء"],
+    thumbnail: "/images/introduction-to-abstract-data-types-javascript.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: خريطة أنواع البيانات المجردة" },
+    { id: "what-is-adt", label: "ما هو النوع المجرد؟ الفرق بين 'ماذا' و'كيف'" },
+    { id: "js-adt-landscape", label: "جافا سكريبت وADTs: ما تقدمه اللغة وما لا تقدمه" },
+    { id: "stack", label: "المكدس (Stack): آخر من يدخل أول من يخرج" },
+    { id: "queue", label: "الطابور (Queue): أول من يدخل أول من يخرج" },
+    { id: "deque", label: "الطابور المزدوج (Deque): مرونة على الطرفين" },
+    { id: "linked-list", label: "القائمة المرتبطة (Linked List): العقد والروابط" },
+    { id: "hash-table", label: "جدول التجزئة (Hash Table): المفتاح هو الباب" },
+    { id: "set", label: "المجموعة (Set): لا تكرار، بحث فوري" },
+    { id: "tree", label: "الشجرة (Tree): التسلسل الهرمي" },
+    { id: "graph", label: "الرسم البياني (Graph): كل شيء متصل" },
+    { id: "comparison", label: "جدول المقارنة الشامل: التعقيد والاستخدام" },
+    { id: "when-to-use", label: "كيف تختار النوع المناسب؟ دليل القرار" },
+    { id: "best-practices", label: "أفضل الممارسات في تصميم ADTs" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في كل لغة برمجة، هناك لحظة يتوقف فيها المبرمج عن السؤال "كيف
+            أحفظ هذه البيانات؟" ويبدأ يسأل: "ما العمليات التي سأحتاجها على
+            هذه البيانات؟". هذا السؤال الثاني هو مدخل إلى عالم
+            <strong>أنواع البيانات المجردة (Abstract Data Types)</strong>.
+            ليس الحديث عن مصفوفات أو كائنات، بل عن <strong>مصطلحات
+            مفهومية</strong> تصف ما يمكن فعله بالبيانات، بغض النظر عن
+            طريقة تخزينها.
+        </p>
+
+        <p>
+            في جافا سكريبت، هذا التمييز مهم بشكل خاص. اللغة توفر
+            <code>Array</code> و<code>Object</code> و<code>Map</code>
+            و<code>Set</code> جاهزة، لكنها لا توفر <code>Stack</code>
+            أو <code>Queue</code> أو <code>Tree</code> كأنواع أصلية.
+            هذا الدليل يفكك الأنواع المجردة الأساسية، ويقدم تنفيذًا
+            عمليًا لكل منها في جافا سكريبت الحديثة، ويشرح
+            <strong>لماذا تختار نوعًا على آخر</strong> استنادًا إلى
+            تعقيد العمليات (Big O)، لا إلى الشكل الظاهري.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: خريطة أنواع البيانات المجردة</h2>
+
+        <p>
+            الجدول التالي يلخص الأنواع المجردة التي يغطيها الدليل، مع
+            العمليات الأساسية لكل منها:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">النوع</th>
+                            <th class="px-4 py-2 font-semibold">العملية الأساسية</th>
+                            <th class="px-4 py-2 font-semibold">النموذج الذهني</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>Stack</strong></td>
+                            <td class="px-4 py-2"><code>push</code>، <code>pop</code>، <code>peek</code></td>
+                            <td class="px-4 py-2">كومة أطباق</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Queue</strong></td>
+                            <td class="px-4 py-2"><code>enqueue</code>، <code>dequeue</code></td>
+                            <td class="px-4 py-2">طابور في متجر</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Deque</strong></td>
+                            <td class="px-4 py-2"><code>pushFront</code>، <code>pushBack</code>، <code>popFront</code>، <code>popBack</code></td>
+                            <td class="px-4 py-2">طابور بطرفين</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Linked List</strong></td>
+                            <td class="px-4 py-2"><code>insert</code>، <code>delete</code>، <code>traverse</code></td>
+                            <td class="px-4 py-2">سلسلة حلقات متصلة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Hash Table</strong></td>
+                            <td class="px-4 py-2"><code>set</code>، <code>get</code>، <code>delete</code></td>
+                            <td class="px-4 py-2">فهرس كتاب</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Set</strong></td>
+                            <td class="px-4 py-2"><code>add</code>، <code>has</code>، <code>delete</code></td>
+                            <td class="px-4 py-2">مجموعة أعضاء فريدة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Tree</strong></td>
+                            <td class="px-4 py-2"><code>insert</code>، <code>search</code>، <code>traverse</code></td>
+                            <td class="px-4 py-2">شجرة عائلة</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Graph</strong></td>
+                            <td class="px-4 py-2"><code>addVertex</code>، <code>addEdge</code>، <code>traverse</code></td>
+                            <td class="px-4 py-2">شبكة طرق</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="what-is-adt">ما هو النوع المجرد؟ الفرق بين "ماذا" و"كيف"</h2>
+
+        <p>
+            <img
+                src="/images/articles/introduction-to-abstract-data-types-javascript/01.webp"
+                alt="أنواع البيانات المجردة في جافا سكريبت"
+                width="1200"
+                height="655"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            النوع المجرد هو <strong>وصف رياضياتي/مفهومي</strong> لمجموعة
+            بيانات والعمليات المسموح بها عليها، دون تحديد كيفية تنفيذ
+            هذه العمليات. على سبيل المثال، <strong>المكدس (Stack)</strong>
+            يُعرَّف بأنه مجموعة من العناصر مع عمليتين أساسيتين:
+            إضافة عنصر إلى "الأعلى" (<code>push</code>)، وإزالة عنصر
+            من "الأعلى" (<code>pop</code>)، بشرط أن يكون العنصر المُزال
+            هو آخر عنصر أُضيف (LIFO). هذا التعريف لا يقول شيئًا عن
+            استخدام مصفوفة أو قائمة مرتبطة. يمكن تنفيذ المكدس بأي
+            هيكل بيانات، وبأي لغة.
+        </p>
+
+        <p>
+            هذا الفصل بين <strong>الوصف</strong> و<strong>التنفيذ</strong>
+            هو ما يجعل ADTs قوية. عندما تصمم نظامًا، تفكر أولًا في
+            العمليات التي تحتاجها، ثم تختار التنفيذ الأنسب. إذا كنت
+            تحتاج إلى "آخر من يدخل أول من يخرج"، فأنت تحتاج إلى
+            <strong>مفهوم</strong> المكدس. سواء نفذته بمصفوفة أو
+            بقائمة مرتبطة، فهذا قرار منفصل.
+        </p>
+
+        <p>
+            الفرق بين ADT و<strong>هيكل البيانات (Data Structure)</strong>
+            هو الفرق بين "ما نريد" و"كيف ننفذ". ADT هو التجريد، وهيكل
+            البيانات هو التنفيذ الملموس. في جافا سكريبت،
+            <code>Array</code> و<code>Object</code> هما هيكلان
+            بيانات، بينما المكدس والطابور والشجرة هي أنواع مجردة
+            يمكن تنفيذها بهذين الهيكلين أو بغيرهما.
+        </p>
+
+        <h2 id="js-adt-landscape">جافا سكريبت وADTs: ما تقدمه اللغة وما لا تقدمه</h2>
+
+        <p>
+            جافا سكريبت، كمعظم اللغات عالية المستوى، توفر بعض أنواع
+            البيانات المجردة مدمجة، وتترك البعض الآخر للمطور:
+        </p>
+
+        <ul>
+            <li>
+                <strong>مدمج:</strong> <code>Array</code> (ليست ADT
+                بالمعنى الدقيق، بل هيكل بيانات ملموس)،
+                <code>Map</code> (جدول تجزئة)،
+                <code>Set</code> (مجموعة)،
+                <code>WeakMap</code> و<code>WeakSet</code>.
+            </li>
+            <li>
+                <strong>غير مدمج:</strong> المكدس، الطابور،
+                القائمة المرتبطة، الشجرة، الرسم البياني.
+                يجب تنفيذها يدويًا أو عبر مكتبة.
+            </li>
+            <li>
+                <strong>يمكن محاكاته:</strong> المكدس عبر
+                <code>array.push()</code> و<code>array.pop()</code>،
+                الطابور عبر <code>array.shift()</code> (لكنه بطيء
+                O(n))، والقائمة المرتبطة عبر كائنات متداخلة.
+            </li>
+        </ul>
+
+        <p>
+            لكن استخدام <code>Array</code> لمحاكاة ADT ليس دائمًا
+            القرار الصحيح. ما يهم هو <strong>تعقيد العمليات</strong>،
+            لا الشكل السطحي. مثال: <code>array.shift()</code> يحاكي
+            <code>dequeue</code> في الطابور، لكنه يعيد ترتيب كل
+            العناصر (O(n)). إذا كنت تعالج ملايين العناصر، فهذا
+            كارثي. الطابور المُنفَّذ بقائمة مرتبطة يعطي
+            <code>dequeue</code> في O(1).
+        </p>
+
+        <h2 id="stack">المكدس (Stack): آخر من يدخل أول من يخرج</h2>
+
+        <p>
+            المكدس هو أبسط ADT. العمليات: <code>push</code> (إضافة)،
+            <code>pop</code> (إزالة)، <code>peek</code> (رؤية العنصر
+            الأعلى دون إزالته)، <code>isEmpty</code>. التطبيقات
+            الواقعية: تراجع (Undo)، تقييم التعبيرات الرياضية،
+            استدعاءات الدوال (Call Stack)، DFS في الرسوم البيانية.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Stack {
+    #items = [];
+
+    push(item) {
+        this.#items.push(item);
+    }
+
+    pop() {
+        return this.#items.pop();
+    }
+
+    peek() {
+        return this.#items[this.#items.length - 1];
+    }
+
+    get size() {
+        return this.#items.length;
+    }
+
+    isEmpty() {
+        return this.#items.length === 0;
+    }
+}
+
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.pop());   // 3
+console.log(stack.peek());  // 2
+console.log(stack.size);    // 2`}</code></pre>
+
+        <p>
+            هذا التنفيذ يستخدم <code>Array</code> خلف الكواليس. كل
+            العمليات (push, pop, peek) من نوع O(1)، وهو أفضل ما
+            يمكن. استخدام الحقول الخاصة (<code>#items</code>) يمنع
+            الوصول المباشر إلى المصفوفة الداخلية، مما يحافظ على
+            تجريد المكدس.
+        </p>
+
+        <h2 id="queue">الطابور (Queue): أول من يدخل أول من يخرج</h2>
+
+        <p>
+            الطابور هو عكس المكدس: <code>enqueue</code> يضيف إلى
+            النهاية، <code>dequeue</code> يزيل من البداية (FIFO).
+            التطبيقات: جدولة المهام، معالجة الطلبات في الخوادم،
+            BFS في الرسوم البيانية، الطوابير في أنظمة التشغيل.
+        </p>
+
+        <p>
+            التنفيذ الساذج يستخدم <code>array.shift()</code>، لكنه
+            بطيء. التنفيذ الجيد يستخدم <strong>كائنًا مع مؤشرين</strong>
+            (رأس وذيل) لتجنب إعادة ترتيب المصفوفة:
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Queue {
+    #items = {};
+    #head = 0;
+    #tail = 0;
+
+    enqueue(item) {
+        this.#items[this.#tail] = item;
+        this.#tail++;
+    }
+
+    dequeue() {
+        if (this.isEmpty()) return undefined;
+        const item = this.#items[this.#head];
+        delete this.#items[this.#head];
+        this.#head++;
+        return item;
+    }
+
+    peek() {
+        return this.#items[this.#head];
+    }
+
+    get size() {
+        return this.#tail - this.#head;
+    }
+
+    isEmpty() {
+        return this.#tail === this.#head;
+    }
+}
+
+const queue = new Queue();
+queue.enqueue("A");
+queue.enqueue("B");
+queue.enqueue("C");
+console.log(queue.dequeue()); // "A"
+console.log(queue.size);      // 2`}</code></pre>
+
+        <p>
+            هذا التنفيذ يعطي <code>enqueue</code> و<code>dequeue</code>
+            في O(1). الثمن: استخدام كائن بدلًا من مصفوفة، وهو مقبول
+            في معظم الحالات، لكنه يستهلك ذاكرة أكبر قليلًا لأن
+            المفاتيح تظل محجوزة بعد الحذف (إلا إذا نفذت ضغطًا دوريًا).
+        </p>
+
+        <h2 id="deque">الطابور المزدوج (Deque): مرونة على الطرفين</h2>
+
+        <p>
+            الـDeque (Double-Ended Queue) يسمح بالإضافة والإزالة من
+            الطرفين. هو تعميم للمكدس والطابور معًا. التطبيقات:
+            متصفح الويب (زر الرجوع/التقدم)، خوارزميات التراجع،
+            النوافذ المنزلقة (Sliding Window).
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Deque {
+    #items = {};
+    #head = 0;
+    #tail = 0;
+
+    pushBack(item) {
+        this.#items[this.#tail++] = item;
+    }
+
+    pushFront(item) {
+        this.#items[--this.#head] = item;
+    }
+
+    popBack() {
+        if (this.isEmpty()) return undefined;
+        const item = this.#items[--this.#tail];
+        delete this.#items[this.#tail];
+        return item;
+    }
+
+    popFront() {
+        if (this.isEmpty()) return undefined;
+        const item = this.#items[this.#head];
+        delete this.#items[this.#head++];
+        return item;
+    }
+
+    isEmpty() {
+        return this.#tail === this.#head;
+    }
+}`}</code></pre>
+
+        <h2 id="linked-list">القائمة المرتبطة (Linked List): العقد والروابط</h2>
+
+        <p>
+            القائمة المرتبطة هي سلسلة من <strong>العقد (Nodes)</strong>،
+            كل عقدة تحتوي على قيمة ومؤشر إلى العقدة التالية. الفرق
+            الجوهري عن المصفوفة: <strong>الإدراج والحذف في
+            O(1)</strong> إذا كنت تعرف العقدة، لكن
+            <strong>الوصول إلى عنصر محدد في O(n)</strong>.
+        </p>
+
+        <p>
+            القائمة المرتبطة أفضل من المصفوفة عندما تكون العمليات
+            الغالبة هي الإدراج والحذف في مواقع معروفة (مثل بداية
+            القائمة)، وليس الوصول العشوائي. هذا شائع في تنفيذ
+            LRU Cache، أو في قوائم الانتظار ذات الأولوية.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    #head = null;
+    #size = 0;
+
+    addFirst(value) {
+        const node = new Node(value);
+        node.next = this.#head;
+        this.#head = node;
+        this.#size++;
+    }
+
+    removeFirst() {
+        if (!this.#head) return undefined;
+        const value = this.#head.value;
+        this.#head = this.#head.next;
+        this.#size--;
+        return value;
+    }
+
+    *[Symbol.iterator]() {
+        let current = this.#head;
+        while (current) {
+            yield current.value;
+            current = current.next;
+        }
+    }
+
+    get size() {
+        return this.#size;
+    }
+}
+
+const list = new LinkedList();
+list.addFirst(1);
+list.addFirst(2);
+list.addFirst(3);
+console.log([...list]); // [3, 2, 1]`}</code></pre>
+
+        <p>
+            لاحظ استخدام <code>Symbol.iterator</code> لتمكين التكرار
+            عبر <code>for...of</code>. هذا يجعل القائمة المرتبطة
+            تتكامل مع بقية جافا سكريبت الحديثة، بدلًا من أن تكون
+            نوعًا معزولًا.
+        </p>
+
+        <h2 id="hash-table">جدول التجزئة (Hash Table): المفتاح هو الباب</h2>
+
+        <p>
+            جدول التجزئة يخزن أزواج <strong>مفتاح-قيمة</strong>،
+            ويستخدم <strong>دالة تجزئة (Hash Function)</strong> لتحويل
+            المفتاح إلى فهرس في مصفوفة داخلية. الفكرة: إذا كان
+            المفتاح "Ali"، فدالة التجزئة تحوله إلى رقم، وهذا الرقم
+            هو مكان القيمة. النتيجة: <strong>الوصول إلى القيمة
+            في O(1) في المتوسط</strong>.
+        </p>
+
+        <p>
+            في جافا سكريبت، <code>Map</code> هو التنفيذ المدمج
+            لجدول التجزئة. <code>Object</code> يمكن أن يستخدم
+            لهذا الغرض أيضًا، لكنه أقل كفاءة (المفاتيح دائمًا
+            سلاسل نصية، ولا توجد ضمانات على الترتيب، وقد تحتوي
+            على خصائص موروثة). <code>Map</code> أفضل للأغراض
+            العامة.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// مثال: تخزين عدد مرات ظهور كل كلمة
+function wordCount(text) {
+    const counts = new Map();
+    for (const word of text.split(/\\s+/)) {
+        if (word) {
+            counts.set(word, (counts.get(word) ?? 0) + 1);
+        }
+    }
+    return counts;
+}
+
+const result = wordCount("hello world hello JS world hello");
+console.log(result.get("hello")); // 3
+console.log(result.get("world")); // 2
+
+// الميزة: البحث في O(1) بدلًا من O(n) في المصفوفة`}</code></pre>
+
+        <h2 id="set">المجموعة (Set): لا تكرار، بحث فوري</h2>
+
+        <p>
+            المجموعة هي جدول تجزئة يخزن مفاتيح فقط، دون قيم. العمليات
+            الأساسية: <code>add</code>، <code>has</code>،
+            <code>delete</code>، كلها في O(1). الميزة: لا تسمح
+            بالتكرار تلقائيًا، وتوفر بحثًا أسرع بكثير من
+            <code>array.includes()</code> الذي هو O(n).
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`// إزالة التكرار من مصفوفة
+const numbers = [1, 2, 2, 3, 4, 4, 5];
+const unique = [...new Set(numbers)];
+console.log(unique); // [1, 2, 3, 4, 5]
+
+// اختبار العضوية بكفاءة
+const allowedIds = new Set([101, 202, 303]);
+console.log(allowedIds.has(202)); // true
+
+// عمليات المجموعات الرياضية
+function intersection(a, b) {
+    return new Set([...a].filter(x => b.has(x)));
+}
+
+const setA = new Set([1, 2, 3, 4]);
+const setB = new Set([3, 4, 5, 6]);
+console.log([...intersection(setA, setB)]); // [3, 4]`}</code></pre>
+
+        <h2 id="tree">الشجرة (Tree): التسلسل الهرمي</h2>
+
+        <p>
+            الشجرة هي مجموعة من العقد، لكل عقدة <strong>ابن
+            (Children)</strong> و<strong>أب (Parent)</strong>،
+            باستثناء العقدة الجذرية. أكثر أنواع الشجرات شيوعًا
+            في المقابلات:<strong>شجرة البحث الثنائية (BST)</strong>،
+            حيث كل عقدة لها ابن أيسر بقيمة أصغر، وابن أيمن بقيمة
+            أكبر. البحث في O(log n) في المتوسط (O(n) في أسوأ
+            الحالات إذا كانت الشجرة غير متوازنة).
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    #root = null;
+
+    insert(value) {
+        const node = new TreeNode(value);
+        if (!this.#root) {
+            this.#root = node;
+            return;
+        }
+        let current = this.#root;
+        while (true) {
+            if (value < current.value) {
+                if (!current.left) {
+                    current.left = node;
+                    return;
+                }
+                current = current.left;
+            } else {
+                if (!current.right) {
+                    current.right = node;
+                    return;
+                }
+                current = current.right;
+            }
+        }
+    }
+
+    search(value) {
+        let current = this.#root;
+        while (current) {
+            if (value === current.value) return true;
+            current = value < current.value ? current.left : current.right;
+        }
+        return false;
+    }
+
+    *inOrder() {
+        function* traverse(node) {
+            if (!node) return;
+            yield* traverse(node.left);
+            yield node.value;
+            yield* traverse(node.right);
+        }
+        yield* traverse(this.#root);
+    }
+}
+
+const bst = new BinarySearchTree();
+[5, 3, 8, 1, 4, 7, 9].forEach(v => bst.insert(v));
+console.log([...bst.inOrder()]); // [1, 3, 4, 5, 7, 8, 9]
+console.log(bst.search(7));       // true`}</code></pre>
+
+        <h2 id="graph">الرسم البياني (Graph): كل شيء متصل</h2>
+
+        <p>
+            الرسم البياني هو مجموعة من <strong>القمم
+            (Vertices)</strong> و<strong>الحواف (Edges)</strong>.
+            يمكن أن يكون موجهًا (Directed) أو غير موجه، موزونًا
+            أو غير موزون. التنفيذ الشائع في جافا سكريبت: قائمة
+            الجوار (Adjacency List) باستخدام <code>Map</code>،
+            حيث كل قمة لها مجموعة من جيرانها. التطبيقات: شبكات
+            التواصل، خرائط الطرق، أنظمة التوصية، تحليل التبعيات.
+        </p>
+
+        <pre dir="ltr" class="bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-left text-sm my-4"><code>{`class Graph {
+    #adjacency = new Map();
+
+    addVertex(vertex) {
+        if (!this.#adjacency.has(vertex)) {
+            this.#adjacency.set(vertex, new Set());
+        }
+    }
+
+    addEdge(from, to) {
+        this.addVertex(from);
+        this.addVertex(to);
+        this.#adjacency.get(from).add(to);
+        this.#adjacency.get(to).add(from); // لمتجاهل: احذف هذا السطر
+    }
+
+    *bfs(start) {
+        const visited = new Set([start]);
+        const queue = [start];
+
+        while (queue.length > 0) {
+            const vertex = queue.shift();
+            yield vertex;
+            for (const neighbor of this.#adjacency.get(vertex) ?? []) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
+    }
+}
+
+const graph = new Graph();
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "D");
+graph.addEdge("D", "E");
+
+console.log([...graph.bfs("A")]); // ["A", "B", "C", "D", "E"]`}</code></pre>
+
+        <p>
+            لاحظ أن BFS يستخدم <strong>طابورًا</strong>، بينما DFS
+            يستخدم <strong>مكدسًا</strong>. هذا يوضح كيف تُبنى
+            الخوارزميات فوق الأنواع المجردة، وليس العكس.
+        </p>
+
+        <h2 id="comparison">جدول المقارنة الشامل: التعقيد والاستخدام</h2>
+
+        <p>
+            هذا الجدول يلخص تعقيد العمليات الأساسية لكل نوع مجرد،
+            ويساعدك على اتخاذ القرار استنادًا إلى الأداء:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">النوع</th>
+                            <th class="px-4 py-2 font-semibold">الوصول</th>
+                            <th class="px-4 py-2 font-semibold">البحث</th>
+                            <th class="px-4 py-2 font-semibold">الإدراج</th>
+                            <th class="px-4 py-2 font-semibold">الحذف</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><strong>Array</strong></td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(n)</td>
+                            <td class="px-4 py-2">O(n)</td>
+                            <td class="px-4 py-2">O(n)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Stack</strong></td>
+                            <td class="px-4 py-2">O(1) من الأعلى</td>
+                            <td class="px-4 py-2">O(n)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Queue</strong></td>
+                            <td class="px-4 py-2">O(1) من البداية</td>
+                            <td class="px-4 py-2">O(n)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Linked List</strong></td>
+                            <td class="px-4 py-2">O(n)</td>
+                            <td class="px-4 py-2">O(n)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Hash Table (Map)</strong></td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Set</strong></td>
+                            <td class="px-4 py-2">لا ينطبق</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>BST (متوازن)</strong></td>
+                            <td class="px-4 py-2">O(log n)</td>
+                            <td class="px-4 py-2">O(log n)</td>
+                            <td class="px-4 py-2">O(log n)</td>
+                            <td class="px-4 py-2">O(log n)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><strong>Graph (adjacency list)</strong></td>
+                            <td class="px-4 py-2">O(1) للقمة</td>
+                            <td class="px-4 py-2">O(V+E)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                            <td class="px-4 py-2">O(1)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="when-to-use">كيف تختار النوع المناسب؟ دليل القرار</h2>
+
+        <ul>
+            <li>
+                <strong>تحتاج إلى تراجع (Undo) أو تقييم تعبير
+                رياضي؟</strong> ← <strong>Stack</strong>.
+            </li>
+            <li>
+                <strong>تحتاج إلى معالجة مهام بالترتيب الذي وصلت
+                به؟</strong> ← <strong>Queue</strong>.
+            </li>
+            <li>
+                <strong>تحتاج إلى إضافة/إزالة من الطرفين؟</strong> ←
+                <strong>Deque</strong>.
+            </li>
+            <li>
+                <strong>تحتاج إلى إدراج/حذف متكرر في مواقع
+                معروفة؟</strong> ← <strong>Linked List</strong>.
+            </li>
+            <li>
+                <strong>تحتاج إلى بحث سريع بالمفتاح؟</strong> ←
+                <strong>Map / Hash Table</strong>.
+            </li>
+            <li>
+                <strong>تحتاج إلى ضمان عدم التكرار والبحث
+                السريع؟</strong> ← <strong>Set</strong>.
+            </li>
+            <li>
+                <strong>تحتاج إلى بحث مع ترتيب؟</strong> ←
+                <strong>BST</strong> (أو شجرة متوازنة).
+            </li>
+            <li>
+                <strong>تحتاج إلى نمذجة علاقات شبكية؟</strong> ←
+                <strong>Graph</strong>.
+            </li>
+        </ul>
+
+        <h2 id="best-practices">أفضل الممارسات في تصميم ADTs</h2>
+
+        <ul>
+            <li>
+                <strong>اخفِ التنفيذ الداخلي:</strong> استخدم
+                الحقول الخاصة (<code>#field</code>) أو
+                الإغلاقات (Closures) لمنع الوصول المباشر
+                إلى البيانات الداخلية.
+            </li>
+            <li>
+                <strong>وفّر واجهة واضحة:</strong> كل ADT يجب
+                أن يعرض فقط العمليات التي تحدد هويته. لا
+                تكشف عن تفاصيل داخلية لمجرد الراحة.
+            </li>
+            <li>
+                <strong>وثّق تعقيد العمليات:</strong> عندما
+                يستخدم شخص ADT صممته، يجب أن يعرف أن
+                <code>dequeue</code> هو O(1)، لا O(n).
+            </li>
+            <li>
+                <strong>استخدم المدمج حيث يناسب:</strong>
+                <code>Map</code> و<code>Set</code> مدمجان
+                ومحسّنان، فلا تعِد تنفيذهما إلا لسبب
+                تعليمي.
+            </li>
+            <li>
+                <strong>افهم الأداء قبل الاختيار:</strong>
+                لا تختر نوعًا "لأنه مشهور"، بل لأن تعقيد
+                عملياته يناسب حالة الاستخدام.
+            </li>
+            <li>
+                <strong>اختبر الحالات الحدية:</strong>
+                عمليات على ADT فارغ، إضافة عناصر مكررة،
+                حذف عنصر غير موجود، سلوك <code>peek</code>
+                على مكدس فارغ.
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تعرف الفرق بين ADT وهيكل البيانات؟ ←
+                <strong>نعم: ADT هو الوصف، هيكل البيانات
+                هو التنفيذ</strong>
+            </li>
+            <li>
+                هل تعرف تعقيد العمليات في كل نوع؟ ←
+                <strong>نعم، مهم لاتخاذ القرار</strong>
+            </li>
+            <li>
+                هل تعرف لماذا <code>array.shift()</code>
+                ليس دائمًا الخيار الصحيح للطابور؟ ←
+                <strong>نعم، O(n) بدلًا من O(1)</strong>
+            </li>
+            <li>
+                هل تستخدم الحقول الخاصة لإخفاء
+                التنفيذ؟ ← <strong>نعم، تجريد حقيقي</strong>
+            </li>
+            <li>
+                هل تعرف متى تستخدم <code>Map</code>
+                بدلًا من <code>Object</code>؟ ←
+                <strong>نعم، في معظم الحالات</strong>
+            </li>
+            <li>
+                هل تعرف كيف تبني شجرة بحث ثنائية
+                وتتجاوزها؟ ← <strong>نعم</strong>
+            </li>
+            <li>
+                هل تعرف كيف تبني رسمًا بيانيًا
+                وتستخدم BFS/DFS؟ ← <strong>نعم</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Map
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Set
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    MDN — Generators
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/trekhleb/javascript-algorithms"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    trekhleb/javascript-algorithms — GitHub
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://github.com/loiane/javascript-datastructures-algorithms"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    loiane/javascript-datastructures-algorithms
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.bigocheatsheet.com/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Big-O Cheat Sheet
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل المصفوفة نوع مجرد؟</h3>
+        <p>
+            لا. <code>Array</code> في جافا سكريبت هي هيكل بيانات
+            ملموس، وليست ADT. يمكن استخدامها لتنفيذ ADTs مثل
+            المكدس والطابور، لكنها ليست تجريدًا بحد ذاتها.
+        </p>
+
+        <h3>هل يجب أن أنفذ ADTs بنفسي في الإنتاج؟</h3>
+        <p>
+            في معظم الحالات، لا. استخدم <code>Map</code>
+            و<code>Set</code> المدمجين، ومكتبات موثوقة
+            للمكدس والطابور والشجرة. تنفيذ ADT يدويًا مفيد
+            للتعلم، لكنه يضيف مخاطر أخطاء وصيانة في
+            الإنتاج.
+        </p>
+
+        <h3>ما هو الفرق بين ADT والبنية البياناتية؟</h3>
+        <p>
+            ADT هو الوصف المفهومي للعمليات المسموح بها، دون
+            تحديد كيفية تنفيذها. هيكل البيانات هو التنفيذ
+            الملموس. المكدس هو ADT. المصفوفة والقائمة
+            المرتبطة هما هيكلان بيانات يمكن استخدامهما
+            لتنفيذ المكدس.
+        </p>
+
+        <h3>هل Big O مهم حقًا في جافا سكريبت؟</h3>
+        <p>
+            نعم، لكن بدرجات متفاوتة. بالنسبة لمشروع صغير
+            يعالج مئات العناصر، الفرق بين O(n) وO(1) قد
+            لا يُلاحظ. لكن لتطبيق يعالج ملايين السجلات،
+            الفرق يحدد ما إذا كان يعمل في ثانية أو في
+            ساعة. فهم التعقيد ضروري لاتخاذ القرارات
+            الصحيحة.
+        </p>
+    </PostLayout>
+</BaseLayout>
