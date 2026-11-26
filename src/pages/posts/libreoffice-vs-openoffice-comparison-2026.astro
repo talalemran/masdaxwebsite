@@ -1,0 +1,814 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostLayout from "@/components/PostLayout.astro";
+
+const postModules = import.meta.glob("../posts/*.astro", { eager: true });
+const allPosts = Object.values(postModules)
+    .map((mod: any) => mod.post)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+export const post = {
+    slug: "libreoffice-vs-openoffice-comparison-2026",
+    title: "LibreOffice مقابل OpenOffice: أيهما تختار في 2026؟ مقارنة شاملة",
+    metaTitle: "LibreOffice أم OpenOffice؟ المقارنة الشاملة 2026",
+    description:
+        "مقارنة معمقة بين LibreOffice وApache OpenOffice في 2026: تاريخ الانشقاق، وتيرة التطوير، الميزات، التوافق مع ملفات Microsoft، الأمان، الأداء، واجهة المستخدم، والمجتمع، مع دليل قرار واضح.",
+    keywords: [
+        "LibreOffice vs OpenOffice",
+        "مقارنة LibreOffice وOpenOffice",
+        "Apache OpenOffice 2026",
+        "LibreOffice 26.2",
+        "بديل Microsoft Office مفتوح المصدر",
+        "توافق DOCX XLSX",
+        "أمان OpenOffice",
+        "The Document Foundation",
+        "مكتب مفتوح المصدر",
+        "أفضل حزمة مكتبية لينكس",
+    ],
+    category: "برامج",
+    author: "طلال عمران",
+    date: "26 نوفمبر 2026",
+    pubDate: new Date("2026-11-26"),
+    tags: ["LibreOffice", "OpenOffice", "مكتبيات", "مفتوح المصدر", "مقارنات", "إنتاجية"],
+    thumbnail: "/images/libreoffice-vs-openoffice-comparison-2026.webp",
+};
+
+const tocItems = [
+    { id: "at-a-glance", label: "نظرة سريعة: أيهما يفوز في ماذا؟" },
+    { id: "origin-story", label: "قصة الانشقاق: كيف وُلد الاثنان من رحم واحد؟" },
+    { id: "development-pace", label: "وتيرة التطوير: الفرق الذي يحدد كل شيء" },
+    { id: "features", label: "الميزات: من يضيف ومن يجمّد؟" },
+    { id: "compatibility", label: "التوافق مع Microsoft Office: الفارق الحاسم" },
+    { id: "performance", label: "الأداء والاستقرار: سرعة البدء والتعامل مع الملفات الكبيرة" },
+    { id: "security", label: "الأمان: التحديثات، الثغرات، وسمعة 2026" },
+    { id: "interface", label: "واجهة المستخدم: الحداثة مقابل الجمود" },
+    { id: "community-ecosystem", label: "المجتمع والتبني: من يستخدم ماذا فعلاً؟" },
+    { id: "migration", label: "الهجرة والتبديل: كيف تنتقل دون خسارة؟" },
+    { id: "who-should-use", label: "من يستخدم ماذا؟ دليل القرار" },
+    { id: "best-practices", label: "أفضل الممارسات في اختيار الحزمة المكتبية" },
+    { id: "final-checklist", label: "قائمة تحقق نهائية" },
+    { id: "useful-links", label: "روابط ومصادر مفيدة" },
+    { id: "faq", label: "أسئلة شائعة" },
+];
+---
+
+<BaseLayout
+    title={post.title}
+    metaTitle={post.metaTitle}
+    description={post.description}
+    keywords={post.keywords}
+    canonical={`/posts/${post.slug}/`}
+    ogImage={post.thumbnail}
+    ogType="article"
+>
+    <PostLayout {post} allPosts={allPosts}>
+        <p>
+            في عالم البرمجيات مفتوحة المصدر، قليل من المقارنات تثير
+            حيرة مثل مقارنة <strong>LibreOffice</strong> و
+            <strong>Apache OpenOffice</strong>. الاثنان يبدوان
+            متطابقين تقريبًا من الخارج: نفس الأيقونات، نفس أسماء
+            البرامج (Writer، Calc، Impress)، وحتى نفس الشعار
+            التاريخي. لكن خلف هذا التشابه السطحي، هناك قصة انشقاق
+            عميقة، ومساران تطويريان تباعدا لدرجة أن المقارنة بينهما
+            في 2026 ليست مقارنة بين منتجين متكافئين، بل بين
+            <strong>مشروع حي ومشروع في حالة سبات شبه تام</strong>.
+        </p>
+
+        <p>
+            هذا الدليل لا يكتفي بالقول "LibreOffice أفضل". إنه يفكك
+            الأسباب: <strong>لماذا انفصل المشروعان؟</strong>،
+            <strong>ماذا يعني أن OpenOffice لم يحصل على إصدار
+            ميزات رئيسي منذ 2014؟</strong>، <strong>كيف يترجم
+            ذلك إلى توافق، وأمان، وأداء، وتجربة مستخدم
+            يومية؟</strong>، و<strong>متى يكون اختيار
+            OpenOffice قرارًا عقلانيًا رغم كل شيء؟</strong>.
+            سنمر على البيانات، والملفات، والسمعة، وحالات
+            الاستخدام، حتى تخرج بقرار تعرف بالضبط لماذا
+            اتخذته.
+        </p>
+
+        <nav
+            class="toc bg-navy-50 border border-navy-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-lg p-8 my-6"
+            aria-label="جدول المحتويات"
+        >
+            <p class="font-bold text-lg mb-4 text-navy-700 dark:text-white">
+                محتويات المقال
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-lg">
+                {tocItems.map((item) => (
+                    <li>
+                        <a
+                            href={`#${item.id}`}
+                            class="text-navy-700 dark:text-white hover:text-accent dark:hover:text-accent hover:underline"
+                        >
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+
+        <h2 id="at-a-glance">نظرة سريعة: أيهما يفوز في ماذا؟</h2>
+
+        <p>
+            الجدول التالي يلخص الفروق الجوهرية كما تظهر في نهاية
+            2026، استنادًا إلى وتيرة الإصدارات، والتوافق،
+            والأمان، وتجربة المستخدم:
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">المعيار</th>
+                            <th class="px-4 py-2 font-semibold">LibreOffice</th>
+                            <th class="px-4 py-2 font-semibold">Apache OpenOffice</th>
+                            <th class="px-4 py-2 font-semibold">الفائز</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">وتيرة الإصدارات</td>
+                            <td class="px-4 py-2">إصداران رئيسيان سنويًا + تحديثات صيانة</td>
+                            <td class="px-4 py-2">تحديثات صيانة نادرة (4.1.17 في أكتوبر 2026)</td>
+                            <td class="px-4 py-2">LibreOffice</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">آخر إصدار ميزات رئيسي</td>
+                            <td class="px-4 py-2">26.2 (فبراير 2026)</td>
+                            <td class="px-4 py-2">4.1 (2014)</td>
+                            <td class="px-4 py-2">LibreOffice</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">توافق DOCX/XLSX/PPTX (قراءة وكتابة)</td>
+                            <td class="px-4 py-2">ممتاز (تحسين مستمر)</td>
+                            <td class="px-4 py-2">قراءة فقط، دون كتابة</td>
+                            <td class="px-4 py-2">LibreOffice</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الأمان</td>
+                            <td class="px-4 py-2">تصحيحات سريعة، مشروع نشط</td>
+                            <td class="px-4 py-2">حالة "خطر أحمر" في مارس 2026 لثغرات قديمة</td>
+                            <td class="px-4 py-2">LibreOffice</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">واجهة المستخدم</td>
+                            <td class="px-4 py-2">حديثة، قابلة للتخصيص، NotebookBar</td>
+                            <td class="px-4 py-2">قديمة، ثابتة، بلا تغيير</td>
+                            <td class="px-4 py-2">LibreOffice</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الأداء</td>
+                            <td class="px-4 py-2">تحسينات دورية (Skia، تسريع)</td>
+                            <td class="px-4 py-2">مستقر لكن بطيء في الملفات الكبيرة</td>
+                            <td class="px-4 py-2">LibreOffice</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">الاستقرار وعدم التغيير</td>
+                            <td class="px-4 py-2">تغييرات مستمرة</td>
+                            <td class="px-4 py-2">تجربة ثابتة "كبسولة زمنية"</td>
+                            <td class="px-4 py-2">OpenOffice</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">التبني المؤسسي والحكومي</td>
+                            <td class="px-4 py-2">واسع (مثال: 80% من محطات شليسفيغ-هولشتاين)</td>
+                            <td class="px-4 py-2">محدود جدًا</td>
+                            <td class="px-4 py-2">LibreOffice</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="origin-story">قصة الانشقاق: كيف وُلد الاثنان من رحم واحد؟</h2>
+
+        <p>
+            <img
+                src="/images/articles/libreoffice-vs-openoffice-comparison-2026/01.webp"
+                alt="LibreOffice مقابل OpenOffice"
+                width="1200"
+                height="675"
+                loading="lazy"
+                class="w-full h-auto rounded-lg mb-4"
+            />
+        </p>
+
+        <p>
+            لفهم المقارنة، يجب فهم التاريخ. في 1999، استحوذت
+            <strong>Sun Microsystems</strong> على StarOffice
+            وأصدرت نسخة مفتوحة المصدر تحت اسم
+            <strong>OpenOffice.org</strong>. في 2010، استحوذت
+            <strong>Oracle</strong> على Sun، وسرعان ما تصاعد
+            التوتر مع مجتمع المطورين. في سبتمبر 2010، غادر
+            <strong>غالبية المطورين الخارجيين</strong> المشروع
+            بسبب مخاوف حول إدارة Oracle، وأسسوا
+            <strong>The Document Foundation (TDF)</strong>،
+            وأطلقوا <strong>LibreOffice</strong> في يناير
+            2011.
+        </p>
+
+        <p>
+            في أبريل 2011، أوقفت Oracle تطوير OpenOffice.org
+            وسرّحت فريق التطوير المتبقي. ثم تبرعت بالعلامة
+            التجارية والكود إلى <strong>Apache Software
+            Foundation</strong>، التي أعادت ترخيصه وأطلقت
+            <strong>Apache OpenOffice</strong> في 2012. منذ
+            ذلك الحين، المشروعان منفصلان تمامًا: LibreOffice
+            يطوره مجتمع TDF غير الربحي، وOpenOffice يطوره
+            متطوعون تحت مظلة Apache، لكن بعدد قليل جدًا من
+            المساهمين النشطين.
+        </p>
+
+        <p>
+            النتيجة العملية: <strong>LibreOffice هو الوريث
+            الفعلي لـOpenOffice.org</strong>، وOpenOffice هو
+            فرع متجمد من نفس الشجرة. قارن أحد المراقبين في
+            2026 بين التوصية بـOpenOffice والتوصية بـInternet
+            Explorer: "كلاهما مشروع تاريخي لم يعد يواكب
+            العصر". هذا ليس تجنيًا، بل وصف لحالة
+            التطوير.
+        </p>
+
+        <h2 id="development-pace">وتيرة التطوير: الفرق الذي يحدد كل شيء</h2>
+
+        <p>
+            لا يمكن المبالغة في أهمية وتيرة التطوير. إنها
+            الأساس الذي يبني عليه كل شيء آخر: الميزات،
+            والأمان، والتوافق، والأداء.
+        </p>
+
+        <h3>LibreOffice: إيقاع منتظم ومُعلن</h3>
+
+        <p>
+            يتبع LibreOffice جدولًا واضحًا: <strong>إصدار
+            ميزات رئيسي كل ستة أشهر</strong> (فبراير
+            وأغسطس)، مع تحديثات صيانة شهرية تقريبًا.
+            في 2026، صدر <strong>LibreOffice 26.2</strong>
+            (فبراير) بدعم Markdown، وموصلات Calc، وتسريع
+            جداول البيانات، وتحسين عرض Skia. وصدر
+            <strong>LibreOffice 26.8</strong> في أغسطس
+            2026. هذا الإيقاع يعني أن الميزات الجديدة،
+            وإصلاحات الأخطاء، وتحديثات الأمان تصل إلى
+            المستخدمين بانتظام، دون انتظار سنوات.
+        </p>
+
+        <h3>OpenOffice: صيانة نادرة ووعود مؤجلة</h3>
+
+        <p>
+            آخر إصدار ميزات رئيسي لـOpenOffice كان
+            <strong>4.1 في 2014</strong>. منذ ذلك الحين،
+            اقتصرت الإصدارات على تحديثات صيانة نادرة:
+            4.1.16 في نوفمبر 2025، و4.1.17 في أكتوبر
+            2026. المشروع أعلن في 2026 أنه <strong>ألغى
+            خطة 4.2.0</strong> وتوجه مباشرة نحو
+            <strong>OpenOffice 5</strong>، الذي سيضيف
+            دعم Windows 64-bit وmacOS Apple Silicon،
+            ويحدّث Python وOpenSSL. لكن هذه الوعود لا
+            تزال في طور التطوير، دون تاريخ إصدار
+            مؤكد، وبعدد مساهمين يبلغ حوالي
+            <strong>15 مساهمًا</strong> فقط على فرع
+            الإصدار 5.
+        </p>
+
+        <p>
+            الفارق ليس أكاديميًا. عندما يحتاج LibreOffice
+            إلى إصلاح ثغرة أمنية، يفعل ذلك في أسابيع.
+            عندما يحتاج OpenOffice إلى ذلك، قد يستغرق
+            شهورًا أو أكثر. هذا ما دفع فريق Apache
+            الأمني إلى رفع حالة مخاطر OpenOffice إلى
+            <strong>"أحمر"</strong> في مارس 2026، بسبب
+            ثغرات لم تُصلح لأكثر من 365 يومًا.
+        </p>
+
+        <h2 id="features">الميزات: من يضيف ومن يجمّد؟</h2>
+
+        <p>
+            الميزات هي المجال الذي يظهر فيه الفارق
+            بوضوح. كلاهما يضم نفس التطبيقات الأساسية:
+            <strong>Writer</strong> (معالجة نصوص)،
+            <strong>Calc</strong> (جداول)،
+            <strong>Impress</strong> (عروض)،
+            <strong>Draw</strong> (رسوميات)،
+            <strong>Base</strong> (قواعد بيانات)،
+            <strong>Math</strong> (معادلات). لكن
+            ما يحدث داخل هذه التطبيقات مختلف.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg border border-navy-200 dark:border-zinc-700">
+                <table class="min-w-full text-right">
+                    <thead class="bg-navy-50 dark:bg-zinc-800 text-navy-700 dark:text-zinc-300">
+                        <tr>
+                            <th class="px-4 py-2 font-semibold">الميزة</th>
+                            <th class="px-4 py-2 font-semibold">LibreOffice</th>
+                            <th class="px-4 py-2 font-semibold">OpenOffice</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">دعم Markdown (استيراد/تصدير)</td>
+                            <td class="px-4 py-2">نعم (منذ 26.2)</td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">موصلات Calc (ربط الأشكال)</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">واجهة NotebookBar (شبيهة Ribbon)</td>
+                            <td class="px-4 py-2">نعم، قابلة للتخصيص</td>
+                            <td class="px-4 py-2">لا (واجهة تقليدية فقط)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">تسريع Skia للرسوميات</td>
+                            <td class="px-4 py-2">إلزامي على Windows/macOS</td>
+                            <td class="px-4 py-2">لا</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">دعم Python ماكرو حديث</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">قيد التحديث (3.11 في OpenOffice 5)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">OpenSSL 3 / TLS حديث</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">مخطط له في OpenOffice 5</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">دعم Windows 64-bit أصلي</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">في OpenOffice 5 (قيد التطوير)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">دعم macOS Apple Silicon أصلي</td>
+                            <td class="px-4 py-2">نعم</td>
+                            <td class="px-4 py-2">في OpenOffice 5 (قيد التطوير)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p>
+            المفارقة أن OpenOffice 5 يحمل وعودًا بميزات
+            كانت LibreOffice قد أضافتها منذ سنوات. لكن
+            حتى تلك الوعود لم تتحقق بعد. في 2026،
+            مستخدمو OpenOffice لا يزالون ينتظرون
+            إصدارًا يضاهي ما كان LibreOffice يقدمه
+            في 2022.
+        </p>
+
+        <h2 id="compatibility">التوافق مع Microsoft Office: الفارق الحاسم</h2>
+
+        <p>
+            بالنسبة لمعظم المستخدمين، هذا هو المعيار
+            الأهم. إذا لم تستطع فتح ملفات Word أو Excel
+            أو PowerPoint بشكل صحيح، فالحزمة المكتبية
+            عديمة الفائدة في بيئة عمل واقعية.
+        </p>
+
+        <p>
+            <strong>LibreOffice</strong> يستثمر منذ سنوات
+            في تحسين مرشحات الاستيراد والتصدير لصيغ
+            Office Open XML (DOCX، XLSX، PPTX). يستطيع
+            <strong>قراءة وكتابة</strong> هذه الصيغ، مع
+            توافق جيد في معظم الحالات. لا يعني هذا
+            توافقًا مثاليًا — التنسيقات المعقدة،
+            والجداول المحورية، والأنماط المتقدمة قد
+            تتغير قليلًا — لكنه "أفضل توافق يمكن أن
+            تجده في برنامج مفتوح المصدر" وفقًا
+            لتجارب 2026.
+        </p>
+
+        <p>
+            <strong>OpenOffice</strong> يستطيع
+            <strong>قراءة</strong> ملفات DOCX وXLSX
+            وPPTX، لكنه <strong>لا يستطيع حفظها</strong>
+            بهذه الصيغ. هذا القيد وحده يجعله غير صالح
+            للعمل مع أي شخص يستخدم Microsoft Office.
+            كما أن توافقه مع التنسيقات الأقدم (DOC،
+            XLS) جيد، لكن هذا لا يعوض غياب الكتابة
+            بالصيغ الحديثة.
+        </p>
+
+        <p>
+            إذا كنت تعمل في بيئة تتبادل فيها الملفات مع
+            مستخدمي Word أو Excel، فإن OpenOffice ليس
+            خيارًا عمليًا. LibreOffice، رغم عيوبه،
+            هو الخيار الوحيد الجاد في عالم مفتوح
+            المصدر لهذا الغرض.
+        </p>
+
+        <h2 id="performance">الأداء والاستقرار: سرعة البدء والتعامل مع الملفات الكبيرة</h2>
+
+        <p>
+            الأداء مجال دقيق. كلاهما مبني على نفس
+            القاعدة القديمة، لكن LibreOffice أجرى
+            تحسينات جوهرية على مر السنين:
+        </p>
+
+        <ul>
+            <li>
+                <strong>سرعة البدء:</strong> LibreOffice
+                يحسّن وقت الإقلاع تدريجيًا، لكنه لا
+                يزال أبطأ من Microsoft Office. OpenOffice
+                قد يكون أسرع قليلًا في البدء على
+                الأجهزة القديمة لأنه لا يحمل ميزات
+                حديثة.
+            </li>
+            <li>
+                <strong>الملفات الكبيرة:</strong>
+                LibreOffice يتعامل بشكل أفضل مع
+                جداول البيانات الضخمة والمستندات
+                المعقدة، بفضل تحسينات الذاكرة
+                والتصيير. OpenOffice قد يتباطأ أو
+                ينهار مع ملفات Calc الكبيرة.
+            </li>
+            <li>
+                <strong>الاستقرار:</strong> هنا
+                يتفوق OpenOffice في جانب واحد:
+                <strong>عدم التغيير</strong>. لأنه
+                لا يتلقى ميزات جديدة، فهو لا يقدم
+                أعطالًا جديدة. إذا كان يعمل،
+                فسيستمر في العمل. لكن هذا
+                "استقرار الجمود"، وليس استقرار
+                التطوير النشط.
+            </li>
+        </ul>
+
+        <h2 id="security">الأمان: التحديثات، الثغرات، وسمعة 2026</h2>
+
+        <p>
+            الأمان هو المجال الذي يتضح فيه الفارق
+            بشكل صارخ. في مارس 2026، رفع فريق
+            الأمان في Apache حالة مخاطر OpenOffice
+            إلى <strong>"أحمر"</strong> بسبب ثغرات
+            لم تُصلح لأكثر من عام. هذا لا يعني أن
+            OpenOffice "غير آمن" بشكل مطلق، لكنه
+            يعني أن المشروع يفتقر إلى القدرة على
+            الاستجابة السريعة للتهديدات.
+        </p>
+
+        <p>
+            في المقابل، LibreOffice يصدر تحديثات
+            أمان بانتظام، ضمن دورة الصيانة الشهرية.
+            عندما تُكتشف ثغرة، يتم تقييمها وإصلاحها
+            في غضون أسابيع، لا أشهر. هذا الفارق
+            مهم بشكل خاص للمؤسسات التي تتعامل مع
+            ملفات من مصادر خارجية.
+        </p>
+
+        <p>
+            نقطة أخرى: OpenOffice 4.1.17 (أكتوبر
+            2026) أصلح ثغرة حرجة في تنفيذ الكود
+            (CVE-2026-59265)، لكنها جاءت بعد
+            شهور من الاكتشاف. هذا النمط — إصلاح
+            متأخر — هو ما دفع إلى تصنيف "الخطر
+            الأحمر".
+        </p>
+
+        <h2 id="interface">واجهة المستخدم: الحداثة مقابل الجمود</h2>
+
+        <p>
+            واجهة LibreOffice تطورت بشكل كبير. يمكنك
+            الاختيار بين:
+        </p>
+
+        <ul>
+            <li>
+                <strong>الواجهة التقليدية:</strong>
+                قوائم وأشرطة أدوات، مشابهة للإصدارات
+                القديمة.
+            </li>
+            <li>
+                <strong>NotebookBar:</strong> تبويبات
+                شبيهة بشريط Ribbon في Microsoft
+                Office، مع أيقونات تتغير حسب السياق
+                (نص، جدول، صورة).
+            </li>
+            <li>
+                <strong>واجهات أخرى:</strong> Single
+                Toolbar، Sidebar، وغيرها.
+            </li>
+        </ul>
+
+        <p>
+            OpenOffice لا يقدم أيًا من هذا. واجهته
+            ثابتة منذ سنوات، بتصميم يعود إلى عصر
+            مختلف. بالنسبة لبعض المستخدمين، هذا
+            ميزة: "تشعر أنك تملك البرنامج"، كما
+            يقول أحد المدافعين عنه. لا مفاجآت،
+            لا تغييرات في مكان الأدوات، لا حاجة
+            لإعادة تعلم شيء.
+        </p>
+
+        <p>
+            لكن بالنسبة لمعظم المستخدمين الجدد،
+            واجهة OpenOffice تبدو قديمة وغير مألوفة
+            مقارنة بما اعتادوا عليه في Office أو
+            حتى في LibreOffice. هذا ليس عيبًا
+            جماليًا فقط؛ إنه يؤثر على الإنتاجية
+            والراحة.
+        </p>
+
+        <h2 id="community-ecosystem">المجتمع والتبني: من يستخدم ماذا فعلاً؟</h2>
+
+        <p>
+            الأرقام تحكي قصة واضحة. LibreOffice هو
+            الحزمة المكتبية الافتراضية في معظم
+            توزيعات لينكس، ويُستخدم في الحكومات
+            والبلديات الأوروبية. مثال بارز: ولاية
+            <strong>شليسفيغ-هولشتاين</strong>
+            الألمانية هاجرت حوالي <strong>80% من
+            محطات عملها (30,000 جهاز)</strong> إلى
+            LibreOffice، مع توفير يُقدر بأكثر من
+            <strong>15 مليون يورو سنويًا</strong>
+            في تراخيص Windows وOffice. هذا ليس
+            تبنيًا هامشيًا؛ إنه تحول مؤسسي
+            كبير.
+        </p>
+
+        <p>
+            OpenOffice، في المقابل، ليس لديه مثل
+            هذه القصص. مجتمعه صغير، وتطويره
+            يعتمد على عدد محدود من المتطوعين.
+            لا توجد حكومات كبرى تعلن الهجرة
+            إليه، ولا توزيعات رئيسية تجعله
+            افتراضيًا. وجوده اليوم يعتمد على
+            حاجتين: <strong>مستخدمين يريدون
+            تجربة ثابتة لا تتغير</strong>،
+            و<strong>أنظمة قديمة لا يدعمها
+            LibreOffice</strong>.
+        </p>
+
+        <h2 id="migration">الهجرة والتبديل: كيف تنتقل دون خسارة؟</h2>
+
+        <p>
+            إذا كنت تستخدم OpenOffice وتفكر في
+            الانتقال إلى LibreOffice، فالعملية
+            بسيطة نسبيًا:
+        </p>
+
+        <ol>
+            <li>
+                <strong>ثبّت LibreOffice جنبًا إلى
+                جنب:</strong> لا تحتاج إلى إلغاء
+                تثبيت OpenOffice أولًا.
+            </li>
+            <li>
+                <strong>افتح ملفاتك في LibreOffice:</strong>
+                معظم التنسيقات ستعمل مباشرة.
+            </li>
+            <li>
+                <strong>احفظ بصيغة ODF أو DOCX
+                حسب الحاجة:</strong> LibreOffice
+                يدعم الكتابة بالصيغ الحديثة، بعكس
+                OpenOffice.
+            </li>
+            <li>
+                <strong>انقل القوالب والماكرو:</strong>
+                قد تحتاج إلى إعادة اختبار
+                الماكرو، خاصة إذا كانت تعتمد
+                على واجهات برمجية قديمة.
+            </li>
+        </ol>
+
+        <p>
+            العكس — الانتقال من LibreOffice إلى
+            OpenOffice — هو "تخفيض" (Downgrade)
+            بكل معنى الكلمة. ستفقد دعم كتابة
+            DOCX/XLSX، والميزات الحديثة،
+            والتحديثات الأمنية المنتظمة. لا
+            تفعل ذلك إلا إذا كان لديك سبب
+            تقني محدد جدًا (مثل توافق مع
+            نظام قديم).
+        </p>
+
+        <h2 id="who-should-use">من يستخدم ماذا؟ دليل القرار</h2>
+
+        <ul>
+            <li>
+                <strong>استخدم LibreOffice إذا:</strong>
+                كنت تحتاج إلى توافق مع ملفات
+                Microsoft Office، أو تريد
+                تحديثات أمنية منتظمة، أو تعمل
+                في بيئة حديثة، أو تريد ميزات
+                جديدة (Markdown، موصلات،
+                واجهات حديثة)، أو تدير
+                مؤسسة تبحث عن بديل مستدام.
+            </li>
+            <li>
+                <strong>استخدم OpenOffice إذا:</strong>
+                كنت تعمل على نظام قديم جدًا
+                لا يدعمه LibreOffice، أو
+                لديك قوالب/ماكرو مبنية
+                خصيصًا لـOpenOffice ولا
+                تريد تغييرها، أو تريد
+                "تجربة ثابتة" لا تتغير
+                أبدًا، وتقبل بأنك
+                ستستخدم صيغ ODF فقط
+                ولن تتبادل ملفات DOCX
+                الحديثة.
+            </li>
+        </ul>
+
+        <p>
+            لأغلب الناس، الإجابة واضحة: LibreOffice.
+            ليس لأنه "أفضل" بشكل مطلق، بل لأنه
+            <strong>الخيار الوحيد الذي يستمر في
+            التطور والأمان والتوافق</strong>.
+        </p>
+
+        <h2 id="best-practices">أفضل الممارسات في اختيار الحزمة المكتبية</h2>
+
+        <ul>
+            <li>
+                <strong>لا تعتمد على "الاسم" أو
+                "الشعار":</strong> الاثنان
+                يبدوان متشابهين، لكن مسار
+                التطوير مختلف تمامًا.
+            </li>
+            <li>
+                <strong>افحص وتيرة الإصدارات:</strong>
+                مشروع لم يصدر ميزات جديدة
+                منذ 2014 ليس مشروعًا تريد
+                الاعتماد عليه لعقد قادم.
+            </li>
+            <li>
+                <strong>اختبر توافق الملفات
+                بنفسك:</strong> حمّل ملف DOCX
+                معقدًا، وافتحه في كليهما،
+                واحفظه، وأعد فتحه. النتيجة
+                ستخبرك أكثر من أي مراجعة.
+            </li>
+            <li>
+                <strong>راقب تحديثات الأمان:</strong>
+                إذا كنت تتعامل مع ملفات من
+                مصادر خارجية، فالمشروع
+                الذي يتأخر في إصلاح الثغرات
+                ليس خيارًا آمنًا.
+            </li>
+            <li>
+                <strong>فكّر في المستقبل، لا
+                في الحاضر فقط:</strong>
+                OpenOffice قد يعمل اليوم،
+                لكن ماذا عن 2030؟ هل
+                سيدعم الصيغ الجديدة؟
+                هل سيصلح ثغراته؟
+            </li>
+        </ul>
+
+        <h2 id="final-checklist">قائمة تحقق نهائية</h2>
+
+        <ul>
+            <li>
+                هل تحتاج إلى حفظ ملفات DOCX
+                أو XLSX؟ ← <strong>LibreOffice</strong>
+            </li>
+            <li>
+                هل تعمل في بيئة تتشارك فيها
+                ملفات Office؟ ←
+                <strong>LibreOffice</strong>
+            </li>
+            <li>
+                هل الأمان والتحديثات أولوية؟ ←
+                <strong>LibreOffice</strong>
+            </li>
+            <li>
+                هل تريد ميزات حديثة (Markdown،
+                موصلات، واجهات جديدة)؟ ←
+                <strong>LibreOffice</strong>
+            </li>
+            <li>
+                هل لديك نظام قديم لا يدعم
+                LibreOffice؟ ← <strong>قد
+                يكون OpenOffice خيارًا</strong>
+            </li>
+            <li>
+                هل تحتاج إلى تجربة ثابتة
+                لا تتغير أبدًا؟ ←
+                <strong>OpenOffice (لكن
+                بثمن)</strong>
+            </li>
+            <li>
+                هل تعرف أن OpenOffice لا
+                يستطيع حفظ DOCX؟ ←
+                <strong>نعم، وهذا قيد
+                كبير</strong>
+            </li>
+        </ul>
+
+        <h2 id="useful-links">روابط ومصادر مفيدة</h2>
+
+        <p>
+            فيما يلي روابط رسمية ومراجع يمكنك الرجوع
+            إليها:
+        </p>
+
+        <ul>
+            <li>
+                <a
+                    href="https://www.libreoffice.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    LibreOffice — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.openoffice.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Apache OpenOffice — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.documentfoundation.org/"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    The Document Foundation — Official Website
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://openoffice.apache.org/blog/what-is-going-on-in-Apache-OpenOffice-development.html"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Apache OpenOffice — Development Blog (2026)
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://wiki.documentfoundation.org/ReleaseNotes/26.2"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    LibreOffice 26.2 — Release Notes
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://en.wikipedia.org/wiki/Apache_OpenOffice"
+                    target="_blank"
+                    rel="nofollow noopener"
+                >
+                    Wikipedia — Apache OpenOffice
+                </a>
+            </li>
+        </ul>
+
+        <h2 id="faq">أسئلة شائعة</h2>
+
+        <h3>هل OpenOffice لا يزال مدعومًا؟</h3>
+        <p>
+            نعم، لكن الدعم محدود للغاية. يتلقى
+            تحديثات صيانة نادرة (آخرها 4.1.17 في
+            أكتوبر 2026)، ولا يوجد إصدار ميزات
+            رئيسي منذ 2014. المشروع يعد بـOpenOffice
+            5، لكنه ليس جاهزًا بعد.
+        </p>
+
+        <h3>هل يمكنني فتح ملفات DOCX في OpenOffice؟</h3>
+        <p>
+            يمكنك <strong>قراءتها</strong>، لكن
+            <strong>لا يمكنك حفظها</strong> بصيغة
+            DOCX. هذا يعني أن أي تعديل تجريه
+            سيُحفظ بصيغة ODF، مما قد يسبب مشاكل
+            توافق إذا أرسلته إلى مستخدم Word.
+        </p>
+
+        <h3>لماذا يعتبر LibreOffice "أكثر أمانًا"؟</h3>
+        <p>
+            لأنه يتلقى تحديثات أمنية بانتظام،
+            ويصلح الثغرات في غضون أسابيع. OpenOffice
+            تأخر في إصلاح ثغرات حرجة، مما دفع
+            فريق Apache الأمني إلى رفع حالة
+            المخاطر إلى "أحمر" في 2026.
+        </p>
+
+        <h3>هل يمكنني تثبيت LibreOffice وOpenOffice معًا؟</h3>
+        <p>
+            نعم، يمكنهما التعايش على نفس الجهاز.
+            لكن قد تتعارض ارتباطات الملفات (أي
+            برنامج يفتح DOCX افتراضيًا). يمكنك
+            ضبط ذلك يدويًا في إعدادات النظام.
+        </p>
+
+        <h3>ما أفضل حزمة مكتبية مفتوحة المصدر في 2026؟</h3>
+        <p>
+            <strong>LibreOffice</strong> بلا منافس
+            جدي. إنها الحزمة الوحيدة التي تجمع
+            بين التطوير النشط، والتوافق الجيد،
+            والتحديثات الأمنية، والمجتمع الكبير.
+            OpenOffice مشروع تاريخي، وليس خيارًا
+            للمستقبل.
+        </p>
+    </PostLayout>
+</BaseLayout>
